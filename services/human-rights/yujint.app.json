@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "type": "server",
+  "healthcheck_path": "/health",
+  "manage_path": "/?teacher=1",
+  "inherit_env": ["TEACHER_PIN", "DATABASE_URL"],
+  "description": "유진T 클래스룸 서버형 수행평가"
+}

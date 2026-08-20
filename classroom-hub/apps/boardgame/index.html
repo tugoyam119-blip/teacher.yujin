@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<title id="pageTitle">45칸 학습 보드게임 v49</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#fff; --line:#dbe2ee; --text:#1f2937; --muted:#667085;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Pretendard,"Noto Sans KR",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+  button,input,select,textarea{font:inherit}
+  button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;font-weight:700}
+  .primary{background:#111827;color:#fff}.secondary{background:#eef2f7;color:#263244}.danger{background:#fee2e2;color:#991b1b}.good{background:#dcfce7;color:#166534}.warn{background:#fef3c7;color:#92400e}
+  .app{max-width:1680px;margin:0 auto;padding:14px}
+  .topbar{display:flex;gap:12px;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .topbar h1{font-size:24px;margin:0}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}.tab{background:#e9eef6;color:#445}.tab.active{background:#111827;color:#fff}
+  .panel{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px;padding:18px;margin-bottom:14px}
+  .hidden{display:none!important}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .field label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff}
+  .teams-config{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:9px;margin-top:12px}.team-config{border:1px solid var(--line);border-radius:13px;padding:10px;display:grid;grid-template-columns:1fr;gap:8px;align-items:end}.team-name-row{display:flex;align-items:center;gap:8px}.team-name-row .tname{flex:1;min-width:0}.team-preview-token{width:42px;height:42px;flex:0 0 42px;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;position:relative;font-size:25px;font-weight:950;border:3px solid rgba(255,255,255,.98);outline:2px solid rgba(15,23,42,.20);background:linear-gradient(145deg,rgba(255,255,255,.32),var(--tokenColor,#ef4444));box-shadow:0 4px 10px rgba(0,0,0,.18),inset 0 2px 5px rgba(255,255,255,.30);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.58);overflow:hidden}.team-preview-token::before{content:'';position:absolute;left:5px;right:5px;top:4px;height:12px;border-radius:999px;background:rgba(255,255,255,.42)}.team-preview-token .preview-shape{position:relative;z-index:1;line-height:1;filter:drop-shadow(0 1px 1px rgba(255,255,255,.4))}.team-preview-caption{display:inline-flex;align-items:center;gap:5px;margin-left:5px;font-size:12px;font-weight:800;color:#64748b;vertical-align:middle}
+  .rulebox{padding:14px;border-radius:14px;background:#f8fafc;border:1px dashed #b9c5d6;margin-top:12px}.rulebox strong{font-size:18px}.rulebox p{margin:5px 0 0;color:#475467}
+  .question-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.bank-box{margin:12px 0 14px;padding:14px;border:1px solid #c7d2fe;border-radius:15px;background:linear-gradient(135deg,#eef2ff,#f8fafc)}.bank-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}.bank-head strong{font-size:16px;color:#312e81}.bank-controls{display:grid;grid-template-columns:minmax(240px,1fr) auto auto auto;gap:8px;align-items:center}.bank-controls select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff}.bank-meta{margin-top:8px;font-size:12px;font-weight:750;color:#475569}.bank-empty{color:#b91c1c}@media(max-width:850px){.bank-controls{grid-template-columns:1fr 1fr}.bank-controls select{grid-column:1/-1}}.import-box{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(170px,.7fr) auto;gap:10px;align-items:end;margin:12px 0;padding:14px;border:1px solid #dbe2ee;border-radius:14px;background:#f8fafc}.import-status{grid-column:1/-1;font-size:13px;font-weight:700;color:#475569;min-height:18px}.import-status.ok{color:#166534}.import-status.err{color:#b91c1c}.import-help{grid-column:1/-1;font-size:12px;line-height:1.55;color:#64748b}.order-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#f1f5f9;font-size:12px;font-weight:800;color:#475569}@media(max-width:760px){.import-box{grid-template-columns:1fr}.import-status,.import-help{grid-column:1}}.q-table{width:100%;border-collapse:collapse}.q-table th,.q-table td{border-bottom:1px solid var(--line);padding:7px;vertical-align:top}.q-table th{font-size:13px;text-align:left;background:#f8fafc}.q-table input{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px}
+  .study-card{max-width:800px;margin:20px auto;text-align:center;padding:30px;border:1px solid var(--line);border-radius:20px;min-height:270px;display:flex;flex-direction:column;justify-content:center;gap:18px}.study-q{font-size:28px;font-weight:900}.study-a{font-size:22px;padding:18px;border-radius:14px;background:#f1f5f9}.study-controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+  .game-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px}
+  .board-wrap{overflow:auto;padding-bottom:4px}.board{display:grid;grid-template-columns:repeat(16,minmax(58px,1fr));grid-template-rows:repeat(9,68px);gap:5px;min-width:1075px;position:relative;padding:76px 68px 126px 2px;overflow:visible}
+  .board-center{grid-column:3/15;grid-row:3/8;border:2px solid #c4b5fd;border-radius:28px;background:linear-gradient(145deg,#fff,#f5f3ff 48%,#eff6ff);display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;color:#475467;z-index:0;box-shadow:0 14px 34px rgba(99,102,241,.13),inset 0 1px 0 rgba(255,255,255,.9)}.board-hub{width:min(650px,94%);display:flex;flex-direction:column;align-items:center;gap:7px}.hub-kicker{font-size:13px;font-weight:900;color:#7c3aed;letter-spacing:.08em}.hub-team{font-size:22px;font-weight:950;color:#111827}.center-dice{min-width:180px;min-height:112px;padding:4px 22px;border-radius:26px;background:#fff;border:4px solid #8b5cf6;box-shadow:0 12px 28px rgba(124,58,237,.18),inset 0 0 0 5px #f5f3ff;display:flex;align-items:center;justify-content:center;font-size:94px;line-height:1;color:#5b21b6;text-shadow:0 3px 0 #ede9fe;transition:transform .15s ease}.center-dice.rolling{animation:diceShake .12s linear infinite;border-color:#f59e0b;box-shadow:0 12px 34px rgba(245,158,11,.25),inset 0 0 0 5px #fffbeb}.center-roll-btn{width:min(360px,90%);font-size:22px;padding:14px 22px;border-radius:18px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 8px 18px rgba(79,70,229,.25)}.center-roll-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}.hub-rule{margin-top:3px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.78);border:1px solid #ddd6fe;font-size:14px;font-weight:800;line-height:1.45}.hub-rule b{display:block;font-size:17px;color:#5b21b6;margin-bottom:2px}.hub-mode{font-size:12px;font-weight:800;color:#64748b}.side .dice,.side #rollBtn{display:none}
+  .cell{position:relative;border:1px solid var(--line);border-radius:13px;background:#fff;padding:7px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;z-index:1;box-shadow:0 2px 7px rgba(15,23,42,.045)}.cell.forward{background:#ecfdf3}.cell.backward{background:#fff1f2}.cell.chance{background:#fff7ed;border-color:#fdba74}
+  .cell.start{background:linear-gradient(145deg,#f8fafc,#e2e8f0);border:2px solid #111827;overflow:visible;z-index:8;padding:6px}.cell.start .cell-num{font-size:12px;color:#111827}.cell.start .cell-event{font-size:12px;text-align:center;color:#475569}.cell.start>.tokens{position:absolute;left:0;top:calc(100% + 8px);bottom:auto;width:calc(160% + 10px);min-height:108px;padding:30px 10px 9px;border-radius:18px;display:flex;align-content:flex-start;justify-content:flex-start;gap:6px;box-shadow:0 10px 26px rgba(15,23,42,.14);z-index:12;background:linear-gradient(145deg,#ffffff,#e2e8f0);border:2px dashed #64748b}.cell.start>.tokens::before{content:'🏁 START · 말 대기장';position:absolute;left:9px;top:7px;font-size:12px;font-weight:950;letter-spacing:.02em;color:#334155}.cell.start>.tokens:empty::after{content:'대기 중인 말 없음';font-size:11px;color:#94a3b8;margin:auto}
+  .cell.island{overflow:visible;z-index:14;padding:0;border:0;background:transparent;box-shadow:none;isolation:isolate}.cell.island>.island-shell{position:absolute;left:0;bottom:0;width:calc(200% + 5px);height:calc(200% + 5px);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#7dd3fc 0%,#38bdf8 38%,#0ea5e9 100%);border:3px solid #075985;box-shadow:0 12px 28px rgba(2,132,199,.30),inset 0 0 0 2px rgba(255,255,255,.35);display:flex;flex-direction:column;padding:9px;z-index:14}.cell.island>.island-shell::before{content:'';position:absolute;left:12%;right:12%;top:39%;height:35%;border-radius:52% 48% 46% 54%;background:radial-gradient(ellipse at 50% 35%,#fff8d8 0 18%,#f8dc8c 48%,#dfb45f 100%);box-shadow:0 4px 0 rgba(3,105,161,.25);transform:rotate(-3deg);z-index:0}.cell.island>.island-shell::after{content:'🌴';position:absolute;left:50%;top:22%;transform:translateX(-50%) rotate(-5deg);font-size:46px;filter:drop-shadow(0 2px 1px rgba(0,0,0,.2));z-index:0}.cell.island .cell-num{position:relative;z-index:2;font-size:14px;color:#fff;font-weight:950;text-shadow:0 1px 2px rgba(3,105,161,.85);text-align:left}.cell.island .cell-event{position:relative;z-index:2;color:#0c4a6e;margin:5px 0 0;font-size:12px;line-height:1.1;text-align:center}.island-art{margin-top:6px}.island-sos{display:inline-block;background:#fff7ed;color:#c2410c;border:2px solid rgba(124,45,18,.28);border-radius:8px;padding:3px 7px;font-size:14px;font-weight:950;letter-spacing:.08em;transform:rotate(-4deg);box-shadow:0 2px 4px rgba(0,0,0,.12)}.island-caption{margin-top:4px;font-size:11px;font-weight:950;color:#fff;text-shadow:0 1px 2px #075985}.cell.island .tokens{position:relative;z-index:3;margin-top:auto;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-end;justify-content:center;overflow:auto;max-height:74px;padding:4px}.cell.island .tokens:empty::after{content:'갇힌 말 없음';font-size:10px;font-weight:850;color:#e0f2fe;background:rgba(3,105,161,.52);border-radius:999px;padding:3px 7px}.cell.island .token{box-shadow:0 4px 10px rgba(3,105,161,.32),inset 0 2px 5px rgba(255,255,255,.72)}
+  .cell-num{font-size:12px;font-weight:900;color:#667085}.cell-event{font-size:13px;font-weight:900;line-height:1.15;text-align:center;margin:auto 0}.tokens{display:flex;flex-wrap:wrap;gap:4px;align-content:flex-end}
+  .island-roulette-wrap{text-align:center}.island-wheel-box{position:relative;width:300px;height:320px;margin:10px auto 2px}.island-pointer{position:absolute;left:50%;top:-4px;transform:translateX(-50%);z-index:4;width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-top:34px solid #ef4444;filter:drop-shadow(0 3px 2px rgba(0,0,0,.18))}.island-wheel{position:absolute;left:20px;top:22px;width:260px;height:260px;border-radius:50%;border:8px solid #fff;box-shadow:0 12px 30px rgba(2,132,199,.24),0 0 0 3px #0ea5e9;background:conic-gradient(from -25.714deg,#fef3c7 0deg 51.428deg,#bae6fd 51.428deg 102.856deg,#bfdbfe 102.856deg 154.284deg,#c7d2fe 154.284deg 205.712deg,#ddd6fe 205.712deg 257.14deg,#fbcfe8 257.14deg 308.568deg,#bbf7d0 308.568deg 360deg);transition:transform 3.1s cubic-bezier(.12,.72,.1,1)}.island-wheel::after{content:'🏝️';position:absolute;inset:50%;width:64px;height:64px;margin:-32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:4px solid #0ea5e9;font-size:32px;box-shadow:0 3px 12px rgba(0,0,0,.14)}.wheel-label{position:absolute;left:50%;top:50%;width:72px;margin-left:-36px;margin-top:-12px;text-align:center;font-size:15px;font-weight:950;color:#0f172a;text-shadow:0 1px 0 rgba(255,255,255,.9);transform-origin:36px 12px}.island-result{min-height:48px;font-size:22px;font-weight:950;color:#075985;margin-top:4px}.island-dice-face{font-size:86px;line-height:1;margin:10px}.island-question-step{font-size:13px;font-weight:900;color:#0369a1;margin-bottom:8px}.island-countdown{font-size:28px;font-weight:950;color:#0f172a;margin:6px 0}.island-question-text{font-size:25px;font-weight:950;line-height:1.45;margin:12px 0 16px}.island-answer{width:100%;font-size:19px;padding:12px;border:2px solid #bae6fd;border-radius:12px}.token{width:33px;height:33px;border-radius:16px;display:flex;align-items:center;justify-content:center;position:relative;color:#fff;font-size:17px;font-weight:950;border:2px solid rgba(255,255,255,.98);background:linear-gradient(145deg,rgba(255,255,255,.32),var(--tokenColor,#ef4444));box-shadow:0 4px 10px rgba(0,0,0,.18),inset 0 2px 5px rgba(255,255,255,.30);text-shadow:0 1px 3px rgba(0,0,0,.58);transition:transform .18s ease}.token::before{content:'';position:absolute;left:4px;right:4px;top:3px;height:10px;border-radius:999px;background:rgba(255,255,255,.42)}.token:hover{transform:translateY(-1px) scale(1.04)}.token .shape{position:relative;z-index:1;line-height:1;filter:drop-shadow(0 1px 1px rgba(255,255,255,.4))}.token .badge{position:absolute;right:-4px;bottom:-4px;min-width:16px;height:16px;padding:0 3px;border-radius:999px;background:#fff;color:#64748b;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;border:1px solid rgba(17,24,39,.08);box-shadow:0 1px 4px rgba(0,0,0,.12)}.token .done{position:absolute;left:-4px;top:-4px;width:15px;height:15px;border-radius:999px;background:#86efac;color:#166534;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.9)}.token.finished{outline:3px solid #86efac;opacity:.96}
+  .token.capture-target{z-index:40;animation:captureTargetPulse .55s ease-in-out infinite;outline:5px solid #facc15;box-shadow:0 0 0 7px rgba(239,68,68,.40),0 0 30px 14px rgba(250,204,21,.78),inset 0 2px 5px rgba(255,255,255,.72);transform-origin:center}
+  .token.capture-target::after{content:'💥';position:absolute;left:50%;top:-27px;transform:translateX(-50%);font-size:25px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));z-index:4}
+  @keyframes captureTargetPulse{0%,100%{transform:scale(1.05) rotate(-2deg)}50%{transform:scale(1.48) rotate(2deg)}}
+  .side{display:flex;flex-direction:column;gap:12px}.status-card{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.status-card h3{margin:0 0 8px;font-size:15px}.turn-name{font-size:26px;font-weight:900}.timer-big{font-size:30px;font-weight:900}.dice{font-size:58px;text-align:center;padding:10px;min-height:88px;display:flex;align-items:center;justify-content:center;line-height:1.1;border-radius:18px;background:linear-gradient(145deg,#ffffff,#f8fbff);border:1px solid #e7eef9;box-shadow:inset 0 2px 4px rgba(255,255,255,.8)}.dice.rolling{animation:diceShake .12s linear infinite}.status-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.icon-toggle{background:#f6f0ff;color:#6b21a8}.icon-toggle.off{background:#eef2f7;color:#64748b}.token-picks{display:flex;gap:6px;flex-wrap:wrap}.token-pick{background:#f8fafc;border:1px solid #e6edf7;color:#475569}.token-pick.active{background:#ede9fe;color:#5b21b6;border-color:#c4b5fd}.log{height:160px;overflow:auto;background:#0f172a;color:#dbeafe;border-radius:12px;padding:10px;font-size:12px;line-height:1.55}.stat-row{display:grid;grid-template-columns:1fr auto;gap:6px;padding:5px 0;border-bottom:1px solid #edf1f6;font-size:13px}
+  .question-overlay,.modal-overlay,.move-overlay{position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}.move-overlay{z-index:70;background:rgba(15,23,42,.78)}.question-modal,.modal{width:min(760px,100%);background:#fff;border-radius:22px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.3)}.question-modal h2{font-size:29px;margin:0 0 14px}.countdown{font-size:42px;font-weight:900;text-align:center;margin:5px 0 14px}.answer-line{display:flex;gap:8px}.answer-line input{flex:1;border:2px solid var(--line);border-radius:12px;padding:12px;font-size:18px}.result-box{margin-top:14px;padding:12px;border-radius:12px;background:#f8fafc}.choice-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.choice-actions button{flex:1;min-width:180px}
+  .move-summary{width:min(720px,100%);background:#fff;border-radius:26px;padding:34px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35)}.move-summary .move-title{font-size:22px;font-weight:900;color:#667085}.move-summary .move-formula{font-size:34px;font-weight:950;line-height:1.35;margin:14px 0}.move-summary .move-total{font-size:46px;font-weight:950;color:#111827}.map-peek-tools{display:flex;justify-content:flex-end;margin:-6px 0 10px}.map-peek-btn{border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca;border-radius:999px;padding:9px 14px;font-weight:900;cursor:pointer;box-shadow:0 4px 12px rgba(67,56,202,.12)}.map-peek-btn:hover{background:#e0e7ff}.question-map-tools{display:flex;justify-content:flex-end;margin-bottom:4px}.map-peek-return{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:260;display:flex;align-items:center;gap:10px;padding:10px 12px 10px 16px;border-radius:999px;background:rgba(17,24,39,.94);color:#fff;box-shadow:0 12px 36px rgba(0,0,0,.3);font-weight:800}.map-peek-return button{border:0;border-radius:999px;padding:9px 14px;background:#fff;color:#312e81;font-weight:950;cursor:pointer}.map-peek-active .app{pointer-events:none;user-select:none}.map-peek-active .map-peek-return{pointer-events:auto}.map-peek-hint{font-size:13px;opacity:.88}@media(max-width:700px){.map-peek-hint{display:none}.map-peek-return{top:8px;width:calc(100% - 20px);justify-content:space-between}}.chance-title{font-size:26px;font-weight:900;margin-bottom:8px}.chance-desc{font-size:18px;line-height:1.5;padding:14px;background:#f8fafc;border-radius:14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .rank-table{width:100%;border-collapse:collapse}.rank-table th,.rank-table td{padding:9px;border-bottom:1px solid var(--line);text-align:center}.rank-table th{background:#f8fafc}.winner-banner{font-size:25px;font-weight:900;padding:15px;text-align:center;background:#ecfdf3;border-radius:14px;margin-bottom:14px}
+  .victory-wheel{background:conic-gradient(from -60deg,#dbeafe 0deg 120deg,#dcfce7 120deg 240deg,#fef3c7 240deg 360deg)!important;box-shadow:0 12px 30px rgba(79,70,229,.24),0 0 0 3px #6366f1!important}.victory-wheel::after{content:'🏆'!important;border-color:#6366f1!important}.victory-result{min-height:54px;font-size:23px;font-weight:950;color:#4338ca;margin-top:4px}.winner-row{background:#ecfdf5!important;outline:2px solid #22c55e}.criterion-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:950;margin:6px 0}
+  .notice{font-size:12px;color:#667085;margin-top:6px}.badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#eef2f7;font-size:12px;font-weight:800;margin:2px}
+  @media(max-width:1000px){.game-layout{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}.side{order:-1}.board{grid-template-rows:repeat(9,58px)}.app{padding:10px}}
+
+  .fx-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:120}
+  .confetti,.sparkle{position:absolute;pointer-events:none;will-change:transform,opacity}
+  .confetti{width:12px;height:18px;border-radius:4px;animation:confettiBurst var(--dur,1200ms) ease-out forwards}
+  .sparkle{font-size:20px;animation:sparkleBurst var(--dur,1100ms) ease-out forwards;filter:drop-shadow(0 0 8px rgba(255,255,255,.75))}
+  @keyframes diceShake{0%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(-2px,1px) rotate(-5deg)}50%{transform:translate(2px,-1px) rotate(5deg)}75%{transform:translate(-1px,-1px) rotate(-3deg)}100%{transform:translate(0,0) rotate(0deg)}}
+  @keyframes confettiBurst{0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot,360deg)) scale(.75);opacity:0}}
+  @keyframes sparkleBurst{0%{transform:translate(0,0) scale(.4);opacity:0}15%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.2);opacity:0}}
+
+
+  .token.stacked{box-shadow:0 4px 10px rgba(0,0,0,.10),inset 0 2px 5px rgba(255,255,255,.72),4px 4px 0 rgba(255,255,255,.9),7px 7px 0 var(--tokenColor,#f9a8d4)}
+  .token .stack-badge{position:absolute;left:-5px;bottom:-5px;min-width:20px;height:17px;padding:0 4px;border-radius:999px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:2}
+
+  .save-toast{position:fixed;left:50%;top:28px;transform:translate(-50%,-16px);z-index:200;min-width:min(520px,calc(100vw - 32px));max-width:720px;padding:14px 18px;border-radius:16px;background:rgba(17,24,39,.96);color:#fff;box-shadow:0 16px 44px rgba(15,23,42,.28);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;text-align:center;font-weight:800;line-height:1.5}.save-toast.show{opacity:1;transform:translate(-50%,0)}.save-toast .toast-file{display:block;margin-top:3px;font-size:13px;font-weight:700;color:#dbeafe;word-break:break-all}.save-toast.ok{background:rgba(22,101,52,.96)}.save-toast.import{background:rgba(91,33,182,.96)}.save-toast.capture{background:rgba(153,27,27,.97);font-size:18px;border:3px solid #fde047;box-shadow:0 18px 54px rgba(127,29,29,.42),0 0 0 5px rgba(254,240,138,.22)}.save-toast.capture .toast-file{font-size:15px;color:#fef9c3}.save-toast.effect{background:rgba(67,56,202,.97);font-size:18px;border:3px solid #c4b5fd;box-shadow:0 18px 54px rgba(49,46,129,.38),0 0 0 5px rgba(221,214,254,.20);max-width:860px}.save-toast.effect .effect-title{display:block;font-size:20px;font-weight:950;margin-bottom:5px;color:#fff}.save-toast.effect .effect-lines{display:block;font-size:16px;font-weight:850;line-height:1.55;color:#eef2ff;word-break:keep-all}
+
+
+  /* v43: 주관식·객관식·OX 혼합 문제 */
+  .question-type-badge{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:950;white-space:nowrap}.question-type-badge.subjective{background:#eef2ff;color:#3730a3}.question-type-badge.choice{background:#dcfce7;color:#166534}.question-type-badge.ox{background:#fef3c7;color:#92400e}
+  .choice-answers{display:grid;grid-template-columns:1fr;gap:9px;margin:14px 0 8px}.choice-option{width:100%;display:flex;align-items:flex-start;gap:10px;text-align:left;background:#f8fafc;color:#1f2937;border:2px solid #e2e8f0;padding:12px 14px;border-radius:13px;font-size:18px;line-height:1.35;transition:.15s ease}.choice-option:hover{border-color:#a5b4fc;background:#eef2ff}.choice-option.selected{border-color:#4f46e5;background:#eef2ff;box-shadow:0 0 0 3px rgba(99,102,241,.12)}.choice-option.correct-answer{border-color:#22c55e!important;background:#dcfce7!important;color:#166534!important}.choice-option.wrong-answer{border-color:#ef4444!important;background:#fee2e2!important;color:#991b1b!important}.choice-num{flex:0 0 30px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #cbd5e1;font-weight:950}.choice-text{flex:1;padding-top:2px}.choice-submit{margin-top:2px;width:100%;font-size:16px}.question-type-hint{text-align:center;font-size:12px;font-weight:850;color:#64748b;margin-top:-4px;margin-bottom:6px}.q-options-input{min-width:260px}.q-table .type-cell{text-align:center}.study-options{display:grid;gap:7px;margin:12px 0}.study-option{padding:9px 12px;border:1px solid #dbe2ee;border-radius:10px;background:#f8fafc;font-weight:750}.study-type{display:inline-flex;margin-bottom:9px}.island-choice-list{display:grid;gap:8px;margin:10px 0}.island-choice-btn{width:100%;text-align:left;background:#f8fafc;color:#1f2937;border:2px solid #e2e8f0}.island-choice-btn.selected{border-color:#0284c7;background:#e0f2fe}.island-choice-btn.correct-answer{border-color:#22c55e;background:#dcfce7;color:#166534}.island-choice-btn.wrong-answer{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+
+a.secondary{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer;text-decoration:none}
+/* iPad / Safari web-app compatibility */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);}
+button,a,input,select,textarea{-webkit-tap-highlight-color:rgba(0,0,0,0.08);touch-action:manipulation;}
+input,select,textarea{font-size:max(16px,1em);}
+@supports (-webkit-touch-callout:none){
+  .topbar,.progress-panel,.bottom{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <h1 id="appTitle">🎲 45칸 학습 보드게임 v45</h1>
+    <div class="top-actions">
+      <button class="secondary" id="saveBtn">문제 저장</button>
+      <button class="danger" id="resetAllBtn">전체 초기화</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="setup">게임 설정</button>
+    <button class="tab" data-tab="questions">문제 수정</button>
+    <button class="tab" data-tab="study">문제 학습하기</button>
+    <button class="tab" data-tab="game">게임</button>
+  </div>
+
+  <section id="setup" class="tabpage">
+    <div class="panel">
+      <h2>1. 게임 설정</h2>
+      <div class="grid3">
+        <div class="field"><label>팀 수 (1~10)</label><input id="teamCount" type="number" min="1" max="10" value="4"></div>
+        <div class="field"><label>팀당 말 개수 (1~10)</label><input id="pieceCount" type="number" min="1" max="10" value="1"></div>
+        <div class="field"><label>제한 시간 (분)</label><input id="gameMinutes" type="number" min="1" max="120" value="20"></div>
+        <div class="field"><label>기본 문제 제한 시간 (초)</label><input id="questionSeconds" type="number" min="6" max="60" value="10"><div style="font-size:11px;color:#64748b;margin-top:4px">기본 10초 · 시간 변화는 찬스(-5 / -3 / +3 / +5초)로만 적용</div></div>
+        <div class="field"><label>문제 출제 순서</label><select id="questionOrderMode"><option value="random">무작위 (한 바퀴 중복 없음)</option><option value="ordered">입력한 순서대로</option></select></div>
+      </div>
+      <div id="teamsConfig" class="teams-config"></div>
+      <div class="rulebox">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+          <div><span class="badge">이번 판 랜덤 규칙</span><strong id="ruleName">아직 미정</strong><p id="ruleDesc">게임 시작 시 20가지 규칙 중 하나가 자동 선택됩니다.</p></div>
+          <button class="secondary" id="rerollRuleBtn">규칙 다시 뽑기</button>
+        </div>
+      </div>
+      <p class="notice"><b>45칸 보드</b> · 특수칸 <b>+ 5 / - 5 / 찬스 5</b> · 오른쪽 위 <b>무인도</b> · 상대 말과 같은 칸에 도착하면 <b>잡아서 START로 이동</b> · <b>모든 말을 완주한 팀은 즉시 승리</b>하며, 완주팀 없이 게임이 끝나면 <b>정답 수 / <span style="white-space:nowrap">말 1개면 종점 거리·말 2개 이상이면 완주한 말 수</span> / 오답 수</b> 중 하나를 룰렛으로 뽑아 우승팀을 정합니다.</p>
+      <div style="margin-top:14px"><button class="primary" id="startGameBtn">게임 새로 시작</button></div>
+    </div>
+  </section>
+
+  <section id="questions" class="tabpage hidden">
+    <div class="panel">
+      <h2>2. 문제와 정답 수정</h2>
+      <div class="bank-box">
+        <div class="bank-head"><strong>📚 저장된 문제은행</strong><button class="secondary" id="saveAsBankBtn">현재 문제를 새 문제은행으로 저장</button></div>
+        <div class="bank-controls">
+          <select id="questionBankSelect" aria-label="저장된 문제은행 선택"></select>
+          <button class="primary" id="loadBankBtn">선택 문제은행 불러오기</button>
+          <button class="secondary" id="renameBankBtn">이름 변경</button>
+          <button class="danger" id="deleteBankBtn">삭제</button>
+        </div>
+        <div class="bank-meta" id="questionBankMeta">저장된 문제은행을 선택하세요.</div>
+      </div>
+      <div class="question-toolbar">
+        <button class="secondary" id="addQuestionBtn">+ 문제 추가</button>
+        <button class="secondary" id="add5QuestionBtn">+ 5개 추가</button>
+        <a class="secondary" id="downloadQuestionTemplateBtn" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="학습_보드게임_문제입력_템플릿_초보자용.xlsx" role="button">📥 엑셀 문제 양식 다운로드</a>
+        <button class="danger" id="clearQuestionsBtn">전체 삭제</button>
+      </div>
+      <div class="import-box">
+        <div class="field"><label>엑셀에서 문제 불러오기</label><input id="excelFileInput" type="file" multiple accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+        <div class="field"><label>불러오기 방식</label><select id="excelImportMode"><option value="replace">기존 문제를 교체</option><option value="append">기존 문제 뒤에 추가</option></select></div>
+        <button class="primary" id="importExcelBtn">엑셀 파일을 문제은행에 추가</button>
+        <div id="excelImportStatus" class="import-status"></div>
+        <div class="import-help"><b>처음 사용하는 경우:</b> 위의 <b>📥 엑셀 문제 양식 다운로드</b>를 눌러 작성 규칙과 예시가 포함된 템플릿을 사용하세요.<br><b>엑셀 양식:</b> A열=문제, B열=정답, C~G열=보기1~보기5. <b>C~G가 비어 있으면 주관식</b>, O/X 두 보기면 <b>OX</b>, 보기 2~5개면 <b>객관식</b>으로 자동 판별합니다. 주관식 복수 정답은 B열에서 <b>|</b>로 구분하세요.<br>※ 여러 파일을 한 번에 선택할 수 있습니다. 각 파일은 별도의 문제은행으로 저장되며, 첫 번째 워크시트를 읽습니다. .xlsx와 .csv를 지원합니다.</div>
+      </div>
+      <p class="notice">현재 기본 문제: <b>통합사회2 1단원 50문항</b> · 주관식 17 / 객관식 21 / OX 12 · 객관식/OX는 보기 버튼을 선택해 제출합니다.</p>
+      <div style="overflow:auto"><table class="q-table"><thead><tr><th style="width:55px">번호</th><th style="width:80px">유형</th><th>문제</th><th>정답</th><th>보기 (| 로 구분)</th><th style="width:70px">삭제</th></tr></thead><tbody id="questionBody"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="study" class="tabpage hidden">
+    <div class="panel">
+      <h2>3. 문제 학습하기</h2>
+      <div class="study-card">
+        <div id="studyType" class="study-type"></div>
+        <div class="study-q" id="studyQ">문제를 불러오세요.</div>
+        <div class="study-options" id="studyOptions"></div>
+        <div class="study-a hidden" id="studyA"></div>
+        <div class="study-controls">
+          <button class="secondary" id="studyPrev">이전</button>
+          <button class="primary" id="studyReveal">정답 보기</button>
+          <button class="secondary" id="studyNext">다음</button>
+          <button class="secondary" id="studyShuffle">순서 섞기</button>
+        </div>
+        <div class="notice" id="studyIndex"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="game" class="tabpage hidden">
+    <div class="game-layout">
+      <div class="panel board-wrap"><div id="board" class="board"></div></div>
+      <div class="side">
+        <div class="status-card">
+          <h3>게임 시간</h3><div class="timer-big" id="gameTimer">20:00</div>
+          <div class="status-actions"><button class="secondary" id="pauseBtn">일시정지</button><button class="icon-toggle" id="soundToggleBtn">🔊 효과음 ON</button><button class="danger" id="endGameBtn">게임 종료</button></div>
+        </div>
+        <div class="status-card">
+          <h3>현재 차례</h3><div class="turn-name" id="turnName">-</div><div id="turnBuffs" class="notice"></div>
+          <h3 style="margin-top:12px">사용할 말 선택</h3><div class="token-picks" id="tokenPicks"></div>
+          <div class="dice" id="diceFace">⚀</div><button class="primary" style="width:100%" id="rollBtn">주사위 굴리기</button>
+        </div>
+        <div class="status-card"><h3>이번 판 규칙</h3><div id="gameRuleText"></div></div>
+        <div class="status-card"><h3>팀 기록</h3><div id="teamStats"></div></div>
+        <div class="status-card"><h3>게임 로그</h3><div class="log" id="log"></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="questionOverlay" class="question-overlay hidden">
+  <div class="question-modal">
+    <div class="question-map-tools"><button type="button" class="map-peek-btn" data-map-peek>🗺️ 맵 보기</button></div>
+    <div class="countdown" id="countdown">10.0</div>
+    <div id="questionTypeHint" class="question-type-hint"></div>
+    <h2 id="gameQuestion"></h2>
+    <div id="choiceAnswers" class="choice-answers hidden"></div>
+    <div class="answer-line" id="answerLine"><input id="answerInput" autocomplete="off" placeholder="교사가 학생의 답을 입력한 뒤 Enter"><button class="primary" id="submitAnswer">판정</button></div>
+    <div id="answerResult" class="result-box hidden"></div>
+    <div id="correctChoices" class="choice-actions hidden"></div>
+  </div>
+</div>
+
+<div id="moveOverlay" class="move-overlay hidden"><div class="move-summary"><div class="move-title" id="moveTitle">이동 안내</div><div class="move-formula" id="moveFormula"></div><div class="move-total" id="moveTotal"></div></div></div>
+
+<div id="modalOverlay" class="modal-overlay hidden"><div class="modal" id="modalContent"></div></div>
+<div id="mapPeekReturn" class="map-peek-return hidden"><span class="map-peek-hint">🗺️ 현재 말 위치와 특수칸을 확인하세요</span><button type="button" id="mapPeekBack">↩ 선택창으로 돌아가기</button></div>
+<div id="fxLayer" class="fx-layer"></div>
+<div id="saveToast" class="save-toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const APP_VERSION='v49';
+const APP_NAME='45칸 학습 보드게임';
+const AUTO_NOTICE_EXTRA_MS=3000;
+const autoNoticeMs=base=>base+AUTO_NOTICE_EXTRA_MS;
+document.title=`${APP_NAME} ${APP_VERSION}`;
+const appTitle=document.querySelector('#appTitle');
+if(appTitle) appTitle.textContent=`🎲 ${APP_NAME} ${APP_VERSION}`;
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b};
+const diceChars=['⚀','⚁','⚂','⚃','⚄','⚅'];
+const teamColors=['#ef4444','#2563eb','#16a34a','#f97316','#9333ea','#0891b2','#db2777','#4338ca','#ca8a04','#92400e'];
+const teamSymbols=['♥','★','☘','◆','✿','☾','☀','♠','♣','✦'];
+const BOARD_SPACES=45;
+const BOARD_COLS=16;
+const BOARD_ROWS=9;
+const CORNERS=[14,22,37,BOARD_SPACES];
+const ISLAND_POS=22;
+const QUESTION_TEMPLATE_FILENAME='학습_보드게임_문제입력_템플릿_초보자용.xlsx';
+const QUESTION_TEMPLATE_XLSX_B64='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';
+
+let audioCtx=null;
+let sfxEnabled=JSON.parse(localStorage.getItem('eduBoardSfxEnabled') ?? 'true');
+function unlockAudio(){
+ if(!sfxEnabled) return;
+ try{
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+ }catch(e){}
+}
+document.addEventListener('pointerdown',unlockAudio,{passive:true});
+const SFX_VOLUME_MULTIPLIER=4;
+function tone(freq,dur=.12,type='sine',vol=.03,when=0){
+ if(!sfxEnabled) return;
+ unlockAudio();
+ if(!audioCtx||audioCtx.state!=='running') return;
+ const now=audioCtx.currentTime+when;
+ const o=audioCtx.createOscillator();
+ const g=audioCtx.createGain();
+ o.type=type;
+ o.frequency.setValueAtTime(freq,now);
+ const finalVol=Math.min(.24,Math.max(.001,vol*SFX_VOLUME_MULTIPLIER));
+ g.gain.setValueAtTime(0.0001,now);
+ g.gain.exponentialRampToValueAtTime(finalVol,now+0.01);
+ g.gain.exponentialRampToValueAtTime(0.0001,now+dur);
+ o.connect(g); g.connect(audioCtx.destination);
+ o.start(now); o.stop(now+dur+0.02);
+}
+function playSfx(name){
+ const v=rnd(0,2);
+ switch(name){
+  case 'turn':
+   tone(440,.05,'triangle',.022); tone(554,.06,'triangle',.021,.05); tone(659,.09,'sine',.020,.11); break;
+  case 'dice':
+   tone(170+rnd(0,35),.035,'square',.016); tone(240+rnd(0,45),.04,'square',.017,.04); tone(330+rnd(0,55),.045,'square',.017,.085); tone(494,.10,'triangle',.022,.14); break;
+  case 'question':
+   tone(523,.055,'sine',.023); tone(659,.07,'sine',.022,.06); tone(784,.11,'triangle',.020,.13); break;
+  case 'tick':
+   tone(930+rnd(-35,35),.032,'square',.012); break;
+  case 'timeout':
+   tone(294,.09,'sawtooth',.023); tone(233,.11,'sawtooth',.024,.09); tone(175,.18,'sawtooth',.023,.20); break;
+  case 'correct':
+   if(v===0){tone(523,.06,'triangle',.030);tone(659,.06,'triangle',.029,.06);tone(784,.07,'triangle',.029,.12);tone(1047,.15,'sine',.027,.20)}
+   else if(v===1){tone(659,.05,'triangle',.029);tone(784,.06,'triangle',.028,.055);tone(988,.08,'triangle',.027,.12);tone(1318,.14,'sine',.024,.21)}
+   else {tone(587,.055,'triangle',.029);tone(740,.055,'triangle',.028,.055);tone(880,.075,'triangle',.027,.12);tone(1175,.14,'sine',.024,.21)}
+   break;
+  case 'wrong':
+   if(v===0){tone(392,.065,'sawtooth',.026);tone(311,.10,'sawtooth',.027,.07);tone(220,.15,'sine',.023,.18)}
+   else if(v===1){tone(349,.06,'square',.023);tone(294,.08,'square',.024,.07);tone(196,.16,'sawtooth',.022,.16)}
+   else {tone(440,.05,'sawtooth',.022);tone(330,.09,'sawtooth',.025,.06);tone(247,.15,'sine',.023,.16)}
+   break;
+  case 'chance':
+   tone(784,.045,'triangle',.024);tone(988,.05,'triangle',.025,.05);tone(1175,.055,'triangle',.024,.105);tone(1568,.13,'sine',.021,.18);break;
+  case 'special':
+   if(v===0){tone(698,.045,'square',.020);tone(784,.05,'triangle',.022,.05);tone(932,.09,'triangle',.022,.11)}
+   else if(v===1){tone(622,.045,'square',.020);tone(740,.05,'triangle',.022,.05);tone(880,.09,'triangle',.022,.11)}
+   else {tone(587,.045,'square',.020);tone(698,.05,'triangle',.022,.05);tone(831,.09,'triangle',.022,.11)}
+   break;
+  case 'skip':
+   tone(330,.05,'sine',.020);tone(277,.06,'sine',.020,.055);tone(220,.10,'sine',.019,.12);break;
+  case 'capture':
+   tone(196,.045,'square',.028);tone(147,.06,'sawtooth',.027,.045);tone(392,.055,'square',.025,.11);tone(784,.12,'triangle',.024,.17);break;
+  case 'stack':
+   tone(440,.045,'triangle',.022);tone(554,.05,'triangle',.022,.05);tone(659,.09,'sine',.021,.105);break;
+  case 'island':
+   tone(392,.08,'sine',.021);tone(330,.10,'sine',.021,.09);tone(262,.12,'triangle',.022,.20);tone(196,.16,'sine',.019,.33);break;
+  case 'roulette':
+   for(let i=0;i<9;i++)tone(420+i*38,.025,'square',.012,i*.075);break;
+  case 'rouletteStop':
+   tone(784,.045,'triangle',.024);tone(988,.055,'triangle',.025,.05);tone(1318,.13,'sine',.023,.12);break;
+  case 'escape':
+   tone(523,.055,'triangle',.030);tone(659,.055,'triangle',.029,.055);tone(784,.06,'triangle',.029,.11);tone(1047,.07,'triangle',.028,.17);tone(1318,.18,'sine',.025,.25);break;
+  case 'escapeFail':
+   tone(330,.07,'sawtooth',.024);tone(262,.09,'sawtooth',.024,.08);tone(196,.17,'sine',.022,.18);break;
+  case 'finish':
+   tone(523,.07,'triangle',.032);tone(659,.07,'triangle',.031,.07);tone(784,.075,'triangle',.031,.14);tone(988,.08,'triangle',.030,.22);tone(1318,.20,'sine',.028,.32);break;
+ }
+}
+function playMoveStep(dir,last=false){
+ tone(dir>0?660:260,.03,'triangle',last?.018:.010);
+ if(last) tone(dir>0?880:180,.06,'triangle',.018,.03);
+}
+function updateSoundToggleUI(){const btn=$('#soundToggleBtn');if(!btn)return;btn.textContent=sfxEnabled?'🔊 효과음 ON':'🔇 효과음 OFF';btn.classList.toggle('off',!sfxEnabled)}
+function setSfxEnabled(v){sfxEnabled=!!v;localStorage.setItem('eduBoardSfxEnabled',JSON.stringify(sfxEnabled));updateSoundToggleUI();if(sfxEnabled) unlockAudio();}
+function spawnConfetti(count=42){const layer=$('#fxLayer');if(!layer)return;const colors=['#f9a8d4','#93c5fd','#86efac','#fde68a','#c4b5fd','#fdba74','#fbcfe8','#a5f3fc'];for(let i=0;i<count;i++){const el=document.createElement('span');el.className='confetti';el.style.background=colors[rnd(0,colors.length-1)];el.style.left=`${45+rnd(-10,10)}%`;el.style.top=`${38+rnd(-4,6)}%`;el.style.setProperty('--dx',`${rnd(-46,46)}vw`);el.style.setProperty('--dy',`${rnd(18,52)}vh`);el.style.setProperty('--rot',`${rnd(-540,540)}deg`);el.style.setProperty('--dur',`${rnd(900,1500)}ms`);layer.appendChild(el);setTimeout(()=>el.remove(),1650)}}
+function spawnSparkles(count=28){const layer=$('#fxLayer');if(!layer)return;const chars=['✨','✦','✧','★','✩'];const colors=['#f9a8d4','#93c5fd','#fde68a','#c4b5fd','#fbcfe8','#ffffff'];for(let i=0;i<count;i++){const el=document.createElement('span');el.className='sparkle';el.textContent=chars[rnd(0,chars.length-1)];el.style.color=colors[rnd(0,colors.length-1)];el.style.left=`${50+rnd(-10,10)}%`;el.style.top=`${42+rnd(-6,6)}%`;el.style.setProperty('--dx',`${rnd(-28,28)}vw`);el.style.setProperty('--dy',`${rnd(-20,18)}vh`);el.style.setProperty('--dur',`${rnd(700,1200)}ms`);layer.appendChild(el);setTimeout(()=>el.remove(),1300)}}
+async function animateDiceRoll(rolls){const faces=[$('#diceFace'),$('#centerDiceFace')].filter(Boolean);if(!faces.length)return;faces.forEach(f=>f.classList.add('rolling'));const frames=11;for(let i=0;i<frames;i++){const temp=[...Array(rolls.length)].map(()=>diceChars[rnd(1,6)-1]).join(' ');faces.forEach(f=>f.textContent=temp);await sleep(85)}const finalText=rolls.map(x=>diceChars[x-1]).join(' ');faces.forEach(f=>{f.textContent=finalText;f.classList.remove('rolling')});await sleep(180)}
+
+const RULES=[
+ {name:'균형 전진', bonus:3, penalty:2, desc:'정답: 주사위 눈 + (보너스 +3칸 또는 찬스) / 오답: -2칸'},
+ {name:'공격 전진', bonus:5, penalty:2, desc:'정답: 주사위 눈 + (보너스 +5칸 또는 찬스) / 오답: -2칸'},
+ {name:'고위험 질주', bonus:6, penalty:4, desc:'정답: 주사위 눈 + (보너스 +6칸 또는 찬스) / 오답: -4칸'},
+ {name:'안정 진행', bonus:4, penalty:1, desc:'정답: 주사위 눈 + (보너스 +4칸 또는 찬스) / 오답: -1칸'},
+ {name:'역전의 판', bonus:3, penalty:3, doubleChance:true, desc:'정답: 주사위 눈 + (보너스 +3칸 또는 찬스 2장 중 1장) / 오답: -3칸'},
+ {name:'가벼운 발걸음', bonus:2, penalty:1, desc:'정답: 주사위 눈 + (보너스 +2칸 또는 찬스) / 오답: -1칸'},
+ {name:'대담한 질주', bonus:6, penalty:3, desc:'정답: 주사위 눈 + (보너스 +6칸 또는 찬스) / 오답: -3칸'},
+ {name:'신중한 전진', bonus:3, penalty:1, desc:'정답: 주사위 눈 + (보너스 +3칸 또는 찬스) / 오답: -1칸'},
+ {name:'압박의 판', bonus:5, penalty:4, desc:'정답: 주사위 눈 + (보너스 +5칸 또는 찬스) / 오답: -4칸'},
+ {name:'찬스 집중', bonus:2, penalty:2, doubleChance:true, desc:'정답: 주사위 눈 + (보너스 +2칸 또는 찬스 2장 중 1장) / 오답: -2칸'},
+ {name:'황금 선택', bonus:4, penalty:2, doubleChance:true, desc:'정답: 주사위 눈 + (보너스 +4칸 또는 찬스 2장 중 1장) / 오답: -2칸'},
+ {name:'초고속 전진', bonus:6, penalty:2, desc:'정답: 주사위 눈 + (보너스 +6칸 또는 찬스) / 오답: -2칸'},
+ {name:'행운의 판', bonus:5, penalty:1, desc:'정답: 주사위 눈 + (보너스 +5칸 또는 찬스) / 오답: -1칸'},
+ {name:'정면 승부', bonus:4, penalty:4, desc:'정답: 주사위 눈 + (보너스 +4칸 또는 찬스) / 오답: -4칸'},
+ {name:'조심조심', bonus:2, penalty:3, desc:'정답: 주사위 눈 + (보너스 +2칸 또는 찬스) / 오답: -3칸'},
+ {name:'대박 찬스', bonus:5, penalty:3, doubleChance:true, desc:'정답: 주사위 눈 + (보너스 +5칸 또는 찬스 2장 중 1장) / 오답: -3칸'},
+ {name:'위기와 기회', bonus:3, penalty:4, doubleChance:true, desc:'정답: 주사위 눈 + (보너스 +3칸 또는 찬스 2장 중 1장) / 오답: -4칸'},
+ {name:'꾸준한 추격', bonus:4, penalty:3, desc:'정답: 주사위 눈 + (보너스 +4칸 또는 찬스) / 오답: -3칸'},
+ {name:'모험의 판', bonus:2, penalty:4, doubleChance:true, desc:'정답: 주사위 눈 + (보너스 +2칸 또는 찬스 2장 중 1장) / 오답: -4칸'},
+ {name:'행운 폭주', bonus:6, penalty:1, desc:'정답: 주사위 눈 + (보너스 +6칸 또는 찬스) / 오답: -1칸'}
+];
+
+const QUESTION_STORAGE_KEY='eduBoardQuestionsMixedV43';
+const QUESTION_FILE_KEY='eduBoardQuestionSourceFileV43';
+const QUESTION_BANKS_KEY='eduBoardQuestionBanksV49';
+const ACTIVE_BANK_KEY='eduBoardActiveQuestionBankV49';
+const BUILTIN_BANK_ID='builtin-social2-unit1';
+const BUNDLED_QUESTION_FILE='통합사회2_1단원_학습보드게임_다양한유형_50문항(1).xlsx';
+const defaultQuestions=[{"id":100001,"q":"인간이라는 이유만으로 누구나 가지는 권리는?","a":"인권|기본적 인권|인간의 권리","options":[],"type":"subjective"},{"id":100002,"q":"국적·성별·종교와 관계없이 모든 인간이 인권을 가진다는 특징은?","a":"보편성","options":["천부성","보편성","불가침성","항구성"],"type":"choice"},{"id":100003,"q":"인권은 국가가 법으로 인정해 줄 때 비로소 생긴다.","a":"X","options":["O","X"],"type":"ox"},{"id":100004,"q":"인권의 바탕이 되는 인간의 절대적 가치는?","a":"인간 존엄성|인간의 존엄성|인간으로서의 존엄과 가치|인간의 존엄과 가치|존엄성","options":[],"type":"subjective"},{"id":100005,"q":"인권을 함부로 빼앗거나 다른 사람에게 양도할 수 없다는 특징은?","a":"불가침성","options":["보편성","항구성","불가침성","천부성"],"type":"choice"},{"id":100006,"q":"인권의 항구성은 특정 나이나 시기에만 인권이 인정된다는 뜻이다.","a":"X","options":["O","X"],"type":"ox"},{"id":100007,"q":"영국 명예혁명 뒤 1689년에 승인된 문서는?","a":"권리 장전","options":["독립 선언","권리 장전","세계 인권 선언","인간과 시민의 권리 선언"],"type":"choice"},{"id":100008,"q":"영국 노동자들이 참정권 확대를 요구한 운동은?","a":"차티스트 운동|차티스트운동|차티즘|차티즘 운동","options":[],"type":"subjective"},{"id":100009,"q":"시민 혁명 직후 모든 성인 남녀에게 동등한 참정권이 보장되었다.","a":"X","options":["O","X"],"type":"ox"},{"id":100010,"q":"산업 혁명 이후 인간다운 생활을 실질적으로 보장하기 위해 강조된 권리는?","a":"사회권","options":["참정권","연대권","사회권","자유권"],"type":"choice"},{"id":100011,"q":"1948년 UN 총회가 채택한 대표적 인권 선언은?","a":"세계 인권 선언|세계인권선언|UDHR","options":[],"type":"subjective"},{"id":100012,"q":"전쟁·재난·기후위기처럼 한 국가만으로 해결하기 어려운 문제와 가장 관련 깊은 권리는?","a":"연대권","options":["자유권","사회권","연대권","청구권"],"type":"choice"},{"id":100013,"q":"2세대 인권이 등장하면서 1세대 인권은 더 이상 중요하지 않게 되었다.","a":"X","options":["O","X"],"type":"ox"},{"id":100014,"q":"다음 중 인권 확장의 역사적 순서가 옳은 것은?","a":"권리 장전 → 독립 선언 → 인간과 시민의 권리 선언 → 바이마르 헌법 → 세계 인권 선언","options":["권리 장전 → 독립 선언 → 인간과 시민의 권리 선언 → 바이마르 헌법 → 세계 인권 선언","독립 선언 → 권리 장전 → 바이마르 헌법 → 인간과 시민의 권리 선언 → 세계 인권 선언","인간과 시민의 권리 선언 → 독립 선언 → 권리 장전 → 세계 인권 선언 → 바이마르 헌법","권리 장전 → 인간과 시민의 권리 선언 → 독립 선언 → 세계 인권 선언 → 바이마르 헌법"],"type":"choice"},{"id":100015,"q":"침수 위험이 크고 환기·채광이 어려운 주택 문제와 가장 관련 깊은 권리는?","a":"주거권","options":["문화권","주거권","안전권","환경권"],"type":"choice"},{"id":100016,"q":"안전권은 사고가 발생한 뒤 피해를 보상하는 것만으로 충분히 보장된다.","a":"X","options":["O","X"],"type":"ox"},{"id":100017,"q":"건강하고 쾌적한 환경에서 생활할 권리는?","a":"환경권|환경에 관한 권리","options":[],"type":"subjective"},{"id":100018,"q":"지역이나 경제적 조건 때문에 문화예술을 누릴 기회가 부족한 문제와 가장 관련 깊은 권리는?","a":"문화권","options":["주거권","환경권","문화권","안전권"],"type":"choice"},{"id":100019,"q":"온라인에 남은 자신의 개인정보나 게시물의 삭제를 요구하는 권리는?","a":"잊힐 권리|잊힐권리|삭제권","options":[],"type":"subjective"},{"id":100020,"q":"환경권은 국민이 환경을 누릴 권리만 의미하며 환경보전을 위한 노력과는 관계없다.","a":"X","options":["O","X"],"type":"ox"},{"id":100021,"q":"국민의 기본권을 보장하는 국가의 최고법은?","a":"헌법|대한민국 헌법|대한민국헌법|최고법","options":[],"type":"subjective"},{"id":100022,"q":"국가가 특정 종교를 믿도록 강제할 때 가장 직접적으로 침해되는 기본권은?","a":"자유권","options":["평등권","사회권","자유권","청구권"],"type":"choice"},{"id":100023,"q":"평등권은 어떠한 경우에도 모든 사람을 완전히 똑같이 대우해야 한다는 뜻이다.","a":"X","options":["O","X"],"type":"ox"},{"id":100024,"q":"국민이 선거나 국민투표 등을 통해 국가 의사 결정에 참여하는 권리는?","a":"참정권|정치 참여권|정치참여권","options":[],"type":"subjective"},{"id":100025,"q":"국가에 인간다운 생활을 위한 사회보장을 요구하는 것과 가장 관련 깊은 기본권은?","a":"사회권","options":["자유권","참정권","사회권","청구권"],"type":"choice"},{"id":100026,"q":"기본권을 침해받았을 때 국가에 구제를 요구할 수 있는 권리는?","a":"청구권|권리구제 청구권|기본권 구제 청구권","options":[],"type":"subjective"},{"id":100027,"q":"기본권을 법률로 제한하는 경우에는 권리의 본질적인 내용까지 침해해도 된다.","a":"X","options":["O","X"],"type":"ox"},{"id":100028,"q":"국가의 주권이 국민에게 있다는 원리는?","a":"국민 주권|국민주권|국민 주권의 원리|주권재민","options":[],"type":"subjective"},{"id":100029,"q":"국가 권력도 법에 근거하여 행사되어야 한다는 원리는?","a":"법치주의","options":["국민 주권","법치주의","권력 분립","복수 정당제"],"type":"choice"},{"id":100030,"q":"권력 분립은 국가기관들이 서로 아무 관계도 갖지 않도록 완전히 분리하는 제도이다.","a":"X","options":["O","X"],"type":"ox"},{"id":100031,"q":"다음 중 국가기관과 담당 권력의 연결이 옳은 것은?","a":"국회 - 입법권","options":["국회 - 입법권","정부 - 사법권","법원 - 행정권","헌법재판소 - 입법권"],"type":"choice"},{"id":100032,"q":"둘 이상의 정당이 자유롭게 활동할 수 있도록 보장하는 제도는?","a":"복수 정당제|복수정당제|복수 정당 제도|다당제","options":[],"type":"subjective"},{"id":100033,"q":"공권력의 행사 또는 불행사로 기본권을 침해받은 국민이 헌법재판소에 구제를 청구하는 제도는?","a":"헌법 소원","options":["위헌 법률 심판","헌법 소원","국정 감사","국민투표"],"type":"choice"},{"id":100034,"q":"시민이 정치 과정이나 공공문제 해결에 적극적으로 참여하는 것을 무엇이라 하는가?","a":"시민 참여|시민참여|정치 참여|정치참여","options":[],"type":"subjective"},{"id":100035,"q":"정치적 견해를 같이하는 사람들이 정책 실현을 위해 조직한 단체는?","a":"정당","options":["정당","이익 집단","시민 단체","국제기구"],"type":"choice"},{"id":100036,"q":"이익 집단은 사회 전체의 공익만을 추구하기 위해 만들어진 조직이다.","a":"X","options":["O","X"],"type":"ox"},{"id":100037,"q":"환경 보호처럼 사회 전체의 공익을 위해 시민이 자발적으로 만든 조직은?","a":"시민 단체","options":["정당","이익 집단","시민 단체","정부 기관"],"type":"choice"},{"id":100038,"q":"정의롭지 못한 법이나 정책을 바로잡기 위해 의도적으로 법을 위반하는 행위는?","a":"시민불복종|시민 불복종|시민불복종 운동|시민 불복종 운동","options":[],"type":"subjective"},{"id":100039,"q":"다음 중 시민불복종의 정당화 조건으로 적절하지 않은 것은?","a":"폭력적인 방법 사용","options":["목적의 정당성","비폭력적 방법","최후의 수단","폭력적인 방법 사용","처벌 감수"],"type":"choice"},{"id":100040,"q":"다음 중 사회적 소수자에 대한 설명으로 가장 적절한 것은?","a":"수적으로 적지 않아도 차별과 불리한 처우를 받는 집단이 될 수 있다","options":["반드시 사회에서 인구가 가장 적은 집단이다","수적으로 적지 않아도 차별과 불리한 처우를 받는 집단이 될 수 있다","경제적으로 어려운 사람만을 뜻한다","개인의 선택으로만 만들어지는 집단이다"],"type":"choice"},{"id":100041,"q":"일상 속 인권 문제를 인식하고 자신의 행동이 타인에게 미칠 영향을 성찰하는 태도는?","a":"인권 감수성|인권감수성|인권에 대한 감수성","options":[],"type":"subjective"},{"id":100042,"q":"사회적 소수자는 반드시 수적으로 적은 집단만을 의미한다.","a":"X","options":["O","X"],"type":"ox"},{"id":100043,"q":"17세 청소년의 근로계약에 대한 설명으로 옳은 것은?","a":"청소년 본인이 직접 근로계약을 체결한다","options":["부모가 반드시 대신 근로계약을 체결한다","청소년 본인이 직접 근로계약을 체결한다","근로계약서를 작성하지 않아도 된다","임금은 반드시 부모에게 지급한다"],"type":"choice"},{"id":100044,"q":"15세 이상 18세 미만 근로자의 원칙적인 하루 근로시간 상한은?","a":"7시간|7 시간|1일 7시간|하루 7시간|1일7시간|하루7시간","options":[],"type":"subjective"},{"id":100045,"q":"청소년 근로자가 임금 체불 등 노동관계 문제에 대해 도움을 요청할 수 있는 대표 국가기관은?","a":"고용노동부","options":["고용노동부","기상청","국세청","문화체육관광부"],"type":"choice"},{"id":100046,"q":"세계의 기아 수준을 파악하는 대표적인 인권지수는?","a":"세계 기아 지수|세계기아지수|GHI|기아 지수|기아지수","options":[],"type":"subjective"},{"id":100047,"q":"남녀의 경제 참여·교육·정치적 권한 등의 격차를 살펴보는 대표 지수는?","a":"성 격차 지수","options":["세계 기아 지수","성 격차 지수","국제 아동 권리 지표","인간 개발 지수"],"type":"choice"},{"id":100048,"q":"인권지수 하나의 순위만 보면 한 국가의 전체 인권 상황을 완전히 판단할 수 있다.","a":"X","options":["O","X"],"type":"ox"},{"id":100049,"q":"국제 아동 권리 지표가 살펴보는 내용으로 가장 거리가 먼 것은?","a":"주식시장 수익률","options":["생존할 권리","건강할 권리","교육받을 권리","보호받을 권리","주식시장 수익률"],"type":"choice"},{"id":100050,"q":"스스로를 지구 공동체의 구성원으로 여기고 세계 문제에 책임감을 갖는 태도는?","a":"세계시민 의식|세계 시민 의식|세계시민의식|세계 시민의식|세계시민성","options":[],"type":"subjective"}];
+
+let questions=loadQuestions();
+let lastImportedFileName=localStorage.getItem(QUESTION_FILE_KEY)||BUNDLED_QUESTION_FILE;
+let toastTimer=null;
+let studyOrder=[],studyPos=0;
+let G=null;
+
+function questionTypeOf(x){const opts=(x?.options||[]).map(v=>String(v).trim()).filter(Boolean);if(opts.length<2)return 'subjective';const normalized=opts.map(v=>v.toUpperCase());if(opts.length===2&&normalized.includes('O')&&normalized.includes('X'))return 'ox';return 'choice'}
+function normalizeQuestionRecord(x,i=0){const options=Array.isArray(x?.options)?x.options.map(v=>String(v??'').trim()).filter(Boolean):[];const q={id:x?.id??(Date.now()+i+Math.random()),q:String(x?.q??''),a:String(x?.a??''),options};q.type=questionTypeOf(q);return q}
+function cloneDefaultQuestions(){return defaultQuestions.map((x,i)=>normalizeQuestionRecord({...x,options:[...(x.options||[])]},i))}
+function loadQuestions(){try{const raw=localStorage.getItem(QUESTION_STORAGE_KEY);if(raw==null)return cloneDefaultQuestions();const v=JSON.parse(raw);return Array.isArray(v)?v.map(normalizeQuestionRecord):cloneDefaultQuestions()}catch(e){return cloneDefaultQuestions()}}
+function cloneQuestionList(list){return (list||[]).map((x,i)=>normalizeQuestionRecord({...x,options:[...(x.options||[])]},i))}
+function loadUserQuestionBanks(){try{const raw=localStorage.getItem(QUESTION_BANKS_KEY);const v=raw?JSON.parse(raw):[];return Array.isArray(v)?v.map(b=>({id:String(b.id||''),name:String(b.name||'문제은행'),fileName:String(b.fileName||''),createdAt:Number(b.createdAt||Date.now()),questions:cloneQuestionList(b.questions||[])})).filter(b=>b.id&&b.questions.length):[]}catch(e){return []}}
+let userQuestionBanks=loadUserQuestionBanks();
+let activeBankId=localStorage.getItem(ACTIVE_BANK_KEY)||'';
+function builtinQuestionBank(){return {id:BUILTIN_BANK_ID,name:'통합사회2 1단원 50문항',fileName:BUNDLED_QUESTION_FILE,createdAt:0,builtin:true,questions:cloneDefaultQuestions()}}
+function allQuestionBanks(){return [builtinQuestionBank(),...userQuestionBanks]}
+function saveUserQuestionBanks(){try{localStorage.setItem(QUESTION_BANKS_KEY,JSON.stringify(userQuestionBanks));return true}catch(e){alert('문제은행 저장 공간이 부족합니다. 사용하지 않는 문제은행을 삭제한 뒤 다시 시도해 주세요.');return false}}
+function bankById(id){return allQuestionBanks().find(b=>b.id===id)||null}
+function uniqueBankName(base){let name=(base||'새 문제은행').replace(/\.(xlsx|csv)$/i,'').trim()||'새 문제은행';const names=new Set(allQuestionBanks().map(b=>b.name));if(!names.has(name))return name;let n=2;while(names.has(`${name} (${n})`))n++;return `${name} (${n})`}
+function questionCounts(list){return {total:(list||[]).length,subjective:(list||[]).filter(x=>questionTypeOf(x)==='subjective').length,choice:(list||[]).filter(x=>questionTypeOf(x)==='choice').length,ox:(list||[]).filter(x=>questionTypeOf(x)==='ox').length}}
+function renderQuestionBanks(){const sel=$('#questionBankSelect'),meta=$('#questionBankMeta');if(!sel||!meta)return;const banks=allQuestionBanks();const prev=sel.value||activeBankId;sel.innerHTML='';banks.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=`${b.builtin?'★ 기본 · ':''}${b.name}`;sel.appendChild(o)});if(banks.some(b=>b.id===prev))sel.value=prev;else sel.value=banks[0]?.id||'';const b=bankById(sel.value);if(b){const c=questionCounts(b.questions);meta.className='bank-meta';meta.textContent=`${b.fileName?`📄 ${b.fileName} · `:''}총 ${c.total}문항 (주관식 ${c.subjective} / 객관식 ${c.choice} / OX ${c.ox})${b.builtin?' · 기본 문제은행은 삭제할 수 없습니다.':''}`;$('#deleteBankBtn').disabled=!!b.builtin;$('#renameBankBtn').disabled=!!b.builtin}else{meta.className='bank-meta bank-empty';meta.textContent='저장된 문제은행이 없습니다.'}}
+function activateQuestionBank(id,show=true){const b=bankById(id);if(!b)return false;questions=cloneQuestionList(b.questions);activeBankId=b.id;localStorage.setItem(ACTIVE_BANK_KEY,activeBankId);lastImportedFileName=b.fileName||b.name;localStorage.setItem(QUESTION_FILE_KEY,lastImportedFileName);saveQuestions(false);renderQuestions();resetStudy();renderQuestionBanks();if(show)showToast(`📚 문제은행 불러오기 · ${questions.length}개`,b.name,'import',4200);return true}
+function addQuestionBank(name,fileName,list){const bank={id:`bank-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,name:uniqueBankName(name||fileName),fileName:fileName||'',createdAt:Date.now(),questions:cloneQuestionList(list)};userQuestionBanks.push(bank);if(!saveUserQuestionBanks()){userQuestionBanks.pop();return null}renderQuestionBanks();return bank}
+
+function showToast(message,fileName='',type='ok',duration=3200){const el=$('#saveToast');if(!el)return;clearTimeout(toastTimer);el.className=`save-toast ${type}`;el.innerHTML=`<span>${escapeHtml(message)}</span>${fileName?`<span class="toast-file">📄 ${escapeHtml(fileName)}</span>`:''}`;requestAnimationFrame(()=>el.classList.add('show'));toastTimer=setTimeout(()=>el.classList.remove('show'),duration)}
+function currentTurnChanceEffectLines(t){
+ const lines=[];
+ if(!t)return lines;
+ if(t.doubleDiceNext)lines.push('🎲 이번 주사위 2개');
+ if(t.diceBonusNext)lines.push(`🎲 이번 주사위 +${t.diceBonusNext}`);
+ if(t.diceFloorNext)lines.push(`🎲 이번 주사위 최소 ${t.diceFloorNext}`);
+ if(t.dicePenaltyNext)lines.push(`🎲 이번 주사위 -${t.dicePenaltyNext}`);
+ if(t.diceCeilNext)lines.push(`🎲 이번 주사위 최대 ${t.diceCeilNext}`);
+ if(t.questionTimeDeltaNext)lines.push(`⏱ 이번 문제 ${t.questionTimeDeltaNext>0?'+':''}${t.questionTimeDeltaNext}초`);
+ if(t.doubleBonus)lines.push('✨ 정답 시 보너스 ×2');
+ if(t.blockBonus)lines.push('🚫 정답 보너스 이동 봉인');
+ if(t.blockChance)lines.push('🚫 정답 시 찬스 선택 봉인');
+ if(t.shieldPenalty)lines.push('🛡 오답 페널티 1회 방어');
+ if(t.shieldBack)lines.push('🛡 뒤로 이동 1회 방어');
+ if(t.immuneSkip)lines.push('🛡 쉬기 효과 1회 면제');
+ return lines;
+}
+async function showCurrentTurnChanceEffectNotice(t){
+ const lines=currentTurnChanceEffectLines(t);
+ if(!lines.length)return false;
+ const el=$('#saveToast');
+ if(!el)return false;
+ clearTimeout(toastTimer);
+ el.className='save-toast effect';
+ el.innerHTML=`<span class="effect-title">🎁 이번 턴에 적용될 수 있는 보유 효과</span><span class="effect-lines">${lines.map(escapeHtml).join(' · ')}</span>`;
+ requestAnimationFrame(()=>el.classList.add('show'));
+ await sleep(4000);
+ el.classList.remove('show');
+ return true;
+}
+function saveQuestions(showNotice=false){localStorage.setItem(QUESTION_STORAGE_KEY,JSON.stringify(questions));const count=questions.filter(x=>x.q.trim()&&x.a.trim()).length;if(lastImportedFileName)localStorage.setItem(QUESTION_FILE_KEY,lastImportedFileName);const idx=userQuestionBanks.findIndex(b=>b.id===activeBankId);if(idx>=0){userQuestionBanks[idx].questions=cloneQuestionList(questions);saveUserQuestionBanks()}if(showNotice)showToast(`✅ 문제 저장 완료 · 총 ${count}개`,activeBankId&&bankById(activeBankId)?.name||lastImportedFileName,'ok');flash('문제를 저장했습니다.')}
+function loadQuestionMode(){const v=localStorage.getItem('eduBoardQuestionMode');return v==='ordered'?'ordered':'random'}
+function saveQuestionMode(v){localStorage.setItem('eduBoardQuestionMode',v==='ordered'?'ordered':'random')}
+function flash(msg){console.log(msg)}
+
+function switchTab(id){$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));$$('.tabpage').forEach(p=>p.classList.toggle('hidden',p.id!==id));if(id==='study') resetStudy();if(id==='game'&&G) renderAll()}
+$$('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+$('#questionOrderMode').value=loadQuestionMode();
+$('#questionOrderMode').onchange=()=>{saveQuestionMode($('#questionOrderMode').value);if(!$('#study').classList.contains('hidden'))resetStudy()};
+
+function renderTeamConfig(){const n=clamp(parseInt($('#teamCount').value)||1,1,10);const box=$('#teamsConfig');const old=[...box.querySelectorAll('.team-config')].map(x=>({name:x.querySelector('.tname')?.value||''}));box.innerHTML='';for(let i=0;i<n;i++){const d=document.createElement('div');d.className='team-config';const symbol=teamSymbols[i%teamSymbols.length],color=teamColors[i%teamColors.length];d.innerHTML=`<div class="field"><label>${i+1}팀 이름 <span class="team-preview-caption">게임 말 ${symbol}</span></label><div class="team-name-row"><span class="team-preview-token" style="--tokenColor:${color}" title="${i+1}팀 게임 말: ${symbol}"><span class="preview-shape">${symbol}</span></span><input class="tname" value="${old[i]?.name||`${i+1}팀`}"></div></div>`;box.appendChild(d)}}
+$('#teamCount').oninput=renderTeamConfig;renderTeamConfig();
+
+function getSetupQuestionSeconds(){return clamp(parseInt($('#questionSeconds')?.value)||10,6,60)}
+function getRuleQuestionSeconds(base,rule){return Math.max(1,Number(base||10))}
+function ruleTimeText(rule,base){return `문제 제한: ${Math.max(1,Number(base||10))}초 (시간 변화는 찬스에만 적용)`}
+function ruleDisplayDesc(rule,base){return `${rule.desc} / ${ruleTimeText(rule,base)}`}
+function readSetupConfigs(){const pieces=clamp(parseInt($('#pieceCount')?.value)||1,1,10);return [...document.querySelectorAll('.team-config')].map((d,i)=>({name:d.querySelector('.tname')?.value.trim()||`${i+1}팀`,pieces}))}
+function ruleIsUsableForConfig(rule,configs){
+ // 현재 20개 규칙은 모두 팀 수·말 수와 관계없이 실행 가능하다.
+ // 이후 특정 팀/말 수를 요구하는 규칙이 추가되면 requiresTeams / requiresPieces 속성으로 자동 제외된다.
+ const teamCount=configs.length,maxPieces=Math.max(0,...configs.map(c=>c.pieces));
+ if(rule.requiresTeams&&teamCount<rule.requiresTeams)return false;
+ if(rule.requiresPieces&&maxPieces<rule.requiresPieces)return false;
+ return true
+}
+function getEligibleRulesForConfig(configs){const pool=RULES.filter(r=>ruleIsUsableForConfig(r,configs));return pool.length?pool:RULES}
+function randomEligibleRule(){const pool=getEligibleRulesForConfig(readSetupConfigs());return pool[rnd(0,pool.length-1)]}
+let previewRule=randomEligibleRule();
+function renderRulePreview(){const base=getSetupQuestionSeconds();$('#ruleName').textContent=previewRule.name;$('#ruleDesc').textContent=ruleDisplayDesc(previewRule,base)}
+$('#rerollRuleBtn').onclick=()=>{previewRule=randomEligibleRule();renderRulePreview()};
+$('#pieceCount').oninput=()=>{const eligible=getEligibleRulesForConfig(readSetupConfigs());if(!eligible.includes(previewRule)){previewRule=eligible[rnd(0,eligible.length-1)]}renderRulePreview()};
+$('#questionSeconds').oninput=renderRulePreview;
+renderRulePreview();
+
+function questionTypeLabel(x){const t=questionTypeOf(x);return t==='ox'?'OX':t==='choice'?'객관식':'주관식'}
+function renderQuestions(){const tb=$('#questionBody');tb.innerHTML='';questions.forEach((x,i)=>{x=questions[i]=normalizeQuestionRecord(x,i);const type=questionTypeOf(x);const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td class="type-cell"><span class="question-type-badge ${type}">${questionTypeLabel(x)}</span></td><td><input class="qq" value="${escapeAttr(x.q)}"></td><td><input class="qa" value="${escapeAttr(x.a)}"></td><td><input class="qopts q-options-input" value="${escapeAttr((x.options||[]).join('|'))}" placeholder="객관식/OX만 입력"></td><td><button class="danger qdel">삭제</button></td>`;tr.querySelector('.qq').oninput=e=>x.q=e.target.value;tr.querySelector('.qa').oninput=e=>x.a=e.target.value;tr.querySelector('.qopts').oninput=e=>{x.options=e.target.value.split('|').map(v=>v.trim()).filter(Boolean);x.type=questionTypeOf(x);const badge=tr.querySelector('.question-type-badge');badge.className=`question-type-badge ${x.type}`;badge.textContent=questionTypeLabel(x)};tr.querySelector('.qdel').onclick=()=>{questions.splice(i,1);renderQuestions()};tb.appendChild(tr)})}
+function escapeAttr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function downloadQuestionTemplate(){
+ try{
+  const bin=atob(QUESTION_TEMPLATE_XLSX_B64);
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  const blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=QUESTION_TEMPLATE_FILENAME;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  showToast('📥 엑셀 문제 양식 다운로드','주관식 · 객관식 · OX 작성 규칙과 예시 포함','import',3600);
+ }catch(e){console.error(e);alert('엑셀 문제 양식을 다운로드하지 못했습니다.')}
+}
+$('#downloadQuestionTemplateBtn').addEventListener('click',()=>{showToast('📥 엑셀 문제 양식 다운로드','다운로드가 시작됩니다. 브라우저에서 저장 위치를 확인해 주세요.','import',3600)});
+$('#questionBankSelect').onchange=renderQuestionBanks;
+$('#loadBankBtn').onclick=()=>{const id=$('#questionBankSelect').value;if(id&&confirm('현재 편집 중인 문제 목록을 선택한 문제은행으로 바꿀까요?'))activateQuestionBank(id,true)};
+$('#saveAsBankBtn').onclick=()=>{const live=questions.filter(x=>x.q.trim()&&x.a.trim());if(!live.length){alert('저장할 문제가 없습니다.');return}const name=prompt('새 문제은행 이름을 입력해 주세요.',lastImportedFileName?lastImportedFileName.replace(/\.(xlsx|csv)$/i,''):'새 문제은행');if(!name||!name.trim())return;const b=addQuestionBank(name.trim(),'직접 편집',live);if(b){activeBankId=b.id;localStorage.setItem(ACTIVE_BANK_KEY,b.id);renderQuestionBanks();$('#questionBankSelect').value=b.id;renderQuestionBanks();showToast(`✅ 새 문제은행 저장 · ${live.length}개`,b.name,'ok',4200)}};
+$('#renameBankBtn').onclick=()=>{const id=$('#questionBankSelect').value,b=userQuestionBanks.find(x=>x.id===id);if(!b){alert('기본 문제은행은 이름을 변경할 수 없습니다.');return}const name=prompt('새 문제은행 이름을 입력해 주세요.',b.name);if(!name||!name.trim())return;b.name=uniqueBankName(name.trim());saveUserQuestionBanks();renderQuestionBanks();$('#questionBankSelect').value=id;renderQuestionBanks();showToast('✏️ 문제은행 이름 변경 완료',b.name,'ok',3600)};
+$('#deleteBankBtn').onclick=()=>{const id=$('#questionBankSelect').value,b=userQuestionBanks.find(x=>x.id===id);if(!b){alert('기본 문제은행은 삭제할 수 없습니다.');return}if(!confirm(`「${b.name}」 문제은행을 삭제할까요?`))return;userQuestionBanks=userQuestionBanks.filter(x=>x.id!==id);saveUserQuestionBanks();if(activeBankId===id){activeBankId='';localStorage.removeItem(ACTIVE_BANK_KEY)}renderQuestionBanks();showToast('🗑️ 문제은행 삭제 완료',b.name,'ok',3600)};
+renderQuestionBanks();
+$('#addQuestionBtn').onclick=()=>{questions.push({id:Date.now()+Math.random(),q:'',a:'',options:[],type:'subjective'});renderQuestions()};
+$('#add5QuestionBtn').onclick=()=>{for(let i=0;i<5;i++)questions.push({id:Date.now()+Math.random(),q:'',a:'',options:[],type:'subjective'});renderQuestions()};
+$('#clearQuestionsBtn').onclick=()=>{if(confirm('모든 문제를 삭제할까요?')){questions=[];renderQuestions()}};
+$('#saveBtn').onclick=()=>saveQuestions(true);renderQuestions();
+
+function setExcelStatus(msg,type=''){const el=$('#excelImportStatus');if(!el)return;el.textContent=msg;el.className='import-status'+(type?' '+type:'')}
+function colLettersToIndex(ref){const m=String(ref||'').match(/^([A-Z]+)/i);if(!m)return -1;let n=0;for(const ch of m[1].toUpperCase())n=n*26+(ch.charCodeAt(0)-64);return n-1}
+function parseCsvText(text){const rows=[];let row=[],cell='',quote=false;for(let i=0;i<text.length;i++){const ch=text[i];if(quote){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++}else if(ch==='"')quote=false;else cell+=ch}else{if(ch==='"')quote=true;else if(ch===','){row.push(cell);cell=''}else if(ch==='\r'){}else if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell=''}else cell+=ch}}if(cell.length||row.length){row.push(cell);rows.push(row)}return rows}
+function cleanImportedRows(rows){const out=[];for(const r of rows){const cells=Array.from({length:7},(_,i)=>String(r?.[i]??'').trim());if(!cells[0]&&!cells[1])continue;out.push(cells)}if(out.length){const hq=out[0][0].replace(/\s/g,'').toLowerCase(),ha=out[0][1].replace(/\s/g,'').toLowerCase();if((hq==='문제'||hq==='question'||hq==='질문')&&(ha==='정답'||ha==='답'||ha==='answer'))out.shift()}return out.filter(r=>r[0]&&r[1])}
+function findZipEocd(u8){const sig=0x06054b50,start=Math.max(0,u8.length-22-65535);for(let i=u8.length-22;i>=start;i--){if(u8[i]===0x50&&u8[i+1]===0x4b&&u8[i+2]===0x05&&u8[i+3]===0x06)return i}return -1}
+async function inflateRaw(bytes){if(!('DecompressionStream' in window))throw new Error('이 브라우저는 .xlsx 압축 해제를 지원하지 않습니다. 최신 Chrome 또는 Edge를 사용해 주세요.');let ds;try{ds=new DecompressionStream('deflate-raw')}catch(e){throw new Error('이 브라우저에서 .xlsx 압축 형식을 읽을 수 없습니다. 최신 Chrome 또는 Edge를 사용해 주세요.')}const stream=new Blob([bytes]).stream().pipeThrough(ds);return new Uint8Array(await new Response(stream).arrayBuffer())}
+async function unzipXlsx(arrayBuffer){const u8=new Uint8Array(arrayBuffer),dv=new DataView(arrayBuffer),eocd=findZipEocd(u8);if(eocd<0)throw new Error('올바른 .xlsx 파일이 아닙니다.');const total=dv.getUint16(eocd+10,true),cdOffset=dv.getUint32(eocd+16,true),dec=new TextDecoder('utf-8'),files={};let p=cdOffset;for(let e=0;e<total;e++){if(dv.getUint32(p,true)!==0x02014b50)throw new Error('엑셀 파일의 압축 구조를 읽을 수 없습니다.');const method=dv.getUint16(p+10,true),compSize=dv.getUint32(p+20,true),nameLen=dv.getUint16(p+28,true),extraLen=dv.getUint16(p+30,true),commentLen=dv.getUint16(p+32,true),localOff=dv.getUint32(p+42,true),name=dec.decode(u8.slice(p+46,p+46+nameLen)).replace(/\\/g,'/');if(dv.getUint32(localOff,true)!==0x04034b50)throw new Error('엑셀 파일 내부 항목을 읽을 수 없습니다.');const ln=dv.getUint16(localOff+26,true),le=dv.getUint16(localOff+28,true),dataStart=localOff+30+ln+le,comp=u8.slice(dataStart,dataStart+compSize);if(method===0)files[name]=comp;else if(method===8)files[name]=await inflateRaw(comp);p+=46+nameLen+extraLen+commentLen}return files}
+function xmlDoc(xml){const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw new Error('엑셀 XML을 해석하지 못했습니다.');return doc}
+function xmlEls(node,name){const ns=node.getElementsByTagNameNS?node.getElementsByTagNameNS('*',name):[];return ns&&ns.length?[...ns]:[...node.getElementsByTagName(name)]}
+function xlsxFirstSheetPath(files,dec){let path='xl/worksheets/sheet1.xml';if(!files['xl/workbook.xml']||!files['xl/_rels/workbook.xml.rels'])return path;try{const wb=xmlDoc(dec.decode(files['xl/workbook.xml'])),rels=xmlDoc(dec.decode(files['xl/_rels/workbook.xml.rels'])),sheet=xmlEls(wb,'sheet')[0];if(!sheet)return path;const rid=sheet.getAttribute('r:id')||sheet.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');if(!rid)return path;const rel=xmlEls(rels,'Relationship').find(x=>x.getAttribute('Id')===rid);if(!rel)return path;let target=rel.getAttribute('Target')||'';target=target.replace(/^\//,'');if(target.startsWith('xl/'))path=target;else path='xl/'+target.replace(/^\.\//,'');path=path.replace(/\/\.\//g,'/')}catch(e){}return path}
+function parseXlsxRows(files){const dec=new TextDecoder('utf-8'),shared=[];if(files['xl/sharedStrings.xml']){const sdoc=xmlDoc(dec.decode(files['xl/sharedStrings.xml']));for(const si of xmlEls(sdoc,'si'))shared.push(xmlEls(si,'t').map(t=>t.textContent||'').join(''))}const sp=xlsxFirstSheetPath(files,dec);if(!files[sp])throw new Error('첫 번째 워크시트를 찾지 못했습니다.');const sdoc=xmlDoc(dec.decode(files[sp])),rows=[];for(const row of xmlEls(sdoc,'row')){const vals=Array(7).fill('');for(const c of xmlEls(row,'c')){const col=colLettersToIndex(c.getAttribute('r'));if(col<0||col>6)continue;const type=c.getAttribute('t')||'',v=xmlEls(c,'v')[0];let val='';if(type==='s')val=shared[Number(v?.textContent||0)]??'';else if(type==='inlineStr')val=xmlEls(c,'t').map(t=>t.textContent||'').join('');else val=v?.textContent??'';vals[col]=val}rows.push(vals)}return rows}
+async function readQuestionFile(file){const lower=file.name.toLowerCase();if(lower.endsWith('.csv'))return cleanImportedRows(parseCsvText(await file.text()));if(!lower.endsWith('.xlsx'))throw new Error('.xlsx 또는 .csv 파일을 선택해 주세요.');const files=await unzipXlsx(await file.arrayBuffer());return cleanImportedRows(parseXlsxRows(files))}
+$('#importExcelBtn').onclick=async()=>{const input=$('#excelFileInput'),files=[...(input.files||[])];if(!files.length){setExcelStatus('먼저 .xlsx 또는 .csv 파일을 하나 이상 선택해 주세요.','err');return}setExcelStatus(`${files.length}개 파일을 문제은행에 저장하는 중입니다…`);$('#importExcelBtn').disabled=true;const added=[];const errors=[];try{for(const file of files){try{const rows=await readQuestionFile(file);if(!rows.length)throw new Error('유효한 문제 행이 없습니다.');const imported=rows.map((r,i)=>normalizeQuestionRecord({id:Date.now()+i+Math.random(),q:r[0],a:r[1],options:r.slice(2,7).filter(Boolean)},i));const bank=addQuestionBank(file.name,file.name,imported);if(!bank)throw new Error('브라우저 저장 공간이 부족합니다.');added.push({file,bank,imported})}catch(e){errors.push(`${file.name}: ${e?.message||'불러오기 실패'}`)}}if(!added.length)throw new Error(errors.join(' / ')||'문제 파일을 저장하지 못했습니다.');const first=added[0];if($('#excelImportMode').value==='replace'){questions=cloneQuestionList(first.imported);activeBankId=first.bank.id;localStorage.setItem(ACTIVE_BANK_KEY,activeBankId);lastImportedFileName=first.file.name}else{for(const item of added)questions.push(...cloneQuestionList(item.imported));activeBankId='';localStorage.removeItem(ACTIVE_BANK_KEY);lastImportedFileName=added.map(x=>x.file.name).join(', ')}localStorage.setItem(QUESTION_FILE_KEY,lastImportedFileName);renderQuestions();saveQuestions(false);renderQuestionBanks();if(activeBankId){$('#questionBankSelect').value=activeBankId;renderQuestionBanks()}const savedCount=added.reduce((s,x)=>s+x.imported.length,0);setExcelStatus(`${added.length}개 파일을 각각 문제은행으로 저장했습니다. 총 ${savedCount}문항.${errors.length?` 실패 ${errors.length}개: ${errors.join(' / ')}`:''}`,'ok');showToast(`📚 문제은행 ${added.length}개 추가 완료 · 총 ${savedCount}문항`,added.map(x=>x.bank.name).join(' / '),'import',5000);input.value='';if(!$('#study').classList.contains('hidden'))resetStudy()}catch(e){console.error(e);setExcelStatus(e?.message||'엑셀 파일을 불러오지 못했습니다.','err')}finally{$('#importExcelBtn').disabled=false}};
+
+function resetStudy(){const pool=questions.filter(x=>x.q.trim()&&x.a.trim());const mode=$('#questionOrderMode')?.value||loadQuestionMode();studyOrder=mode==='random'?shuffle(pool):[...pool];studyPos=0;renderStudy()}
+function renderStudy(){const x=studyOrder[studyPos],opts=$('#studyOptions'),typeEl=$('#studyType');$('#studyA').classList.add('hidden');opts.innerHTML='';typeEl.innerHTML='';if(!x){$('#studyQ').textContent='등록된 문제가 없습니다.';$('#studyA').textContent='';$('#studyIndex').textContent='';return}const type=questionTypeOf(x);typeEl.innerHTML=`<span class="question-type-badge ${type}">${questionTypeLabel(x)}</span>`;$('#studyQ').textContent=x.q;if(type!=='subjective'){(x.options||[]).forEach((o,i)=>{const d=document.createElement('div');d.className='study-option';d.textContent=`${i+1}. ${o}`;opts.appendChild(d)})}$('#studyA').textContent=type==='subjective'?x.a.split('|').join(' / '):(x.a.split('|')[0]||'').trim();$('#studyIndex').textContent=`${studyPos+1} / ${studyOrder.length}`}
+$('#studyReveal').onclick=()=>$('#studyA').classList.toggle('hidden');
+$('#studyPrev').onclick=()=>{if(studyOrder.length){studyPos=(studyPos-1+studyOrder.length)%studyOrder.length;renderStudy()}};
+$('#studyNext').onclick=()=>{if(studyOrder.length){studyPos=(studyPos+1)%studyOrder.length;renderStudy()}};
+$('#studyShuffle').onclick=resetStudy;
+
+function specialDestination(pos,sp){
+ if(!sp||sp.type==='chance')return null;
+ const dest=sp.type==='forward'?pos+sp.n:pos-sp.n;
+ // 45칸을 넘으면 GOAL, 0 이하이면 START이므로 연쇄 특수칸 없음.
+ if(dest>=BOARD_SPACES||dest<=0)return null;
+ return dest;
+}
+function analyzeSpecialLayout(layout){
+ let maxChain=0;
+ function walk(pos,trail=[]){
+  const sp=layout[pos];
+  if(!sp||sp.type==='chance')return {cycle:false,len:0};
+  if(trail.includes(pos))return {cycle:true,len:trail.length+1};
+  const dest=specialDestination(pos,sp);
+  if(dest===null||!layout[dest]||layout[dest].type==='chance')return {cycle:false,len:1};
+  const r=walk(dest,[...trail,pos]);
+  return {cycle:r.cycle,len:1+r.len};
+ }
+ for(const k of Object.keys(layout)){
+  const pos=+k,sp=layout[pos];
+  if(sp.type==='chance')continue;
+  const r=walk(pos,[]);
+  if(r.cycle)return {ok:false,maxChain:r.len};
+  maxChain=Math.max(maxChain,r.len);
+ }
+ return {ok:maxChain<=4,maxChain};
+}
+function randomSegmentSpecialSpots(start,end,count){
+ // START·무인도·GOAL 사이에서 일반칸이 1~3칸씩 오도록 특수칸을 균일 분산합니다.
+ const gaps=Array(count+1).fill(2);let remaining=(end-start)-gaps.reduce((a,b)=>a+b,0);
+ while(remaining>0){const candidates=gaps.map((g,i)=>g<4?i:-1).filter(i=>i>=0);if(!candidates.length)break;const i=candidates[rnd(0,candidates.length-1)];gaps[i]++;remaining--}
+ const spots=[];let p=start;for(let i=0;i<count;i++){p+=gaps[i];spots.push(p)}return spots
+}
+function makeSpecialSpots(){
+ // 오른쪽 위 무인도는 고정 특징칸. 나머지 랜덤 특수칸 15개를 무인도 전후에 7개/8개로 고르게 분산합니다.
+ return [...randomSegmentSpecialSpots(0,ISLAND_POS,7),...randomSegmentSpecialSpots(ISLAND_POS,BOARD_SPACES,8)]
+}
+function makeBalancedSpecialTypes(){
+ // + 5개 / - 5개 / 찬스 5개. 세 종류가 보드 전체에 규칙적으로 섞이되 시작 위치만 무작위로 바뀝니다.
+ const first=rnd(0,1)?'forward':'backward',second=first==='forward'?'backward':'forward';
+ const base=['chance',first,second],shift=rnd(0,2);
+ return Array.from({length:15},(_,i)=>base[(i+shift)%3]);
+}
+function makeUniqueMoveLayout(spots,types){
+ // 같은 부호 안에서는 이동 수치가 중복되지 않도록 1~6 중 서로 다른 5개를 사용합니다.
+ // 예: +1,+2,+4,+5,+6 / -1,-2,-3,-5,-6 처럼 매 판 빠지는 숫자와 배열은 무작위입니다.
+ const forwardNums=shuffle([1,2,3,4,5,6]).slice(0,5);
+ const backwardNums=shuffle([1,2,3,4,5,6]).slice(0,5);
+ let fi=0,bi=0;const layout={};
+ spots.forEach((p,i)=>{
+  const type=types[i];
+  if(type==='chance')layout[p]={type:'chance'};
+  else if(type==='forward')layout[p]={type,n:forwardNums[fi++]};
+  else layout[p]={type,n:backwardNums[bi++]};
+ });
+ return layout;
+}
+function hasUniqueMoveValues(layout){
+ const f=[],b=[];
+ Object.values(layout).forEach(sp=>{if(sp.type==='forward')f.push(sp.n);else if(sp.type==='backward')b.push(sp.n)});
+ return f.length===5&&b.length===5&&new Set(f).size===5&&new Set(b).size===5&&f.every(n=>n>=1&&n<=6)&&b.every(n=>n>=1&&n<=6);
+}
+function buildSpecials(){
+ // 균일 분산 + 정확한 5/5/5 구성 + 같은 부호 이동량 중복 없음 + 순환 없는 최대 4단계 연쇄를 모두 만족하는 배열만 채택합니다.
+ for(let attempt=0;attempt<2600;attempt++){
+  const spots=makeSpecialSpots(),types=makeBalancedSpecialTypes(),layout=makeUniqueMoveLayout(spots,types);
+  if(hasUniqueMoveValues(layout)&&analyzeSpecialLayout(layout).ok)return layout;
+ }
+ // 매우 드문 경우를 대비한 안전 재시도. 동일한 조건을 유지한 채 유효 배열이 나올 때까지 다시 생성합니다.
+ while(true){
+  const spots=makeSpecialSpots(),types=makeBalancedSpecialTypes(),layout=makeUniqueMoveLayout(spots,types);
+  if(hasUniqueMoveValues(layout)&&analyzeSpecialLayout(layout).ok)return layout;
+ }
+}
+function initGame(){
+ const qs=questions.filter(x=>x.q.trim()&&x.a.trim());if(!qs.length){alert('문제를 1개 이상 등록해 주세요.');switchTab('questions');return}
+ saveQuestions();
+ const configs=readSetupConfigs();
+ const eligibleRules=getEligibleRulesForConfig(configs);
+ // 설정 화면에 표시된 랜덤 규칙을 실제 게임에서도 그대로 사용한다.
+ // 현재 설정에서 사용할 수 없는 규칙인 경우에만 미리보기를 한 번 갱신한다.
+ if(!eligibleRules.includes(previewRule)){previewRule=eligibleRules[rnd(0,eligibleRules.length-1)];renderRulePreview()}
+ const selectedRule=previewRule;
+ unlockAudio();
+ G={running:true,paused:false,ended:false,rule:selectedRule,baseQuestionTime:getSetupQuestionSeconds(),specials:buildSpecials(),current:0,selectedToken:0,seconds:clamp(parseInt($('#gameMinutes').value)||20,1,120)*60,lastTick:Date.now(),timerId:null,questionTimer:null,currentQuestion:null,diceRoll:0,phase:'roll',extraTurn:false,pendingBoardChanceCount:0,moveChain:Promise.resolve(),questionMode:($('#questionOrderMode').value||'random'),questionQueue:[],questionCursor:0,lastQuestionId:null,captureHighlight:null,teams:configs.map((c,i)=>({name:c.name,color:teamColors[i],symbol:teamSymbols[i],tokens:[...Array(c.pieces)].map((_,j)=>({id:j,pos:0,progress:0,finished:false,stackId:null,islandTrapped:false,islandFailedTurns:0})),correct:0,wrong:0,chances:0,chanceBenefit:0,positiveChance:0,skip:0,doubleDiceNext:false,diceBonusNext:0,diceFloorNext:0,dicePenaltyNext:0,diceCeilNext:0,shieldPenalty:false,shieldBack:false,doubleBonus:false,questionTimeDeltaNext:0,blockBonus:false,blockChance:false,immuneSkip:false})),logs:[]};
+ saveQuestionMode(G.questionMode);G.questionQueue=buildGameQuestionQueue(qs,G.questionMode);G.questionCursor=0;
+ addLog(`게임 시작! 이번 판 규칙: ${ruleDisplayDesc(G.rule,G.baseQuestionTime)}`);addLog(`🏝️ 오른쪽 위 무인도: 다음 턴 시작 시 7칸 룰렛 탈출 미션 · 3턴 연속 실패 시 자동 탈출`);addLog(`찬스 자동 필터링 적용: 현재 팀/말/보드 상태에서 실행 가능한 카드만 추첨`);addLog(`문제 출제: ${G.questionMode==='ordered'?'입력 순서대로':'무작위 · 한 바퀴 중복 없음'}`);startClock();switchTab('game');renderAll();updateSoundToggleUI();playSfx('turn');
+}
+$('#startGameBtn').onclick=initGame;
+
+function startClock(){clearInterval(G?.timerId);if(!G)return;G.lastTick=Date.now();G.timerId=setInterval(()=>{if(!G.running||G.paused||G.ended)return;const now=Date.now();const diff=Math.floor((now-G.lastTick)/1000);if(diff>0){G.seconds=Math.max(0,G.seconds-diff);G.lastTick+=diff*1000;renderTimer();if(G.seconds<=0)finishGame('time')}},250)}
+function renderTimer(){if(!G)return;const m=Math.floor(G.seconds/60),s=G.seconds%60;$('#gameTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+$('#pauseBtn').onclick=()=>{if(!G||G.ended)return;G.paused=!G.paused;G.lastTick=Date.now();$('#pauseBtn').textContent=G.paused?'계속하기':'일시정지';if(G.paused)clearQuestionTimer();else if(!$('#questionOverlay').classList.contains('hidden')&&G.currentQuestion&&!G.currentQuestion.timeExpired) beginQuestionTimer(G.currentQuestion?.timeLeft||10)};
+$('#soundToggleBtn').onclick=()=>setSfxEnabled(!sfxEnabled);
+$('#endGameBtn').onclick=()=>{if(G&&!G.ended&&confirm('지금 게임을 종료하고 결과를 볼까요?'))finishGame('manual')};
+
+function boardCoord(pathIndex){
+ // 45칸 외곽 경로. 무인도는 논리 번호와 무관하게 오른쪽 위 꼭지점(22번 위치)에 고정합니다.
+ // START의 2칸 폭은 45칸 외곽 구조를 유지하기 위한 실제 경로 공간이며, 표시는 v23형 말 대기장으로 복원했습니다.
+ if(pathIndex===0)return {row:9,col:'1 / span 2'};
+ if(pathIndex<=14)return {row:9,col:pathIndex+2};
+ if(pathIndex<=21)return {row:23-pathIndex,col:16};
+ if(pathIndex<=37)return {row:1,col:38-pathIndex};
+ return {row:pathIndex-36,col:1};
+}
+function getStackMembers(teamIdx,tokenIdx){
+ const t=G?.teams?.[teamIdx],tok=t?.tokens?.[tokenIdx];if(!tok)return [];
+ if(tok.stackId==null)return [tokenIdx];
+ return t.tokens.map((x,i)=>({x,i})).filter(z=>!z.x.finished&&z.x.stackId===tok.stackId).map(z=>z.i);
+}
+function getStackLeader(teamIdx,tokenIdx){const m=getStackMembers(teamIdx,tokenIdx);return m.length?Math.min(...m):tokenIdx}
+function isStackLeader(teamIdx,tokenIdx){return getStackLeader(teamIdx,tokenIdx)===tokenIdx}
+function getMovableLeaders(teamIdx){const t=G?.teams?.[teamIdx];if(!t)return [];return t.tokens.map((x,i)=>({x,i})).filter(z=>!z.x.finished&&!z.x.islandTrapped&&isStackLeader(teamIdx,z.i)).map(z=>z.i)}
+function getIslandTrappedLeaders(teamIdx){const t=G?.teams?.[teamIdx];if(!t)return [];return t.tokens.map((x,i)=>({x,i})).filter(z=>!z.x.finished&&z.x.islandTrapped&&isStackLeader(teamIdx,z.i)).map(z=>z.i)}
+function stackLabel(teamIdx,tokenIdx){const m=getStackMembers(teamIdx,tokenIdx);return m.map(i=>i+1).join('+')}
+function combineStacks(teamIdx,tokenIdx,otherIdxs){const t=G.teams[teamIdx];const all=new Set(getStackMembers(teamIdx,tokenIdx));otherIdxs.forEach(i=>getStackMembers(teamIdx,i).forEach(k=>all.add(k)));const members=[...all].sort((a,b)=>a-b);if(members.length<2)return;const id=`S${Date.now()}_${Math.random().toString(36).slice(2,7)}`;members.forEach(i=>t.tokens[i].stackId=id);G.selectedToken=members[0];addLog(`${t.name}: 말 ${members.map(i=>i+1).join('+')} 업기 완료! 이제 함께 이동합니다.`);playSfx('stack');renderAll()}
+function offerStackChoice(teamIdx,tokenIdx){return new Promise(resolve=>{if(!G||G.ended)return resolve(false);const t=G.teams[teamIdx],leader=getStackLeader(teamIdx,tokenIdx),tok=t.tokens[leader];if(!tok||tok.finished||tok.progress<=0)return resolve(false);const current=new Set(getStackMembers(teamIdx,leader));const others=getMovableLeaders(teamIdx).filter(i=>!current.has(i)&&t.tokens[i].progress===tok.progress);if(!others.length)return resolve(false);const here=[...current,...others.flatMap(i=>getStackMembers(teamIdx,i))].sort((a,b)=>a-b);showModal(`<div class="chance-title">🧸 우리 팀 말을 업을까요?</div><div class="chance-desc"><b>${escapeHtml(t.name)}</b>의 말 ${here.map(i=>i+1).join(', ')}번이 같은 칸에 만났습니다.<br><br><b>업기</b>를 선택하면 앞으로 주사위·정답 보너스·찬스 이동 시 한 묶음으로 함께 움직입니다.</div><div class="modal-actions"><button class="secondary" id="stackNo">따로 이동</button><button class="primary" id="stackYes">같이 업기</button></div>`);$('#stackNo').onclick=()=>{closeModal();resolve(false)};$('#stackYes').onclick=()=>{closeModal();combineStacks(teamIdx,leader,others);resolve(true)}})}
+function renderBoard(){const b=$('#board');b.innerHTML='';const center=document.createElement('div');center.className='board-center';const ct=G?.teams?.[G.current];const diceText=G?.diceParts?.length?G.diceParts.map(x=>diceChars[x-1]).join(' '):'⚀';const canRoll=!!G&&G.phase==='roll'&&!G.paused&&!G.ended&&ct&&!ct.tokens.every(x=>x.finished);center.innerHTML=`<div class="board-hub"><div class="hub-kicker">DICE BOARD GAME</div><div class="hub-team">${G?`${escapeHtml(ct?.name||'-')} 차례`:`🎲 학습 보드게임 ${APP_VERSION}`}</div><div class="center-dice" id="centerDiceFace">${diceText}</div><button class="center-roll-btn" id="centerRollBtn" ${canRoll?'':'disabled'}>${G?'🎲 주사위 굴리기':'게임 시작 후 주사위를 굴려주세요'}</button><div class="hub-rule">${G?`<b>이번 판 · ${escapeHtml(G.rule.name)}</b>${escapeHtml(ruleDisplayDesc(G.rule,G.baseQuestionTime))}`:'<b>45칸 · 반시계방향</b>게임을 시작하면 이번 판 규칙이 무작위로 정해집니다.'}</div><div class="hub-mode">${G?`문제: ${G.questionMode==='ordered'?'입력 순서대로':'무작위 · 한 바퀴 중복 없음'}`:'주사위 → 문제 → 이동/찬스'}</div></div>`;b.appendChild(center);const centerRoll=center.querySelector('#centerRollBtn');if(centerRoll)centerRoll.onclick=()=>$('#rollBtn')?.click();const cells=[];for(let pathIndex=0;pathIndex<BOARD_SPACES;pathIndex++){const c=document.createElement('div');c.className='cell';const pos=boardCoord(pathIndex);c.style.gridRow=pos.row;c.style.gridColumn=pos.col;const special=G?.specials[pathIndex];if(pathIndex===0)c.classList.add('start');if(pathIndex===ISLAND_POS)c.classList.add('island');else if(special)c.classList.add(special.type);let title=pathIndex===0?'START / GOAL':pathIndex===ISLAND_POS?'🏝️ 무인도':String(pathIndex);let evt='';if(pathIndex===0)evt='🏁 출발 · 귀환';else if(pathIndex===ISLAND_POS)evt='<div class="island-art"><span class="island-sos">SOS</span></div><div class="island-caption">탈출 미션</div>';else if(special?.type==='forward')evt=`⬆ +${special.n}`;else if(special?.type==='backward')evt=`⬇ -${special.n}`;else if(special?.type==='chance')evt='🎁 찬스';if(pathIndex===ISLAND_POS)c.innerHTML=`<div class="island-shell"><div><div class="cell-num">${title}</div><div class="cell-event">${evt}</div></div><div class="tokens"></div></div>`;else c.innerHTML=`<div><div class="cell-num">${title}</div><div class="cell-event">${evt}</div></div><div class="tokens"></div>`;cells[pathIndex]=c;b.appendChild(c)}
+ if(G){G.teams.forEach((t,ti)=>t.tokens.forEach((tok,ki)=>{if(!tok.finished&&!isStackLeader(ti,ki))return;const members=tok.finished?[ki]:getStackMembers(ti,ki);const c=cells[tok.finished?0:tok.pos];const z=document.createElement('div');const capturedNow=!!G.captureHighlight?.some(h=>h.team===ti&&h.members.some(m=>members.includes(m)));z.className='token'+(tok.finished?' finished':'')+(members.length>1?' stacked':'')+(capturedNow?' capture-target':'');z.style.setProperty('--tokenColor',t.color);z.title=`${t.name} 말 ${members.map(i=>i+1).join('+')} ${t.symbol}${tok.finished?' (귀환 완료)':tok.islandTrapped?' (무인도에 갇힘)':''}`;z.innerHTML=`<span class="shape">${t.symbol}</span><span class="badge">${members[0]+1}</span>${members.length>1?`<span class="stack-badge">${members.map(i=>i+1).join('+')}</span>`:''}${tok.finished?'<span class="done">✓</span>':''}`;c.querySelector('.tokens').appendChild(z)}))}
+}
+function renderTurn(){if(!G)return;updateSoundToggleUI();const t=G.teams[G.current];$('#turnName').textContent=`${t.symbol} ${t.name}`;$('#turnName').style.color=t.color;const buffs=[];if(t.skip)buffs.push(`쉬기 ${t.skip}회`);if(t.doubleDiceNext)buffs.push('다음 주사위 2개');if(t.diceBonusNext)buffs.push(`다음 주사위 +${t.diceBonusNext}`);if(t.diceFloorNext)buffs.push(`다음 주사위 최소 ${t.diceFloorNext}`);if(t.dicePenaltyNext)buffs.push(`다음 주사위 -${t.dicePenaltyNext}`);if(t.diceCeilNext)buffs.push(`다음 주사위 최대 ${t.diceCeilNext}`);if(t.questionTimeDeltaNext)buffs.push(`다음 문제 ${t.questionTimeDeltaNext>0?'+':''}${t.questionTimeDeltaNext}초`);if(t.blockBonus)buffs.push('다음 정답 보너스 봉인');if(t.blockChance)buffs.push('다음 정답 찬스 봉인');if(t.shieldPenalty)buffs.push('오답 페널티 방어');if(t.shieldBack)buffs.push('뒤로 이동 방어');if(t.doubleBonus)buffs.push('다음 정답 보너스×2');$('#turnBuffs').textContent=buffs.length?buffs.join(' · '):'특수 효과 없음';const box=$('#tokenPicks');box.innerHTML='';if(G.phase==='island')box.innerHTML='<span class="notice">🏝️ 무인도 탈출 미션 진행 중</span>';getMovableLeaders(G.current).forEach(i=>{const tok=t.tokens[i],members=getStackMembers(G.current,i);const btn=document.createElement('button');btn.className='token-pick'+(getStackLeader(G.current,G.selectedToken)===i?' active':'');btn.disabled=G.phase!=='roll';btn.textContent=`${t.symbol} 말 ${members.map(k=>k+1).join('+')}${members.length>1?' (업기)':''}`;btn.onclick=()=>{G.selectedToken=i;renderTurn()};box.appendChild(btn)});const rollDisabled=G.phase!=='roll'||G.paused||G.ended||t.tokens.every(x=>x.finished);$('#rollBtn').disabled=rollDisabled;const cr=$('#centerRollBtn');if(cr)cr.disabled=rollDisabled;$('#gameRuleText').innerHTML=`<b>${G.rule.name}</b><div class="notice">${ruleDisplayDesc(G.rule,G.baseQuestionTime)}</div>`}
+function renderStats(){if(!G)return;const box=$('#teamStats');box.innerHTML='';G.teams.forEach(t=>{const fin=t.tokens.filter(x=>x.finished).length;const d=document.createElement('div');d.className='stat-row';d.innerHTML=`<span style="font-weight:900;color:${t.color}">${escapeHtml(t.symbol)} ${escapeHtml(t.name)}</span><span>⭕ ${t.correct} · ❌ ${t.wrong} · 🎁 ${t.chances} · 🏁 ${fin}/${t.tokens.length}</span>`;box.appendChild(d)})}
+function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function renderLog(){if(!G)return;const l=$('#log');l.innerHTML=G.logs.slice(-60).map(x=>`<div>${escapeHtml(x)}</div>`).join('');l.scrollTop=l.scrollHeight}
+function renderAll(){updateSoundToggleUI();if(!G){renderBoard();return}renderBoard();renderTurn();renderStats();renderLog();renderTimer()}
+function addLog(s){if(!G)return;G.logs.push(s);renderLog()}
+
+function advanceTeam(){if(!G||G.ended)return;G.diceRoll=0;G.diceParts=[];$('#diceFace').textContent='⚀';const cd=$('#centerDiceFace');if(cd)cd.textContent='⚀';if(G.extraTurn){G.extraTurn=false;addLog(`${G.teams[G.current].name}: 추가 턴!`);beginCurrentTeamTurn();return}
+ let tries=0;do{G.current=(G.current+1)%G.teams.length;tries++;const t=G.teams[G.current];if(t.skip>0){t.skip--;addLog(`${t.name}: 쉬기 효과로 이번 턴 자동 건너뜀.`);playSfx('skip');continue}break}while(tries<=G.teams.length*2);
+ beginCurrentTeamTurn();
+}
+function beginCurrentTeamTurn(){if(!G||G.ended)return;const trapped=getIslandTrappedLeaders(G.current);if(trapped.length){G.selectedToken=trapped[0];G.phase='island';renderAll();playSfx('turn');setTimeout(()=>runIslandEscapeTurn(G.current,G.selectedToken),380);return}G.phase='roll';ensureSelectable();renderAll();playSfx('turn')}
+
+function ensureSelectable(){const leaders=getMovableLeaders(G.current);G.selectedToken=leaders.length?leaders[0]:0}
+
+$('#rollBtn').onclick=async()=>{
+ unlockAudio();
+ if(!G||G.phase!=='roll'||G.paused||G.ended)return;G.selectedToken=getStackLeader(G.current,G.selectedToken);const t=G.teams[G.current],tok=t.tokens[G.selectedToken];if(!tok||tok.finished){ensureSelectable();return}
+ const pendingEffects=currentTurnChanceEffectLines(t);
+ if(pendingEffects.length){G.phase='effectNotice';renderTurn();await showCurrentTurnChanceEffectNotice(t);if(!G||G.ended)return;if(G.paused){G.phase='roll';renderTurn();return}}
+ playSfx('dice');
+ const diceCount=t.doubleDiceNext?2:1;t.doubleDiceNext=false;const rolls=[...Array(diceCount)].map(()=>rnd(1,6));const raw=rolls.reduce((a,b)=>a+b,0);let total=raw;let extras=[];if(t.diceFloorNext){if(total<t.diceFloorNext){extras.push(`최소 ${t.diceFloorNext} 적용`);total=t.diceFloorNext}t.diceFloorNext=0}if(t.diceBonusNext){extras.push(`보너스 +${t.diceBonusNext}`);total+=t.diceBonusNext;t.diceBonusNext=0}if(t.dicePenaltyNext){extras.push(`감점 -${t.dicePenaltyNext}`);total=Math.max(1,total-t.dicePenaltyNext);t.dicePenaltyNext=0}if(t.diceCeilNext){if(total>t.diceCeilNext){extras.push(`최대 ${t.diceCeilNext} 제한`);total=t.diceCeilNext}t.diceCeilNext=0}G.phase='rolling';G.diceRoll=total;G.diceParts=rolls;renderTurn();await animateDiceRoll(rolls);addLog(`${t.name} 말 ${G.selectedToken+1}: 주사위 ${rolls.join('+')} = ${raw}${extras.length?' ('+extras.join(', ')+')':''} → ${total}`);renderAll();await sleep(3000);if(!G||G.ended)return;G.phase='question';renderAll();setTimeout(()=>openQuestion(),220);
+};
+
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function showMoveSummary(title,formula,total){$('#moveTitle').textContent=title;$('#moveFormula').textContent=formula;$('#moveTotal').textContent=total>0?`총 ${total}칸 앞으로 이동`:total<0?`총 ${Math.abs(total)}칸 뒤로 이동`:'이동 없음';$('#moveOverlay').classList.remove('hidden');await sleep(autoNoticeMs(1700));$('#moveOverlay').classList.add('hidden')}
+function moveToken(teamIdx,tokenIdx,steps,reason,allowBoard=true){if(!G)return Promise.resolve(0);G.moveChain=(G.moveChain||Promise.resolve()).then(()=>animateMoveToken(teamIdx,tokenIdx,steps,reason,allowBoard));return G.moveChain}
+async function captureOpponentsAt(teamIdx,tokenIdx){
+ if(!G||G.ended)return [];
+ tokenIdx=getStackLeader(teamIdx,tokenIdx);
+ const mover=G.teams[teamIdx],tok=mover?.tokens?.[tokenIdx];
+ if(!tok||tok.finished||tok.pos===0||tok.pos===ISLAND_POS||tok.progress<=0)return [];
+ const captured=[];
+ G.teams.forEach((other,oi)=>{
+  if(oi===teamIdx)return;
+  const leaders=getMovableLeaders(oi);
+  leaders.forEach(leader=>{
+   const target=other.tokens[leader];
+   if(!target||target.finished||target.pos!==tok.pos||target.progress<=0)return;
+   const members=getStackMembers(oi,leader);
+   captured.push({team:oi,members:[...members],pos:target.pos});
+  });
+ });
+ if(!captured.length)return [];
+ const detail=captured.map(c=>`${G.teams[c.team].symbol} ${G.teams[c.team].name} 말 ${c.members.map(k=>k+1).join('+')}`).join(', ');
+ G.captureHighlight=captured.map(c=>({team:c.team,members:[...c.members],pos:c.pos}));
+ addLog(`${mover.name}: 상대 말을 잡았습니다! ${detail} → START`);
+ playSfx('capture');renderAll();
+ const cellLabel=`${tok.pos}번 칸`;
+ showToast(`💥 잡힌 말 확인! ${detail}`,`${cellLabel}에서 강조 표시 중 → 잠시 후 START로 이동`,'capture',autoNoticeMs(1050));
+ await sleep(autoNoticeMs(1050));
+ captured.forEach(c=>{
+  const other=G.teams[c.team];
+  c.members.forEach(k=>{
+   const x=other.tokens[k];
+   x.pos=0;x.progress=0;x.finished=false;x.stackId=null;x.islandTrapped=false;x.islandFailedTurns=0;
+  });
+ });
+ G.captureHighlight=null;
+ renderAll();
+ return captured;
+}
+async function sendTokenToIsland(teamIdx,tokenIdx,reason='무인도행 찬스'){
+ if(!G||G.ended)return false;
+ tokenIdx=getStackLeader(teamIdx,tokenIdx);
+ const t=G.teams[teamIdx],tok=t?.tokens?.[tokenIdx];
+ if(!tok||tok.finished)return false;
+ const members=getStackMembers(teamIdx,tokenIdx);
+ members.forEach(k=>{const x=t.tokens[k];x.progress=ISLAND_POS;x.pos=ISLAND_POS;x.finished=false;x.islandTrapped=true;x.islandFailedTurns=0});
+ addLog(`${t.name} 말 ${members.map(k=>k+1).join('+')}: 🏝️ ${reason}으로 무인도 이동! 다음 자기 턴에 탈출 룰렛을 돌립니다. 3턴 실패 시 자동 탈출합니다.`);
+ playSfx('island');renderAll();
+ return true;
+}
+async function trapOnIsland(teamIdx,tokenIdx){
+ if(!G||G.ended)return false;tokenIdx=getStackLeader(teamIdx,tokenIdx);const t=G.teams[teamIdx],tok=t?.tokens?.[tokenIdx];if(!tok||tok.finished||tok.pos!==ISLAND_POS)return false;const members=getStackMembers(teamIdx,tokenIdx);members.forEach(k=>{t.tokens[k].islandTrapped=true;t.tokens[k].islandFailedTurns=0});addLog(`${t.name} 말 ${members.map(k=>k+1).join('+')}: 🏝️ 무인도에 도착! 다음 자기 턴에 탈출 룰렛을 돌립니다.`);playSfx('island');renderAll();showModal(`<div class="chance-title">🏝️ 무인도 도착!</div><div class="chance-desc" style="font-size:18px;line-height:1.7"><b>${escapeHtml(t.name)} 말 ${escapeHtml(members.map(k=>k+1).join('+'))}</b>이(가) 무인도에 갇혔습니다.<br>다음 자기 턴 시작에 <b>7칸 탈출 룰렛</b>이 자동으로 돌아갑니다.<br><b>3턴 연속 탈출에 실패하면 자동으로 탈출</b>합니다.</div>`);await sleep(autoNoticeMs(1150));closeModal();return true
+}
+async function animateMoveToken(teamIdx,tokenIdx,steps,reason,allowBoard=true,offerStack=true){
+ const t=G.teams[teamIdx];tokenIdx=getStackLeader(teamIdx,tokenIdx);let members=getStackMembers(teamIdx,tokenIdx),tok=t?.tokens[tokenIdx];if(!tok||tok.finished||steps===0)return 0;members.forEach(k=>t.tokens[k].islandTrapped=false);
+ if(steps<0&&t.shieldBack){t.shieldBack=false;addLog(`${t.name}: 뒤로 이동 방어권으로 ${reason} 무효!`);renderAll();return 0}
+ const dir=steps>0?1:-1;let moved=0;
+ for(let i=0;i<Math.abs(steps);i++){
+  if(G.ended||tok.finished)break;if(dir<0&&tok.progress<=0)break;members=getStackMembers(teamIdx,tokenIdx);tok=t.tokens[tokenIdx];
+  members.forEach(k=>{const x=t.tokens[k];x.progress+=dir;if(x.progress<0)x.progress=0});
+  if(tok.progress>=BOARD_SPACES){members.forEach(k=>{const x=t.tokens[k];x.progress=BOARD_SPACES;x.pos=0;x.finished=true;x.stackId=null;x.islandTrapped=false;x.islandFailedTurns=0});moved+=dir;renderAll();playMoveStep(dir,true);await sleep(300);addLog(`${t.name} 말 ${members.map(k=>k+1).join('+')}: 시작점으로 함께 귀환 완료! 🏁`);playSfx('finish');checkRaceWin();break}
+  members.forEach(k=>{const x=t.tokens[k];x.pos=((x.progress%BOARD_SPACES)+BOARD_SPACES)%BOARD_SPACES});moved+=dir;renderAll();playMoveStep(dir,i===Math.abs(steps)-1);await sleep(260)
+ }
+ if(!tok.finished)addLog(`${t.name} 말 ${members.map(k=>k+1).join('+')}: ${reason} ${moved>0?'+':''}${moved}칸${members.length>1?' (업고 함께 이동)':''}`);
+ if(!t.tokens[tokenIdx].finished&&!G.ended&&t.tokens[tokenIdx].pos===ISLAND_POS){await trapOnIsland(teamIdx,tokenIdx);return moved}
+ if(!t.tokens[tokenIdx].finished&&!G.ended)await captureOpponentsAt(teamIdx,tokenIdx);
+ if(allowBoard&&!t.tokens[tokenIdx].finished&&!G.ended)await triggerBoardSpecial(teamIdx,tokenIdx);
+ if(offerStack&&!t.tokens[tokenIdx].finished&&!G.ended)await offerStackChoice(teamIdx,tokenIdx);
+ return moved
+}
+async function triggerBoardSpecial(teamIdx,tokenIdx,visited=new Set()){if(G.ended)return;tokenIdx=getStackLeader(teamIdx,tokenIdx);const tok=G.teams[teamIdx].tokens[tokenIdx];if(!tok||tok.finished)return;const pos=tok.pos;const sp=G.specials[pos];if(!sp)return;if(visited.has(pos)){addLog(`${G.teams[teamIdx].name}: 특수칸 연쇄가 반복되어 여기서 중단합니다.`);return}visited.add(pos);await sleep(280);if(sp.type==='chance'){G.pendingBoardChanceCount=(G.pendingBoardChanceCount||0)+1;addLog(`${G.teams[teamIdx].name}: 🎁 찬스 칸 도착!`);playSfx('chance');return}const n=sp.type==='forward'?sp.n:-sp.n;addLog(`${G.teams[teamIdx].name}: 보드 특수 칸 발동 ${n>0?'+':''}${n}칸!`);playSfx('special');await showMoveSummary('보드 특수 칸',`${n>0?'앞으로':'뒤로'} ${Math.abs(n)}칸`,n);const moved=await animateMoveToken(teamIdx,tokenIdx,n,'보드 특수칸',false,false);if(!moved)return;const leader=getStackLeader(teamIdx,tokenIdx);const movedTok=G.teams[teamIdx]?.tokens?.[leader];if(!G.ended&&movedTok&&!movedTok.finished&&movedTok.pos!==pos&&G.specials[movedTok.pos])await triggerBoardSpecial(teamIdx,leader,visited)}
+function checkRaceWin(){if(!G)return;const winner=G.teams.find(t=>t.tokens.every(x=>x.finished));if(winner)finishGame('race',winner)}
+
+function buildGameQuestionQueue(pool,mode){return mode==='ordered'?[...pool]:shuffle(pool)}
+function nextGameQuestion(){if(!G)return null;const live=questions.filter(x=>x.q.trim()&&x.a.trim());if(!live.length)return null;if(!G.questionQueue?.length||G.questionCursor>=G.questionQueue.length){let next=buildGameQuestionQueue(live,G.questionMode);if(G.questionMode==='random'&&next.length>1&&G.lastQuestionId&&next[0]?.id===G.lastQuestionId){const swap=next.findIndex((x,i)=>i>0&&x.id!==G.lastQuestionId);if(swap>0)[next[0],next[swap]]=[next[swap],next[0]]}G.questionQueue=next;G.questionCursor=0}const q=G.questionQueue[G.questionCursor++];G.lastQuestionId=q?.id??null;return q}
+function normalizeAnswer(s){return String(s).trim().toLowerCase().replace(/\s+/g,'').replace(/[.,!?·ㆍ]/g,'')}
+function renderGameQuestionInput(q){const type=questionTypeOf(q),choiceBox=$('#choiceAnswers'),answerLine=$('#answerLine'),input=$('#answerInput'),hint=$('#questionTypeHint');q.selectedChoice='';choiceBox.innerHTML='';choiceBox.classList.add('hidden');answerLine.classList.remove('hidden');hint.innerHTML=`<span class="question-type-badge ${type}">${questionTypeLabel(q)}</span>`;if(type==='subjective'){input.value='';input.disabled=false;$('#submitAnswer').disabled=false;setTimeout(()=>input.focus(),0);return}answerLine.classList.add('hidden');choiceBox.classList.remove('hidden');(q.options||[]).forEach((opt,i)=>{const b=document.createElement('button');b.type='button';b.className='choice-option';b.dataset.value=opt;b.innerHTML=`<span class="choice-num">${i+1}</span><span class="choice-text">${escapeHtml(opt)}</span>`;b.onclick=()=>{if(q.answered)return;q.selectedChoice=opt;choiceBox.querySelectorAll('.choice-option').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');submit.disabled=false};choiceBox.appendChild(b)});const submit=document.createElement('button');submit.type='button';submit.className='primary choice-submit';submit.textContent='선택한 답 제출';submit.disabled=true;submit.onclick=()=>judgeAnswer(q.selectedChoice);choiceBox.appendChild(submit)}
+function openQuestion(){if(!G||G.ended)return;const q=nextGameQuestion();if(!q)return;const t=G.teams[G.current];let sec=getRuleQuestionSeconds(G.baseQuestionTime,G.rule);if(t.questionTimeDeltaNext){sec=Math.max(1,sec+t.questionTimeDeltaNext);t.questionTimeDeltaNext=0}G.currentQuestion={...normalizeQuestionRecord(q),timeLeft:sec,initialTime:sec,answered:false,timeExpired:false,lastCountdownMark:Math.ceil(sec),selectedChoice:''};$('#gameQuestion').textContent=q.q;$('#answerResult').classList.add('hidden');$('#answerResult').innerHTML='';$('#correctChoices').classList.add('hidden');$('#correctChoices').innerHTML='';$('#countdown').textContent=sec.toFixed(1);$('#countdown').style.color='';renderGameQuestionInput(G.currentQuestion);$('#questionOverlay').classList.remove('hidden');playSfx('question');beginQuestionTimer(sec)}
+function beginQuestionTimer(sec){clearQuestionTimer();if(!G?.currentQuestion||G.currentQuestion.timeExpired)return;G.currentQuestion.deadline=Date.now()+sec*1000;G.currentQuestion.lastCountdownMark=Math.ceil(sec);G.questionTimer=setInterval(()=>{if(G.paused)return;const left=Math.max(0,(G.currentQuestion.deadline-Date.now())/1000);G.currentQuestion.timeLeft=left;$('#countdown').textContent=left.toFixed(1);const mark=Math.ceil(left);if(mark<G.currentQuestion.lastCountdownMark&&mark>0&&mark<=3){playSfx('tick')}G.currentQuestion.lastCountdownMark=mark;if(left<=0){clearQuestionTimer();G.currentQuestion.timeExpired=true;$('#countdown').textContent='시간 종료';$('#countdown').style.color='#b45309';$('#answerResult').classList.remove('hidden');$('#answerResult').innerHTML=`<b>⏳ ${G.currentQuestion.initialTime}초가 지났습니다.</b> 자동으로 오답 처리하지 않습니다. 학생의 답을 선택하거나 입력한 뒤 판정하세요.`;if(questionTypeOf(G.currentQuestion)==='subjective')$('#answerInput').focus();playSfx('timeout')}},50)}
+function clearQuestionTimer(){if(G?.questionTimer){clearInterval(G.questionTimer);G.questionTimer=null}}
+$('#answerInput').addEventListener('keydown',e=>{if(e.key==='Enter')judgeAnswer()});$('#submitAnswer').onclick=()=>judgeAnswer();
+function judgeAnswer(submittedOverride=null){if(!G?.currentQuestion||G.currentQuestion.answered)return;const q=G.currentQuestion,type=questionTypeOf(q);const submitted=submittedOverride!==null?String(submittedOverride):$('#answerInput').value;if(type!=='subjective'&&!String(submitted).trim()){const r=$('#answerResult');r.classList.remove('hidden');r.innerHTML='<b style="color:#b45309">보기를 먼저 선택해 주세요.</b>';return}q.answered=true;clearQuestionTimer();$('#answerInput').disabled=true;$('#submitAnswer').disabled=true;$('#choiceAnswers').querySelectorAll('button').forEach(b=>b.disabled=true);const t=G.teams[G.current];const accepted=q.a.split('|').map(normalizeAnswer);const correct=accepted.includes(normalizeAnswer(submitted));const firstAnswer=(q.a.split('|')[0]||'').trim();if(type!=='subjective'){$('#choiceAnswers').querySelectorAll('.choice-option').forEach(b=>{if(normalizeAnswer(b.dataset.value)===normalizeAnswer(firstAnswer))b.classList.add('correct-answer');if(b.classList.contains('selected')&&!correct)b.classList.add('wrong-answer')})}$('#answerResult').classList.remove('hidden');if(correct){playSfx('correct');spawnConfetti();t.correct++;$('#answerResult').innerHTML=`<b style="color:#166534">⭕ 정답!</b> 정답: ${escapeHtml(firstAnswer)}`;addLog(`${t.name}: 정답 (${t.correct}개째)`);showCorrectChoices()}else{playSfx('wrong');t.wrong++;$('#answerResult').innerHTML=`<div style="text-align:center;padding:8px 4px"><div style="font-size:22px;font-weight:950;color:#991b1b;margin-bottom:8px">❌ 오답</div><div style="font-size:17px;font-weight:800;color:#64748b">정답</div><div style="font-size:34px;font-weight:950;color:#111827;line-height:1.3;margin-top:3px">${escapeHtml(firstAnswer)}</div><div style="font-size:13px;font-weight:800;color:#94a3b8;margin-top:7px">5초 동안 정답을 확인하세요</div></div>`;addLog(`${t.name}: 오답 — 정답은 ${firstAnswer}`);setTimeout(()=>applyWrong(),5000)}renderStats()}
+function hideQuestionForAction(){clearQuestionTimer();removePeekOverlay('questionOverlay');$('#questionOverlay').classList.add('hidden')}
+function showCorrectChoices(){
+ const t=G.teams[G.current],box=$('#correctChoices');box.classList.remove('hidden');
+ const bonusBlocked=!!t.blockBonus,chanceBlocked=!!t.blockChance,hasDouble=!!t.doubleBonus&&!bonusBlocked,bonus=bonusBlocked?0:G.rule.bonus*(hasDouble?2:1),total=G.diceRoll+bonus;
+ if(bonusBlocked)t.blockBonus=false;if(chanceBlocked)t.blockChance=false;
+ $('#answerResult').innerHTML+=`<div style="margin-top:10px;font-weight:800;color:#475569">${bonusBlocked?'🚫 정답 보너스 봉인 적용 · ':''}${chanceBlocked?'🚫 찬스 선택 봉인 적용 · ':''}정답 보상: <b>주사위 ${G.diceRoll}칸</b>${bonus?` + <b>보너스 ${bonus}칸</b>`:'만 이동'}</div>`;
+ const move=document.createElement('button');move.className='good';move.textContent=bonus?`① 주사위 ${G.diceRoll} + 보너스 ${bonus} = 총 ${total}칸 이동`:`주사위 ${G.diceRoll}칸만 이동`;
+ move.onclick=async()=>{box.innerHTML='';hideQuestionForAction();if(hasDouble)t.doubleBonus=false;await sleep(120);await showMoveSummary(`${t.name} 말 ${stackLabel(G.current,G.selectedToken)} 이동`,bonus?`주사위 ${G.diceRoll}칸 + 정답 보너스 ${bonus}칸 = ${total}칸`:`보너스 봉인 · 주사위 ${G.diceRoll}칸`,total);await moveToken(G.current,G.selectedToken,total,'주사위 + 정답 보너스',true);closeQuestionAndTurn()};
+ box.append(move);
+ if(!chanceBlocked){const ch=document.createElement('button');ch.className='warn';ch.textContent=G.rule.doubleChance?`② 주사위 ${G.diceRoll}칸 + 찬스 2장 중 1장 적용`:`② 주사위 ${G.diceRoll}칸 + 찬스 1장 적용`;ch.onclick=()=>{box.innerHTML='';hideQuestionForAction();drawAnswerChanceBeforeMove(G.rule.doubleChance?2:1)};box.append(ch)}
+}
+async function applyWrong(){const t=G.teams[G.current];hideQuestionForAction();await sleep(120);let p=G.rule.penalty;if(t.shieldPenalty){t.shieldPenalty=false;addLog(`${t.name}: 오답 페널티 방어권 사용!`);p=0}if(p){await showMoveSummary(`${t.name} 말 ${G.selectedToken+1} 이동`,`오답 페널티 -${p}칸`,-p);moveToken(G.current,G.selectedToken,-p,'오답 페널티',true)}else await showMoveSummary(`${t.name} 말 ${G.selectedToken+1} 이동`,'오답 페널티 방어','0');closeQuestionAndTurn()}
+async function closeQuestionAndTurn(){if(!G||G.ended)return;await (G.moveChain||Promise.resolve());if(!G||G.ended)return;removePeekOverlay('questionOverlay');$('#questionOverlay').classList.add('hidden');G.currentQuestion=null;renderAll();if(G.pendingBoardChanceCount>0){G.pendingBoardChanceCount--;addLog(`${G.teams[G.current].name}: 보드 찬스칸 보너스 찬스!`);drawChance(1);return}await sleep(250);advanceTeam()}
+
+const CHANCES=[
+ {name:'급행열차',desc:'현재 말이 +3칸 이동',effect:'move',n:3},
+ {name:'고속버스',desc:'현재 말이 +4칸 이동',effect:'move',n:4},
+ {name:'KTX 질주',desc:'현재 말이 +5칸 이동',effect:'move',n:5},
+ {name:'비행기 탑승',desc:'현재 말이 +6칸 이동',effect:'move',n:6},
+ {name:'고속도로 개통',desc:'현재 말이 +8칸 이동',effect:'move',n:8},
+ {name:'지름길 발견',desc:'현재 말이 무작위로 +3~+6칸 이동',effect:'randomForward'},
+ {name:'다음 모퉁이로!',desc:'브루마블 판의 다음 모퉁이까지 한 번에 이동',effect:'nextCorner'},
+ {name:'말 골라 전진',desc:'우리 팀의 원하는 말 하나를 +4칸 이동',effect:'ownTokenMove',n:4},
+ {name:'우리 팀 전진!',desc:'완주하지 않은 우리 팀의 모든 말이 +2칸 이동',effect:'allOwnForward'},
+ {name:'다 같이 한 걸음',desc:'완주하지 않은 우리 팀의 모든 말이 +1칸 이동',effect:'allOwnForward1'},
+ {name:'길을 잘못 들었다',desc:'현재 말이 -3칸 이동',effect:'move',n:-3},
+ {name:'공사 구간',desc:'현재 말이 -4칸 이동',effect:'move',n:-4},
+ {name:'교통 체증',desc:'현재 말이 -5칸 이동',effect:'move',n:-5},
+ {name:'대형 우회',desc:'현재 말이 -6칸 이동',effect:'move',n:-6},
+ {name:'휴식 시간',desc:'다음 자기 차례를 1회 자동으로 쉼',effect:'skipSelf'},
+ {name:'한 번 더!',desc:'현재 팀이 이번 턴 종료 후 한 번 더 진행',effect:'extraTurn'},
+ {name:'쌍주사위',desc:'다음 차례에는 주사위 2개를 굴려 합계를 사용',effect:'doubleDice'},
+ {name:'행운 번호 +2',desc:'다음 주사위 결과에 +2를 더함',effect:'diceBonus',n:2},
+ {name:'안정 주사위',desc:'다음 주사위 결과가 4보다 작으면 4로 적용',effect:'diceFloor',n:4},
+ {name:'두 배 보너스',desc:'다음 정답의 규칙 보너스 이동을 2배로 적용',effect:'doubleBonus'},
+ {name:'생각할 시간',desc:'다음 문제 제한시간 +5초',effect:'questionTime',n:5},
+ {name:'작은 여유',desc:'다음 문제 제한시간 +3초',effect:'questionTime',n:3},
+ {name:'안전 보험',desc:'다음 오답 페널티를 1회 무효화',effect:'shieldPenalty'},
+ {name:'후퇴 방패',desc:'다음 뒤로 이동 효과를 1회 무효화',effect:'shieldBack'},
+ {name:'휴식 면제권',desc:'다음 쉬기 효과를 1회 무효화',effect:'immuneSkip'},
+ {name:'상대팀 휴식',desc:'선택한 상대팀의 다음 차례를 1회 쉬게 함',effect:'skipOther'},
+ {name:'뒤로 밀기',desc:'선택한 상대팀 말 하나를 -3칸 이동',effect:'pushOther',n:-3},
+ {name:'강제 후퇴',desc:'선택한 상대팀 말 하나를 -5칸 이동',effect:'pushOther',n:-5},
+ {name:'모두 뒤로!',desc:'다른 모든 팀의 대표 말 하나씩을 -2칸 이동',effect:'allBack'},
+ {name:'상대팀 단체 후퇴',desc:'선택한 상대팀의 완주하지 않은 모든 말을 -1칸 이동',effect:'allOpponentBack1'},
+ {name:'선두 견제',desc:'현재 가장 앞선 상대팀의 가장 앞선 말을 -4칸 이동',effect:'leadPush'},
+ {name:'꼴찌의 반격',desc:'정답 수가 공동 최하위라면 +6칸, 아니면 +3칸 이동',effect:'catchup'},
+ {name:'자리 바꾸기',desc:'현재 말과 선택한 상대팀 말의 위치를 교환',effect:'swap'},
+ {name:'가위바위보 교환전',desc:'상대팀과 가위바위보에서 이기면 두 말의 위치를 교환',effect:'rpsSwap'},
+ {name:'가위바위보 진격전',desc:'이기면 +5칸, 지면 -3칸, 비기면 이동 없음',effect:'rpsMove'},
+ {name:'행운의 주사위',desc:'별도 주사위가 1~3이면 +6칸, 4~6이면 -3칸',effect:'luckDice'},
+ {name:'모험 카드',desc:'50% 확률로 +6칸, 50% 확률로 -4칸 이동',effect:'adventure'},
+ {name:'특수칸 레이더',desc:'다음 앞쪽 특수 칸 바로 전까지 이동',effect:'nextSpecial'},
+ {name:'무작위 상대 후퇴',desc:'상대팀의 무작위 말 하나를 -4칸 이동',effect:'randomOpponentBack'},
+ {name:'추월 찬스',desc:'앞에 있는 가장 가까운 상대 말의 1칸 앞으로 추월. 없으면 +4칸',effect:'overtake'},
+ {name:'황금 선택권',desc:'지금 +4칸 이동 또는 다음 뒤로 이동 1회 방어 중 하나를 선택',effect:'choiceMoveShield'},
+ {name:'감점 주사위',desc:'다음 자기 차례의 주사위 합계에서 2를 뺌 (최소 1)',effect:'dicePenalty',n:2},
+ {name:'속도 제한',desc:'다음 자기 차례의 주사위 결과는 최대 3까지만 적용',effect:'diceCeil',n:3},
+ {name:'시간 압박',desc:'다음 문제 제한시간 -3초',effect:'questionTime',n:-3},
+ {name:'초읽기',desc:'다음 문제 제한시간 -5초',effect:'questionTime',n:-5},
+ {name:'보너스 봉인',desc:'다음 정답에서는 규칙 보너스 이동을 받을 수 없음',effect:'blockBonus'},
+ {name:'찬스 봉인',desc:'다음 정답에서는 찬스를 선택할 수 없고 이동 보상만 적용',effect:'blockChance'},
+ {name:'무인도행',desc:'현재 말이 즉시 무인도로 이동하여 갇힘',effect:'goIsland'}
+];
+
+function chanceBaseState(context='board'){
+ if(!G||G.ended)return null;
+ const ti=G.current,ki=getStackLeader(ti,G.selectedToken),tok=G.teams?.[ti]?.tokens?.[ki];
+ if(!tok||tok.finished)return null;
+ const delta=context==='answer'?(G.diceRoll||0):0;
+ const progress=Math.max(0,Math.min(BOARD_SPACES,tok.progress+delta));
+ return {ti,ki,progress,pos:progress>=BOARD_SPACES?0:progress%BOARD_SPACES,finished:progress>=BOARD_SPACES}
+}
+function chanceOpponentTokenEntries(context='board',requireMoved=false){
+ if(!G)return [];
+ const base=chanceBaseState(context),out=[];
+ G.teams.forEach((o,oi)=>{
+  if(oi===G.current)return;
+  getMovableLeaders(oi).forEach(k=>{
+   const x=o.tokens[k];
+   if(requireMoved&&x.progress<=0)return;
+   // 정답 찬스에서는 먼저 주사위 이동이 적용된다. 그 착지점의 상대 말은 잡혀 START로 가므로 공격/교환 대상으로 잡지 않는다.
+   if(context==='answer'&&base&&!base.finished&&x.progress>0&&x.pos===base.pos)return;
+   out.push({oi,k,t:o,token:x});
+  });
+ });
+ return out
+}
+function chanceOpponentTeams(context='board',requireMoved=false){
+ const ids=new Set(chanceOpponentTokenEntries(context,requireMoved).map(x=>x.oi));
+ if(!requireMoved){
+  G?.teams?.forEach((t,i)=>{if(i!==G.current&&t.tokens.some(x=>!x.finished))ids.add(i)});
+ }
+ return [...ids].map(i=>({i,t:G.teams[i]}))
+}
+function chanceIsUsable(c,context='board'){
+ if(!G||G.ended)return false;
+ const base=chanceBaseState(context),t=G.teams[G.current];
+ if(!base||!t)return false;
+ const ownLeaders=getMovableLeaders(G.current),movedOpp=chanceOpponentTokenEntries(context,true),activeOpp=chanceOpponentTeams(context,false);
+ const effect=c.effect;
+ if(effect==='ownTokenMove'||effect==='allOwnForward'||effect==='allOwnForward1')return ownLeaders.length>=2;
+ if(effect==='skipOther')return activeOpp.length>0;
+ if(['pushOther','swap','rpsSwap','allBack','allOpponentBack1','leadPush','randomOpponentBack'].includes(effect))return movedOpp.length>0;
+ if(effect==='overtake')return movedOpp.some(x=>x.token.progress>base.progress);
+ if(effect==='extraTurn')return !G.extraTurn;
+ if(effect==='doubleDice')return !t.doubleDiceNext;
+ if(effect==='diceFloor')return (t.diceFloorNext||0)<(c.n||4);
+ if(effect==='dicePenalty')return !(t.dicePenaltyNext>0);
+ if(effect==='diceCeil')return !(t.diceCeilNext>0);
+ if(effect==='questionTime')return !t.questionTimeDeltaNext;
+ if(effect==='blockBonus')return !t.blockBonus;
+ if(effect==='blockChance')return !t.blockChance;
+ if(effect==='doubleBonus')return !t.doubleBonus;
+ 
+ if(effect==='shieldPenalty')return !t.shieldPenalty;
+ if(effect==='shieldBack')return !t.shieldBack;
+ if(effect==='immuneSkip')return !t.immuneSkip;
+ if(effect==='nextCorner')return !base.finished&&CORNERS.some(x=>x>base.progress);
+ if(effect==='nextSpecial')return !base.finished;
+ if(effect==='goIsland')return !base.finished&&base.pos!==ISLAND_POS;
+ if(['move','randomForward','catchup','luckDice','adventure','rpsMove','choiceMoveShield'].includes(effect)){
+  if(effect==='move'&&c.n<0)return base.progress>0;
+  return !base.finished;
+ }
+ return true
+}
+function getEligibleChances(context='board'){
+ const pool=CHANCES.filter(c=>chanceIsUsable(c,context));
+ if(pool.length)return pool;
+ // 정상적인 턴에서는 도달하지 않아야 하지만, 극단적인 상태에서도 찬스 진행이 멈추지 않도록 항상 실행 가능한 전진 카드만 안전 후보로 둔다.
+ const fallback=CHANCES.filter(c=>c.effect==='move'&&c.n>0);
+ return fallback.length?fallback:CHANCES.slice(0,1)
+}
+function pickEligibleChances(count=1,context='board'){
+ const pool=shuffle(getEligibleChances(context));
+ return pool.slice(0,Math.max(1,Math.min(count,pool.length)))
+}
+
+function drawChance(count=1){
+ if(!G||G.ended)return;
+ const t=G.teams[G.current],cards=pickEligibleChances(count,'board');
+ t.chances++;renderStats();playSfx('chance');spawnSparkles();
+ if(cards.length<=1){const c=cards[0];showChance(c,()=>applyChance(c));return}
+ showChoiceModal('찬스 2장 중 1장을 선택하세요',cards.map(c=>({label:`${c.name} — ${c.desc}`,value:c})),c=>{showChance(c,()=>applyChance(c))})
+}
+function drawAnswerChanceBeforeMove(count=1){
+ if(!G||G.ended)return;
+ const t=G.teams[G.current],cards=pickEligibleChances(count,'answer');
+ t.chances++;renderStats();playSfx('chance');spawnSparkles();
+ if(cards.length<=1){prepareAnswerChancePlan(cards[0]);return}
+ showChoiceModal('🎁 찬스 2장 중 1장을 선택하세요',cards.map(c=>({label:`${c.name} — ${c.desc}`,value:c})),c=>prepareAnswerChancePlan(c));
+}
+function choicePromise(title,items){return new Promise(resolve=>showChoiceModal(title,items,resolve))}
+function opponentChoices(requireMoved=false,context='answer'){return chanceOpponentTeams(context,requireMoved).map(x=>({label:x.t.name,value:x.i}))}
+function chooseOpponentTokenPromise(title,context='answer'){
+ return new Promise(resolve=>{
+  const entries=chanceOpponentTokenEntries(context,true),teamIds=[...new Set(entries.map(x=>x.oi))],ops=teamIds.map(i=>({i,t:G.teams[i]}));
+  if(!ops.length){resolve(null);return}
+  const html=`<div class="chance-title">${escapeHtml(title)}</div><div class="field"><label>상대팀</label><select id="planOppTeam">${ops.map(x=>`<option value="${x.i}">${escapeHtml(x.t.name)}</option>`).join('')}</select></div><div class="field" style="margin-top:10px"><label>상대 말</label><select id="planOppToken"></select></div><div class="modal-actions"><button class="primary" id="planOppOk">선택</button></div>`;
+  showModal(html);
+  const refresh=()=>{const oi=+$('#planOppTeam').value;$('#planOppToken').innerHTML=entries.filter(x=>x.oi===oi).map(x=>`<option value="${x.k}">말 ${stackLabel(oi,x.k)} · 현재 ${G.teams[oi].tokens[x.k].pos+1}칸</option>`).join('')};
+  $('#planOppTeam').onchange=refresh;refresh();
+  $('#planOppOk').onclick=()=>{const oi=+$('#planOppTeam').value,ok=+$('#planOppToken').value;closeModal();resolve({oi,ok})};
+ })
+}
+function rpsPlanPromise(title,subtitle=''){return new Promise(resolve=>{
+ showModal(`<div class="chance-title">${escapeHtml(title)}</div><div class="chance-desc">${subtitle}</div><div class="modal-actions" style="justify-content:center"><button class="secondary planrps" data-v="0">가위 ✌️</button><button class="secondary planrps" data-v="1">바위 ✊</button><button class="secondary planrps" data-v="2">보 🖐</button></div>`);
+ $$('.planrps').forEach(b=>b.onclick=()=>{const me=+b.dataset.v,op=rnd(0,2),names=['가위','바위','보'];const diff=(me-op+3)%3,result=me===op?'tie':diff===1?'win':'lose';closeModal();resolve({result,me:names[me],op:names[op]})});
+})}
+function projectedProgress(teamIdx,tokenIdx,delta){
+ tokenIdx=getStackLeader(teamIdx,tokenIdx);const tok=G.teams[teamIdx].tokens[tokenIdx];return Math.max(0,Math.min(BOARD_SPACES,tok.progress+delta));
+}
+function projectedPos(progress){return progress>=BOARD_SPACES?0:((progress%BOARD_SPACES)+BOARD_SPACES)%BOARD_SPACES}
+function addChanceBenefit(t,n){t.chanceBenefit+=n;if(n>0)t.positiveChance++}
+async function prepareAnswerChancePlan(c){
+ if(!G||G.ended)return;
+ const ti=G.current,ki=getStackLeader(ti,G.selectedToken),t=G.teams[ti],dice=G.diceRoll;
+ G.selectedToken=ki;
+ const plan={c,dice,ownExtra:0,lines:[],actions:[],benefit:0};
+ const label=stackLabel(ti,ki);
+ plan.lines.push(`<b>${escapeHtml(t.name)} 말 ${escapeHtml(label)}</b> · 주사위 <b>${dice}칸</b>`);
+ const addAction=(desc,fn)=>{plan.lines.push(desc);plan.actions.push(fn)};
+ switch(c.effect){
+  case 'move': plan.ownExtra=c.n;plan.benefit=c.n;break;
+  case 'randomForward': {const n=rnd(3,6);plan.ownExtra=n;plan.benefit=n;plan.lines.push(`지름길 결과: <b>+${n}칸</b>`);break}
+  case 'catchup': {const min=Math.min(...G.teams.map(x=>x.correct)),n=t.correct===min?6:3;plan.ownExtra=n;plan.benefit=n;plan.lines.push(`꼴찌의 반격: <b>+${n}칸</b>`);break}
+  case 'luckDice': {const d=rnd(1,6),n=d<=3?6:-3;plan.ownExtra=n;plan.benefit=n;plan.lines.push(`행운의 주사위 <b>${d}</b> → <b>${n>0?'+':''}${n}칸</b>`);break}
+  case 'adventure': {const n=Math.random()<.5?6:-4;plan.ownExtra=n;plan.benefit=n;plan.lines.push(`모험 결과: <b>${n>0?'지름길 성공 +6칸':'길을 잃어 -4칸'}</b>`);break}
+  case 'rpsMove': {const z=await rpsPlanPromise('✊✌️🖐 가위바위보 진격전','승리 +5칸 / 패배 -3칸 / 무승부 이동 없음');const n=z.result==='win'?5:z.result==='lose'?-3:0;plan.ownExtra=n;plan.benefit=n;plan.lines.push(`가위바위보: 나 ${z.me} / 상대 ${z.op} → <b>${z.result==='win'?'+5칸':z.result==='lose'?'-3칸':'이동 없음'}</b>`);break}
+  case 'nextCorner': {const base=projectedProgress(ti,ki,dice);const corners=CORNERS;let target=corners.find(x=>x>base);if(target===undefined)target=BOARD_SPACES;const n=Math.max(0,target-base);plan.ownExtra=n;plan.benefit=Math.min(n,8);plan.lines.push(`주사위 이동 후 다음 모퉁이까지 <b>+${n}칸</b>`);break}
+  case 'overtake': {const base=projectedProgress(ti,ki,dice),ahead=[];G.teams.forEach((o,oi)=>{if(oi!==ti)getMovableLeaders(oi).forEach(k=>{const x=o.tokens[k];if(x.progress>base)ahead.push(x.progress)})});const n=ahead.length?Math.max(1,Math.min(...ahead)+1-base):4;plan.ownExtra=n;plan.benefit=Math.min(n,7);plan.lines.push(ahead.length?`가장 가까운 상대를 추월하도록 <b>+${n}칸</b>`:`앞선 상대가 없어 대체 이동 <b>+4칸</b>`);break}
+  case 'nextSpecial': {const base=projectedProgress(ti,ki,dice),pos=projectedPos(base);let best=null;for(let d=1;d<BOARD_SPACES;d++){const p=(pos+d)%BOARD_SPACES;if(p===ISLAND_POS||G.specials[p]){best=d;break}}if(best===null)best=3;plan.ownExtra=best;plan.benefit=Math.min(best,6);plan.lines.push(`주사위 이동 후 다음 특수칸 방향으로 <b>+${best}칸</b>`);break}
+  case 'extraTurn': addAction(`찬스: <b>현재 팀 한 번 더 진행</b>`,()=>{G.extraTurn=true});plan.benefit=3;break;
+  case 'doubleDice': addAction(`찬스: <b>다음 차례 주사위 2개</b>`,()=>{t.doubleDiceNext=true});plan.benefit=2;break;
+  case 'diceBonus': addAction(`찬스: 다음 주사위에 <b>+${c.n}</b>`,()=>{t.diceBonusNext=(t.diceBonusNext||0)+c.n});plan.benefit=2;break;
+  case 'diceFloor': addAction(`찬스: 다음 주사위가 ${c.n} 미만이면 <b>${c.n}로 적용</b>`,()=>{t.diceFloorNext=Math.max(t.diceFloorNext||0,c.n)});plan.benefit=2;break;
+  case 'shieldPenalty': addAction('찬스: <b>다음 오답 페널티 1회 방어</b>',()=>{t.shieldPenalty=true});plan.benefit=2;break;
+  case 'shieldBack': addAction('찬스: <b>다음 뒤로 이동 1회 방어</b>',()=>{t.shieldBack=true});plan.benefit=2;break;
+  case 'doubleBonus': addAction('찬스: <b>다음 정답 보너스 ×2</b>',()=>{t.doubleBonus=true});plan.benefit=3;break;
+  case 'questionTime': {const base=Math.max(1,Number(G.baseQuestionTime||10)),next=Math.max(1,base+c.n),sign=c.n>0?'+':'';addAction(`${c.n>0?'찬스':'불리한 찬스'}: 다음 문제 제한시간 <b>${sign}${c.n}초</b> (${base}초 → ${next}초)`,()=>{t.questionTimeDeltaNext=c.n});plan.benefit=c.n>0?1:-2;break}
+  case 'dicePenalty': addAction(`불리한 찬스: 다음 주사위 합계 <b>-${c.n}</b> (최소 1)`,()=>{t.dicePenaltyNext=c.n});plan.benefit=-2;break;
+  case 'diceCeil': addAction(`불리한 찬스: 다음 주사위 결과 <b>최대 ${c.n}</b>`,()=>{t.diceCeilNext=c.n});plan.benefit=-2;break;
+  
+  case 'blockBonus': addAction('불리한 찬스: <b>다음 정답 보너스 이동 봉인</b>',()=>{t.blockBonus=true});plan.benefit=-3;break;
+  case 'blockChance': addAction('불리한 찬스: <b>다음 정답 찬스 선택 봉인</b>',()=>{t.blockChance=true});plan.benefit=-3;break;
+  case 'goIsland': addAction('불리한 찬스: 주사위 이동 후 현재 말을 <b>🏝️ 무인도로 즉시 이동</b>',()=>{G.moveChain=(G.moveChain||Promise.resolve()).then(()=>sendTokenToIsland(ti,ki,'찬스 효과'));return G.moveChain});plan.benefit=-6;break;
+  case 'immuneSkip': addAction('찬스: <b>다음 쉬기 효과 1회 무효</b>',()=>{t.immuneSkip=true});plan.benefit=2;break;
+  case 'skipSelf': {if(t.immuneSkip){addAction('휴식 면제권이 있어 <b>쉬기 효과 무효</b>',()=>{t.immuneSkip=false});plan.benefit=0}else{addAction('찬스: <b>다음 자기 차례 1회 쉬기</b>',()=>{t.skip++});plan.benefit=-2}break}
+  case 'skipOther': {const ops=opponentChoices(false,'answer');if(!ops.length){plan.ownExtra=2;plan.benefit=2;plan.lines.push('상대팀이 없어 대체 효과 <b>+2칸</b>');break}const oi=await choicePromise('쉴 상대팀을 선택하세요',ops);const o=G.teams[oi];if(o.immuneSkip){addAction(`${escapeHtml(o.name)}의 휴식 면제권으로 <b>쉬기 무효</b>`,()=>{o.immuneSkip=false});plan.benefit=0}else{addAction(`${escapeHtml(o.name)}: <b>다음 차례 1회 쉬기</b>`,()=>{o.skip++});plan.benefit=3}break}
+  case 'pushOther': {const target=await chooseOpponentTokenPromise('뒤로 보낼 상대팀과 말을 선택하세요');if(!target){plan.ownExtra=2;plan.benefit=2;plan.lines.push('상대팀이 없어 대체 효과 <b>+2칸</b>');break}const ol=stackLabel(target.oi,target.ok);addAction(`${escapeHtml(G.teams[target.oi].name)} 말 ${escapeHtml(ol)} <b>${c.n}칸</b>`,()=>moveToken(target.oi,target.ok,c.n,'상대 찬스 공격',true));plan.benefit=Math.abs(c.n);break}
+  case 'swap': {const target=await chooseOpponentTokenPromise('위치를 바꿀 상대팀 말을 선택하세요');if(!target){plan.ownExtra=2;plan.benefit=2;plan.lines.push('상대팀이 없어 대체 효과 <b>+2칸</b>');break}const ol=stackLabel(target.oi,target.ok);addAction(`주사위 이동 후 ${escapeHtml(G.teams[target.oi].name)} 말 ${escapeHtml(ol)}과 <b>위치 교환</b>`,()=>swapTokens(ti,ki,target.oi,target.ok));plan.benefit=4;break}
+  case 'rpsSwap': {const target=await chooseOpponentTokenPromise('가위바위보로 위치를 바꿀 상대팀 말을 선택하세요');if(!target){plan.ownExtra=2;plan.benefit=2;plan.lines.push('상대팀이 없어 대체 효과 <b>+2칸</b>');break}const z=await rpsPlanPromise('✊✌️🖐 가위바위보 교환전',`${escapeHtml(G.teams[target.oi].name)}과 대결합니다.`);const won=z.result==='win';plan.lines.push(`가위바위보: 나 ${z.me} / 상대 ${z.op} → <b>${won?'승리, 위치 교환':'교환 없음'}</b>`);if(won)addAction(`${escapeHtml(G.teams[target.oi].name)}과 <b>위치 교환</b>`,()=>swapTokens(ti,ki,target.oi,target.ok));plan.benefit=won?5:-1;break}
+  case 'allBack': addAction('다른 모든 팀의 진행 중인 대표 말 <b>-2칸</b>',()=>G.teams.forEach((o,oi)=>{if(oi!==ti){const ks=getMovableLeaders(oi).filter(k=>o.tokens[k].progress>0);if(ks.length)moveToken(oi,ks[0],-2,'전체 후퇴 찬스',true)}}));plan.benefit=4;break;
+  case 'allOwnForward': {plan.ownExtra=2;getMovableLeaders(ti).filter(k=>getStackLeader(ti,k)!==ki).forEach(k=>addAction(`우리 팀 말 ${escapeHtml(stackLabel(ti,k))} <b>+2칸</b>`,()=>moveToken(ti,k,2,'우리 팀 전진',false)));plan.benefit=4;break}
+  case 'allOwnForward1': {plan.ownExtra=1;getMovableLeaders(ti).filter(k=>getStackLeader(ti,k)!==ki).forEach(k=>addAction(`우리 팀 말 ${escapeHtml(stackLabel(ti,k))} <b>+1칸</b>`,()=>moveToken(ti,k,1,'다 같이 한 걸음',false)));plan.benefit=2;break}
+  case 'ownTokenMove': {const items=getMovableLeaders(ti).map(k=>({label:`말 ${stackLabel(ti,k)}${getStackMembers(ti,k).length>1?' (업기)':''}`,value:k}));const ok=await choicePromise('전진시킬 우리 팀 말을 선택하세요',items);if(getStackLeader(ti,ok)===ki){plan.ownExtra=c.n;plan.lines.push(`선택한 현재 말에 <b>+${c.n}칸</b>`)}else addAction(`우리 팀 말 ${escapeHtml(stackLabel(ti,ok))} <b>+${c.n}칸</b>`,()=>moveToken(ti,ok,c.n,'말 골라 전진',true));plan.benefit=c.n;break}
+  case 'allOpponentBack1': {const ops=opponentChoices(true,'answer');if(!ops.length){plan.ownExtra=2;plan.benefit=2;plan.lines.push('상대팀이 없어 대체 효과 <b>+2칸</b>');break}const oi=await choicePromise('단체 후퇴시킬 상대팀을 선택하세요',ops);addAction(`${escapeHtml(G.teams[oi].name)}의 모든 말 <b>-1칸</b>`,()=>getMovableLeaders(oi).forEach(k=>moveToken(oi,k,-1,'상대팀 단체 후퇴',false)));plan.benefit=4;break}
+  case 'leadPush': {const candidates=chanceOpponentTokenEntries('answer',true).map(x=>({oi:x.oi,k:x.k,p:x.token.progress}));if(!candidates.length){plan.ownExtra=3;plan.benefit=3;plan.lines.push('견제할 상대가 없어 대체 효과 <b>+3칸</b>')}else{const z=candidates.sort((a,b)=>b.p-a.p)[0];addAction(`${escapeHtml(G.teams[z.oi].name)} 말 ${escapeHtml(stackLabel(z.oi,z.k))} <b>-4칸</b>`,()=>moveToken(z.oi,z.k,-4,'선두 견제',true));plan.benefit=4}break}
+  case 'randomOpponentBack': {const candidates=chanceOpponentTokenEntries('answer',true).map(x=>({oi:x.oi,k:x.k}));if(!candidates.length){plan.ownExtra=2;plan.benefit=2;plan.lines.push('상대팀이 없어 대체 효과 <b>+2칸</b>')}else{const z=candidates[rnd(0,candidates.length-1)];addAction(`${escapeHtml(G.teams[z.oi].name)} 말 ${escapeHtml(stackLabel(z.oi,z.k))} <b>-4칸</b>`,()=>moveToken(z.oi,z.k,-4,'무작위 상대 후퇴',true));plan.benefit=4}break}
+  case 'choiceMoveShield': {const v=await choicePromise('황금 선택권 — 하나를 선택하세요',[{label:'+4칸 이동',value:'move'},{label:'다음 뒤로 이동 1회 방어',value:'shield'}]);if(v==='move'){plan.ownExtra=4;plan.benefit=4;plan.lines.push('황금 선택: <b>+4칸 이동</b>')}else{addAction('황금 선택: <b>다음 뒤로 이동 1회 방어</b>',()=>{t.shieldBack=true});plan.benefit=2}break}
+ }
+ addLog(`${t.name}: 찬스 「${c.name}」`);
+ addChanceBenefit(t,plan.benefit);
+ showFinalAnswerChanceNotice(plan);
+}
+function showFinalAnswerChanceNotice(plan){
+ if(!G||G.ended)return;
+ const t=G.teams[G.current],label=stackLabel(G.current,G.selectedToken),total=plan.dice+plan.ownExtra;
+ const moveText=plan.ownExtra===0?`주사위 ${plan.dice}칸 = <b>총 ${total}칸 이동</b>`:`주사위 ${plan.dice}칸 ${plan.ownExtra>0?'+':'-'} 찬스 ${Math.abs(plan.ownExtra)}칸 = <b>총 ${total>=0?total+'칸 앞으로':Math.abs(total)+'칸 뒤로'} 이동</b>`;
+ const extra=plan.lines.slice(1).map(x=>`<div style="margin-top:7px">• ${x}</div>`).join('');
+ showModal(`<div class="chance-title">🎁 ${escapeHtml(plan.c.name)}</div><div class="chance-desc" style="font-size:19px;line-height:1.65"><div style="padding:12px 14px;background:#f8fafc;border-radius:14px"><b>${escapeHtml(t.name)} 말 ${escapeHtml(label)}</b><br>${moveText}</div>${extra}<div style="margin-top:12px;font-size:14px;color:#64748b">${escapeHtml(plan.c.desc)}</div></div><div class="modal-actions"><button class="primary" id="finalChanceGo">한 번에 적용하기</button></div>`);
+ $('#finalChanceGo').onclick=async()=>{
+  closeModal();playSfx('special');
+  if(!G||G.ended)return;
+  const current=G.current,token=G.selectedToken,totalMove=plan.dice+plan.ownExtra;
+  if(totalMove!==0)await moveToken(current,token,totalMove,'주사위 + 찬스',true);
+  await (G.moveChain||Promise.resolve());
+  if(!G||G.ended)return;
+  plan.actions.forEach(fn=>fn());
+  await (G.moveChain||Promise.resolve());
+  closeQuestionAndTurn();
+ };
+}
+function showChance(c,onok){showModal(`<div class="chance-title">🎁 ${escapeHtml(c.name)}</div><div class="chance-desc">${escapeHtml(c.desc)}</div><div class="modal-actions"><button class="primary" id="modalOk">적용하기</button></div>`);$('#modalOk').onclick=()=>{closeModal();playSfx('special');onok()}}
+function applyChance(c){const t=G.teams[G.current];const ti=G.current,ki=G.selectedToken;addLog(`${t.name}: 찬스 「${c.name}」`);
+ const benefit=n=>{t.chanceBenefit+=n;if(n>0)t.positiveChance++};
+ switch(c.effect){
+  case 'move': benefit(c.n);moveToken(ti,ki,c.n,'찬스',true);return closeQuestionAndTurn();
+  case 'extraTurn': t.positiveChance++;t.chanceBenefit+=3;G.extraTurn=true;return closeQuestionAndTurn();
+  case 'doubleDice': t.doubleDiceNext=true;t.positiveChance++;t.chanceBenefit+=2;return closeQuestionAndTurn();
+  case 'diceBonus': t.diceBonusNext=(t.diceBonusNext||0)+c.n;benefit(2);return closeQuestionAndTurn();
+  case 'diceFloor': t.diceFloorNext=Math.max(t.diceFloorNext||0,c.n);benefit(2);return closeQuestionAndTurn();
+  case 'skipSelf': if(t.immuneSkip){t.immuneSkip=false;addLog(`${t.name}: 휴식 면제권으로 쉬기 무효!`)}else t.skip++;t.chanceBenefit-=2;return closeQuestionAndTurn();
+  case 'skipOther': return chooseOpponent('쉴 상대팀을 선택하세요',oi=>{const o=G.teams[oi];if(o.immuneSkip){o.immuneSkip=false;addLog(`${o.name}: 휴식 면제권으로 방어!`)}else{o.skip++;benefit(3)}closeQuestionAndTurn()});
+  case 'pushOther': return chooseOpponentToken('뒤로 보낼 상대팀과 말을 선택하세요',(oi,ok)=>{moveToken(oi,ok,c.n,'상대 찬스 공격',true);benefit(Math.abs(c.n));closeQuestionAndTurn()});
+  case 'swap': return chooseOpponentToken('위치를 바꿀 상대팀 말을 선택하세요',(oi,ok)=>{swapTokens(ti,ki,oi,ok);benefit(4);closeQuestionAndTurn()});
+  case 'rpsSwap': return rpsChallenge((won,oi,ok)=>{if(won){swapTokens(ti,ki,oi,ok);benefit(5)}else benefit(-1);closeQuestionAndTurn()});
+  case 'shieldPenalty': t.shieldPenalty=true;benefit(2);return closeQuestionAndTurn();
+  case 'shieldBack': t.shieldBack=true;benefit(2);return closeQuestionAndTurn();
+  case 'doubleBonus': t.doubleBonus=true;benefit(3);return closeQuestionAndTurn();
+  case 'questionTime': t.questionTimeDeltaNext=c.n;benefit(c.n>0?1:-2);return closeQuestionAndTurn();
+  case 'dicePenalty': t.dicePenaltyNext=c.n;benefit(-2);return closeQuestionAndTurn();
+  case 'diceCeil': t.diceCeilNext=c.n;benefit(-2);return closeQuestionAndTurn();
+  
+  case 'blockBonus': t.blockBonus=true;benefit(-3);return closeQuestionAndTurn();
+  case 'blockChance': t.blockChance=true;benefit(-3);return closeQuestionAndTurn();
+  case 'goIsland': benefit(-6);return sendTokenToIsland(ti,ki,'찬스 효과').then(()=>closeQuestionAndTurn());
+  case 'allBack': G.teams.forEach((o,oi)=>{if(oi!==ti){const k=getMovableLeaders(oi).find(k=>o.tokens[k].progress>0);if(k!==undefined)moveToken(oi,k,-2,'전체 후퇴 찬스',true)}});benefit(4);return closeQuestionAndTurn();
+  case 'allOwnForward': getMovableLeaders(ti).forEach(k=>moveToken(ti,k,2,'우리 팀 전진',false));benefit(4);renderAll();return closeQuestionAndTurn();
+  case 'allOwnForward1': getMovableLeaders(ti).forEach(k=>moveToken(ti,k,1,'다 같이 한 걸음',false));benefit(2);renderAll();return closeQuestionAndTurn();
+  case 'randomForward': {const n=rnd(3,6);moveToken(ti,ki,n,'지름길 발견',true);benefit(n);return closeQuestionAndTurn()}
+  case 'ownTokenMove': return chooseOwnToken('전진시킬 우리 팀 말을 선택하세요',(ok)=>{moveToken(ti,ok,c.n,'말 골라 전진',true);benefit(c.n);closeQuestionAndTurn()});
+  case 'nextCorner': {const tok=t.tokens[ki],corners=CORNERS;let target=corners.find(x=>x>tok.progress);if(target===undefined)target=BOARD_SPACES;const n=Math.max(0,target-tok.progress);moveToken(ti,ki,n,'다음 모퉁이 이동',true);benefit(Math.min(n,8));return closeQuestionAndTurn()}
+  case 'allOpponentBack1': return chooseOpponent('단체 후퇴시킬 상대팀을 선택하세요',oi=>{getMovableLeaders(oi).filter(k=>G.teams[oi].tokens[k].progress>0).forEach(k=>moveToken(oi,k,-1,'상대팀 단체 후퇴',false));benefit(4);closeQuestionAndTurn()},true);
+  case 'leadPush': {const candidates=[];G.teams.forEach((o,oi)=>{if(oi!==ti)getMovableLeaders(oi).forEach(k=>{const x=o.tokens[k];if(x.progress>0)candidates.push({oi,k,p:x.progress})})});if(!candidates.length){moveToken(ti,ki,3,'선두 견제 대체 보너스',true);benefit(3);return closeQuestionAndTurn()}const z=candidates.sort((a,b)=>b.p-a.p)[0];moveToken(z.oi,z.k,-4,'선두 견제',true);benefit(4);return closeQuestionAndTurn()}
+  case 'catchup': {const min=Math.min(...G.teams.map(x=>x.correct)),n=t.correct===min?6:3;moveToken(ti,ki,n,'꼴찌의 반격',true);benefit(n);return closeQuestionAndTurn()}
+  case 'luckDice': {const d=rnd(1,6),n=d<=3?6:-3;showModal(`<div class="chance-title">🎲 행운의 주사위: ${d}</div><div class="chance-desc">${n>0?'+6칸!':'-3칸!'}</div><div class="modal-actions"><button class="primary" id="luckOk">확인</button></div>`);$('#luckOk').onclick=()=>{closeModal();moveToken(ti,ki,n,'행운의 주사위',true);benefit(n);closeQuestionAndTurn()};return}
+  case 'adventure': {const n=Math.random()<.5?6:-4;showModal(`<div class="chance-title">🧭 모험 카드</div><div class="chance-desc">${n>0?'지름길 성공! +6칸':'길을 잃었습니다. -4칸'}</div><div class="modal-actions"><button class="primary" id="advOk">확인</button></div>`);$('#advOk').onclick=()=>{closeModal();moveToken(ti,ki,n,'모험 카드',true);benefit(n);closeQuestionAndTurn()};return}
+  case 'rpsMove': return rpsMoveChallenge((result)=>{const n=result==='win'?5:result==='lose'?-3:0;if(n)moveToken(ti,ki,n,'가위바위보 진격전',true);benefit(n);closeQuestionAndTurn()});
+  case 'randomOpponentBack': {const candidates=[];G.teams.forEach((o,oi)=>{if(oi!==ti)getMovableLeaders(oi).forEach(k=>{if(o.tokens[k].progress>0)candidates.push({oi,k})})});if(!candidates.length){moveToken(ti,ki,2,'대체 찬스',true);benefit(2);return closeQuestionAndTurn()}const z=candidates[rnd(0,candidates.length-1)];moveToken(z.oi,z.k,-4,'무작위 상대 후퇴',true);benefit(4);return closeQuestionAndTurn()}
+  case 'overtake': {const cur=t.tokens[ki].progress;const ahead=[];G.teams.forEach((o,oi)=>{if(oi!==ti)getMovableLeaders(oi).forEach(k=>{const x=o.tokens[k];if(x.progress>cur)ahead.push(x.progress)})});if(!ahead.length){moveToken(ti,ki,4,'추월 찬스 대체 이동',true);benefit(4);return closeQuestionAndTurn()}const target=Math.min(...ahead)+1;const n=Math.max(1,target-cur);moveToken(ti,ki,n,'추월 찬스',true);benefit(Math.min(n,7));return closeQuestionAndTurn()}
+  case 'choiceMoveShield': return showChoiceModal('황금 선택권 — 하나를 선택하세요',[{label:'+4칸 이동',value:'move'},{label:'다음 뒤로 이동 1회 방어',value:'shield'}],v=>{if(v==='move'){moveToken(ti,ki,4,'황금 선택권',true);benefit(4)}else{t.shieldBack=true;benefit(2)}closeQuestionAndTurn()});
+  case 'nextSpecial': {const tok=t.tokens[ki];let best=null;for(let d=1;d<BOARD_SPACES;d++){const p=(tok.pos+d)%BOARD_SPACES;if(p===ISLAND_POS||G.specials[p]){best=d;break}}if(best===null)best=3;moveToken(ti,ki,best,'다음 특수칸 점프',false);benefit(Math.min(best,6));return closeQuestionAndTurn()}
+  case 'immuneSkip': t.immuneSkip=true;benefit(2);return closeQuestionAndTurn();
+ }
+ closeQuestionAndTurn();
+}
+function swapTokens(aTeam,aTok,bTeam,bTok){aTok=getStackLeader(aTeam,aTok);bTok=getStackLeader(bTeam,bTok);const aGroup=getStackMembers(aTeam,aTok),bGroup=getStackMembers(bTeam,bTok),a=G.teams[aTeam].tokens[aTok],b=G.teams[bTeam].tokens[bTok];if(a.finished||b.finished)return;const ap=a.progress,bp=b.progress,apos=a.pos,bpos=b.pos;aGroup.forEach(k=>{G.teams[aTeam].tokens[k].progress=bp;G.teams[aTeam].tokens[k].pos=bpos});bGroup.forEach(k=>{G.teams[bTeam].tokens[k].progress=ap;G.teams[bTeam].tokens[k].pos=apos});addLog(`${G.teams[aTeam].name} 말 ${aGroup.map(k=>k+1).join('+')} ↔ ${G.teams[bTeam].name} 말 ${bGroup.map(k=>k+1).join('+')} 위치 교환!`);renderAll()}
+function chooseOwnToken(title,cb){const t=G.teams[G.current];const items=getMovableLeaders(G.current).map(k=>({label:`말 ${stackLabel(G.current,k)}${getStackMembers(G.current,k).length>1?' (업기)':''} · 현재 ${t.tokens[k].pos+1}칸`,value:k}));if(!items.length)return closeQuestionAndTurn();showChoiceModal(title,items,cb)}
+function rpsMoveChallenge(cb){showModal(`<div class="chance-title">✊✌️🖐 가위바위보 진격전</div><div class="chance-desc">학생 팀의 선택을 고르세요. 상대 선택은 프로그램이 무작위로 정합니다.<br><b>승리 +5칸 / 패배 -3칸 / 무승부 이동 없음</b></div><div class="modal-actions" style="justify-content:center"><button class="secondary rpsmove" data-v="0">가위 ✌️</button><button class="secondary rpsmove" data-v="1">바위 ✊</button><button class="secondary rpsmove" data-v="2">보 🖐</button></div>`);$$('.rpsmove').forEach(b=>b.onclick=()=>{const me=+b.dataset.v,op=rnd(0,2),names=['가위','바위','보'];const diff=(me-op+3)%3,result=me===op?'tie':diff===1?'win':'lose';closeModal();showModal(`<div class="chance-title">${result==='win'?'승리! 🎉':result==='lose'?'패배!':'무승부!'}</div><div class="chance-desc">나: ${names[me]} / 상대: ${names[op]}<br>${result==='win'?'+5칸 이동':result==='lose'?'-3칸 이동':'이동 없음'}</div><div class="modal-actions"><button class="primary" id="rpsMoveOk">확인</button></div>`);$('#rpsMoveOk').onclick=()=>{closeModal();cb(result)}})}
+function opponents(requireMoved=false){return G.teams.map((t,i)=>({t,i})).filter(x=>x.i!==G.current&&x.t.tokens.some(z=>!z.finished)&&(!requireMoved||getMovableLeaders(x.i).some(k=>x.t.tokens[k].progress>0)))}
+function chooseOpponent(title,cb,requireMoved=false){const ops=opponents(requireMoved);if(!ops.length){addLog('적용 가능한 상대팀이 없어 찬스 효과를 +2칸으로 대체.');G.teams[G.current].chanceBenefit+=2;moveToken(G.current,G.selectedToken,2,'대체 찬스',true);return closeQuestionAndTurn()}showChoiceModal(title,ops.map(x=>({label:x.t.name,value:x.i})),cb)}
+function chooseOpponentToken(title,cb){const ops=opponents(true);if(!ops.length){G.teams[G.current].chanceBenefit+=2;moveToken(G.current,G.selectedToken,2,'대체 찬스',true);return closeQuestionAndTurn()}const html=`<div class="chance-title">${escapeHtml(title)}</div><div class="field"><label>상대팀</label><select id="oppTeam">${ops.map(x=>`<option value="${x.i}">${escapeHtml(x.t.name)}</option>`).join('')}</select></div><div class="field" style="margin-top:10px"><label>상대 말</label><select id="oppToken"></select></div><div class="modal-actions"><button class="primary" id="oppOk">선택</button></div>`;showModal(html);const refresh=()=>{const oi=+$('#oppTeam').value;$('#oppToken').innerHTML=getMovableLeaders(oi).filter(k=>G.teams[oi].tokens[k].progress>0).map(k=>{const x=G.teams[oi].tokens[k],m=getStackMembers(oi,k);return `<option value="${k}">말 ${m.map(i=>i+1).join('+')}${m.length>1?' (업기)':''} · ${x.pos+1}칸</option>`}).join('')};$('#oppTeam').onchange=refresh;refresh();$('#oppOk').onclick=()=>{const oi=+$('#oppTeam').value,ok=+$('#oppToken').value;closeModal();cb(oi,ok)}}
+function rpsChallenge(cb){const ops=opponents(true);if(!ops.length){G.teams[G.current].chanceBenefit+=2;moveToken(G.current,G.selectedToken,2,'대체 찬스',true);return closeQuestionAndTurn()}showChoiceModal('결투할 상대팀을 선택하세요',ops.map(x=>({label:x.t.name,value:x.i})),oi=>{const valid=getMovableLeaders(oi);const ok=valid[0];showModal(`<div class="chance-title">✊✌️🖐 가위바위보</div><div class="chance-desc">${escapeHtml(G.teams[oi].name)}과 결투합니다. 내 선택을 고르세요. 상대 선택은 프로그램이 무작위로 정합니다.</div><div class="modal-actions" style="justify-content:center"><button class="secondary rps" data-v="0">가위 ✌️</button><button class="secondary rps" data-v="1">바위 ✊</button><button class="secondary rps" data-v="2">보 🖐</button></div>`);$$('.rps').forEach(b=>b.onclick=()=>{const me=+b.dataset.v,op=rnd(0,2),names=['가위','바위','보'];const won=(me-op+3)%3===1,tie=me===op;closeModal();showModal(`<div class="chance-title">${tie?'무승부':won?'승리! 🎉':'패배!'}</div><div class="chance-desc">나: ${names[me]} / 상대: ${names[op]}<br>${won?'위치를 교환합니다.':'위치 교환 없음'}</div><div class="modal-actions"><button class="primary" id="rpsOk">확인</button></div>`);$('#rpsOk').onclick=()=>{closeModal();cb(won,oi,ok)}})})}
+function showChoiceModal(title,items,cb){showModal(`<div class="chance-title">${escapeHtml(title)}</div><div class="modal-actions" style="justify-content:stretch;flex-direction:column">${items.map((x,i)=>`<button class="secondary pickmodal" data-i="${i}">${escapeHtml(x.label)}</button>`).join('')}</div>`);$$('.pickmodal').forEach(b=>b.onclick=()=>{const x=items[+b.dataset.i];closeModal();cb(x.value)})}
+let mapPeekState=null;
+function enterMapPeek(){
+ if(mapPeekState)return;
+ const ids=['modalOverlay','questionOverlay','moveOverlay'];
+ const visible=ids.filter(id=>{const el=document.getElementById(id);return el&&!el.classList.contains('hidden')});
+ if(!visible.length)return;
+ mapPeekState={visible:[...visible],scrollY:window.scrollY};
+ visible.forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+ document.body.classList.add('map-peek-active');
+ $('#mapPeekReturn')?.classList.remove('hidden');
+ renderAll();
+ setTimeout(()=>document.querySelector('#board')?.scrollIntoView({behavior:'smooth',block:'center'}),30);
+}
+function exitMapPeek(restore=true){
+ if(!mapPeekState)return;
+ const state=mapPeekState;mapPeekState=null;
+ document.body.classList.remove('map-peek-active');
+ $('#mapPeekReturn')?.classList.add('hidden');
+ if(restore)state.visible.forEach(id=>document.getElementById(id)?.classList.remove('hidden'));
+ if(Number.isFinite(state.scrollY))setTimeout(()=>window.scrollTo({top:state.scrollY,behavior:'smooth'}),20);
+}
+function removePeekOverlay(id){
+ if(!mapPeekState)return;
+ mapPeekState.visible=mapPeekState.visible.filter(x=>x!==id);
+ if(!mapPeekState.visible.length)exitMapPeek(false);
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-map-peek]'))enterMapPeek()});
+$('#mapPeekBack').onclick=()=>exitMapPeek(true);
+function showModal(html){$('#modalContent').innerHTML=`<div class="map-peek-tools"><button type="button" class="map-peek-btn" data-map-peek>🗺️ 맵 보기</button></div>${html}`;$('#modalOverlay').classList.remove('hidden')}
+function closeModal(){removePeekOverlay('modalOverlay');$('#modalOverlay').classList.add('hidden');$('#modalContent').innerHTML=''}
+
+function islandRouletteLabels(){return ['문제×2','1','2','3','4','5','6']}
+function spinIslandRoulette(){return new Promise(resolve=>{const labels=islandRouletteLabels(),choice=rnd(0,6),angle=360/7;const labelHtml=labels.map((x,i)=>`<div class="wheel-label" style="transform:rotate(${i*angle}deg) translateY(-92px) rotate(${-i*angle}deg)">${x}</div>`).join('');showModal(`<div class="island-roulette-wrap"><div class="chance-title">🏝️ 무인도 탈출 룰렛</div><div class="chance-desc">이번 탈출 조건을 무작위로 정합니다.</div><div class="island-wheel-box"><div class="island-pointer"></div><div class="island-wheel" id="islandWheel">${labelHtml}</div></div><div class="island-result" id="islandResult">룰렛이 돌아갑니다…</div></div>`);playSfx('roulette');const wheel=$('#islandWheel');requestAnimationFrame(()=>requestAnimationFrame(()=>{wheel.style.transform=`rotate(${360*(5+rnd(0,2))-choice*angle}deg)`}));setTimeout(()=>{const result=choice===0?{type:'questions',label:'문제 2개 연속 정답'}:{type:'dice',n:choice,label:`주사위 ${choice} 나오기`};$('#islandResult').innerHTML=`🎯 <b>${result.label}</b>`;playSfx('rouletteStop');setTimeout(()=>{closeModal();resolve(result)},autoNoticeMs(1050))},3250)})}
+function islandEscapeDice(target){return new Promise(resolve=>{showModal(`<div class="chance-title">🎲 무인도 탈출 주사위</div><div class="chance-desc">시스템이 제시한 눈은 <b style="font-size:26px">${target}</b>입니다.<br>같은 눈이 나오면 즉시 탈출합니다.</div><div class="island-dice-face" id="islandDiceFace">⚀</div><div class="modal-actions"><button class="primary" id="islandDiceRoll">탈출 주사위 굴리기</button></div>`);$('#islandDiceRoll').onclick=()=>{const btn=$('#islandDiceRoll');btn.disabled=true;playSfx('dice');let ticks=0;const timer=setInterval(()=>{$('#islandDiceFace').textContent=diceChars[rnd(1,6)-1];ticks++;if(ticks>=14){clearInterval(timer);const d=rnd(1,6),ok=d===target;$('#islandDiceFace').textContent=diceChars[d-1];const desc=document.querySelector('#modalContent .chance-desc');desc.innerHTML=`목표 <b>${target}</b> · 결과 <b>${d}</b><br><b style="font-size:22px;color:${ok?'#166534':'#b91c1c'}">${ok?'탈출 성공!':'탈출 실패!'}</b>`;playSfx(ok?'correct':'wrong');btn.textContent='확인';btn.disabled=false;btn.onclick=()=>{closeModal();resolve(ok)}}},85)}})}
+function islandEscapeQuestion(teamIdx,step){return new Promise(resolve=>{const q=nextGameQuestion();if(!q){resolve(false);return}const qn=normalizeQuestionRecord(q),type=questionTypeOf(qn),t=G.teams[teamIdx];let islandSec=getRuleQuestionSeconds(G.baseQuestionTime,G.rule);if(t.questionTimeDeltaNext){islandSec=Math.max(1,islandSec+t.questionTimeDeltaNext);t.questionTimeDeltaNext=0}const optionsHtml=type==='subjective'?`<input class="island-answer" id="islandQAnswer" placeholder="정답을 입력하세요" autocomplete="off">`:`<div class="island-choice-list" id="islandQChoices">${(qn.options||[]).map((o,i)=>`<button type="button" class="island-choice-btn" data-value="${escapeAttr(o)}">${i+1}. ${escapeHtml(o)}</button>`).join('')}</div>`;showModal(`<div class="chance-title">📚 무인도 탈출 문제</div><div class="island-question-step">연속 정답 ${step} / 2 · ${questionTypeLabel(qn)}</div><div class="island-countdown" id="islandQTimer">${islandSec.toFixed(1)}</div><div class="island-question-text">${escapeHtml(qn.q)}</div>${optionsHtml}<div class="result-box hidden" id="islandQResult"></div><div class="modal-actions"><button class="primary" id="islandQSubmit">정답 확인</button></div>`);const input=$('#islandQAnswer'),btn=$('#islandQSubmit'),timerEl=$('#islandQTimer');let selected='';if(input)input.focus();if(type!=='subjective'){$$('#islandQChoices .island-choice-btn').forEach(b=>b.onclick=()=>{if(btn.dataset.done)return;selected=b.dataset.value;$$('#islandQChoices .island-choice-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')})}const deadline=Date.now()+islandSec*1000;let timeExpired=false;const timer=setInterval(()=>{const left=Math.max(0,(deadline-Date.now())/1000);timerEl.textContent=left.toFixed(1);if(left<=0&&!timeExpired){timeExpired=true;timerEl.textContent='시간 종료';timerEl.style.color='#b45309';clearInterval(timer)}},50);const submit=()=>{if(btn.dataset.done)return;const typed=type==='subjective'?(input?.value||''):selected;if(type!=='subjective'&&!typed){const r=$('#islandQResult');r.classList.remove('hidden');r.innerHTML='<b style="color:#b45309">보기를 먼저 선택해 주세요.</b>';return}const answers=String(qn.a).split('|').map(normalizeAnswer).filter(Boolean),ok=answers.includes(normalizeAnswer(typed)),firstAnswer=(String(qn.a).split('|')[0]||'').trim();clearInterval(timer);btn.dataset.done='1';if(input)input.disabled=true;if(type!=='subjective'){$$('#islandQChoices .island-choice-btn').forEach(b=>{b.disabled=true;if(normalizeAnswer(b.dataset.value)===normalizeAnswer(firstAnswer))b.classList.add('correct-answer');if(b.classList.contains('selected')&&!ok)b.classList.add('wrong-answer')})}const r=$('#islandQResult');r.classList.remove('hidden');if(ok){t.correct++;r.innerHTML=`<b style="color:#166534">⭕ 정답!</b> ${step===1?'한 문제만 더 맞히면 탈출합니다.':'2문제 연속 정답 성공!'}`;playSfx('correct');spawnConfetti()}else{t.wrong++;r.innerHTML=`<b style="color:#b91c1c">❌ 오답</b> · 정답: ${escapeHtml(firstAnswer)}`;playSfx('wrong')}renderStats();btn.textContent='확인';btn.onclick=()=>{closeModal();resolve(ok)}};btn.onclick=submit;if(input)input.addEventListener('keydown',e=>{if(e.key==='Enter')submit()})})}
+async function runIslandEscapeTurn(teamIdx,tokenIdx){
+ if(!G||G.ended||G.current!==teamIdx)return;
+ tokenIdx=getStackLeader(teamIdx,tokenIdx);
+ const t=G.teams[teamIdx],tok=t?.tokens?.[tokenIdx];
+ if(!tok||!tok.islandTrapped||tok.pos!==ISLAND_POS){G.phase='roll';ensureSelectable();renderAll();return}
+ const members=getStackMembers(teamIdx,tokenIdx);
+ const mission=await spinIslandRoulette();
+ if(!G||G.ended||G.current!==teamIdx)return;
+ let success=false;
+ if(mission.type==='dice'){
+  success=await islandEscapeDice(mission.n)
+ }else{
+  const first=await islandEscapeQuestion(teamIdx,1);
+  if(first)success=await islandEscapeQuestion(teamIdx,2)
+ }
+ if(!G||G.ended||G.current!==teamIdx)return;
+ if(success){
+  members.forEach(k=>{t.tokens[k].islandTrapped=false;t.tokens[k].islandFailedTurns=0});
+  G.phase='roll';G.selectedToken=tokenIdx;
+  addLog(`${t.name} 말 ${members.map(k=>k+1).join('+')}: 🏝️ 무인도 탈출 성공! 이번 턴을 정상 진행합니다.`);
+  renderAll();
+  showModal(`<div class="chance-title">🌊 무인도 탈출 성공!</div><div class="chance-desc"><b>${escapeHtml(t.name)}</b>은(는) 이제 이번 턴에 정상적으로 주사위를 굴릴 수 있습니다.</div>`);
+  playSfx('escape');await sleep(autoNoticeMs(1050));closeModal();
+ }else{
+  const failedTurns=Math.max(0,...members.map(k=>t.tokens[k].islandFailedTurns||0))+1;
+  members.forEach(k=>t.tokens[k].islandFailedTurns=failedTurns);
+  if(failedTurns>=3){
+   members.forEach(k=>{t.tokens[k].islandTrapped=false;t.tokens[k].islandFailedTurns=0});
+   addLog(`${t.name} 말 ${members.map(k=>k+1).join('+')}: 🛟 무인도 탈출 3턴 실패 → 자동 탈출! 이번 턴은 종료합니다.`);
+   renderAll();
+   showModal(`<div class="chance-title">🛟 3턴 경과 · 자동 탈출!</div><div class="chance-desc" style="font-size:18px;line-height:1.65"><b>${escapeHtml(t.name)} 말 ${escapeHtml(members.map(k=>k+1).join('+'))}</b>이(가) 3턴 연속 탈출하지 못해 자동으로 무인도에서 풀려났습니다.<br>이번 턴은 종료되고 <b>다음 자기 턴부터 정상적으로 주사위를 굴립니다.</b></div>`);
+   playSfx('escape');await sleep(autoNoticeMs(1050));closeModal();advanceTeam();
+  }else{
+   addLog(`${t.name} 말 ${members.map(k=>k+1).join('+')}: 🏝️ 무인도 탈출 실패 ${failedTurns}/3 · 이번 턴 종료`);
+   renderAll();
+   showModal(`<div class="chance-title">🏝️ 탈출 실패 · ${failedTurns}/3</div><div class="chance-desc">말은 무인도에 그대로 남습니다.<br>다음 자기 턴에 다시 룰렛을 돌립니다.<br><b>${3-failedTurns}번 더 실패하면 자동 탈출</b>합니다.</div>`);
+   playSfx('escapeFail');await sleep(autoNoticeMs(1050));closeModal();advanceTeam();
+  }
+ }
+}
+
+function configuredPieceCount(){return G?.teams?.[0]?.tokens?.length||clamp(parseInt($('#pieceCount')?.value)||1,1,10)}
+function victoryCriteria(){const multiPiece=configuredPieceCount()>=2;return [
+ {key:'correct',label:'📚 정답 수',desc:'정답을 가장 많이 맞힌 팀',direction:'max'},
+ multiPiece?{key:'finished',label:'🏁 완주한 말 수',desc:'종점에 들어온 말이 가장 많은 팀',direction:'max'}:{key:'closest',label:'🏁 종점과 가장 가까운 말',desc:'아직 완주하지 않은 말 중 가장 앞선 말이 종점에 가까운 팀',direction:'max'},
+ {key:'wrong',label:'❌ 오답 수',desc:'오답이 가장 적은 팀',direction:'min'}
+]}
+function teamClosestProgress(t){const unfinished=t.tokens.filter(x=>!x.finished);return unfinished.length?Math.max(...unfinished.map(x=>x.progress)):BOARD_SPACES}
+function criterionValue(t,key){if(key==='correct')return t.correct;if(key==='wrong')return t.wrong;if(key==='finished')return t.tokens.filter(x=>x.finished).length;if(key==='closest')return teamClosestProgress(t);return 0}
+function criterionDisplay(t,key){if(key==='correct')return `${t.correct}개`;if(key==='wrong')return `${t.wrong}개`;if(key==='finished')return `${t.tokens.filter(x=>x.finished).length}개 완주`;if(key==='closest'){const p=teamClosestProgress(t),remain=Math.max(0,BOARD_SPACES-p);return `종점까지 ${remain}칸`};return '-'}
+function spinVictoryCriterionRoulette(){return new Promise(resolve=>{const criteria=victoryCriteria(),choice=rnd(0,criteria.length-1),angle=360/criteria.length;const labels=criteria.map((x,i)=>`<div class="wheel-label" style="width:104px;margin-left:-52px;transform:rotate(${i*angle}deg) translateY(-90px) rotate(${-i*angle}deg);font-size:13px">${x.key==='correct'?'정답 수':x.key==='finished'?'완주 말':x.key==='closest'?'종점 거리':'오답 수'}</div>`).join('');showModal(`<div class="island-roulette-wrap"><div class="chance-title">🏆 승리 기준 룰렛</div><div class="chance-desc">모든 말을 완주한 팀이 없어 ②~④ 승리 기준 중 하나를 무작위로 결정합니다.<br>${configuredPieceCount()>=2?'팀당 말이 2개 이상이므로 <b>완주한 말 수</b>가 룰렛 기준에 포함됩니다.':'팀당 말이 1개이므로 <b>종점과의 거리</b>가 룰렛 기준에 포함됩니다.'}</div><div class="island-wheel-box"><div class="island-pointer"></div><div class="island-wheel victory-wheel" id="victoryWheel">${labels}</div></div><div class="victory-result" id="victoryResult">룰렛이 돌아갑니다…</div></div>`);playSfx('roulette');const wheel=$('#victoryWheel');requestAnimationFrame(()=>requestAnimationFrame(()=>{wheel.style.transform=`rotate(${360*(5+rnd(0,2))-choice*angle}deg)`}));setTimeout(()=>{const result=criteria[choice];$('#victoryResult').innerHTML=`🎯 이번 승리 기준<br><b>${result.label}</b>`;playSfx('rouletteStop');setTimeout(()=>{closeModal();resolve(result)},autoNoticeMs(900))},3250)})}
+async function pickTieWinner(candidates,criterion){if(candidates.length<=1)return candidates[0];let idx=0;showModal(`<div class="chance-title">🎲 동률 팀 최종 추첨</div><div class="chance-desc"><b>${criterion.label}</b> 기준으로 ${candidates.length}팀이 동률입니다.<br>동률 팀 중 최종 우승팀 1팀을 무작위로 정합니다.</div><div class="victory-result" id="tiePickName">${escapeHtml(candidates[0].name)}</div></div>`);playSfx('roulette');const timer=setInterval(()=>{idx=(idx+1)%candidates.length;const el=$('#tiePickName');if(el)el.textContent=`${candidates[idx].symbol||''} ${candidates[idx].name}`},100);await sleep(1800);clearInterval(timer);const winner=candidates[rnd(0,candidates.length-1)];const el=$('#tiePickName');if(el)el.innerHTML=`🏆 <b>${escapeHtml(winner.name)}</b>`;playSfx('rouletteStop');await sleep(autoNoticeMs(700));closeModal();return winner}
+async function finishGame(reason,raceWinner=null){
+ if(!G||G.ended||G.ending)return;
+ exitMapPeek(false);G.ending=true;G.running=false;clearInterval(G.timerId);clearQuestionTimer();$('#questionOverlay').classList.add('hidden');
+ let criterion=null,winner=raceWinner,tieCandidates=[];
+ if(reason!=='race'&&!raceWinner){
+  criterion=await spinVictoryCriterionRoulette();
+  const values=G.teams.map(t=>criterionValue(t,criterion.key));
+  const best=criterion.direction==='min'?Math.min(...values):Math.max(...values);
+  tieCandidates=G.teams.filter(t=>criterionValue(t,criterion.key)===best);
+  winner=await pickTieWinner(tieCandidates,criterion);
+ }
+ G.ended=true;G.ending=false;playSfx('finish');
+ const metricKey=criterion?.key||'race';
+ const rows=[...G.teams].map((t,i)=>({t,i,fin:t.tokens.filter(x=>x.finished).length,progress:t.tokens.reduce((s,x)=>s+x.progress,0),closest:teamClosestProgress(t),value:criterion?criterionValue(t,criterion.key):t.tokens.filter(x=>x.finished).length}));
+ if(criterion){rows.sort((a,b)=>criterion.direction==='min'?(a.value-b.value):(b.value-a.value));}else{rows.sort((a,b)=>b.fin-a.fin||b.progress-a.progress)}
+ let prevValue=null,displayRank=0;rows.forEach((r,i)=>{if(r.value!==prevValue)displayRank=i+1;r.rank=displayRank;prevValue=r.value});
+ const correctMax=Math.max(...G.teams.map(t=>t.correct)),chanceMax=Math.max(...G.teams.map(t=>t.chanceBenefit)),positiveMax=Math.max(...G.teams.map(t=>t.positiveChance)),finishMax=Math.max(...G.teams.map(t=>t.tokens.filter(x=>x.finished).length));
+ const award=(max,key,fmt)=>G.teams.filter(t=>key(t)===max).map(fmt).join(', ');
+ const title=reason==='race'?`🏆 ${winner.name} 모든 말 완주 승리!`:reason==='time'?`⏰ 시간 종료 — ${winner.name} 승리!`:`🏁 게임 종료 — ${winner.name} 승리!`;
+ const ruleText=reason==='race'?`<div class="criterion-badge">① 모든 말이 종점에 들어오면 즉시 승리</div>`:`<div class="criterion-badge">🎡 이번 룰렛: ${criterion.label}</div><br>${criterion.desc}${tieCandidates.length>1?`<br><b>동률 ${tieCandidates.length}팀 → 최종 무작위 추첨으로 ${escapeHtml(winner.name)} 선정</b>`:''}`;
+ const thirdVictoryRule=configuredPieceCount()>=2?'③ 완주한 말이 가장 많다':'③ 말이 종점과 가장 가깝다';
+ showModal(`<div class="winner-banner">${escapeHtml(title)}</div><div class="chance-desc"><b>승리 기본 요건</b><br>① 모든 말 완주 → 즉시 승리<br>완주팀이 없으면 룰렛으로 ② 정답 수가 가장 많다 / ${thirdVictoryRule} / ④ 오답이 가장 적다 중 하나를 선택<br><br>${ruleText}<br><br><b>시상 추천</b><br>📚 정답왕: ${escapeHtml(award(correctMax,t=>t.correct,t=>t.name))} (${correctMax}개)<br>🎁 찬스 활용왕: ${escapeHtml(award(chanceMax,t=>t.chanceBenefit,t=>t.name))} (효과점수 ${chanceMax})<br>🍀 행운왕: ${escapeHtml(award(positiveMax,t=>t.positiveChance,t=>t.name))} (유리한 찬스 ${positiveMax}회)<br>🏁 귀환왕: ${escapeHtml(award(finishMax,t=>t.tokens.filter(x=>x.finished).length,t=>t.name))} (${finishMax}개 말)</div><div style="overflow:auto;margin-top:14px"><table class="rank-table"><thead><tr><th>${criterion?'선택 기준 순위':'완주 순위'}</th><th>팀</th><th>정답</th><th>오답</th><th>가장 앞선 미완주 말</th><th>귀환</th><th>총 진행</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.t===winner?'winner-row':''}"><td>${r.rank}</td><td style="font-weight:900;color:${r.t.color}">${escapeHtml(r.t.name)}${r.t===winner?' 🏆':''}</td><td><b>${r.t.correct}</b></td><td>${r.t.wrong}</td><td>${r.t.tokens.every(x=>x.finished)?'모두 완주':`종점까지 ${Math.max(0,BOARD_SPACES-r.closest)}칸`}</td><td>${r.fin}/${r.t.tokens.length}</td><td>${r.progress}</td></tr>`).join('')}</tbody></table></div><div class="modal-actions"><button class="secondary" id="closeResult">결과 닫기</button><button class="primary" id="newGame">새 게임 설정</button></div>`);
+ $('#closeResult').onclick=closeModal;$('#newGame').onclick=()=>{closeModal();switchTab('setup')};renderAll()
+}
+
+$('#resetAllBtn').onclick=()=>{if(confirm('저장된 문제·추가한 문제은행·현재 게임을 모두 초기화할까요? 통합사회2 기본 50문항으로 돌아갑니다.')){localStorage.removeItem(QUESTION_STORAGE_KEY);localStorage.removeItem('eduBoardQuestions');localStorage.removeItem('eduBoardQuestionsCustom');localStorage.removeItem(QUESTION_FILE_KEY);localStorage.removeItem(QUESTION_BANKS_KEY);localStorage.removeItem(ACTIVE_BANK_KEY);location.reload()}};
+updateSoundToggleUI();
+renderBoard();resetStudy();
+})();
+</script>
+</body>
+</html>

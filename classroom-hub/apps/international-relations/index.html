@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<title>국제 관계와 국제기구 교사 설명용 · preview 기반 ver4 · 교사용 전용</title>
+<style>
+:root{
+  --bg:#f5f7fb; --paper:#fff; --ink:#1f2937; --muted:#64748b; --line:#dbe3ee;
+  --navy:#19345f; --navy2:#294f85; --blue:#eaf2ff; --mint:#e8f7f2; --yellow:#fff7d6;
+  --rose:#fff0f2; --purple:#f3efff; --green:#0f766e; --red:#b42318; --amber:#a16207;
+  --shadow:0 8px 28px rgba(27,47,78,.09); --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.68;letter-spacing:-.01em}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:10px 18px}
+.brand{font-weight:900;color:var(--navy);white-space:nowrap}.brand small{display:block;font-size:11px;color:var(--muted);font-weight:700}
+.toolbar{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:white;color:var(--navy);padding:8px 12px;border-radius:11px;cursor:pointer;font-weight:800}.btn:hover{background:#f2f6fb}.btn.active{background:var(--navy);color:white;border-color:var(--navy)}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);max-width:1500px;margin:0 auto;min-height:100vh}
+.sidebar{position:sticky;top:62px;height:calc(100vh - 62px);overflow:auto;padding:18px 14px;border-right:1px solid var(--line);background:#fff}
+.side-title{font-size:12px;font-weight:900;color:var(--muted);margin:8px 8px 10px}.nav-group{margin-bottom:16px}.nav-label{font-size:13px;font-weight:900;color:var(--navy);padding:7px 9px;background:#edf3fb;border-radius:10px;margin-bottom:6px}.nav a{display:block;text-decoration:none;color:#475569;padding:8px 9px;border-radius:10px;font-size:13px;font-weight:700}.nav a:hover,.nav a.current{background:#f1f5f9;color:var(--navy)}
+main{padding:28px clamp(16px,3vw,46px) 80px;min-width:0}
+.hero{background:linear-gradient(135deg,#18345f 0%,#2d5b94 70%,#426ca4 100%);color:#fff;border-radius:26px;padding:34px 36px;box-shadow:var(--shadow);margin-bottom:24px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-80px;top:-120px;background:rgba(255,255,255,.09)}
+.hero .eyebrow{font-size:13px;font-weight:900;opacity:.8;letter-spacing:.06em}.hero h1{margin:8px 0 8px;font-size:clamp(27px,4vw,44px);line-height:1.2}.hero p{margin:0;max-width:900px;font-size:16px;opacity:.94}.hero .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.chip{padding:6px 10px;border:1px solid rgba(255,255,255,.35);border-radius:999px;font-size:12px;font-weight:800;background:rgba(255,255,255,.08)}
+.overview{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}.overview .mini{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 4px 15px rgba(27,47,78,.05)}.mini b{display:block;color:var(--navy);font-size:14px;margin-bottom:4px}.mini span{font-size:13px;color:var(--muted)}
+.lesson{scroll-margin-top:84px;background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);margin:0 0 28px;overflow:hidden}.lesson-head{padding:26px 28px 20px;background:linear-gradient(180deg,#fff,#fbfdff);border-bottom:1px solid var(--line)}
+.kicker{display:flex;align-items:center;gap:10px;margin-bottom:8px}.lesson-no{font-weight:950;color:#fff;background:var(--navy);border-radius:10px;padding:5px 10px;font-size:14px}.unit-tag{font-size:12px;color:var(--muted);font-weight:800}.lesson h2{margin:0;color:#102a4f;font-size:clamp(23px,3vw,32px);line-height:1.25}.question{margin-top:10px;color:var(--navy2);font-weight:850;font-size:16px}.goals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.goal,.keywords{padding:14px 16px;border-radius:14px}.goal{background:var(--blue)}.keywords{background:#f6f4ff}.box-title{font-size:12px;font-weight:950;color:var(--navy);margin-bottom:6px}.goal ul,.keywords ul{margin:0;padding-left:18px}.goal li,.keywords li{font-size:14px;margin:2px 0}
+.lesson-body{padding:26px 28px 30px}.section{margin:0 0 24px}.section h3{font-size:19px;color:var(--navy);margin:0 0 10px;padding-left:11px;border-left:5px solid #6c8fbd}.section p{margin:8px 0}.lead{font-size:17px;font-weight:750;color:#334155}.concept-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.concept{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}.concept b{color:var(--navy);display:block;margin-bottom:4px}.concept small{color:var(--muted)}
+.flow{display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding:4px 2px 8px}.flow .step{min-width:150px;flex:1;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:13px;text-align:center;font-weight:800;color:#334155}.flow .arrow{align-self:center;color:#94a3b8;font-size:20px;font-weight:900}
+.timeline{position:relative;margin:10px 0 0 6px;padding-left:24px;border-left:3px solid #b9cae3}.titem{position:relative;padding:0 0 18px 4px}.titem:before{content:"";position:absolute;left:-33px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--navy2);border:3px solid #fff;box-shadow:0 0 0 2px #b9cae3}.titem b{color:var(--navy)}
+.note{border-radius:14px;padding:14px 16px;margin:12px 0}.note.info{background:var(--blue);border-left:5px solid #5586c6}.note.warn{background:var(--yellow);border-left:5px solid #d8a600}.note.test{background:var(--mint);border-left:5px solid #1d9b85}.note.mis{background:var(--rose);border-left:5px solid #d85a6a}.note strong{display:block;margin-bottom:3px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:600px;background:white}th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#eef4fb;color:var(--navy);font-size:13px;text-align:left}td{font-size:14px}tr:last-child td{border-bottom:0}
+.activity{background:#fbfcfe;border:1px dashed #9eb4cf;border-radius:15px;padding:16px}.activity h4{margin:0 0 8px;color:var(--navy)}.activity ol{margin:8px 0 0;padding-left:22px}.activity li{margin:6px 0}
+.quiz{border-top:1px dashed var(--line);padding-top:18px;margin-top:22px}.quiz h3{margin:0 0 10px;color:var(--navy)}.q{padding:11px 0;border-bottom:1px solid #edf1f5}.answer{display:none;margin-top:7px;background:#edf8f5;border-radius:10px;padding:9px 11px;color:#0f5e52;font-weight:800}.show-answers .answer{display:block}.teacher{display:none;background:#fff5e8;border:1px solid #f2c987;border-radius:14px;padding:14px 16px;margin-top:14px}.teacher-mode .teacher{display:block}.teacher strong{color:#8a4d00}.answer-toggle{border:0;background:#eff4fb;color:var(--navy);border-radius:9px;padding:6px 9px;font-size:12px;font-weight:900;cursor:pointer;margin-top:5px}.answer-toggle:hover{background:#e1ebf8}.q .answer.revealed{display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.summary-card{background:linear-gradient(180deg,#f8fbff,#fff);border:1px solid var(--line);border-radius:16px;padding:16px}.summary-card h4{margin:0 0 8px;color:var(--navy)}
+.footer-note{margin-top:28px;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{display:none}.overview{grid-template-columns:1fr}.goals,.concept-grid,.two-col,.three-col{grid-template-columns:1fr}.topbar{position:sticky}.hero{padding:28px 24px}.lesson-head,.lesson-body{padding-left:20px;padding-right:20px}}
+@media print{body{background:white}.topbar,.sidebar{display:none!important}.layout{display:block}.hero{box-shadow:none;border:1px solid #bbb;color:#111;background:white}.hero .chip{border-color:#aaa}.lesson{box-shadow:none;break-inside:avoid}.teacher{display:block!important}.answer{display:block!important}.btn{display:none}}
+
+
+/* ===== preview 기반 ver3 기능/교사용 보강 ===== */
+.enhanced-topbar{display:grid;grid-template-columns:auto minmax(220px,1fr) auto;gap:12px;align-items:center}
+.top-search-wrap{min-width:0}.lesson-search{width:100%;height:38px;border:1px solid var(--line);border-radius:11px;padding:0 12px;background:#fafcff;color:var(--ink);outline:none;font:inherit;font-size:12px}.lesson-search:focus{border-color:#8ba9cf;box-shadow:0 0 0 3px #edf4ff}
+.progress-panel{position:sticky;top:59px;z-index:45;background:rgba(248,250,253,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:7px 18px}.progress-inner{max-width:1500px;margin:0 auto}.progress-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px}.progress-row>strong{color:var(--navy)}.class-tabs{display:flex;gap:4px}.class-tab,.mini-btn{border:1px solid #d6dfeb;background:white;border-radius:8px;height:28px;padding:0 8px;font-weight:850;color:#52647b;cursor:pointer;font-size:10.5px}.class-tab.active{background:var(--navy);border-color:var(--navy);color:white}.progress-row #progressStatus{flex:1;min-width:180px;color:#5f6f84;font-weight:750}.progress-help{font-size:9.5px;color:#8290a1;margin-top:3px}
+.progress-heading{display:flex!important;align-items:center;gap:8px;flex-wrap:wrap}.progress-pin{margin-left:auto;border:1px solid #dbe3ee;background:#fff;border-radius:8px;padding:4px 7px;color:#66778c;font-size:9.5px;font-weight:800;cursor:pointer}.progress-pin:hover{background:#eef4fb}
+.teacher-expansion{margin:24px 0;border:1px solid #e3c98e;background:linear-gradient(180deg,#fffaf0,#fff);border-radius:18px;padding:18px 18px 16px;box-shadow:0 4px 14px rgba(126,88,25,.05)}.exp-title{font-size:16px;font-weight:950;color:#7c520e;margin-bottom:12px}.exp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.exp-card{border:1px solid #eadfc7;background:#fffdf9;border-radius:13px;padding:13px 14px}.exp-card h4{margin:0 0 6px;color:#5f491d;font-size:14px}.exp-card p{margin:5px 0;font-size:13px;line-height:1.7}.teacher-line{color:#835e16;font-weight:800}.exam-lab{margin-top:13px;border:1px solid #cbdaf1;background:#f3f7ff;border-radius:13px;padding:13px 15px}.exam-lab h4{margin:0 0 6px;color:#224f89}.exam-lab li{margin:5px 0;font-size:13px}.teacher-question{margin-top:12px;border-left:5px solid #b68429;background:#fff7e7;border-radius:10px;padding:11px 13px;font-size:13px}.compare-table{overflow:auto;margin:9px 0}.compare-table table{width:100%;border-collapse:collapse;font-size:12.5px}.compare-table th,.compare-table td{border:1px solid #e2e7ee;padding:9px 10px;text-align:left;vertical-align:top}.compare-table th{background:#f2f6fb;color:#28486e}.flow-rich{display:flex;align-items:center;gap:7px;overflow-x:auto;padding:9px 2px 12px}.flow-rich span{min-width:145px;flex:1;border:1px solid #d8e1ec;background:#fbfdff;border-radius:11px;padding:10px;text-align:center;font-size:12px;font-weight:800}.flow-rich b{color:#8aa0ba;font-size:18px}
+body.focus-mode .hero,body.focus-mode .overview{display:none}body.focus-mode .lesson{display:none}body.focus-mode .lesson.focus-active{display:block;margin-top:6px}
+.focus-nav{position:fixed;right:18px;bottom:18px;z-index:70;display:flex;gap:7px;align-items:center;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:14px;padding:7px;box-shadow:var(--shadow)}.focus-nav button{border:0;background:#eef3fa;color:var(--navy);border-radius:9px;padding:8px 10px;font-size:11px;font-weight:900;cursor:pointer}.focus-nav .current-lesson{font-size:10px;color:#5c6d82;font-weight:850;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.concept-drawer{position:fixed;right:16px;top:148px;z-index:65;width:min(310px,calc(100vw - 32px));max-height:calc(100vh - 180px);overflow:auto;background:white;border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 38px rgba(22,39,65,.16);padding:14px;display:none}.concept-drawer.open{display:block}.concept-drawer .drawer-head{display:flex;align-items:center;gap:7px}.concept-drawer .drawer-head strong{color:var(--navy);font-size:14px}.concept-drawer .drawer-head button{margin-left:auto;border:0;background:#eef3f8;border-radius:8px;width:28px;height:28px;cursor:pointer}.concept-drawer .meaning{font-size:12.5px;line-height:1.7;margin-top:8px}.concept-drawer .tip{margin-top:9px;background:#fff7dc;border-radius:10px;padding:9px 10px;font-size:11.5px;color:#69551d}.concept-drawer .recent{margin-top:11px;border-top:1px dashed var(--line);padding-top:9px}.concept-drawer .recent button{display:block;width:100%;text-align:left;border:0;background:#f6f8fb;border-radius:8px;margin-top:5px;padding:7px 8px;color:#53667e;font-size:10.5px;cursor:pointer}
+.search-hit{outline:3px solid #ffe493!important;background:#fff8cc!important;border-radius:4px}.glossary-term{cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+@media(max-width:1100px){.enhanced-topbar{grid-template-columns:1fr}.top-search-wrap{order:3}.progress-panel{top:116px}.exp-grid{grid-template-columns:1fr}.concept-drawer{top:180px}}
+@media(max-width:700px){.toolbar{margin-left:0}.enhanced-topbar{display:flex;flex-wrap:wrap}.top-search-wrap{width:100%}.progress-panel{position:relative;top:auto}.focus-nav{left:12px;right:12px;justify-content:center}.concept-drawer{top:120px}.progress-pin{margin-left:0}}
+@media print{.enhanced-topbar,.progress-panel,.focus-nav,.concept-drawer,.progress-pin{display:none!important}.teacher-expansion{display:block!important;break-inside:avoid}.exam-lab{break-inside:avoid}}
+
+/* iPad / Safari web-app compatibility */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);}
+button,a,input,select,textarea{-webkit-tap-highlight-color:rgba(0,0,0,0.08);touch-action:manipulation;}
+input,select,textarea{font-size:max(16px,1em);}
+@supports (-webkit-touch-callout:none){
+  .topbar,.progress-panel,.bottom{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));}
+}
+</style>
+</head>
+<body class="teacher-mode">
+<div class="topbar enhanced-topbar">
+<div class="brand">국제 관계와 국제기구<small>교사 설명용 · preview 본문 기반 ver4 · 교사용 전용</small></div>
+<div class="top-search-wrap"><input autocomplete="off" class="lesson-search" id="lessonSearch" placeholder="현재 자료에서 개념·용어 검색 (Enter: 다음 결과)"/></div>
+<div class="toolbar">
+<span class="btn active" style="cursor:default;pointer-events:none">교사용 전용</span>
+<button class="btn" id="answerBtn" type="button">정답 전체 보기</button>
+<button class="btn" id="focusBtn" type="button">한 차시 보기</button>
+<button class="btn" id="printBtn" type="button">인쇄 / PDF</button>
+</div>
+</div><div class="progress-panel teacher-ui" id="progressPanel">
+<div class="progress-inner">
+<div class="progress-row">
+<strong>반별 수업 진도</strong>
+<div class="class-tabs">
+<button class="class-tab active" data-class="31" type="button">3-1</button>
+<button class="class-tab" data-class="32" type="button">3-2</button>
+<button class="class-tab" data-class="33" type="button">3-3</button>
+</div>
+<span id="progressStatus">3-1 · 아직 저장된 진도 없음</span>
+<button class="mini-btn" id="gotoProgress" type="button">진도로 이동</button>
+<button class="mini-btn" id="clearProgress" type="button">진도 삭제</button>
+</div>
+<div class="progress-help">각 소제목 옆의 <b>📌 진도 저장</b> 버튼을 누르면 선택한 반의 위치가 이 브라우저에 저장됩니다.</div>
+</div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+<div class="side-title">수업 바로가기</div>
+<div class="nav-group"><div class="nav-label">4단원 국제 금융과 국제 기구</div><div class="nav">
+<a href="#l41">4-1 국제통화체제의 변화와 개선</a><a href="#l42">4-2 국제금융시장</a><a href="#l43">4-3 자본자유화</a><a href="#l44">4-4 외환위기와 금융위기</a><a href="#l45">4-5 동아시아 금융위기</a><a href="#l46">4-6 한국의 외환위기</a><a href="#l47">4-7 외환위기 극복</a><a href="#l48">4-8 글로벌 금융위기</a><a href="#l49">4-9 국제 금융·통화 협력</a><a href="#l410">4-10 통화스와프</a>
+</div></div>
+<div class="nav-group"><div class="nav-label">5단원 환경·에너지와 국제 기구</div><div class="nav">
+<a href="#l51">5-1 환경문제와 국제정치</a><a href="#l52">5-2 에너지 문제와 국제정치</a><a href="#l53">5-3 환경문제 해결과 국제협력</a><a href="#l54">5-4 환경 글로벌 거버넌스</a><a href="#l55">5-5 기후변화 국제협약</a><a href="#l56">5-6 환경 국제기구와 NGO</a><a href="#l57">5-7 다양한 환경·에너지 문제</a><a href="#l58">5-8 기후변화 대응과 총정리</a>
+</div></div>
+</aside>
+<main>
+<section class="hero">
+<div class="eyebrow">2026학년도 2학기 · 고등학교 3학년</div>
+<h1>국제 관계와 국제기구<br/>4·5단원 수업용 개념 학습지</h1>
+<p>지필평가에 필요한 핵심 개념은 빠짐없이 다루되, 세부 이론은 줄였습니다. 교사가 수업 중 바로 설명할 수 있도록 개념 흐름·비교표·사례·시험 포인트·확인문제를 한 화면에 묶었습니다.</p>
+<div class="chips"><span class="chip">4단원 10차시</span><span class="chip">5단원 8차시</span><span class="chip">총 18차시</span><span class="chip">교사용 설명·시험 메모 상시 표시</span><span class="chip">정답 토글</span></div>
+</section>
+<div class="overview">
+<div class="mini"><b>수업 원칙</b><span>전시 회상 → 핵심 개념 → 사례 적용 → 오개념 교정 → 형성평가</span></div>
+<div class="mini"><b>시험 난이도</b><span>핵심 용어와 비교는 정확히, 전문 금융이론·세부 수치 암기는 최소화</span></div>
+<div class="mini"><b>차시 표기</b><span>4단원은 4-1~4-10, 5단원은 5-1~5-8로 표시</span></div>
+</div>
+<!-- 4-1 -->
+<section class="lesson" data-lesson-index="1" data-lesson-label="4-1 국제통화체제의 변화와 개선" id="l41">
+<div class="lesson-head">
+<div class="kicker"><span class="lesson-no">4-1</span><span class="unit-tag">4단원 국제 금융과 국제 기구</span></div>
+<h2>국제통화체제의 변화와 개선</h2>
+<div class="question">핵심 질문｜오늘날 세계는 어떤 통화 질서 속에서 움직이며, 왜 국제적 협력이 필요한가?</div>
+<div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>국제통화체제의 변화 흐름을 핵심만 다시 설명한다.</li><li>기축통화와 주요 국제통화의 의미를 구분한다.</li><li>현 국제통화체제의 문제점과 개선 방향을 설명한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>금본위제 · 금환본위제</li><li>브레턴우즈 체제 · IMF</li><li>변동환율제 · 기축통화</li><li>달러 · 유로 · 통화협력</li></ul></div></div>
+</div>
+<div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l41-1">0. 오랜만에 다시 보는 핵심 복습<button class="progress-pin teacher-ui" data-anchor="progress-l41-1" type="button">📌 진도 저장</button></h3><p class="lead">이번 차시는 앞서 배운 국제통화제도를 전제로 하지만, 뒤의 금융위기 단원을 이해하려면 이 흐름을 다시 잡고 가는 것이 중요합니다.</p>
+<div class="timeline">
+<div class="titem"><b>금본위제</b><br/>각 나라의 화폐 가치를 일정량의 <b>금</b>과 연결하였다. 통화 가치가 비교적 안정적이라는 장점이 있지만, 금 보유량이 통화 공급을 제약한다.</div>
+<div class="titem"><b>금환본위제</b><br/>금과 직접 연결된 특정 통화를 중심으로 다른 나라의 통화를 연결하는 방식이다. 모든 국가가 많은 금을 직접 보유할 필요를 줄였다.</div>
+<div class="titem"><b>브레턴우즈 체제</b><br/>제2차 세계대전 이후 <b>달러를 금과 교환</b>하고 다른 나라 통화는 달러와 일정한 관계를 유지하는 달러 중심 체제를 구축하였다.</div>
+<div class="titem"><b>IMF의 등장</b><br/>환율 안정과 국제통화 협력을 돕고, 국제수지에 어려움을 겪는 회원국에 자금을 지원하기 위해 만들어졌다.</div>
+<div class="titem"><b>브레턴우즈 체제의 붕괴</b><br/>미국이 보유한 금보다 해외에 풀린 달러가 많아지면서 금-달러 교환을 계속 유지하기 어려워졌고, 1970년대 이후 변동환율제가 확대되었다.</div>
+</div>
+<div class="note info"><strong>한 줄 흐름</strong>금 중심 → 달러 중심의 고정환율 체제 → 금-달러 연결 약화 → 오늘날 변동환율제를 중심으로 한 국제통화질서</div>
+<div class="teacher"><strong>교사용 발문</strong>“세계가 달러를 많이 쓰는데 미국이 달러를 너무 많이 찍으면 어떤 문제가 생길까?”라고 묻고, 국제통화의 편리함과 동시에 ‘신뢰’가 중요하다는 점으로 연결합니다.</div>
+</div>
+<div class="section"><h3 class="progress-heading" id="progress-l41-2">1. 오늘날 국제통화체제는 어떤 모습인가?<button class="progress-pin teacher-ui" data-anchor="progress-l41-2" type="button">📌 진도 저장</button></h3>
+<p>현재 세계에는 하나의 환율 제도만 존재하지 않습니다. 많은 국가는 시장의 수요와 공급에 따라 환율이 움직이는 <b>변동환율제</b>를 기본으로 하되, 필요할 때 중앙은행이 시장에 개입하기도 합니다. 일부 국가는 특정 통화에 자국 통화 가치를 연동하기도 합니다.</p>
+<div class="concept-grid">
+<div class="concept"><b>변동환율제</b>외환시장의 수요와 공급에 따라 환율이 비교적 자유롭게 변하는 제도.<small>장점: 시장 상황 반영 / 단점: 환율 변동성이 커질 수 있음</small></div>
+<div class="concept"><b>관리변동 방식</b>기본적으로 시장에서 환율이 결정되지만 급격한 변동이 나타나면 정부·중앙은행이 개입할 수 있음.<small>현실의 많은 국가는 완전히 방임된 환율보다 이런 형태에 가까움</small></div>
+</div>
+<div class="note warn"><strong>시험 포인트</strong>‘변동환율제 = 정부가 절대로 개입하지 않는다’는 뜻이 아닙니다. 시장결정이 기본이라는 의미로 이해합니다.</div>
+</div>
+<div class="section"><h3 class="progress-heading" id="progress-l41-3">2. 국제통화와 기축통화<button class="progress-pin teacher-ui" data-anchor="progress-l41-3" type="button">📌 진도 저장</button></h3>
+<p><b>국제통화</b>는 국가 간 무역·투자·금융 거래에서 널리 사용되는 통화입니다. 그중 <b>기축통화</b>는 국제 거래의 결제, 외환보유, 다른 통화의 가치 기준 등에 폭넓게 활용되는 중심 통화를 뜻합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>통화</th><th>국제적 위치</th><th>수업에서 기억할 점</th></tr></thead><tbody>
+<tr><td><b>미국 달러</b></td><td>대표적인 기축통화</td><td>국제 결제·외환보유·금융 거래에서 가장 중심적인 역할</td></tr>
+<tr><td><b>유로</b></td><td>주요 국제통화</td><td>유럽 경제권을 바탕으로 국제적 사용 비중이 높음</td></tr>
+<tr><td><b>일본 엔</b></td><td>주요 국제통화</td><td>국제 금융시장에서 활용되지만 달러·유로보다는 영향력이 제한적</td></tr>
+<tr><td><b>중국 위안</b></td><td>국제화 확대 중</td><td>중국의 경제 규모를 바탕으로 국제적 사용 확대를 추진</td></tr>
+</tbody></table></div>
+<div class="note test"><strong>국제통화가 되기 쉬운 조건</strong>경제 규모가 크고, 금융시장이 발달하며, 통화 가치와 제도에 대한 국제적 신뢰가 높고, 다른 국가가 쉽게 사용할 수 있어야 합니다.</div>
+</div>
+<div class="section"><h3 class="progress-heading" id="progress-l41-4">3. 달러 중심 체제의 장점과 문제<button class="progress-pin teacher-ui" data-anchor="progress-l41-4" type="button">📌 진도 저장</button></h3>
+<div class="two-col"><div class="summary-card"><h4>장점</h4><ul><li>국제거래의 공통 기준이 생겨 거래가 편리해짐</li><li>전 세계에서 널리 사용되는 통화가 있어 결제 비용 감소</li><li>국제금융시장의 유동성이 커짐</li></ul></div><div class="summary-card"><h4>문제</h4><ul><li>미국의 경제·통화정책이 다른 국가에 큰 영향을 줄 수 있음</li><li>달러 가치가 급변하면 세계 금융시장의 불안이 커질 수 있음</li><li>특정 통화에 대한 지나친 의존 문제가 제기될 수 있음</li></ul></div></div>
+<div class="note mis"><strong>오개념 주의</strong>달러가 기축통화라고 해서 다른 국제통화가 존재하지 않는 것은 아닙니다. ‘달러만 국제통화’가 아니라 ‘달러가 가장 중심적인 국제통화’라고 이해합니다.</div>
+</div>
+<div class="section"><h3 class="progress-heading" id="progress-l41-5">4. 국제통화제도 개선을 위한 노력<button class="progress-pin teacher-ui" data-anchor="progress-l41-5" type="button">📌 진도 저장</button></h3>
+<div class="concept-grid">
+<div class="concept"><b>국제적 정책 공조</b>급격한 환율 변동이나 금융불안이 발생할 때 국가와 중앙은행이 정보를 공유하고 정책을 조정한다.</div>
+<div class="concept"><b>외환 안전망 강화</b>IMF 지원, 외환보유액 확충, 국가 간 통화스와프 등으로 외화 부족 상황에 대비한다.</div>
+<div class="concept"><b>국제통화의 다변화</b>달러 외에도 유로 등 여러 통화가 국제적으로 활용되면 특정 통화 의존을 일부 줄일 수 있다.</div>
+<div class="concept"><b>지역 금융협력</b>동아시아 국가들이 위기 시 서로 지원할 수 있는 협력체계를 강화하려는 노력이 나타났다.</div>
+</div>
+<div class="teacher"><strong>교사용 보충</strong>동아시아 통화통합은 유로처럼 단일통화를 실제로 곧 도입한다는 의미로 가르치기보다, 금융·통화 협력의 필요성과 지역 안전망 강화라는 수준으로 정리하면 충분합니다.</div>
+</div>
+<div class="activity"><h4>수업 중 3분 활동｜어떤 통화가 국제통화가 되기 쉬울까?</h4><p>A국과 B국 중 국제통화가 되기 쉬운 국가를 고르고 이유를 말해봅시다.</p><ol><li>A국: 경제 규모 큼 / 금융시장 개방 / 물가와 통화가치가 비교적 안정 / 국제거래 활발</li><li>B국: 경제 규모 작음 / 자본 이동 제한 / 통화가치 변동이 매우 큼 / 해외에서 거의 사용되지 않음</li></ol><button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">예시 답 보기</button><div class="answer">A국. 국제적으로 널리 사용되려면 경제·금융시장 규모, 통화 가치에 대한 신뢰, 자유로운 사용 가능성 등이 중요하기 때문입니다.</div></div>
+<div class="teacher-expansion teacher">
+<div class="exp-title">교사 설명 확장｜4-1에서 반드시 다시 연결할 것</div>
+<div class="exp-grid">
+<div class="exp-card"><h4>① 국제통화제도는 왜 필요한가?</h4><p>국가마다 화폐가 다르면 국제거래에서 <b>환율의 기준</b>과 <b>결제에 대한 신뢰</b>가 필요하다. 국제통화제도는 국가들이 어떤 기준으로 통화가치를 정하고, 국제결제를 하고, 외환 부족에 대응할지를 정하는 큰 틀이다.</p><p class="teacher-line">설명 순서: 통화가치의 기준 → 환율 안정 → 국제결제 → 위기 대응</p></div>
+<div class="exp-card"><h4>② 세 체제는 ‘무엇에 고정되는가’로 구분</h4><p><b>금본위제</b>: 각국 통화가 금에 직접 연결. <b>브레턴우즈 체제</b>: 달러가 금과 연결되고 다른 통화는 달러에 연결. <b>오늘날</b>: 변동환율제가 중심이지만 관리·개입이 병존.</p><p class="teacher-line">오지선다에서는 ‘금과 직접 연결된 통화가 무엇인가’를 바꾸어 함정 선지를 만들기 좋다.</p></div>
+<div class="exp-card"><h4>③ 국제통화와 기축통화 구분</h4><p><b>국제통화</b>는 국제거래에서 널리 쓰이는 통화 전체를 가리키고, <b>기축통화</b>는 그중 결제·외환보유·가격표시의 중심 역할을 하는 통화이다. 따라서 ‘모든 국제통화가 기축통화’는 틀린 설명이다.</p></div>
+<div class="exp-card"><h4>④ 개선의 핵심은 ‘단일 세계통화’가 아님</h4><p>환율 변동성과 국제자본 이동으로 생기는 불안을 줄이고, 위기 시 외화를 공급할 안전망을 넓히며, 국가 간 정책 공조를 강화하는 것이 핵심이다. 동아시아 협력도 이 맥락에서 본다.</p></div>
+</div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul>
+<li><b>비교형:</b> 금본위제 ↔ 브레턴우즈 체제 ↔ 변동환율제를 ‘가치 기준·환율 결정·장단점’으로 비교.</li>
+<li><b>오지선다 함정:</b> “변동환율제에서는 중앙은행이 외환시장에 절대 개입할 수 없다.” → X</li>
+<li><b>오지선다 함정:</b> “브레턴우즈 체제에서 모든 나라의 통화가 금과 직접 교환되었다.” → X</li>
+<li><b>자료형:</b> ‘미국의 통화정책 변화가 여러 국가의 환율·자본 흐름에 영향을 미쳤다’ → 달러 중심 체제의 영향력과 연결.</li>
+<li><b>개념 연결:</b> 국제통화체제 개선 → 정책 공조·IMF·외환보유액·통화스와프·지역 금융협력.</li>
+</ul></div>
+<div class="teacher-question"><b>수업 발문</b> “달러가 세계에서 가장 많이 쓰이면 편리한데, 왜 굳이 국제통화체제를 ‘개선’해야 할까?” → 편리성과 의존 위험을 동시에 말하게 한다.</div>
+</div><div class="quiz"><h3>형성평가</h3>
+<div class="q">1. 제2차 세계대전 이후 달러를 중심으로 구축된 국제통화체제는?<br/><button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">브레턴우즈 체제</div></div>
+<div class="q">2. 국제거래와 외환보유에서 중심적으로 활용되는 대표적 통화를 무엇이라 하는가?<br/><button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">기축통화</div></div>
+<div class="q">3. 국제통화체제 개선 방향으로 적절하지 않은 것은? ① 국제 정책 공조 ② 외환 안전망 강화 ③ 특정 통화 의존 심화 ④ 지역 금융협력<br/><button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">③</div></div>
+</div>
+</div>
+</section>
+<!-- reusable lesson sections -->
+<section class="lesson" data-lesson-index="2" data-lesson-label="4-2 국제금융시장의 의미와 구성" id="l42"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-2</span><span class="unit-tag">국제금융시장</span></div><h2>국제금융시장의 의미와 구성</h2><div class="question">핵심 질문｜나라와 나라 사이에서 돈은 누가, 왜 이동시키는가?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>국제금융시장의 의미를 설명한다.</li><li>주요 참여 주체와 기본 기능을 구분한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>국제금융시장</li><li>정부·중앙은행·금융기관</li><li>기업·투자자</li><li>외환시장·국제자본시장</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l42-1">1. 국제금융시장이란?<button class="progress-pin teacher-ui" data-anchor="progress-l42-1" type="button">📌 진도 저장</button></h3><p>국경을 넘어 자금이 빌려지고 투자되며 통화가 교환되는 시장입니다. 기업의 해외투자, 정부의 외화 조달, 투자자의 해외주식 투자, 은행 간 외화 거래 등이 모두 국제금융시장과 연결됩니다.</p></div>
+<div class="section"><h3 class="progress-heading" id="progress-l42-2">2. 주요 참여자<button class="progress-pin teacher-ui" data-anchor="progress-l42-2" type="button">📌 진도 저장</button></h3><div class="concept-grid"><div class="concept"><b>정부</b>국채 발행, 외화 조달, 금융정책</div><div class="concept"><b>중앙은행</b>외환시장 안정, 외환보유액 관리, 통화정책</div><div class="concept"><b>금융기관</b>외화 대출·예금·투자, 국제 결제</div><div class="concept"><b>기업·투자자</b>해외투자, 자금조달, 자산 투자</div></div></div>
+<div class="section"><h3 class="progress-heading" id="progress-l42-3">3. 기본적인 분류<button class="progress-pin teacher-ui" data-anchor="progress-l42-3" type="button">📌 진도 저장</button></h3><div class="table-wrap"><table><thead><tr><th>시장</th><th>주요 기능</th><th>예시</th></tr></thead><tbody><tr><td>외환시장</td><td>서로 다른 국가의 통화 교환</td><td>원화를 달러로 교환</td></tr><tr><td>국제자본시장</td><td>중·장기 자금 조달과 투자</td><td>해외 채권·주식 투자</td></tr><tr><td>국제단기금융시장</td><td>단기 자금 조달</td><td>은행 간 단기 외화 거래</td></tr></tbody></table></div></div>
+<div class="note test"><strong>시험 포인트</strong>시장 이름을 지나치게 세분화하기보다 ‘통화 교환 / 단기 자금 / 중장기 투자’ 정도를 구분할 수 있으면 충분합니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜국제금융시장을 ‘돈의 이동 경로’로 설명</div>
+<div class="exp-grid"><div class="exp-card"><h4>① 왜 국제금융시장이 필요한가?</h4><p>자금이 남는 국가·기관의 돈이 자금이 필요한 국가·기업으로 이동하도록 하여 무역·투자·정부의 자금조달을 가능하게 한다. 즉 국제금융시장은 <b>국제적 자금 배분</b>과 <b>결제</b>의 기능을 한다.</p></div><div class="exp-card"><h4>② ‘장소’보다 ‘기능’으로 이해</h4><p>국제금융시장은 특정 건물이나 한 도시만을 뜻하지 않는다. 전 세계 은행·거래소·전자거래망이 연결된 시장이다. 외환시장, 단기금융시장, 자본시장 등은 거래 목적과 기간에 따라 구분한다.</p></div><div class="exp-card"><h4>③ 참여 주체 구분</h4><p><b>중앙은행</b>은 통화정책·외환보유액·시장안정, <b>상업은행</b>은 예금·대출·결제, <b>기업</b>은 투자·자금조달, <b>정부</b>는 외화조달·정책, <b>투자자</b>는 수익을 목적으로 국제자산에 투자한다.</p></div><div class="exp-card"><h4>④ 장점과 위험을 동시에</h4><p>효율적인 자금 배분과 투자기회 확대가 장점이지만, 금융시장이 연결될수록 한 국가의 충격이 다른 나라로 빠르게 전파될 수 있다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>주체-역할 연결:</b> 외환보유액 관리=중앙은행 / 해외 채권 발행=정부·기업 / 외화대출=금융기관.</li><li><b>시장 구분:</b> 통화교환=외환시장 / 단기자금=국제단기금융시장 / 중·장기 증권=국제자본시장.</li><li><b>함정:</b> 국제금융시장은 ‘국가 간 거래만’ 이루어지는 시장이 아니라 민간 금융기관·기업·투자자도 핵심 참여자.</li><li><b>자료형:</b> 해외 주식투자·외화채권 발행·원/달러 교환 사례를 시장 유형과 연결.</li></ul></div>
+<div class="teacher-question"><b>수업 발문</b> “삼성전자가 해외에서 달러로 채권을 발행하는 것과 우리가 미국 주식을 사는 것은 무엇이 같을까?” → 국경을 넘는 자금 이동이라는 공통점을 찾게 한다.</div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 원화를 달러로 교환하는 거래가 이루어지는 대표 시장은?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">외환시장</div></div><div class="q">2. 외환보유액을 관리하고 환율 안정을 위해 개입할 수 있는 대표 주체는?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">중앙은행</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="3" data-lesson-label="4-3 자본자유화와 국제금융거래" id="l43"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-3</span><span class="unit-tag">자본자유화</span></div><h2>자본자유화와 국제금융거래</h2><div class="question">핵심 질문｜국경을 넘어 돈이 자유롭게 움직이면 좋은 점만 생길까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>자본자유화의 의미를 설명한다.</li><li>긍정적 효과와 위험을 비교한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>자본자유화</li><li>자본유입·자본유출</li><li>환율위험·신용위험·유동성위험</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l43-1">1. 자본자유화<button class="progress-pin teacher-ui" data-anchor="progress-l43-1" type="button">📌 진도 저장</button></h3><p>국가 간 자본 이동에 대한 규제를 완화하여 외국인이 국내에 투자하거나 국내 자본이 해외에 투자하기 쉽게 만드는 것입니다.</p><div class="two-col"><div class="summary-card"><h4>긍정적 효과</h4><ul><li>필요한 자금을 해외에서 조달</li><li>투자 기회 확대</li><li>금융시장 발전과 경쟁 촉진</li></ul></div><div class="summary-card"><h4>위험</h4><ul><li>단기자금이 한꺼번에 빠져나갈 수 있음</li><li>환율·주가 변동 확대 가능</li><li>다른 나라의 위기가 빠르게 전파될 수 있음</li></ul></div></div></div>
+<div class="section"><h3 class="progress-heading" id="progress-l43-2">2. 국제금융거래의 대표 위험<button class="progress-pin teacher-ui" data-anchor="progress-l43-2" type="button">📌 진도 저장</button></h3><div class="concept-grid"><div class="concept"><b>환율위험</b>환율이 예상과 다르게 변해 손실이 발생할 위험</div><div class="concept"><b>신용위험</b>돈을 빌린 상대가 갚지 못할 위험</div><div class="concept"><b>유동성위험</b>필요할 때 자금을 확보하거나 자산을 현금화하기 어려운 위험</div><div class="concept"><b>국가·정책위험</b>정부 정책이나 정치·경제 상황 변화로 손실이 생길 위험</div></div></div>
+<div class="note mis"><strong>오개념 주의</strong>자본자유화는 ‘무조건 좋은 정책’도 ‘무조건 나쁜 정책’도 아닙니다. 자금 조달의 장점과 급격한 자본 이동의 위험을 함께 봐야 합니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜자본자유화는 ‘기회 확대 + 위험 확대’</div>
+<div class="exp-grid"><div class="exp-card"><h4>① 자본자유화의 핵심</h4><p>외국인의 국내투자와 국내 자본의 해외투자에 대한 규제를 완화해 자본 이동을 쉽게 만드는 것이다. 무역자유화가 ‘상품 이동’이라면 자본자유화는 ‘돈과 금융자산의 이동’에 초점이 있다.</p></div><div class="exp-card"><h4>② 장점</h4><p>국내에 부족한 투자자금을 해외에서 조달할 수 있고, 투자자는 더 다양한 자산에 투자할 수 있다. 경쟁과 금융기법의 발전을 촉진하는 효과도 기대할 수 있다.</p></div><div class="exp-card"><h4>③ 핵심 위험: 급격한 자본유출</h4><p>단기자금은 수익성과 안전성에 민감하여 위기 조짐이 보이면 빠르게 빠져나갈 수 있다. 이때 환율 상승, 자산가격 하락, 외화 부족이 동시에 나타날 수 있다.</p></div><div class="exp-card"><h4>④ 위험 관리</h4><p>환율 위험에는 선물환 등 <b>헤지</b>, 투자 위험에는 <b>분산투자</b>, 국가 차원에서는 외환보유액·건전성 규제·국제금융안전망 등을 활용할 수 있다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>비교:</b> 자본자유화의 긍정적 효과와 부정적 효과를 같은 자료에서 함께 판단.</li><li><b>위험 구분:</b> 환율위험=환율 변화 / 신용위험=상대방 미상환 / 유동성위험=필요할 때 현금 확보 어려움.</li><li><b>함정:</b> “자본자유화는 금융위기를 반드시 일으킨다.” → X. 위험 가능성을 높일 수 있으나 결과가 필연적인 것은 아님.</li><li><b>자료형:</b> 외국인 단기자금 대규모 이탈 → 환율 급등·외환시장 불안과 연결.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 해외 자본이 자유롭게 국내로 들어오고 나갈 수 있도록 규제를 완화하는 것은?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">자본자유화</div></div><div class="q">2. 환율이 급변해 해외투자 가치가 줄어드는 위험은?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">환율위험</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="4" data-lesson-label="4-4 외환위기와 금융위기는 어떻게 다른가?" id="l44"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-4</span><span class="unit-tag">외환위기와 금융위기</span></div><h2>외환위기와 금융위기는 어떻게 다른가?</h2><div class="question">핵심 질문｜‘달러가 부족한 위기’와 ‘금융기관이 흔들리는 위기’는 같은가?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>외환위기와 금융위기를 구분한다.</li><li>위기가 서로 연결되는 과정을 설명한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>외환위기</li><li>금융위기</li><li>자본유출</li><li>외환보유액</li></ul></div></div></div><div class="lesson-body">
+<div class="table-wrap"><table><thead><tr><th>구분</th><th>외환위기</th><th>금융위기</th></tr></thead><tbody><tr><td>핵심 문제</td><td>국가·경제 전체의 외화 지급 능력 악화</td><td>은행·금융기관·금융시장 기능의 심각한 불안</td></tr><tr><td>대표 현상</td><td>환율 급등, 외환보유액 감소, 외화 부족</td><td>금융기관 부실, 신용경색, 자산가격 급락</td></tr><tr><td>연결 가능성</td><td colspan="2">외환위기가 금융기관 부실을 키우거나, 금융위기가 자본유출을 불러 외환위기로 이어질 수 있음</td></tr></tbody></table></div>
+<div class="note info"><strong>핵심 문장</strong>두 위기는 구분해야 하지만 실제 경제에서는 서로 영향을 주며 동시에 나타날 수 있습니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜외환위기와 금융위기 구분이 시험 핵심</div>
+<div class="compare-table"><table><thead><tr><th>구분</th><th>외환위기</th><th>금융위기</th></tr></thead><tbody><tr><td>핵심 문제</td><td>외화 부족·대외지급 능력 불안</td><td>은행·금융기관·자산시장 부실</td></tr><tr><td>대표 현상</td><td>환율 급등, 외환보유액 감소, 자본유출</td><td>은행 부실, 신용경색, 자산가격 급락</td></tr><tr><td>주요 경로</td><td>외국자본 이탈·단기외채 상환 압력</td><td>대출 부실·금융기관 손실·신뢰 붕괴</td></tr><tr><td>관계</td><td colspan="2">둘은 서로 독립적이지 않으며 한 위기가 다른 위기로 번질 수 있다.</td></tr></tbody></table></div>
+<div class="exp-grid"><div class="exp-card"><h4>외환보유액의 의미</h4><p>정부·중앙은행이 대외지급과 외환시장 안정을 위해 보유하는 외화자산이다. 외환보유액이 줄면 외화 부족에 대응할 여력이 약해질 수 있다.</p></div><div class="exp-card"><h4>왜 둘이 연결되는가?</h4><p>은행이 해외에서 빌린 달러를 갚지 못하면 금융기관 부실이 외환 부족으로 이어질 수 있고, 반대로 환율 급등으로 외화부채 부담이 커지면 금융기관의 건전성이 악화될 수 있다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li>“외환보유액 급감·환율 급등” → 외환위기 단서.</li><li>“은행 대규모 부실·신용경색” → 금융위기 단서.</li><li><b>함정:</b> 외환위기와 금융위기는 항상 완전히 분리되어 발생한다 → X.</li><li><b>자료형:</b> 한 사례에 두 위기의 단서가 함께 제시되면 상호 연계 가능성을 판단하게 출제 가능.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 외환보유액이 빠르게 줄고 외화 지급이 어려워지는 위기는?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">외환위기</div></div><div class="q">2. 은행의 연쇄 부실과 신용경색이 중심인 위기는?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">금융위기</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="5" data-lesson-label="4-5 1997년 동아시아 금융위기" id="l45"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-5</span><span class="unit-tag">동아시아 금융위기</span></div><h2>1997년 동아시아 금융위기</h2><div class="question">핵심 질문｜왜 한 나라의 불안이 주변 국가로 빠르게 확산되었을까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>동아시아 금융위기의 주요 원인을 이해한다.</li><li>위기의 국제적 확산을 설명한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>단기 외채</li><li>급격한 자본유출</li><li>환율 불안</li><li>위기 전염</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l45-1">위기의 기본 흐름<button class="progress-pin teacher-ui" data-anchor="progress-l45-1" type="button">📌 진도 저장</button></h3><div class="flow"><div class="step">해외 자본 유입 확대</div><div class="arrow">→</div><div class="step">외채·금융 불안 누적</div><div class="arrow">→</div><div class="step">투자자 신뢰 약화</div><div class="arrow">→</div><div class="step">자본 급유출</div><div class="arrow">→</div><div class="step">통화가치·금융시장 불안</div></div><p>1997년 태국에서 시작된 외환·금융 불안은 인도네시아, 한국 등 주변 국가로 빠르게 확산되었습니다. 국제금융시장에서 투자자들이 비슷한 위험을 가진 국가의 자금을 동시에 회수한 것이 위기 전염을 키웠습니다.</p></div>
+<div class="note test"><strong>시험 포인트</strong>‘한 가지 원인’보다 단기 외채, 금융기관의 취약성, 급격한 자본 이동, 신뢰 하락이 복합적으로 작용했다는 점을 기억합니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜1997 동아시아 위기의 공통 구조</div>
+<div class="exp-grid"><div class="exp-card"><h4>① 위기 전</h4><p>고성장 기대 속에 해외 단기자금이 많이 유입되고, 금융기관·기업의 외화차입과 투자가 확대되었다. 금융감독과 위험관리의 취약성도 존재했다.</p></div><div class="exp-card"><h4>② 신뢰가 흔들리자</h4><p>투자자들이 자금을 회수하면서 통화가치가 하락하고 외채 상환 부담이 커졌다. 태국에서 시작된 불안이 인도네시아·한국 등으로 확산되며 ‘전염 효과’가 나타났다.</p></div><div class="exp-card"><h4>③ 고정·관리 환율의 부담</h4><p>환율을 일정 수준에 유지하려면 외화를 시장에 공급해야 하는데, 투기적 공격과 자본유출이 커지면 외환보유액이 빠르게 감소할 수 있다.</p></div><div class="exp-card"><h4>④ 정책의 적절성 논쟁</h4><p>긴축·고금리·구조조정은 신뢰 회복에 도움이 될 수 있지만 경기침체와 실업을 심화시킬 수 있다. 위기 정책은 국가 상황에 따라 효과와 비용을 함께 평가해야 한다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>원인 묶기:</b> 단기외채·급격한 자본유출·취약한 금융구조·환율 방어 부담.</li><li><b>전개 순서:</b> 신뢰 하락 → 자본유출 → 통화가치 하락 → 외화부채 부담 증가 → 금융·실물경제 위축.</li><li><b>함정:</b> “동아시아 위기는 단 하나의 국내 정책 실패만으로 발생했다.” → X.</li><li><b>자료형:</b> 여러 국가의 통화가 연쇄적으로 급락하는 그래프 → 위기의 국제적 전염.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 동아시아 금융위기 확산을 빠르게 만든 국제금융시장의 특징은?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">자본이 국경을 넘어 빠르게 이동한다는 점</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="6" data-lesson-label="4-6 1997년 한국의 외환위기" id="l46"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-6</span><span class="unit-tag">한국의 외환위기</span></div><h2>1997년 한국의 외환위기</h2><div class="question">핵심 질문｜한국은 왜 IMF에 지원을 요청하게 되었을까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>한국 외환위기의 원인과 전개를 설명한다.</li><li>IMF 지원 요청의 의미를 이해한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>단기 외채</li><li>외환보유액</li><li>자본유출</li><li>IMF 구제금융</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l46-1">한국 외환위기의 전개<button class="progress-pin teacher-ui" data-anchor="progress-l46-1" type="button">📌 진도 저장</button></h3><div class="flow"><div class="step">기업·금융기관의 취약성</div><div class="arrow">→</div><div class="step">외국자본 이탈</div><div class="arrow">→</div><div class="step">외화 부족 심화</div><div class="arrow">→</div><div class="step">원화 가치 급락</div><div class="arrow">→</div><div class="step">IMF 지원 요청</div></div><p>한국 경제가 외국에서 빌린 자금을 제때 상환하기 어려워지고 외환보유액이 빠르게 줄면서 국제적인 지급 능력에 대한 불안이 커졌습니다. 결국 한국 정부는 IMF에 자금 지원을 요청했습니다.</p></div>
+<div class="note mis"><strong>오개념 주의</strong>‘IMF가 외환위기를 만들었다’가 아닙니다. 외환위기가 심화된 뒤 한국이 IMF에 지원을 요청한 것입니다.</div>
+<div class="activity"><h4>판단 활동｜1997년 정부라면?</h4><p>외환보유액이 급감하고 만기가 돌아오는 외채를 갚기 어렵다면 ① 아무 조치도 하지 않는다 ② 외화 유동성을 확보한다 ③ 국내 통화만 더 발행한다 중 무엇이 필요한지 이유를 말해봅시다.</p></div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜한국 외환위기는 ‘국가가 돈이 없었다’보다 정확히</div>
+<div class="exp-grid"><div class="exp-card"><h4>① 배경</h4><p>기업의 높은 부채비율, 금융기관의 부실, 단기 외화차입 확대, 동아시아 위기 확산 등이 복합적으로 작용했다. 특히 단기간에 갚아야 할 외화부채에 비해 사용 가능한 외환이 부족해졌다.</p></div><div class="exp-card"><h4>② 핵심은 외화 유동성</h4><p>원화 자체가 부족한 것이 아니라 대외 지급에 필요한 <b>달러 등 외화</b>가 부족한 상황이었다. 그래서 ‘국가부도’라는 표현보다 외환·유동성 위기의 성격을 설명하는 것이 정확하다.</p></div><div class="exp-card"><h4>③ IMF 지원</h4><p>한국은 IMF 등에 금융지원을 요청했고, 지원과 함께 금융·기업 구조조정, 거시경제 안정 등을 위한 정책 조건이 제시되었다.</p></div><div class="exp-card"><h4>④ 사회적 파급</h4><p>기업 부도와 구조조정, 실업 증가, 고용 불안이 나타나 금융위기가 국민의 일상과 사회구조에도 큰 영향을 미쳤다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>핵심 단서:</b> 외환보유액 부족·단기외채 상환 압력·원화 가치 급락.</li><li><b>함정:</b> “1997년 위기는 원화 화폐 자체가 부족해서 발생했다.” → X.</li><li><b>기관 연결:</b> IMF = 국제수지·외화 부족 국가에 대한 금융지원과 정책 협의.</li><li><b>자료형:</b> 환율 급등·외환보유액 감소 그래프를 함께 제시해 위기 상황 판단.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 국가가 보유한 달러 등 외국 통화 자산을 무엇이라 하는가?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">외환보유액</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="7" data-lesson-label="4-7 한국은 외환위기를 어떻게 극복했는가?" id="l47"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-7</span><span class="unit-tag">외환위기 극복</span></div><h2>한국은 외환위기를 어떻게 극복했는가?</h2><div class="question">핵심 질문｜위기를 극복하는 과정에서 경제와 사회는 무엇을 겪었을까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>외환위기 극복 정책을 설명한다.</li><li>구조조정의 경제·사회적 영향을 이해한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>구조조정</li><li>금융개혁</li><li>기업개혁</li><li>외환보유액 확충</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l47-1">주요 대응<button class="progress-pin teacher-ui" data-anchor="progress-l47-1" type="button">📌 진도 저장</button></h3><div class="concept-grid"><div class="concept"><b>금융·기업 구조조정</b>부실 금융기관과 기업을 정리하고 재무구조를 개선</div><div class="concept"><b>외환 확보</b>외화 유동성을 늘리고 외환보유액을 확충</div><div class="concept"><b>경제 제도 개선</b>금융감독과 기업경영의 투명성 강화</div><div class="concept"><b>국민 참여</b>금 모으기 운동 등 외화 확보에 도움이 되는 사회적 참여</div></div></div>
+<div class="section"><h3 class="progress-heading" id="progress-l47-2">사회적 영향<button class="progress-pin teacher-ui" data-anchor="progress-l47-2" type="button">📌 진도 저장</button></h3><p>경제 구조를 바꾸는 과정에서 기업 부도, 실업 증가, 고용 불안 등 큰 사회적 비용도 발생했습니다. 따라서 ‘위기 극복 = 모두에게 즉시 좋은 결과’라고 단순화하면 안 됩니다.</p></div>
+<div class="note test"><strong>시험 포인트</strong>경제 회복 정책과 사회적 부담을 함께 제시한 자료형 문제에 대비합니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜극복 정책은 ‘정책-효과-비용’으로</div>
+<div class="exp-grid"><div class="exp-card"><h4>금융·기업 구조조정</h4><p>부실 금융기관과 기업을 정리하고 자본 확충·부채 축소·경영 투명성 강화 등을 추진했다. 목적은 금융시스템의 신뢰 회복과 건전성 강화였다.</p></div><div class="exp-card"><h4>외환 확보와 경상수지 개선</h4><p>환율 변화와 수입 감소, 수출 확대 등의 영향으로 경상수지가 개선되면서 외화 유입이 늘었고 외환보유액도 확충되었다.</p></div><div class="exp-card"><h4>금 모으기 운동의 위치</h4><p>국민적 참여와 위기극복 의지를 보여준 상징적 사건이지만, 외환위기 극복의 모든 원인을 금 모으기 운동 하나로 설명하면 곤란하다.</p></div><div class="exp-card"><h4>사회적 비용</h4><p>구조조정 과정에서 실업·비정규직 증가·소득불안 등 사회적 비용이 나타났다. 경제 회복과 사회적 부담을 함께 평가해야 한다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>정책-목적 연결:</b> 구조조정=부실 정리·건전성 강화 / 외환보유액 확충=외부충격 대응력 강화.</li><li><b>함정:</b> “금 모으기 운동만으로 외환위기를 극복했다.” → X.</li><li><b>평가형:</b> 위기극복 정책은 거시경제 안정에 기여했지만 실업·소득불안 등 비용도 동반.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 부실 기업과 금융기관을 정리하고 체질을 개선하는 과정을 무엇이라 하는가?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">구조조정</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="8" data-lesson-label="4-8 2008년 글로벌 금융위기" id="l48"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-8</span><span class="unit-tag">글로벌 금융위기</span></div><h2>2008년 글로벌 금융위기</h2><div class="question">핵심 질문｜미국의 금융시장 문제가 어떻게 세계 경제의 문제가 되었을까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>2008년 금융위기의 기본 원인과 확산을 설명한다.</li><li>1997년 외환위기와 비교한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>주택시장 부실</li><li>금융기관 부실</li><li>신용경색</li><li>세계적 확산</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l48-1">위기의 흐름<button class="progress-pin teacher-ui" data-anchor="progress-l48-1" type="button">📌 진도 저장</button></h3><div class="flow"><div class="step">미국 주택·대출시장 부실</div><div class="arrow">→</div><div class="step">관련 금융상품 손실</div><div class="arrow">→</div><div class="step">금융기관 불안</div><div class="arrow">→</div><div class="step">대출·투자 위축</div><div class="arrow">→</div><div class="step">세계 실물경제 침체</div></div></div>
+<div class="table-wrap"><table><thead><tr><th>구분</th><th>1997 동아시아 외환위기</th><th>2008 글로벌 금융위기</th></tr></thead><tbody><tr><td>중심 문제</td><td>외화 부족·급격한 자본유출</td><td>미국 금융기관·금융상품 부실</td></tr><tr><td>확산</td><td>동아시아 중심</td><td>세계 금융시장 전체</td></tr><tr><td>공통점</td><td colspan="2">국제금융시장의 높은 연결성 때문에 위기가 국경을 넘어 확산</td></tr></tbody></table></div>
+<div class="teacher"><strong>교사용 난이도 조절</strong>서브프라임 모기지와 파생상품의 세부 구조는 시험 핵심으로 두지 말고 ‘위험한 대출과 금융기관 부실이 연결되어 세계로 퍼졌다’ 수준으로 정리합니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜2008 위기는 ‘금융기관 내부 부실이 세계로 확산’</div>
+<div class="flow-rich"><span>주택가격 상승·대출 확대</span><b>→</b><span>상환능력이 낮은 차입자까지 대출</span><b>→</b><span>주택가격 하락·연체 증가</span><b>→</b><span>관련 금융상품 손실 확대</span><b>→</b><span>금융기관 신뢰 붕괴·신용경색</span><b>→</b><span>세계로 확산</span></div>
+<div class="exp-grid"><div class="exp-card"><h4>서브프라임 모기지</h4><p>신용도가 낮은 차입자에게 제공된 주택담보대출을 말한다. 문제는 대출 자체뿐 아니라 이를 기초로 한 금융상품이 널리 유통되면서 손실이 금융기관 전체로 퍼졌다는 점이다.</p></div><div class="exp-card"><h4>왜 세계로 퍼졌나?</h4><p>세계 금융기관들이 서로 자금을 빌려주고 같은 금융상품에 투자하고 있었기 때문이다. 미국 금융시장의 신뢰 붕괴가 국제자금 경색과 무역 감소로 이어졌다.</p></div></div>
+<div class="compare-table"><table><thead><tr><th></th><th>1997 한국·동아시아</th><th>2008 글로벌 금융위기</th></tr></thead><tbody><tr><td>출발점</td><td>외화 유동성·자본유출</td><td>미국 주택·금융시장 부실</td></tr><tr><td>핵심</td><td>외환위기 성격이 강함</td><td>금융기관·신용시장 위기</td></tr><tr><td>확산</td><td>동아시아 중심</td><td>글로벌 금융망을 통해 세계적 확산</td></tr></tbody></table></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>비교형 최우선:</b> 1997 ↔ 2008의 발생지역·핵심 원인·위기 유형.</li><li><b>함정:</b> 두 위기의 원인과 전개가 동일했다 → X.</li><li><b>자료형:</b> 미국 주택가격 하락 + 금융기관 파산 + 세계 무역 감소 → 2008 위기.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 1997년과 2008년 위기의 공통점을 한 문장으로 쓰시오.<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">예시 답</button><div class="answer">국제금융시장의 연결성 때문에 한 지역의 위기가 다른 국가로 빠르게 확산되었다.</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="9" data-lesson-label="4-9 금융위기에 국제사회는 어떻게 대응하는가?" id="l49"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-9</span><span class="unit-tag">국제 금융·통화 협력</span></div><h2>금융위기에 국제사회는 어떻게 대응하는가?</h2><div class="question">핵심 질문｜세계 금융위기는 한 국가의 정책만으로 해결할 수 있을까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>국제 금융협력의 필요성을 설명한다.</li><li>글로벌·지역 금융 거버넌스를 이해한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>국제공조</li><li>글로벌 금융 거버넌스</li><li>G20</li><li>동아시아 금융협력</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l49-1">왜 협력이 필요한가?<button class="progress-pin teacher-ui" data-anchor="progress-l49-1" type="button">📌 진도 저장</button></h3><p>금융시장은 국경을 넘어 연결되어 있어 한 국가의 금리·환율·금융 불안이 다른 국가에 영향을 줄 수 있습니다. 따라서 위기 시 정보 공유, 유동성 공급, 금융규제 개선, 정책 공조가 필요합니다.</p></div>
+<div class="concept-grid"><div class="concept"><b>IMF</b>국제통화 안정과 위기국 지원</div><div class="concept"><b>G20</b>주요 국가들이 세계경제·금융 현안을 협의</div><div class="concept"><b>중앙은행 협력</b>유동성 공급·통화스와프 등</div><div class="concept"><b>동아시아 지역협력</b>지역 내 금융안전망과 공동 대응 강화</div></div>
+<div class="note info"><strong>글로벌 거버넌스</strong>세계정부가 없어도 국가·국제기구·금융기관 등 여러 행위자가 규칙과 협력을 통해 문제를 함께 관리하는 방식입니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜글로벌 금융 거버넌스와 동아시아 협력</div>
+<div class="exp-grid"><div class="exp-card"><h4>글로벌 금융 거버넌스</h4><p>세계정부가 없는 상황에서 국가·중앙은행·IMF·G20 등 다양한 행위자가 규칙을 만들고 정보를 공유하며 금융안정을 위한 정책을 조정하는 체계를 말한다.</p></div><div class="exp-card"><h4>G20의 의미</h4><p>주요 선진국과 신흥국이 함께 참여하여 글로벌 금융위기 이후 거시경제 정책 공조와 금융규제 개혁을 논의하는 핵심 협의체로 중요성이 커졌다.</p></div><div class="exp-card"><h4>동아시아 지역 협력</h4><p>1997년 위기 이후 ASEAN+3 국가들은 역내 외화 유동성 지원을 강화하였다. <b>치앙마이 이니셔티브(CMI)</b>와 이후 다자화된 <b>CMIM</b>은 지역 금융안전망의 대표 사례다.</p></div><div class="exp-card"><h4>왜 글로벌+지역 협력이 함께 필요한가?</h4><p>IMF 같은 세계적 제도는 폭넓은 지원이 가능하고, 지역 협력은 역내 상황을 빠르게 파악하고 보완적 안전망을 제공할 수 있다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>구분:</b> IMF=국제기구 / G20=주요국 협의체 / CMI·CMIM=동아시아 지역 금융협력.</li><li><b>함정:</b> 글로벌 금융 거버넌스는 하나의 세계정부가 금융정책을 지휘하는 체제 → X.</li><li><b>자료형:</b> ‘ASEAN+3 국가 간 외화 유동성 지원’ → 치앙마이 이니셔티브 계열.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 세계정부 없이 여러 행위자가 국제문제를 함께 관리하는 방식을 무엇이라 하는가?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">글로벌 거버넌스</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="10" data-lesson-label="4-10 통화스와프와 금융안정" id="l410"><div class="lesson-head"><div class="kicker"><span class="lesson-no">4-10</span><span class="unit-tag">통화스와프</span></div><h2>통화스와프와 금융안정</h2><div class="question">핵심 질문｜달러가 급하게 부족할 때 국가들은 어떤 ‘비상 통로’를 만들 수 있을까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>통화스와프의 의미와 목적을 설명한다.</li><li>외환시장 안정과의 관계를 이해한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>통화스와프</li><li>외화유동성</li><li>중앙은행</li><li>금융안정</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l410-1">통화스와프란?<button class="progress-pin teacher-ui" data-anchor="progress-l410-1" type="button">📌 진도 저장</button></h3><p>두 나라의 중앙은행 등이 일정한 조건에 따라 서로의 통화를 교환할 수 있도록 약속하는 장치입니다. 위기 때 필요한 외화를 공급받을 수 있어 시장의 불안을 줄이는 데 도움이 됩니다.</p><div class="note info"><strong>쉬운 비유</strong>평소에는 사용하지 않더라도 급할 때 꺼내 쓸 수 있는 ‘국가 간 외화 비상 통로’라고 이해하면 됩니다.</div></div>
+<div class="section"><h3 class="progress-heading" id="progress-l410-2">효과와 한계<button class="progress-pin teacher-ui" data-anchor="progress-l410-2" type="button">📌 진도 저장</button></h3><div class="two-col"><div class="summary-card"><h4>효과</h4><ul><li>외화 유동성 확보</li><li>시장 심리 안정</li><li>환율 급등 압력 완화</li></ul></div><div class="summary-card"><h4>한계</h4><ul><li>협정만으로 경제의 모든 구조적 문제가 해결되는 것은 아님</li><li>규모·기간·상대국에 따라 실제 효과가 다를 수 있음</li></ul></div></div></div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜통화스와프는 ‘외화 비상통로’이지만 공짜 돈은 아님</div>
+<div class="flow-rich"><span>A국 중앙은행이 자국 통화 제공</span><b>↔</b><span>B국 중앙은행이 상대 통화 제공</span><b>→</b><span>필요한 외화 유동성 공급</span><b>→</b><span>약정에 따라 다시 교환</span></div>
+<div class="exp-grid"><div class="exp-card"><h4>목적</h4><p>금융시장이 불안할 때 필요한 외화를 안정적으로 확보하여 외환시장의 공포와 유동성 부족을 완화하는 데 있다.</p></div><div class="exp-card"><h4>외환보유액과 차이</h4><p>외환보유액은 평소 국가가 쌓아둔 외화자산이고, 통화스와프는 위기 시 다른 중앙은행과 약정에 따라 외화를 확보할 수 있는 통로다.</p></div><div class="exp-card"><h4>IMF 지원과 차이</h4><p>IMF 지원은 국제기구가 회원국에 자금을 지원하는 방식이고, 통화스와프는 중앙은행 간 협정이라는 점에서 다르다.</p></div><div class="exp-card"><h4>한계</h4><p>협정 규모·기간·조건이 있으며 영구적 외화 공급이나 무상 지원을 의미하지 않는다. 스와프만으로 경제의 구조적 문제까지 해결되는 것도 아니다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>3개 비교:</b> 외환보유액 ↔ 통화스와프 ↔ IMF 지원.</li><li><b>함정:</b> 통화스와프는 상대국이 외화를 무상 증여하는 제도 → X.</li><li><b>자료형:</b> ‘중앙은행 간 약정, 외화 유동성 확보, 이후 재교환’이 보이면 통화스와프.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 통화스와프의 가장 직접적인 목적은? ① 환경규제 강화 ② 외화 유동성 확보 ③ 무역관세 인상 ④ 인구 증가<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">②</div></div></div>
+</div></section>
+<!-- 5단원 -->
+<section class="lesson" data-lesson-index="11" data-lesson-label="5-1 환경문제는 왜 국제정치 문제가 되었는가?" id="l51"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-1</span><span class="unit-tag">환경문제와 국제정치</span></div><h2>환경문제는 왜 국제정치 문제가 되었는가?</h2><div class="question">핵심 질문｜오염과 기후변화는 국경에서 멈출까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>환경문제의 국제적 성격을 설명한다.</li><li>국제협력이 필요한 이유를 말한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>월경성 환경문제</li><li>기후변화</li><li>국제환경정치</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l51-1">국경을 넘는 환경문제<button class="progress-pin teacher-ui" data-anchor="progress-l51-1" type="button">📌 진도 저장</button></h3><p>대기오염, 해양오염, 기후변화처럼 한 국가에서 발생한 원인과 피해가 다른 국가까지 영향을 미치는 문제를 <b>월경성 환경문제</b>라고 할 수 있습니다. 이런 문제는 한 국가의 정책만으로 해결하기 어렵습니다.</p></div>
+<div class="concept-grid"><div class="concept"><b>원인과 피해의 지역이 다를 수 있음</b>오염을 많이 발생시킨 국가와 피해를 크게 받는 국가가 다를 수 있음</div><div class="concept"><b>공동 대응 필요</b>기후·대기·해양은 연결되어 있으므로 국제협약과 공동규칙이 필요</div></div>
+<div class="activity"><h4>짧은 판단</h4><p>상류 국가가 강에 오염물질을 배출해 하류 국가가 피해를 본다면 누가 해결해야 할까요? 발생국만의 문제인지, 양국 협력과 국제규범이 필요한지 근거를 말해봅시다.</p></div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜환경문제가 국제정치가 되는 세 가지 이유</div>
+<div class="exp-grid"><div class="exp-card"><h4>① 국경을 넘는다</h4><p>대기와 해양, 기후는 국가 경계에 맞춰 움직이지 않는다. 원인 발생국과 피해국이 달라질 수 있어 국가 간 협상이 필요하다.</p></div><div class="exp-card"><h4>② 비용과 책임을 나눠야 한다</h4><p>오염을 줄이려면 비용이 든다. 어느 국가가 얼마나 부담할지, 과거 배출과 현재 배출을 어떻게 평가할지가 국제정치적 쟁점이 된다.</p></div><div class="exp-card"><h4>③ 공동재 문제</h4><p>대기·공해·기후처럼 누구나 이용하지만 한 국가가 독점적으로 관리하기 어려운 자원에서는 무임승차 문제가 나타날 수 있다.</p></div><div class="exp-card"><h4>④ 환경과 경제가 충돌하기도</h4><p>배출 감축은 장기적 환경편익을 주지만 단기적으로 산업·에너지 비용을 높일 수 있어 국가별 경제 이해관계가 다르다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>월경성:</b> 원인과 피해가 국경을 넘어 연결.</li><li><b>함정:</b> 환경문제는 국내 정책만 강화하면 국제협력이 필요 없다 → X.</li><li><b>자료형:</b> 상류국 오염→하류국 피해, 한 국가 배출→전 지구 기후 영향.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 국경을 넘어 다른 국가에도 영향을 미치는 환경문제의 성격을 무엇이라 하는가?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">월경성 환경문제</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="12" data-lesson-label="5-2 에너지 문제는 왜 국제정치와 연결되는가?" id="l52"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-2</span><span class="unit-tag">에너지와 국제정치</span></div><h2>에너지 문제는 왜 국제정치와 연결되는가?</h2><div class="question">핵심 질문｜석유와 천연가스의 공급이 끊기면 단순히 전기요금만 오를까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>에너지 자원의 편재를 이해한다.</li><li>에너지 안보의 의미를 설명한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>자원 편재</li><li>화석연료</li><li>에너지 의존</li><li>에너지 안보</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l52-1">에너지 자원의 국제정치적 성격<button class="progress-pin teacher-ui" data-anchor="progress-l52-1" type="button">📌 진도 저장</button></h3><p>석유·천연가스 등 주요 에너지 자원은 특정 지역에 집중되어 있습니다. 수입 의존도가 높은 국가는 공급국의 정치 상황, 전쟁, 국제 제재, 운송로 문제에 큰 영향을 받을 수 있습니다.</p></div>
+<div class="note test"><strong>에너지 안보</strong>국가와 사회가 필요한 에너지를 적정한 가격으로 안정적으로 확보할 수 있는 상태와 이를 위한 정책을 의미합니다.</div>
+<div class="activity"><h4>상황 분석</h4><p>한국으로 들어오는 원유 공급이 한 달간 크게 줄어든다면 교통·물가·산업·외교 중 어떤 영역부터 영향을 받을지 순서를 정해봅시다.</p></div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜에너지 문제 = 경제 + 외교 + 안보</div>
+<div class="exp-grid"><div class="exp-card"><h4>자원 편재</h4><p>석유·천연가스 등은 특정 지역에 집중되어 있어 생산국과 소비국의 이해관계가 다르다. 수입 의존국은 공급 차질에 취약하다.</p></div><div class="exp-card"><h4>에너지 안보의 세 요소</h4><p><b>안정적 공급</b>, <b>감당 가능한 가격</b>, <b>공급원·운송로의 다양성</b>이 중요하다. 단순히 에너지를 많이 보유하는 것과 같지 않다.</p></div><div class="exp-card"><h4>생산국의 영향력</h4><p>주요 산유국의 생산정책, 국제분쟁·제재, 해협·송유관 등 운송로의 불안은 세계 에너지 가격과 외교관계에 영향을 준다.</p></div><div class="exp-card"><h4>에너지 전환의 정치</h4><p>재생에너지 확대는 기후대응에 기여하지만 핵심광물·전력망·기술 경쟁 등 새로운 국제정치 문제를 만들기도 한다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>개념:</b> 에너지 안보=필요한 에너지를 안정적이고 합리적인 조건으로 확보하는 능력.</li><li><b>함정:</b> 자원 보유량이 많으면 에너지 안보가 자동으로 보장된다 → X.</li><li><b>자료형:</b> 특정 해협 봉쇄·산유국 생산감축 → 수입국 물가·산업에 영향.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 필요한 에너지를 안정적으로 확보하는 국가적 능력과 정책을 무엇이라 하는가?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">에너지 안보</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="13" data-lesson-label="5-3 선진국과 개발도상국은 왜 입장이 다른가?" id="l53"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-3</span><span class="unit-tag">환경문제 해결과 국제협력</span></div><h2>선진국과 개발도상국은 왜 입장이 다른가?</h2><div class="question">핵심 질문｜모든 국가가 같은 비율로 온실가스를 줄이는 것이 공정할까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>선진국과 개발도상국의 입장 차이를 비교한다.</li><li>기후 책임과 개발권의 갈등을 이해한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>역사적 책임</li><li>개발권</li><li>책임 분담</li><li>국제협력</li></ul></div></div></div><div class="lesson-body">
+<div class="table-wrap"><table><thead><tr><th>선진국에서 강조할 수 있는 주장</th><th>개발도상국에서 강조할 수 있는 주장</th></tr></thead><tbody><tr><td>현재의 대규모 배출국도 적극적으로 감축해야 한다.</td><td>과거 산업화 과정에서 선진국이 더 많이 누적 배출했다.</td></tr><tr><td>전 세계가 함께 참여하지 않으면 효과가 제한적이다.</td><td>경제성장과 빈곤 해결을 위한 개발 기회가 필요하다.</td></tr><tr><td>기술혁신과 감축 목표 강화가 필요하다.</td><td>재정·기술 지원 없이 동일한 의무를 요구하는 것은 불공정할 수 있다.</td></tr></tbody></table></div>
+<div class="note info"><strong>핵심</strong>환경문제 해결에서는 ‘공동의 목표’와 동시에 국가별 책임·능력의 차이를 어떻게 반영할지가 중요한 쟁점입니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜선진국-개도국 갈등은 ‘책임·능력·개발권’</div>
+<div class="exp-grid"><div class="exp-card"><h4>선진국이 강조할 수 있는 점</h4><p>현재 배출량이 큰 신흥국까지 참여해야 실질적인 감축 효과가 나타난다는 점, 모든 국가가 공통의 목표에 참여해야 한다는 점을 강조한다.</p></div><div class="exp-card"><h4>개도국이 강조할 수 있는 점</h4><p>산업화 과정에서 선진국이 더 많은 온실가스를 누적 배출했고, 개발도상국은 빈곤 해결과 경제발전을 위한 정책 공간이 필요하다고 주장한다.</p></div><div class="exp-card"><h4>공동의 그러나 차별화된 책임</h4><p>모든 국가가 환경문제 해결 책임을 공유하지만, 역사적 책임과 경제적 능력의 차이를 고려하여 부담 수준을 달리할 수 있다는 원칙이다.</p></div><div class="exp-card"><h4>협력 수단</h4><p>기후재원 지원, 친환경 기술 이전, 역량 강화 등을 통해 개도국의 참여 여건을 높이는 것이 중요하다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>비교형:</b> 역사적 누적배출·개발권(개도국) ↔ 현재 대규모 배출국의 참여 필요(선진국 측 논거).</li><li><b>핵심 원칙:</b> 공동의 그러나 차별화된 책임.</li><li><b>함정:</b> 개도국은 기후변화 대응 의무가 전혀 없다 → X.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 개발도상국이 선진국보다 자주 강조하는 논거 두 가지는?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">예시 답</button><div class="answer">선진국의 역사적 배출 책임, 개발도상국의 경제발전 필요성(개발권)</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="14" data-lesson-label="5-4 환경문제는 누가 함께 해결하는가?" id="l54"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-4</span><span class="unit-tag">환경 글로벌 거버넌스</span></div><h2>환경문제는 누가 함께 해결하는가?</h2><div class="question">핵심 질문｜국가만으로 해결할 수 없다면 어떤 행위자들이 필요한가?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>환경 글로벌 거버넌스의 의미를 설명한다.</li><li>지속가능한 발전과 다양한 행위자의 역할을 이해한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>글로벌 거버넌스</li><li>지속가능한 발전</li><li>국가·국제기구·NGO</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l54-1">지속가능한 발전<button class="progress-pin teacher-ui" data-anchor="progress-l54-1" type="button">📌 진도 저장</button></h3><p>현재 세대의 필요를 충족하면서도 미래 세대가 자신의 필요를 충족할 가능성을 훼손하지 않는 발전을 지향합니다. 경제성장, 사회적 형평, 환경보전을 함께 고려합니다.</p></div>
+<div class="three-col"><div class="summary-card"><h4>국가</h4><p>국내 정책·법률을 마련하고 국제협약을 협상·이행</p></div><div class="summary-card"><h4>국제기구</h4><p>정보·규범·협력의 장을 제공하고 국제적 행동을 촉진</p></div><div class="summary-card"><h4>NGO</h4><p>캠페인, 감시, 조사, 시민 참여와 여론 형성</p></div></div>
+<div class="note mis"><strong>오개념 주의</strong>국제기구와 NGO는 같은 것이 아닙니다. 국제기구는 국가들이 만든 조직이 중심이고, NGO는 정부가 아닌 시민사회 조직입니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜글로벌 거버넌스는 ‘세계정부 없는 공동관리’</div>
+<div class="exp-grid"><div class="exp-card"><h4>글로벌 거버넌스</h4><p>국가뿐 아니라 국제기구, NGO, 기업, 전문가 네트워크 등이 규칙·정보·자원을 공유하며 세계적 문제를 해결하는 협력체계다.</p></div><div class="exp-card"><h4>지속가능한 발전의 세 축</h4><p><b>경제적 지속가능성</b>, <b>사회적 형평</b>, <b>환경 보전</b>을 함께 고려한다. 환경보전만을 뜻하는 개념이 아니다.</p></div><div class="exp-card"><h4>국가</h4><p>협약에 가입하고 국내 법·정책으로 이행한다. 국제협상에서 국가이익을 대변하는 핵심 행위자다.</p></div><div class="exp-card"><h4>국제기구·NGO</h4><p>국제기구는 국가 간 협력의 장과 전문정보를 제공하고, NGO는 감시·캠페인·시민참여·여론 형성에 강점을 가진다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>함정:</b> 글로벌 거버넌스=세계정부의 강제 통치 → X.</li><li><b>구분:</b> 국가 / 국제기구 / NGO의 역할.</li><li><b>지속가능한 발전:</b> 환경만이 아니라 경제·사회·환경의 조화를 추구.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 세계정부 없이 여러 행위자가 환경문제를 공동으로 관리하는 체계를 무엇이라 하는가?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">환경 글로벌 거버넌스</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="15" data-lesson-label="5-5 세계의 기후변화 협력은 어떻게 발전했는가?" id="l55"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-5</span><span class="unit-tag">기후변화 국제협약</span></div><h2>세계의 기후변화 협력은 어떻게 발전했는가?</h2><div class="question">핵심 질문｜기후변화협약, 교토의정서, 파리협정은 어떤 관계인가?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>주요 기후협약의 흐름을 설명한다.</li><li>교토의정서와 파리협정의 특징을 비교한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>UNFCCC</li><li>교토의정서</li><li>파리협정</li></ul></div></div></div><div class="lesson-body">
+<div class="timeline"><div class="titem"><b>UNFCCC(기후변화협약)</b><br/>국제사회가 기후변화 문제에 공동 대응하기 위한 기본 틀을 마련.</div><div class="titem"><b>교토의정서</b><br/>선진국 중심으로 온실가스 감축 의무를 구체화.</div><div class="titem"><b>파리협정</b><br/>선진국뿐 아니라 거의 모든 당사국이 각자의 감축 목표를 제출하고 참여하는 체계로 확대.</div></div>
+<div class="table-wrap"><table><thead><tr><th></th><th>교토의정서</th><th>파리협정</th></tr></thead><tbody><tr><td>참여 구조</td><td>선진국 감축 의무 중심</td><td>모든 국가가 각자 목표를 제출하는 보편적 참여</td></tr><tr><td>핵심 의미</td><td>구속력 있는 감축체계의 발전</td><td>참여 범위를 넓힌 글로벌 기후협력</td></tr></tbody></table></div>
+<div class="note test"><strong>시험 포인트</strong>UNFCCC → 교토의정서 → 파리협정의 ‘순서’와 ‘참여 범위의 변화’를 확실히 구분합니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜UNFCCC-교토-파리를 ‘기본틀-구체화-보편참여’로</div>
+<div class="compare-table"><table><thead><tr><th>구분</th><th>UNFCCC</th><th>교토의정서</th><th>파리협정</th></tr></thead><tbody><tr><td>성격</td><td>기후변화 대응의 기본 국제협약</td><td>UNFCCC 아래 감축의무 구체화</td><td>UNFCCC 아래 보편적 참여 체계</td></tr><tr><td>참여 구조</td><td>모든 당사국의 공동 대응 틀</td><td>선진국 중심의 감축의무</td><td>모든 당사국이 국가결정기여(NDC) 제출·갱신</td></tr><tr><td>핵심 의미</td><td>국제협력의 틀 마련</td><td>차별화된 감축의무</td><td>참여 범위 확대·목표 상향 구조</td></tr></tbody></table></div>
+<div class="exp-grid"><div class="exp-card"><h4>파리협정 목표</h4><p>지구 평균기온 상승을 산업화 이전 대비 <b>2℃보다 훨씬 낮게</b> 유지하고 <b>1.5℃로 제한하기 위한 노력</b>을 추구한다.</p></div><div class="exp-card"><h4>NDC</h4><p>각 국가가 스스로 정해 제출하는 온실가스 감축·기후대응 목표다. 국가별 상황을 반영하면서도 주기적으로 갱신하도록 한다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>순서:</b> UNFCCC → 교토의정서 → 파리협정.</li><li><b>비교:</b> 교토=선진국 중심 / 파리=모든 국가의 참여 확대.</li><li><b>함정:</b> 파리협정은 UNFCCC를 폐지하고 완전히 새로운 별도 체제를 만들었다 → X.</li><li><b>함정:</b> 파리협정은 선진국에만 참여 의무가 있다 → X.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 선진국 중심 감축에서 거의 모든 국가의 참여로 범위를 넓힌 협정은?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">파리협정</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="16" data-lesson-label="5-6 환경을 지키는 국제기구와 NGO" id="l56"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-6</span><span class="unit-tag">환경 국제기구와 NGO</span></div><h2>환경을 지키는 국제기구와 NGO</h2><div class="question">핵심 질문｜UNEP와 Greenpeace는 무엇이 다를까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>주요 국제기구·협약·NGO를 구분한다.</li><li>각 조직의 기본 역할을 설명한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>UNEP · UNCCD</li><li>Greenpeace · WWF</li><li>FOE · CAN</li></ul></div></div></div><div class="lesson-body">
+<div class="table-wrap"><table><thead><tr><th>이름</th><th>성격</th><th>핵심 역할</th></tr></thead><tbody><tr><td>UNEP</td><td>UN 환경 프로그램</td><td>국제 환경정책 협력과 환경문제 대응 촉진</td></tr><tr><td>UNCCD</td><td>국제협약</td><td>사막화·토지 황폐화 대응</td></tr><tr><td>Greenpeace</td><td>환경 NGO</td><td>환경 캠페인·직접행동·여론 형성</td></tr><tr><td>WWF</td><td>환경 NGO</td><td>생물다양성·자연보전 활동</td></tr><tr><td>Friends of the Earth</td><td>환경 NGO 네트워크</td><td>환경정의·지역 환경운동</td></tr><tr><td>Climate Action Network</td><td>기후 NGO 네트워크</td><td>기후정책·국제협상 관련 시민사회 연대</td></tr></tbody></table></div>
+<div class="note test"><strong>구분 기준</strong>‘국가들이 만든 국제기구인가?’, ‘국가 간 합의인 국제협약인가?’, ‘시민사회 중심의 NGO인가?’를 먼저 판단합니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜이 차시는 ‘성격 분류’만 정확히 해도 시험이 된다</div>
+<div class="compare-table"><table><thead><tr><th>이름</th><th>성격</th><th>대표 키워드</th></tr></thead><tbody><tr><td>UNEP</td><td>UN의 환경 프로그램</td><td>국제 환경정책·조정</td></tr><tr><td>UNFCCC</td><td>국제협약</td><td>기후변화 대응의 기본 틀</td></tr><tr><td>UNCCD</td><td>국제협약</td><td>사막화·토지황폐화 대응</td></tr><tr><td>Greenpeace</td><td>NGO</td><td>캠페인·직접행동</td></tr><tr><td>WWF</td><td>NGO</td><td>생물다양성·자연보전</td></tr><tr><td>FOE</td><td>NGO 네트워크</td><td>환경정의·지역운동</td></tr><tr><td>CAN</td><td>NGO 네트워크</td><td>기후정책·시민사회 연대</td></tr></tbody></table></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>최우선 구분:</b> UNEP는 국제협약이 아니라 UN 프로그램.</li><li><b>최우선 구분:</b> UNCCD·UNFCCC는 ‘기구’가 아니라 국제협약.</li><li><b>오지선다:</b> NGO인 것을 모두 고르기 / 협약-목적 연결하기.</li><li><b>자료형:</b> ‘정부로부터 독립된 시민사회 캠페인’ → NGO / ‘국가들이 체결한 합의’ → 국제협약.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 다음 중 NGO는? ① UNEP ② Greenpeace ③ UNFCCC<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">② Greenpeace</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="17" data-lesson-label="5-7 환경문제의 유형과 해결 방향" id="l57"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-7</span><span class="unit-tag">다양한 환경·에너지 문제</span></div><h2>환경문제의 유형과 해결 방향</h2><div class="question">핵심 질문｜환경문제마다 원인과 해결책은 어떻게 다를까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>주요 환경문제의 원인과 영향을 연결한다.</li><li>개인·국가·국제 차원의 해결책을 구분한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>대기·수질·토양·해양오염</li><li>생물다양성 감소</li><li>쓰레기·에너지 문제</li></ul></div></div></div><div class="lesson-body">
+<div class="table-wrap"><table><thead><tr><th>문제</th><th>대표 원인</th><th>핵심 대응</th></tr></thead><tbody><tr><td>대기오염</td><td>산업·교통 배출, 화석연료</td><td>배출규제, 청정에너지, 국제협력</td></tr><tr><td>수질오염</td><td>생활·산업폐수, 농업 오염</td><td>정화시설, 배출관리</td></tr><tr><td>토양오염</td><td>폐기물·화학물질</td><td>오염원 관리·복원</td></tr><tr><td>해양오염</td><td>플라스틱, 기름 유출, 육상 오염 유입</td><td>해양쓰레기 감축·국제 공동관리</td></tr><tr><td>생물다양성 감소</td><td>서식지 파괴, 기후변화, 남획</td><td>보호구역·서식지 보전</td></tr><tr><td>쓰레기 문제</td><td>대량생산·소비와 일회용품</td><td>감량·재사용·재활용</td></tr></tbody></table></div>
+<div class="note info"><strong>수업 정리</strong>환경문제는 종류별 대응이 다르지만 ‘오염원 감소 → 제도적 관리 → 기술 개선 → 국제협력’이라는 공통 구조를 찾을 수 있습니다.</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜환경문제는 ‘오염 매체-원인-영향-대책’ 4단계</div>
+<div class="exp-grid"><div class="exp-card"><h4>대기오염</h4><p>화석연료 연소·산업·교통에서 발생. 미세먼지·산성비·온실가스 문제와 연결될 수 있으나 개념은 서로 구분한다.</p></div><div class="exp-card"><h4>수질·해양오염</h4><p>생활·산업·농업 오염원과 해양 플라스틱·유류 유출 등이 대표적이다. 하천과 해양은 국경을 넘어 연결될 수 있다.</p></div><div class="exp-card"><h4>토양오염</h4><p>중금속·농약·폐기물 등으로 오염되며 회복에 시간이 오래 걸릴 수 있다. 오염원 사전관리와 정화·복원이 중요하다.</p></div><div class="exp-card"><h4>생물다양성·쓰레기</h4><p>서식지 파괴·기후변화·남획 등은 종 감소를 일으킨다. 쓰레기 문제는 감량·재사용·재활용과 순환경제적 접근이 중요하다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>원인-대책 연결:</b> 산업폐수→수질관리 / 중금속→토양복원 / 플라스틱→해양오염·폐기물 감축.</li><li><b>함정:</b> 미세먼지와 지구온난화를 같은 현상으로 설명 → X. 원인 물질과 영향이 겹칠 수 있지만 별개의 환경문제.</li><li><b>자료형:</b> 오염원·피해 사진을 보고 문제 유형과 대책 연결.</li></ul></div></div><div class="quiz"><h3>형성평가</h3><div class="q">1. 생물다양성 감소의 대표 원인 두 가지를 쓰시오.<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">예시 답</button><div class="answer">서식지 파괴, 기후변화, 남획 등</div></div></div>
+</div></section>
+<section class="lesson" data-lesson-index="18" data-lesson-label="5-8 기후변화와 우리의 대응" id="l58"><div class="lesson-head"><div class="kicker"><span class="lesson-no">5-8</span><span class="unit-tag">기후변화 대응 · 총정리</span></div><h2>기후변화와 우리의 대응</h2><div class="question">핵심 질문｜금융위기와 기후위기는 무엇이 다르고, 무엇이 닮았을까?</div><div class="goals"><div class="goal"><div class="box-title">학습 목표</div><ul><li>지구온난화의 원인·영향·대응을 설명한다.</li><li>4·5단원의 공통 핵심을 국제협력 관점에서 연결한다.</li></ul></div><div class="keywords"><div class="box-title">핵심 개념</div><ul><li>온실가스</li><li>기후변화 완화·적응</li><li>국제협력</li><li>글로벌 거버넌스</li></ul></div></div></div><div class="lesson-body">
+<div class="section"><h3 class="progress-heading" id="progress-l58-1">1. 지구온난화의 원인과 영향<button class="progress-pin teacher-ui" data-anchor="progress-l58-1" type="button">📌 진도 저장</button></h3><div class="flow"><div class="step">화석연료 사용·산림 훼손</div><div class="arrow">→</div><div class="step">온실가스 증가</div><div class="arrow">→</div><div class="step">지구 평균기온 상승</div><div class="arrow">→</div><div class="step">해수면·이상기후·생태계 변화</div></div></div>
+<div class="section"><h3 class="progress-heading" id="progress-l58-2">2. 대응의 두 방향<button class="progress-pin teacher-ui" data-anchor="progress-l58-2" type="button">📌 진도 저장</button></h3><div class="two-col"><div class="summary-card"><h4>완화</h4><p>온실가스 배출 자체를 줄이거나 흡수를 늘려 기후변화의 규모를 줄이는 노력</p></div><div class="summary-card"><h4>적응</h4><p>이미 나타나는 기후변화의 피해를 줄이고 사회가 변화에 대비하도록 하는 노력</p></div></div></div>
+<div class="section"><h3 class="progress-heading" id="progress-l58-3">3. 4·5단원 연결<button class="progress-pin teacher-ui" data-anchor="progress-l58-3" type="button">📌 진도 저장</button></h3><div class="table-wrap"><table><thead><tr><th></th><th>국제금융 문제</th><th>환경·에너지 문제</th></tr></thead><tbody><tr><td>공통 특징</td><td colspan="2">국경을 넘어 영향을 주어 한 국가만으로 해결하기 어려움</td></tr><tr><td>핵심 행위자</td><td>국가·중앙은행·IMF·G20 등</td><td>국가·UN·환경 국제기구·NGO 등</td></tr><tr><td>대표 협력</td><td>국제공조·통화스와프·금융안전망</td><td>기후협약·감축목표·기술·재정협력</td></tr><tr><td>공통 개념</td><td colspan="2"><b>글로벌 거버넌스와 국제협력</b></td></tr></tbody></table></div></div>
+<div class="note test"><strong>시험 직전 10개 핵심어</strong>기축통화 / 국제금융시장 / 자본자유화 / 외환위기 / 외환보유액 / 통화스와프 / 에너지 안보 / 글로벌 거버넌스 / 파리협정 / 지속가능한 발전</div>
+<div class="teacher-expansion teacher"><div class="exp-title">교사 설명 확장｜기후변화는 ‘원인-영향-완화-적응’으로 마무리</div>
+<div class="exp-grid"><div class="exp-card"><h4>온실효과와 지구온난화</h4><p>온실효과 자체는 지구의 온도를 유지하는 자연현상이다. 문제는 인간 활동으로 온실가스 농도가 높아져 <b>강화된 온실효과</b>가 나타나 평균기온 상승을 촉진한다는 점이다.</p></div><div class="exp-card"><h4>완화</h4><p>온실가스 배출을 줄이거나 흡수원을 늘려 기후변화의 원인을 줄이는 대응. 재생에너지, 효율 향상, 산림흡수원 확대 등이 예다.</p></div><div class="exp-card"><h4>적응</h4><p>이미 발생하거나 예상되는 기후변화 피해를 줄이는 대응. 방재시설, 폭염대책, 물관리, 기후적응 농업 등이 예다.</p></div><div class="exp-card"><h4>국제·국가·개인</h4><p>국제사회는 협약·재정·기술협력, 국가는 감축정책과 에너지전환, 개인은 에너지 절약과 친환경 소비 등으로 역할이 구분된다.</p></div></div>
+<div class="exam-lab"><h4>📝 시험 출제 포인트</h4><ul><li><b>비교형 최우선:</b> 완화 ↔ 적응.</li><li><b>함정:</b> 온실효과 자체가 비정상적이고 없어져야 할 현상 → X.</li><li><b>사례 분류:</b> 태양광 확대=완화 / 방조제·폭염쉼터=적응.</li><li><b>종합형:</b> 금융위기와 기후위기의 공통점 → 한 국가만으로 해결하기 어려워 국제협력 필요.</li></ul></div></div><div class="quiz"><h3>최종 확인</h3><div class="q">1. 온실가스 배출 자체를 줄이는 대응은 ‘완화’와 ‘적응’ 중 무엇인가?<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">정답</button><div class="answer">완화</div></div><div class="q">2. 금융위기와 기후위기의 공통적인 해결 원리를 한 단어 또는 짧은 표현으로 쓰시오.<button class="answer-toggle" onclick="this.nextElementSibling.classList.toggle('revealed')">예시 답</button><div class="answer">국제협력 / 글로벌 거버넌스</div></div></div>
+</div></section>
+<div class="footer-note">국제 관계와 국제기구 · 교사 설명용 preview 기반 ver3 · 기존 본문 구성 유지 + 교사용 설명·시험 포인트·진도/검색/개념카드 기능 보강</div>
+</main></div><div class="concept-drawer" id="conceptDrawer">
+<div class="drawer-head"><strong id="conceptTitle">개념 설명</strong><button id="closeConcept" type="button">×</button></div>
+<div class="meaning" id="conceptMeaning"></div>
+<div class="tip" id="conceptTip"></div>
+<div class="recent"><b>최근 본 개념</b><div id="recentTerms"></div></div>
+</div><div aria-label="차시 이동" class="focus-nav">
+<button id="prevLesson" type="button">← 이전</button>
+<span class="current-lesson" id="currentLessonLabel">4-1 국제통화체제의 변화와 개선</span>
+<button id="nextLesson" type="button">다음 →</button>
+</div>
+<script>
+const lessons=[...document.querySelectorAll('section.lesson')];
+const links=[...document.querySelectorAll('.nav a')];
+const PROGRESS_KEY='ir_teacher_preview_progress_v3';
+const LAST_KEY='ir_teacher_preview_last_v3';
+const labels={'31':'3-1','32':'3-2','33':'3-3'};
+let activeClass='31', currentIndex=0, focusMode=false, searchHits=[],searchIndex=-1,recent=[];
+
+const glossary={
+'금본위제':['화폐 가치를 일정량의 금과 연결하고 금태환을 통해 통화가치를 유지하는 제도.','금 보유량이 통화공급을 제약할 수 있다는 점이 핵심.'],
+'금환본위제':['금과 직접 연결된 중심 통화를 매개로 다른 나라 통화가치를 연결하는 방식.','금본위제와 브레턴우즈 체제 사이의 연결 개념으로 비교 출제 가능.'],
+'브레턴우즈 체제':['제2차 세계대전 이후 달러를 금과 연결하고 다른 나라 통화를 달러에 연결한 고정환율 중심 국제통화체제.','달러-금 / 각국 통화-달러 관계를 뒤바꾸는 선지가 자주 함정이 됨.'],
+'IMF':['국제통화협력과 환율 안정, 국제수지 어려움을 겪는 회원국에 대한 금융지원 등을 수행하는 국제기구.','세계 중앙은행이나 세계정부가 아니라는 점 주의.'],
+'변동환율제':['외환시장의 수요와 공급을 중심으로 환율이 변동하는 제도.','시장결정이 기본이지만 중앙은행 개입이 완전히 금지되는 것은 아님.'],
+'국제통화':['국제 무역·투자·금융거래에서 널리 쓰이는 통화.','국제통화 전체와 기축통화를 동일시하지 않기.'],
+'기축통화':['국제결제·외환보유·가격표시 등에서 중심 역할을 하는 통화.','오늘날 달러가 대표적이며 국제통화 중 가장 중심적인 범주.'],
+'국제금융시장':['국경을 넘어 자금이 조달·투자되고 통화가 교환되는 시장의 총체.','특정 장소가 아니라 세계 금융네트워크라는 점.'],
+'자본자유화':['국가 간 자본 이동에 대한 규제를 완화하여 해외투자·외국인투자를 쉽게 하는 정책 방향.','장점과 위험을 함께 묻는 비교형에 적합.'],
+'환율위험':['환율이 예상과 다르게 변하여 손실이 발생할 위험.','신용위험·유동성위험과 구분.'],
+'신용위험':['거래 상대방이 빚을 갚지 못해 손실이 생길 위험.','환율변동 때문이 아니라 채무불이행 가능성이 핵심.'],
+'유동성위험':['필요한 시점에 자금을 확보하거나 자산을 현금화하기 어려운 위험.','외화 유동성 부족과 연결해 설명 가능.'],
+'외환위기':['외화 부족과 대외지급 능력에 대한 불안이 커지며 환율 급등·외환보유액 감소 등이 나타나는 위기.','금융위기와 상호 연결될 수 있음.'],
+'금융위기':['은행·금융기관·신용시장·자산시장 부실이 금융시스템 전반의 기능을 약화시키는 위기.','외환위기와 원인·현상을 비교.'],
+'외환보유액':['정부·중앙은행이 대외지급과 외환시장 안정을 위해 보유하는 외화자산.','통화스와프와 달리 평소 보유해 둔 자산.'],
+'글로벌 금융 거버넌스':['세계정부 없이 국가·국제기구·협의체·중앙은행 등이 금융안정을 위해 규칙과 정책을 조정하는 체계.','G20·IMF·지역 협력 등을 연결.'],
+'통화스와프':['중앙은행들이 약정에 따라 서로의 통화를 교환해 필요한 외화 유동성을 공급하는 협정.','무상 증여가 아니며 일정 조건·기간 후 재교환.'],
+'월경성 환경문제':['오염의 원인이나 피해가 국가의 경계를 넘어 다른 나라에 영향을 주는 환경문제.','국제협력 필요성의 직접 근거.'],
+'에너지 안보':['국가가 필요한 에너지를 안정적이고 감당 가능한 조건으로 확보할 수 있는 능력과 정책.','자원 보유량만 많다고 자동 보장되는 것은 아님.'],
+'공동의 그러나 차별화된 책임':['모든 국가가 환경문제 해결 책임을 공유하되 역사적 책임과 능력 차이를 고려해 부담을 달리할 수 있다는 원칙.','선진국-개도국 입장 차이와 연결.'],
+'글로벌 거버넌스':['세계정부 없이 국가·국제기구·NGO·기업 등 다양한 행위자가 세계적 문제를 공동 관리하는 협력체계.','국가만의 협력으로 좁히지 않기.'],
+'지속가능한 발전':['현재 세대의 필요를 충족하면서 미래 세대의 필요 충족 가능성을 훼손하지 않는 발전.','경제·사회·환경의 조화를 함께 본다.'],
+'UNFCCC':['기후변화 대응의 기본 틀을 마련한 국제연합 기후변화협약.','국제기구가 아니라 국제협약.'],
+'교토의정서':['UNFCCC 아래에서 선진국 중심의 온실가스 감축의무를 구체화한 의정서.','파리협정과 참여 구조 비교.'],
+'파리협정':['모든 당사국이 국가결정기여(NDC)를 제출·갱신하며 기후변화에 대응하는 협정.','선진국만 참여한다는 설명은 틀림.'],
+'UNEP':['국제연합 환경계획. 국제 환경정책 협력과 환경문제 대응을 촉진하는 UN 프로그램.','UNFCCC·UNCCD 같은 협약과 성격 구분.'],
+'UNCCD':['사막화와 토지황폐화에 대응하기 위한 국제연합 사막화방지협약.','기구가 아니라 협약.'],
+'Greenpeace':['정부가 아닌 시민사회 기반의 대표적 국제 환경 NGO.','UNEP와 성격이 다름.'],
+'WWF':['생물다양성과 자연보전을 중심으로 활동하는 국제 환경 NGO.','국제기구가 아니라 NGO.'],
+'완화':['온실가스 배출을 줄이거나 흡수원을 늘려 기후변화의 원인을 줄이는 대응.','재생에너지 확대·효율 향상 등이 예.'],
+'적응':['이미 나타나거나 예상되는 기후변화 피해를 줄이기 위한 대응.','방재시설·폭염대책·물관리 등이 예.']
+};
+
+function toggleAnswers(){document.body.classList.toggle('show-answers');document.getElementById('answerBtn').classList.toggle('active')}
+function setFocus(on){
+ focusMode=on;document.body.classList.toggle('focus-mode',on);document.getElementById('focusBtn').classList.toggle('active',on);
+ document.getElementById('focusBtn').textContent=on?'전체 차시 보기':'한 차시 보기';
+ updateFocus();
+}
+function updateFocus(){lessons.forEach((l,i)=>l.classList.toggle('focus-active',i===currentIndex));updateCurrentLabel();}
+function gotoLesson(i,behavior='smooth'){
+ i=Math.max(0,Math.min(lessons.length-1,i));currentIndex=i;updateFocus();
+ try{localStorage.setItem(LAST_KEY,String(i))}catch(e){}
+ if(focusMode){window.scrollTo({top:document.querySelector('.layout').offsetTop-10,behavior})}else lessons[i].scrollIntoView({behavior,block:'start'});
+}
+function updateCurrentLabel(){
+ const l=lessons[currentIndex];if(!l)return;document.getElementById('currentLessonLabel').textContent=l.dataset.lessonLabel||'';
+ links.forEach(a=>a.classList.toggle('current',a.getAttribute('href')==='#'+l.id));
+}
+document.getElementById('prevLesson').onclick=()=>gotoLesson(currentIndex-1);
+document.getElementById('nextLesson').onclick=()=>gotoLesson(currentIndex+1);
+document.getElementById('answerBtn').onclick=toggleAnswers;
+document.getElementById('focusBtn').onclick=()=>setFocus(!focusMode);
+document.getElementById('printBtn').onclick=()=>window.print();
+links.forEach((a,i)=>a.addEventListener('click',e=>{e.preventDefault();gotoLesson(i)}));
+
+// scroll tracking
+const obs=new IntersectionObserver(entries=>{if(focusMode)return;const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;const i=lessons.indexOf(visible.target);if(i>=0){currentIndex=i;updateCurrentLabel();try{localStorage.setItem(LAST_KEY,String(i))}catch(e){}}},{rootMargin:'-18% 0px -66% 0px',threshold:[.05,.2,.5]});
+lessons.forEach(l=>obs.observe(l));
+
+// progress save
+function loadProgress(){try{return JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}')}catch(e){return {}}}
+function saveProgress(o){try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(o))}catch(e){}}
+function renderProgress(){const p=loadProgress()[activeClass];document.getElementById('progressStatus').textContent=p?`${labels[activeClass]} · ${p.lessonLabel} · ${p.heading}`:`${labels[activeClass]} · 아직 저장된 진도 없음`;}
+document.querySelectorAll('.class-tab').forEach(b=>b.onclick=()=>{activeClass=b.dataset.class;document.querySelectorAll('.class-tab').forEach(x=>x.classList.toggle('active',x===b));renderProgress()});
+document.addEventListener('click',e=>{const b=e.target.closest('.progress-pin');if(!b)return;const h=document.getElementById(b.dataset.anchor),l=b.closest('.lesson');const all=loadProgress();all[activeClass]={lessonId:l.id,lessonLabel:l.dataset.lessonLabel,anchor:h.id,heading:h.childNodes[0]?.textContent?.trim()||h.innerText.replace('📌 진도 저장','').trim()};saveProgress(all);renderProgress();b.textContent='✅ 저장됨';setTimeout(()=>b.textContent='📌 진도 저장',900)});
+document.getElementById('gotoProgress').onclick=()=>{const p=loadProgress()[activeClass];if(!p)return;const i=lessons.findIndex(l=>l.id===p.lessonId);if(i>=0){currentIndex=i;updateFocus();const el=document.getElementById(p.anchor)||lessons[i];el.scrollIntoView({behavior:'smooth',block:'center'})}};
+document.getElementById('clearProgress').onclick=()=>{const all=loadProgress();delete all[activeClass];saveProgress(all);renderProgress()};
+
+// search with next hit
+const search=document.getElementById('lessonSearch');
+function clearHits(){searchHits.forEach(n=>n.classList.remove('search-hit'));searchHits=[];searchIndex=-1}
+function buildHits(q){clearHits();if(!q)return;const nodes=[...document.querySelectorAll('.lesson h2,.lesson h3,.lesson h4,.lesson p,.lesson li,.lesson td,.lesson th,.lesson .concept,.lesson .note')];searchHits=nodes.filter(n=>n.innerText.toLowerCase().includes(q.toLowerCase()));}
+function nextHit(){const q=search.value.trim();if(!q)return;if(!searchHits.length)buildHits(q);if(!searchHits.length)return;searchHits.forEach(n=>n.classList.remove('search-hit'));searchIndex=(searchIndex+1)%searchHits.length;const n=searchHits[searchIndex];n.classList.add('search-hit');const l=n.closest('.lesson');const i=lessons.indexOf(l);if(i>=0){currentIndex=i;updateFocus()}n.scrollIntoView({behavior:'smooth',block:'center'})}
+search.addEventListener('input',()=>buildHits(search.value.trim()));search.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();nextHit()}});
+
+// glossary click: exact bold/strong labels
+function markGlossary(){document.querySelectorAll('.lesson b,.lesson strong').forEach(el=>{const t=el.textContent.trim().replace(/[：:]$/,'');if(glossary[t]){el.classList.add('glossary-term');el.dataset.term=t;el.title='클릭하면 개념 설명'}})}
+const drawer=document.getElementById('conceptDrawer');
+function showTerm(term){const data=glossary[term];if(!data)return;document.getElementById('conceptTitle').textContent=term;document.getElementById('conceptMeaning').textContent=data[0];document.getElementById('conceptTip').textContent='시험·수업 포인트 · '+data[1];recent=[term,...recent.filter(x=>x!==term)].slice(0,3);const box=document.getElementById('recentTerms');box.innerHTML='';recent.forEach(x=>{const b=document.createElement('button');b.textContent=x;b.onclick=()=>showTerm(x);box.appendChild(b)});drawer.classList.add('open')}
+document.addEventListener('click',e=>{const g=e.target.closest('.glossary-term');if(g)showTerm(g.dataset.term)});document.getElementById('closeConcept').onclick=()=>drawer.classList.remove('open');
+
+// shortcuts
+document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea'))return;if(e.key==='ArrowRight')gotoLesson(currentIndex+1);if(e.key==='ArrowLeft')gotoLesson(currentIndex-1)});
+
+markGlossary();renderProgress();
+try{const saved=Number(localStorage.getItem(LAST_KEY)||0);if(saved>=0&&saved<lessons.length)currentIndex=saved}catch(e){}
+updateFocus();
+</script>
+</body>
+</html>

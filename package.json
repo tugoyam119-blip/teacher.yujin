@@ -1,0 +1,11 @@
+{
+  "name":"yujint-classroom-v3-monorepo",
+  "version":"3.0.0",
+  "private":true,
+  "scripts":{
+    "setup":"npm --prefix classroom-hub install && npm --prefix services/human-rights install",
+    "dev":"node dev-all.js",
+    "check":"node --check classroom-hub/server.js && node --check services/human-rights/server.js"
+  },
+  "engines":{"node":">=20"}
+}

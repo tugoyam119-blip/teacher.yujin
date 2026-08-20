@@ -1,0 +1,6 @@
+[
+  {"id":"social2-unit1","name":"통합사회2 1단원 교사설명용","slug":"social2","kind":"수업자료","subject":"통합사회2","audience":"teacher","description":"통합사회2 1단원 교사용 설명 자료","icon":"📘","deploy_type":"static","repo_path":"classroom-hub/apps/social2","target_url":"/apps/social2/","manage_url":"","published":true,"sort_order":10},
+  {"id":"international-relations","name":"국제 관계와 국제기구 교사설명용","slug":"international-relations","kind":"수업자료","subject":"국제 관계와 국제기구","audience":"teacher","description":"국제 관계와 국제기구 교사용 설명 자료","icon":"🌐","deploy_type":"static","repo_path":"classroom-hub/apps/international-relations","target_url":"/apps/international-relations/","manage_url":"","published":true,"sort_order":20},
+  {"id":"boardgame","name":"학습 보드게임","slug":"boardgame","kind":"학습게임","subject":"공통","audience":"both","description":"45칸 학습 보드게임","icon":"🎲","deploy_type":"static","repo_path":"classroom-hub/apps/boardgame","target_url":"/apps/boardgame/","manage_url":"","published":true,"sort_order":30},
+  {"id":"human-rights","name":"인권도시 정책결정 수행평가","slug":"human-rights","kind":"수행평가","subject":"통합사회2","audience":"student","description":"새봄시 지하철 엘리베이터 우선 설치 정책결정 수행평가","icon":"🏛️","deploy_type":"server","repo_path":"services/human-rights","target_url":"","manage_url":"","published":true,"sort_order":40}
+]
