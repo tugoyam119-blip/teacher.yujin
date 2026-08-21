@@ -1,8 +1,15 @@
 {
-  "schema": 1,
+  "schema": 2,
   "type": "server",
+  "version": "9.2",
   "healthcheck_path": "/health",
-  "manage_path": "/?teacher=1",
-  "inherit_env": ["TEACHER_PIN", "DATABASE_URL"],
-  "description": "유진T 클래스룸 서버형 수행평가"
+  "manage_path": "/teacher",
+  "inherit_env": [
+    "TEACHER_PIN"
+  ],
+  "variables": {
+    "DATA_DIR": "/data"
+  },
+  "volume_mount_path": "/data",
+  "description": "인권도시 정책결정 수행평가 v9.2 · 반별 차시·90분 시간관리·000000 테스트·실시간 모니터·AI 가채점"
 }

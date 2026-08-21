@@ -1,0 +1,17 @@
+﻿1. GitHub 무료 가입 → 새 PRIVATE 저장소 만들기
+2. 이 폴더 전체를 GitHub 저장소에 업로드
+3. Railway 가입/로그인 → New Project → Deploy from GitHub repo
+4. Railway 서비스에 Volume 추가 → Mount Path = /data
+5. Variables에 TEACHER_PIN=원하는 6자리 숫자 추가
+6. Settings → Networking → Generate Domain
+7. 학생: https://발급주소.up.railway.app/
+8. 교사: https://발급주소.up.railway.app/teacher
+9. 교사 PIN은 브라우저에 한 번 입력하면 이후 기억됨
+10. AI 키는 배포 후 교사용 화면에서 기존처럼 저장 가능
+
+
+[v9.1 추가 기능]
+- 교사용 화면의 "시범·활동 기록 전체 초기화" 버튼으로 진행·답안·접속·시간·제출·채점 기록을 한 번에 삭제할 수 있습니다.
+- 기본 179명 명단, 명단 검증 설정, OpenAI API 키, Railway TEACHER_PIN은 유지됩니다.
+- 초기화 시 서버 초기화 번호가 갱신되어 학생 기기에 남은 이전 임시저장도 다시 서버로 복구되지 않습니다.
+- 실제 참여 인원은 명단 전체가 아니라 실제 접속/진행 기록이 생긴 학생만 집계합니다.

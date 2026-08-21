@@ -1,1 +1,13 @@
-{"name":"yujint-human-rights","version":"1.0.0","private":true,"scripts":{"start":"node server.js"},"engines":{"node":">=20"},"dependencies":{"pg":"^8.13.1"}}
+{
+  "name": "hr-city-v9-2-yujint",
+  "version": "9.2.0",
+  "private": true,
+  "description": "인권도시 정책결정 수행평가 v9.2 - 유진T 클래스룸 Railway 서버형",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
