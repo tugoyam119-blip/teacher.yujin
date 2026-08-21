@@ -29,28 +29,13 @@
   },
   {
     "id": "international-relations",
+    "icon": "🌐",
+    "kind": "수업자료",
     "name": "국제 관계와 국제기구 교사설명용",
     "slug": "international-relations",
-    "kind": "수업자료",
     "subject": "국제 관계와 국제기구",
-    "audience": "teacher",
-    "description": "국제 관계와 국제기구 교사용 설명 자료",
-    "icon": "🌐",
-    "published": true,
-    "sort_order": 20,
-    "deploy_type": "static",
-    "repo_path": "classroom-hub/apps/international-relations",
-    "target_url": "/apps/international-relations/",
-    "manage_url": "",
-    "railway_service_id": "",
-    "railway_domain": "",
-    "railway_volume_id": "",
     "version": 18,
-    "version_label": "v1",
-    "update_mode": "chatgpt",
-    "deploy_status": "deploying",
-    "last_commit_sha": "c3fe00d6009e1dfb5235e71f2a47d143a7d6ce9f",
-    "last_deployment_id": "a0e72d2c-36f0-4669-a35e-b4b6b14ae59b",
+    "audience": "teacher",
     "histories": [
       {
         "at": "2026-08-21T11:45:03.272Z",
@@ -67,15 +52,30 @@
         "commit_sha": "534f324c893f4abcc361bdc07b564a0dc95a9173"
       },
       {
-        "version": 18,
-        "action": "rollback",
-        "commit_sha": "c3fe00d6009e1dfb5235e71f2a47d143a7d6ce9f",
         "at": "2026-08-21T12:53:50.142Z",
-        "note": "복구 원본 5468617"
+        "note": "복구 원본 5468617",
+        "action": "rollback",
+        "version": 18,
+        "commit_sha": "c3fe00d6009e1dfb5235e71f2a47d143a7d6ce9f"
       }
     ],
+    "published": true,
+    "repo_path": "classroom-hub/apps/international-relations",
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-21T12:53:50.142Z"
+    "manage_url": "",
+    "sort_order": 20,
+    "target_url": "/apps/international-relations/",
+    "updated_at": "2026-08-21T12:53:50.142Z",
+    "deploy_type": "static",
+    "description": "국제 관계와 국제기구 교사용 설명 자료",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "version_label": "v1",
+    "railway_domain": "",
+    "last_commit_sha": "cb2ba1110339659bd3ddcaa2b9435b182d7482d9",
+    "railway_volume_id": "",
+    "last_deployment_id": "a0e72d2c-36f0-4669-a35e-b4b6b14ae59b",
+    "railway_service_id": ""
   },
   {
     "id": "boardgame",
@@ -140,5 +140,41 @@
     "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
     "last_deployment_id": "ceb700e5-ad89-40ed-8649-3cc676d97f0d",
     "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5"
+  },
+  {
+    "id": "f8ba00b3-e0c4-47b8-af35-e3cfe0547003",
+    "name": "국제 관계와 국제기구 학생용",
+    "slug": "국제-관계와-국제기구-학생용",
+    "kind": "수업자료",
+    "subject": "국제 관계와 국제기구",
+    "audience": "both",
+    "description": "",
+    "icon": "🔗",
+    "published": true,
+    "sort_order": 100,
+    "deploy_type": "static",
+    "repo_path": "classroom-hub/apps/국제-관계와-국제기구-학생용",
+    "target_url": "/apps/국제-관계와-국제기구-학생용/",
+    "manage_url": "",
+    "railway_service_id": "",
+    "railway_domain": "",
+    "railway_volume_id": "",
+    "version": 1,
+    "version_label": "v1",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "last_commit_sha": "424ca34cb133603f5b572c641fa74d5a5c4b0b12",
+    "last_deployment_id": "8f109478-57cf-4252-b6c9-4b8b6bc63972",
+    "histories": [
+      {
+        "version": 1,
+        "action": "create",
+        "commit_sha": "424ca34cb133603f5b572c641fa74d5a5c4b0b12",
+        "at": "2026-08-21T12:54:57.046Z",
+        "note": ""
+      }
+    ],
+    "created_at": "2026-08-21T12:54:57.046Z",
+    "updated_at": "2026-08-21T12:54:57.046Z"
   }
 ]
