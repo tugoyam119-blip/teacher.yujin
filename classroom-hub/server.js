@@ -565,7 +565,7 @@ app.get('/api/admin/system', needTeacher, async (req, res) => {
   });
 });
 
-app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) a.deploy_status = String(st.status).toLowerCase(); } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), updated_at: s.updated_at }); } catch(e){next(e);} });
+app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) { const ds=String(st.status).toLowerCase(); /* Railway는 새 배포가 생기면 이전 deployment를 REMOVED로 표시할 수 있다. 오래된 deployment id 때문에 프로그램 자체가 제거된 것처럼 보이지 않도록 REMOVED는 무시한다. */ if (ds !== 'removed') a.deploy_status = ds; } } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), updated_at: s.updated_at }); } catch(e){next(e);} });
 
 app.post('/api/admin/activities/external', needTeacher, async (req, res, next) => {
   try {

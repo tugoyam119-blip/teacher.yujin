@@ -74,9 +74,10 @@
     "manage_url": "",
     "published": true,
     "sort_order": 40,
-    "version": 92,
-    "version_label": "v9.2",
+    "version": 93,
+    "version_label": "v9.3",
     "update_mode": "chatgpt",
-    "updated_at": "2026-08-21T00:00:00.000Z"
+    "updated_at": "2026-08-21T04:50:00.000Z",
+    "deploy_status": "ready"
   }
 ]
