@@ -153,7 +153,25 @@ async function mergeRegistry() {
     if (i < 0) { s.activities.push(normalizeActivity(seed, seed)); changed = true; }
     else {
       const cur=s.activities[i], seedVersion=Number(seed.version||1), curVersion=Number(cur.version||1);
-      if (seedVersion>curVersion || (seed.updated_at && String(seed.updated_at)>String(cur.updated_at||''))) { s.activities[i]=normalizeActivity(seed, cur); s.activities[i].version=seedVersion; s.activities[i].histories=Array.isArray(seed.histories)?seed.histories:cur.histories||[]; changed=true; }
+      if (seedVersion>curVersion || (seed.updated_at && String(seed.updated_at)>String(cur.updated_at||''))) {
+        // Registry metadata may intentionally omit runtime deployment addresses.
+        // Never erase a working Railway binding just because the seed has an empty string.
+        const merged={...seed};
+        for (const k of ['target_url','manage_url','railway_service_id','railway_domain','railway_volume_id','last_deployment_id']) {
+          if (!String(merged[k]||'').trim() && String(cur[k]||'').trim()) merged[k]=cur[k];
+        }
+        s.activities[i]=normalizeActivity(merged, cur);
+        s.activities[i].version=seedVersion;
+        s.activities[i].histories=Array.isArray(seed.histories)?seed.histories:cur.histories||[];
+        changed=true;
+      }
+    }
+  }
+  // Self-heal server URLs after upgrades: Railway domain is the source of truth.
+  for (const a of s.activities) {
+    if (a.deploy_type==='server' && !String(a.target_url||'').trim() && String(a.railway_domain||'').trim()) {
+      a.target_url=`https://${a.railway_domain}`;
+      changed=true;
     }
   }
   if (changed) await saveState(s);
@@ -529,8 +547,9 @@ app.get('/go/:slug', async (req, res, next) => {
     const s = await getState(); const a = s.activities.find(x => x.slug === req.params.slug);
     if (!a || !a.published) return res.status(404).send('활동을 찾을 수 없습니다.');
     if (a.audience === 'teacher' && !isTeacher(req)) return res.status(403).send('교사 전용 활동입니다.');
-    if (!a.target_url) return res.status(503).send('아직 배포 주소가 준비되지 않았습니다.');
-    res.redirect(a.target_url);
+    const target = a.target_url || (a.deploy_type==='server' && a.railway_domain ? `https://${a.railway_domain}` : '');
+    if (!target) return res.status(503).send('아직 배포 주소가 준비되지 않았습니다.');
+    res.redirect(target);
   } catch (e) { next(e); }
 });
 app.get('/open/:slug', needTeacher, async (req, res, next) => { try { const s = await getState(); const a = s.activities.find(x => x.slug === req.params.slug); if (!a) return res.status(404).send('없음'); res.redirect(a.target_url || stableUrl(a)); } catch(e){next(e);} });
@@ -600,9 +619,12 @@ app.post('/api/admin/deploy/:id/sync-infra', needTeacher, async (req, res, next)
   try {
     const s = await getState(); const i = s.activities.findIndex(a => a.id === req.params.id); if (i < 0) return res.status(404).json({ error: '프로그램을 찾지 못했습니다.' });
     const a = s.activities[i]; if (a.deploy_type !== 'server' || !a.railway_service_id) return res.status(400).json({ error: '연결된 서버형 프로그램만 설정 동기화를 사용할 수 있습니다.' });
-    const localManifest = parseAppManifest(path.join(ROOT, '..', a.repo_path));
+    let localManifest = parseAppManifest(path.join(ROOT, '..', a.repo_path));
+    // The classroom service may run with /classroom-hub as its Railway root directory,
+    // so sibling service manifests are not guaranteed to exist at runtime.
+    if (a.id==='human-rights') localManifest={...localManifest,healthcheck_path:'/health',manage_path:'/teacher',inherit_env:['TEACHER_PIN'],variables:{...(localManifest.variables||{}),DATA_DIR:'/data'},volume_mount_path:'/data'};
     const infra = await railwaySyncInfrastructure(a.railway_service_id, a.slug, localManifest, a.railway_volume_id || '');
-    const nextA = normalizeActivity({ ...a, railway_volume_id: infra.volumeInfo?.volumeId || a.railway_volume_id || '', manage_url: a.railway_domain ? `https://${a.railway_domain}${localManifest.manage_path || '/?teacher=1'}` : a.manage_url, deploy_status: infra.warning ? 'warning' : a.deploy_status }, a);
+    const nextA = normalizeActivity({ ...a, target_url: a.railway_domain ? `https://${a.railway_domain}` : a.target_url, railway_volume_id: infra.volumeInfo?.volumeId || a.railway_volume_id || '', manage_url: a.railway_domain ? `https://${a.railway_domain}${localManifest.manage_path || '/?teacher=1'}` : a.manage_url, deploy_status: infra.warning ? 'warning' : a.deploy_status }, a);
     s.activities[i] = nextA; await saveState(s);
     res.json({ ok:true, activity:nextA, infrastructure:infra });
   } catch(e) { next(e); }
@@ -666,8 +688,9 @@ app.delete('/api/admin/activities/:id', needTeacher, async (req, res, next) => {
 app.get('/api/admin/check/:id', needTeacher, async (req, res, next) => {
   try {
     const s = await getState(); const a = s.activities.find(x => x.id === req.params.id); if (!a) return res.status(404).json({ error: '없음' });
-    const url = a.target_url?.startsWith('/') ? `${req.protocol}://${req.get('host')}${a.target_url}` : a.target_url;
-    if (!url) return res.json({ ok: false, detail: '주소 없음' });
+    const rawUrl = a.target_url || (a.deploy_type==='server' && a.railway_domain ? `https://${a.railway_domain}` : '');
+    const url = rawUrl?.startsWith('/') ? `${req.protocol}://${req.get('host')}${rawUrl}` : rawUrl;
+    if (!url) return res.json({ ok: false, detail: '배포 주소가 등록되지 않았습니다.' });
     const r = await fetch(url, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(7000) });
     res.json({ ok: r.status >= 200 && r.status < 400, status: r.status, url });
   } catch(e){res.json({ok:false,detail:e.message});}
