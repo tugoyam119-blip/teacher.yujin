@@ -90,7 +90,10 @@ function normalizeActivity(x = {}, existing = {}) {
     manage_url: text(x.manage_url ?? existing.manage_url, 1000),
     railway_service_id: text(x.railway_service_id ?? existing.railway_service_id, 200),
     railway_domain: text(x.railway_domain ?? existing.railway_domain, 500),
+    railway_volume_id: text(x.railway_volume_id ?? existing.railway_volume_id, 200),
     version: Math.max(1, Number(x.version ?? existing.version ?? 1)),
+    version_label: text(x.version_label ?? existing.version_label ?? ('v'+Math.max(1, Number(x.version ?? existing.version ?? 1))), 40),
+    update_mode: text(x.update_mode ?? existing.update_mode ?? (deployType === 'external' ? 'external' : 'chatgpt'), 30),
     deploy_status: text(x.deploy_status ?? existing.deploy_status ?? 'ready', 40),
     last_commit_sha: text(x.last_commit_sha ?? existing.last_commit_sha, 80),
     last_deployment_id: text(x.last_deployment_id ?? existing.last_deployment_id, 200),
@@ -150,7 +153,25 @@ async function mergeRegistry() {
     if (i < 0) { s.activities.push(normalizeActivity(seed, seed)); changed = true; }
     else {
       const cur=s.activities[i], seedVersion=Number(seed.version||1), curVersion=Number(cur.version||1);
-      if (seedVersion>curVersion || (seed.updated_at && String(seed.updated_at)>String(cur.updated_at||''))) { s.activities[i]=normalizeActivity(seed, cur); s.activities[i].version=seedVersion; s.activities[i].histories=Array.isArray(seed.histories)?seed.histories:cur.histories||[]; changed=true; }
+      if (seedVersion>curVersion || (seed.updated_at && String(seed.updated_at)>String(cur.updated_at||''))) {
+        // Registry metadata may intentionally omit runtime deployment addresses.
+        // Never erase a working Railway binding just because the seed has an empty string.
+        const merged={...seed};
+        for (const k of ['target_url','manage_url','railway_service_id','railway_domain','railway_volume_id','last_deployment_id']) {
+          if (!String(merged[k]||'').trim() && String(cur[k]||'').trim()) merged[k]=cur[k];
+        }
+        s.activities[i]=normalizeActivity(merged, cur);
+        s.activities[i].version=seedVersion;
+        s.activities[i].histories=Array.isArray(seed.histories)?seed.histories:cur.histories||[];
+        changed=true;
+      }
+    }
+  }
+  // Self-heal server URLs after upgrades: Railway domain is the source of truth.
+  for (const a of s.activities) {
+    if (a.deploy_type==='server' && !String(a.target_url||'').trim() && String(a.railway_domain||'').trim()) {
+      a.target_url=`https://${a.railway_domain}`;
+      changed=true;
     }
   }
   if (changed) await saveState(s);
@@ -302,7 +323,8 @@ function parseAppManifest(filesOrPath) {
     healthcheck_path: text(m.healthcheck_path || '/health', 120),
     manage_path: text(m.manage_path || '/?teacher=1', 300),
     inherit_env: Array.isArray(m.inherit_env) ? m.inherit_env.map(x=>text(x,80)).filter(Boolean).slice(0,20) : ['TEACHER_PIN'],
-    variables: m.variables && typeof m.variables === 'object' && !Array.isArray(m.variables) ? m.variables : {}
+    variables: m.variables && typeof m.variables === 'object' && !Array.isArray(m.variables) ? m.variables : {},
+    volume_mount_path: text(m.volume_mount_path || '', 200)
   };
 }
 
@@ -317,16 +339,34 @@ async function railwaySetVariables(serviceId, manifest = {}) {
   return { count: Object.keys(vars).length, names: Object.keys(vars) };
 }
 
+async function railwayCreateVolume(serviceId, mountPath) {
+  const mp = text(mountPath || '', 200);
+  if (!mp) return { volumeId: '' };
+  const q = `mutation volumeCreate($input:VolumeCreateInput!){volumeCreate(input:$input){id}}`;
+  const d = await railwayGraphql(q, { input: { projectId: RAILWAY_PROJECT_ID, serviceId, mountPath: mp } });
+  return { volumeId: d.volumeCreate?.id || '', mountPath: mp };
+}
+
+async function railwaySyncInfrastructure(serviceId, slug, manifest = {}, existingVolumeId = '') {
+  const qUpdate = `mutation serviceInstanceUpdate($serviceId:String!,$environmentId:String!,$input:ServiceInstanceUpdateInput!){serviceInstanceUpdate(serviceId:$serviceId,environmentId:$environmentId,input:$input)}`;
+  await railwayGraphql(qUpdate, { serviceId, environmentId: RAILWAY_ENVIRONMENT_ID, input: { rootDirectory: `/services/${slug}`, healthcheckPath: manifest.healthcheck_path || '/health' } });
+  let variableInfo={count:0}, volumeInfo={volumeId:existingVolumeId||'',mountPath:manifest.volume_mount_path||''}, warnings=[];
+  try { variableInfo=await railwaySetVariables(serviceId, manifest); } catch(e) { warnings.push('환경변수: '+e.message); }
+  if (manifest.volume_mount_path && !existingVolumeId) {
+    try { volumeInfo=await railwayCreateVolume(serviceId, manifest.volume_mount_path); } catch(e) { warnings.push('영구 저장소: '+e.message); }
+  }
+  return { variableInfo, volumeInfo, warning:warnings.join(' / ') };
+}
+
 async function railwayCreateService(slug, commitSha, manifest = {}) {
   if (!railwayConfigured()) throw new Error('Railway 자동 생성에 필요한 PROJECT/ENVIRONMENT 정보가 없습니다.');
   if (!REPO_FULL) throw new Error('GitHub 저장소 정보가 없습니다.');
   const qCreate = `mutation serviceCreate($input: ServiceCreateInput!) { serviceCreate(input: $input) { id name } }`;
   const created = await railwayGraphql(qCreate, { input: { projectId: RAILWAY_PROJECT_ID, environmentId: RAILWAY_ENVIRONMENT_ID, name: `yt-${slug}`, source: { repo: REPO_FULL } } });
   const serviceId = created.serviceCreate.id;
-  const qUpdate = `mutation serviceInstanceUpdate($serviceId:String!,$environmentId:String!,$input:ServiceInstanceUpdateInput!){serviceInstanceUpdate(serviceId:$serviceId,environmentId:$environmentId,input:$input)}`;
-  await railwayGraphql(qUpdate, { serviceId, environmentId: RAILWAY_ENVIRONMENT_ID, input: { rootDirectory: `/services/${slug}`, healthcheckPath: manifest.healthcheck_path || '/health' } });
-  let variableInfo={count:0};
-  try { variableInfo=await railwaySetVariables(serviceId, manifest); } catch(e) { variableInfo={count:0, warning:e.message}; }
+  const infra = await railwaySyncInfrastructure(serviceId, slug, manifest, '');
+  const variableInfo = infra.variableInfo;
+  const volumeInfo = infra.volumeInfo;
   const qDomain = `mutation serviceDomainCreate($input:ServiceDomainCreateInput!){serviceDomainCreate(input:$input){id domain}}`;
   const domainData = await railwayGraphql(qDomain, { input: { serviceId, environmentId: RAILWAY_ENVIRONMENT_ID } });
   let deploymentId = '';
@@ -336,9 +376,9 @@ async function railwayCreateService(slug, commitSha, manifest = {}) {
     deploymentId = d.serviceInstanceDeployV2 || '';
   } catch (e) {
     // GitHub auto deploy may already be queued. Keep service/domain and surface detail to UI.
-    return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId: '', warning: [variableInfo.warning,e.message].filter(Boolean).join(' / '), variableInfo, managePath: manifest.manage_path || '/?teacher=1' };
+    return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId: '', warning: [infra.warning,e.message].filter(Boolean).join(' / '), variableInfo, volumeInfo, managePath: manifest.manage_path || '/?teacher=1' };
   }
-  return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId, warning: variableInfo.warning || '', variableInfo, managePath: manifest.manage_path || '/?teacher=1' };
+  return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId, warning: infra.warning || '', variableInfo, volumeInfo, managePath: manifest.manage_path || '/?teacher=1' };
 }
 
 async function railwayDeployExisting(serviceId, commitSha) {
@@ -463,12 +503,142 @@ async function deployUpload({ existing, fields, file }) {
   }
   let railway = null;
   if (mode === 'server') {
-    if (existing?.railway_service_id) railway = await railwayDeployExisting(existing.railway_service_id, commitSha);
-    else railway = await railwayCreateService(slug, commitSha, appManifest);
+    if (existing?.railway_service_id) {
+      const infra = await railwaySyncInfrastructure(existing.railway_service_id, slug, appManifest, existing.railway_volume_id || '');
+      railway = await railwayDeployExisting(existing.railway_service_id, commitSha);
+      railway.warning = [infra.warning, railway.warning].filter(Boolean).join(' / ');
+      railway.volumeInfo = infra.volumeInfo;
+      railway.variableInfo = infra.variableInfo;
+      railway.managePath = appManifest.manage_path || '/?teacher=1';
+    } else railway = await railwayCreateService(slug, commitSha, appManifest);
   } else if (RAILWAY_HUB_SERVICE_ID && railwayConfigured() && commitSha) {
     try { railway = await railwayDeployExisting(RAILWAY_HUB_SERVICE_ID, commitSha); } catch (e) { railway = { warning: e.message }; }
   }
   return { slug, prefix, commitSha, githubNote, railway, appManifest };
+}
+
+
+
+function normalizePatchMatchText(v) {
+  return String(v || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9가-힣]+/g, '');
+}
+
+function patchNameTokens(v) {
+  const stop = new Set(['프로그램','패치','업데이트','버전','최종','자료','교사용','학생용','수행평가','수업자료','학습','the','and','for','app','web','html','full','patch','update','classroom','upload']);
+  return String(v || '').normalize('NFKC').toLowerCase().split(/[^a-z0-9가-힣]+/g).map(x=>x.trim()).filter(x => x && x.length >= 2 && !stop.has(x));
+}
+
+function inspectPatchPackage(file) {
+  const ext = path.extname(file.originalname || '').toLowerCase();
+  const info = { filename: String(file.originalname || ''), ext, names: [], json: {}, sample: '', detected_mode: '' };
+  const pushSample = (name, buf) => {
+    if (info.sample.length >= 900000) return;
+    if (!/\.(?:html?|js|mjs|json|txt|md|css|csv)$/i.test(name)) return;
+    let t = Buffer.from(buf).toString('utf8').slice(0, 140000);
+    info.sample += `\n--- ${name} ---\n${t}`;
+  };
+  const readJson = (name, buf) => {
+    const base = path.posix.basename(name).toLowerCase();
+    if (!['yujint.patch.json','yujint.app.json','package.json','manifest.json'].includes(base)) return;
+    const obj = parse(Buffer.from(buf).toString('utf8'), null);
+    if (obj && typeof obj === 'object') info.json[base] = obj;
+  };
+  if (ext === '.html' || ext === '.htm') {
+    info.names = ['index.html'];
+    info.detected_mode = 'static';
+    pushSample('index.html', file.buffer);
+    return info;
+  }
+  if (ext !== '.zip') throw new Error('패치는 ZIP 또는 HTML 파일만 사용할 수 있습니다.');
+  const zip = new AdmZip(file.buffer);
+  const entries = zip.getEntries().filter(e => !e.isDirectory);
+  if (!entries.length) throw new Error('ZIP 안에 파일이 없습니다.');
+  const rawNames = entries.map(e => e.entryName.replace(/\\/g, '/')).filter(Boolean);
+  const firstSeg = rawNames[0]?.split('/')[0];
+  const strip = firstSeg && rawNames.every(n => n.startsWith(firstSeg + '/')) ? firstSeg + '/' : '';
+  let total = 0;
+  for (const e of entries) {
+    let n = e.entryName.replace(/\\/g, '/');
+    if (strip && n.startsWith(strip)) n = n.slice(strip.length);
+    if (!n) continue;
+    const data = e.getData(); total += data.length;
+    if (total > 45 * 1024 * 1024) throw new Error('압축을 푼 전체 크기가 45MB를 넘습니다.');
+    info.names.push(n);
+    readJson(n, data);
+    pushSample(n, data);
+  }
+  const pkg = info.json['package.json'] || {};
+  const appm = info.json['yujint.app.json'] || {};
+  if (String(appm.type || '').toLowerCase() === 'server' || pkg?.scripts?.start) info.detected_mode = 'server';
+  else if (String(appm.type || '').toLowerCase() === 'static' || info.names.some(n => /^index\.html?$/i.test(n))) info.detected_mode = 'static';
+  return info;
+}
+
+function patchVersionInfo(info, existing) {
+  const patch = info.json['yujint.patch.json'] || {};
+  const appm = info.json['yujint.app.json'] || {};
+  const pkg = info.json['package.json'] || {};
+  let raw = String(patch.version || appm.version || '').trim();
+  if (!raw && pkg.version && pkg.version !== '1.0.0') raw = String(pkg.version).trim();
+  let version = Number(existing.version || 1) + 1;
+  let version_label = '';
+  if (raw) {
+    version_label = /^v/i.test(raw) ? raw : `v${raw}`;
+    const nums = raw.match(/\d+/g);
+    if (nums?.length) {
+      const candidate = Number(nums.slice(0, 3).join(''));
+      if (Number.isFinite(candidate) && candidate > Number(existing.version || 0)) version = candidate;
+    }
+  }
+  if (!version_label) version_label = `v${version}`;
+  return { version, version_label };
+}
+
+function detectPatchTarget(info, activities, forcedId = '') {
+  const available = (activities || []).filter(a => a.deploy_type !== 'external');
+  if (forcedId) {
+    const hit = available.find(a => a.id === forcedId);
+    if (!hit) throw new Error('직접 선택한 대상 프로그램을 찾지 못했습니다.');
+    if (info.detected_mode && hit.deploy_type !== info.detected_mode) throw new Error(`선택한 프로그램은 ${hit.deploy_type==='server'?'서버형':'정적형'}인데 업로드 파일은 ${info.detected_mode==='server'?'서버형':'정적형'}으로 보입니다.`);
+    return { activity: hit, score: 9999, reason: '교사가 직접 대상 선택', candidates: [] };
+  }
+  const patch = info.json['yujint.patch.json'] || {};
+  const appm = info.json['yujint.app.json'] || {};
+  const pkg = info.json['package.json'] || {};
+  const explicit = [patch.target_id, patch.app_id, patch.id, patch.slug, appm.target_id, appm.app_id, appm.id, appm.slug].filter(Boolean).map(normalizePatchMatchText);
+  const source = [info.filename, ...info.names, JSON.stringify(info.json), info.sample].join('\n');
+  const sourceN = normalizePatchMatchText(source);
+  const fileN = normalizePatchMatchText(info.filename);
+  const scored = available.map(a => {
+    let score = 0; const reasons = [];
+    if (info.detected_mode && a.deploy_type !== info.detected_mode) score -= 1000;
+    const idN = normalizePatchMatchText(a.id), slugN = normalizePatchMatchText(a.slug), repoN = normalizePatchMatchText(a.repo_path), nameN = normalizePatchMatchText(a.name);
+    if (explicit.some(x => x && [idN, slugN].includes(x))) { score += 1200; reasons.push('패치 메타데이터의 프로그램 ID/주소 일치'); }
+    if (repoN && sourceN.includes(repoN)) { score += 500; reasons.push('GitHub 경로 일치'); }
+    if (slugN && slugN.length >= 4 && fileN.includes(slugN)) { score += 320; reasons.push('파일명과 고정 주소 일치'); }
+    if (idN && idN.length >= 4 && fileN.includes(idN)) { score += 300; reasons.push('파일명과 프로그램 ID 일치'); }
+    if (slugN && slugN.length >= 4 && sourceN.includes(slugN)) { score += 180; reasons.push('패치 내부에서 고정 주소 확인'); }
+    if (idN && idN.length >= 4 && sourceN.includes(idN)) { score += 170; reasons.push('패치 내부에서 프로그램 ID 확인'); }
+    if (nameN && nameN.length >= 5 && sourceN.includes(nameN)) { score += 150; reasons.push('프로그램 이름 일치'); }
+    let tokenHits = 0;
+    for (const tok of new Set([...patchNameTokens(a.name), ...patchNameTokens(a.description)])) {
+      const tn = normalizePatchMatchText(tok);
+      if (tn.length >= 2 && sourceN.includes(tn)) tokenHits += 1;
+    }
+    if (tokenHits) { score += Math.min(120, tokenHits * 22); reasons.push(`관련 내용 ${tokenHits}개 확인`); }
+    const pkgName = normalizePatchMatchText(pkg.name || '');
+    if (pkgName && (pkgName.includes(slugN) || slugN.includes(pkgName))) { score += 110; reasons.push('package.json 이름 연관'); }
+    return { activity: a, score, reasons };
+  }).sort((a,b)=>b.score-a.score);
+  const first = scored[0], second = scored[1];
+  if (!first || first.score < 55) {
+    const names = scored.slice(0,3).map(x=>`${x.activity.name}(${x.score})`).join(', ');
+    throw new Error(`패치 대상 프로그램을 충분히 확신할 수 없습니다.${names ? ` 후보: ${names}` : ''} 아래 '자동 판단 실패 시만 직접 선택'에서 대상을 선택해 다시 올려주세요.`);
+  }
+  if (second && second.score > 0 && first.score - second.score < 25) {
+    throw new Error(`두 프로그램이 비슷하게 감지되었습니다: ${first.activity.name}(${first.score}), ${second.activity.name}(${second.score}). 아래 '자동 판단 실패 시만 직접 선택'에서 대상을 선택해 다시 올려주세요.`);
+  }
+  return { activity: first.activity, score: first.score, reason: first.reasons.join(' · ') || '파일 내용 연관성', candidates: scored.slice(0,3).map(x=>({id:x.activity.id,name:x.activity.name,score:x.score})) };
 }
 
 function publicActivity(a) {
@@ -482,7 +652,7 @@ app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHe
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
 app.get('/student', (req, res) => res.sendFile(path.join(PUBLIC, 'student.html')));
-app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '3.0.0', storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
+app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.3.0', storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
 
 app.post('/api/auth/login', (req, res) => {
   if (String(req.body.pin || '') !== TEACHER_PIN) return res.status(401).json({ error: '교사 PIN이 올바르지 않습니다.' });
@@ -501,8 +671,9 @@ app.get('/go/:slug', async (req, res, next) => {
     const s = await getState(); const a = s.activities.find(x => x.slug === req.params.slug);
     if (!a || !a.published) return res.status(404).send('활동을 찾을 수 없습니다.');
     if (a.audience === 'teacher' && !isTeacher(req)) return res.status(403).send('교사 전용 활동입니다.');
-    if (!a.target_url) return res.status(503).send('아직 배포 주소가 준비되지 않았습니다.');
-    res.redirect(a.target_url);
+    const target = a.target_url || (a.deploy_type==='server' && a.railway_domain ? `https://${a.railway_domain}` : '');
+    if (!target) return res.status(503).send('아직 배포 주소가 준비되지 않았습니다.');
+    res.redirect(target);
   } catch (e) { next(e); }
 });
 app.get('/open/:slug', needTeacher, async (req, res, next) => { try { const s = await getState(); const a = s.activities.find(x => x.slug === req.params.slug); if (!a) return res.status(404).send('없음'); res.redirect(a.target_url || stableUrl(a)); } catch(e){next(e);} });
@@ -518,7 +689,7 @@ app.get('/api/admin/system', needTeacher, async (req, res) => {
   });
 });
 
-app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) a.deploy_status = String(st.status).toLowerCase(); } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), updated_at: s.updated_at }); } catch(e){next(e);} });
+app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) { const ds=String(st.status).toLowerCase(); /* Railway는 새 배포가 생기면 이전 deployment를 REMOVED로 표시할 수 있다. 오래된 deployment id 때문에 프로그램 자체가 제거된 것처럼 보이지 않도록 REMOVED는 무시한다. */ if (ds !== 'removed') a.deploy_status = ds; } } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), updated_at: s.updated_at }); } catch(e){next(e);} });
 
 app.post('/api/admin/activities/external', needTeacher, async (req, res, next) => {
   try {
@@ -540,7 +711,7 @@ app.post('/api/admin/deploy/new', needTeacher, upload.single('package'), async (
       ...fields, slug, deploy_type: fields.deploy_type === 'server' ? 'server' : 'static', repo_path: result.prefix,
       target_url: fields.deploy_type === 'server' ? (result.railway?.domain ? `https://${result.railway.domain}` : '') : `/apps/${slug}/`,
       manage_url: fields.deploy_type === 'server' && result.railway?.domain ? `https://${result.railway.domain}${result.railway.managePath || '/?teacher=1'}` : '',
-      railway_service_id: result.railway?.serviceId || '', railway_domain: result.railway?.domain || '',
+      railway_service_id: result.railway?.serviceId || '', railway_domain: result.railway?.domain || '', railway_volume_id: result.railway?.volumeInfo?.volumeId || '',
       last_commit_sha: result.commitSha, last_deployment_id: result.railway?.deploymentId || '', deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready'), version: 1
     });
     a.histories.push(historyItem(a, 'create', result.commitSha, result.githubNote || result.railway?.warning || ''));
@@ -549,6 +720,47 @@ app.post('/api/admin/deploy/new', needTeacher, upload.single('package'), async (
     await saveState(s);
     res.status(201).json({ ok: true, activity: a, result });
   } catch(e){next(e);}
+});
+
+
+
+app.post('/api/admin/deploy/auto-patch', needTeacher, upload.single('package'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: '패치 파일을 선택하세요.' });
+    const s = await getState();
+    const info = inspectPatchPackage(req.file);
+    const matched = detectPatchTarget(info, s.activities, text(req.body.target_id, 100));
+    const i = s.activities.findIndex(a => a.id === matched.activity.id);
+    if (i < 0) return res.status(404).json({ error: '자동으로 찾은 프로그램이 현재 목록에 없습니다.' });
+    const existing = s.activities[i];
+    if (existing.deploy_type === 'external') return res.status(400).json({ error: '외부 링크 활동은 파일 패치를 지원하지 않습니다.' });
+    if (info.detected_mode && info.detected_mode !== existing.deploy_type) return res.status(400).json({ error: `패치 파일 형식(${info.detected_mode})과 대상 프로그램 형식(${existing.deploy_type})이 다릅니다.` });
+    const fields = { ...existing, slug: existing.slug, deploy_type: existing.deploy_type };
+    const result = await deployUpload({ existing, fields, file: req.file });
+    const v = patchVersionInfo(info, existing);
+    const updatedManageUrl = existing.deploy_type === 'server' && existing.railway_domain ? `https://${existing.railway_domain}${result.appManifest?.manage_path || '/?teacher=1'}` : existing.manage_url;
+    const nextA = normalizeActivity({ ...existing, version: v.version, version_label: v.version_label, manage_url: updatedManageUrl, railway_volume_id: result.railway?.volumeInfo?.volumeId || existing.railway_volume_id || '', last_commit_sha: result.commitSha, last_deployment_id: result.railway?.deploymentId || existing.last_deployment_id, deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready') }, existing);
+    nextA.version = v.version;
+    nextA.version_label = v.version_label;
+    nextA.histories = [...(existing.histories || []), historyItem(nextA, 'auto-patch', result.commitSha, `자동 연결: ${matched.reason}${result.githubNote ? ' · '+result.githubNote : ''}${result.railway?.warning ? ' · '+result.railway.warning : ''}`)].slice(-20);
+    s.activities[i] = nextA;
+    await saveState(s);
+    try {
+      const registrySha = await syncRegistryToGithub(s, `유진T 클래스룸: 자동 패치 ${nextA.name} ${nextA.version_label}`);
+      if (registrySha) nextA.last_commit_sha = registrySha;
+    } catch(e) {
+      nextA.deploy_status = 'warning';
+      result.registryWarning = e.message;
+    }
+    await saveState(s);
+    res.json({
+      ok: true,
+      matched: { id: nextA.id, name: nextA.name, slug: nextA.slug, version: nextA.version, version_label: nextA.version_label, score: matched.score, reason: matched.reason },
+      analysis: { filename: info.filename, detected_mode: info.detected_mode || existing.deploy_type, candidates: matched.candidates || [] },
+      activity: nextA,
+      result
+    });
+  } catch(e) { next(e); }
 });
 
 app.post('/api/admin/deploy/:id/provision', needTeacher, async (req, res, next) => {
@@ -560,11 +772,26 @@ app.post('/api/admin/deploy/:id/provision', needTeacher, async (req, res, next) 
     const head = await getGithubHead();
     const localManifest = parseAppManifest(path.join(ROOT, '..', a.repo_path));
     const rw = await railwayCreateService(a.slug, head.sha, localManifest);
-    const nextA = normalizeActivity({ ...a, railway_service_id: rw.serviceId, railway_domain: rw.domain, target_url: `https://${rw.domain}`, manage_url: `https://${rw.domain}${rw.managePath || '/?teacher=1'}`, last_commit_sha: head.sha, last_deployment_id: rw.deploymentId || '', deploy_status: rw.warning ? 'warning' : (rw.deploymentId ? 'deploying' : 'ready') }, a);
+    const nextA = normalizeActivity({ ...a, railway_service_id: rw.serviceId, railway_domain: rw.domain, railway_volume_id: rw.volumeInfo?.volumeId || '', target_url: `https://${rw.domain}`, manage_url: `https://${rw.domain}${rw.managePath || '/?teacher=1'}`, last_commit_sha: head.sha, last_deployment_id: rw.deploymentId || '', deploy_status: rw.warning ? 'warning' : (rw.deploymentId ? 'deploying' : 'ready') }, a);
     nextA.histories = [...(a.histories || []), historyItem(nextA, 'provision', head.sha, rw.warning || 'Railway 서비스 자동 생성')].slice(-20);
     s.activities[i] = nextA; await saveState(s);
     try { const registrySha = await syncRegistryToGithub(s, `유진T 클래스룸: 서버 연결 ${nextA.name}`); if (registrySha) nextA.last_commit_sha = registrySha; } catch(e) { nextA.deploy_status = 'warning'; }
     await saveState(s); res.json({ ok: true, activity: nextA, railway: rw });
+  } catch(e) { next(e); }
+});
+
+app.post('/api/admin/deploy/:id/sync-infra', needTeacher, async (req, res, next) => {
+  try {
+    const s = await getState(); const i = s.activities.findIndex(a => a.id === req.params.id); if (i < 0) return res.status(404).json({ error: '프로그램을 찾지 못했습니다.' });
+    const a = s.activities[i]; if (a.deploy_type !== 'server' || !a.railway_service_id) return res.status(400).json({ error: '연결된 서버형 프로그램만 설정 동기화를 사용할 수 있습니다.' });
+    let localManifest = parseAppManifest(path.join(ROOT, '..', a.repo_path));
+    // The classroom service may run with /classroom-hub as its Railway root directory,
+    // so sibling service manifests are not guaranteed to exist at runtime.
+    if (a.id==='human-rights') localManifest={...localManifest,healthcheck_path:'/health',manage_path:'/teacher',inherit_env:['TEACHER_PIN'],variables:{...(localManifest.variables||{}),DATA_DIR:'/data'},volume_mount_path:'/data'};
+    const infra = await railwaySyncInfrastructure(a.railway_service_id, a.slug, localManifest, a.railway_volume_id || '');
+    const nextA = normalizeActivity({ ...a, target_url: a.railway_domain ? `https://${a.railway_domain}` : a.target_url, railway_volume_id: infra.volumeInfo?.volumeId || a.railway_volume_id || '', manage_url: a.railway_domain ? `https://${a.railway_domain}${localManifest.manage_path || '/?teacher=1'}` : a.manage_url, deploy_status: infra.warning ? 'warning' : a.deploy_status }, a);
+    s.activities[i] = nextA; await saveState(s);
+    res.json({ ok:true, activity:nextA, infrastructure:infra });
   } catch(e) { next(e); }
 });
 
@@ -575,7 +802,8 @@ app.post('/api/admin/deploy/:id/patch', needTeacher, upload.single('package'), a
     const existing = s.activities[i]; if (existing.deploy_type === 'external') return res.status(400).json({ error: '외부 링크 활동은 파일 패치를 지원하지 않습니다.' });
     const fields = { ...existing, ...req.body, slug: existing.slug, deploy_type: existing.deploy_type };
     const result = await deployUpload({ existing, fields, file: req.file });
-    const nextA = normalizeActivity({ ...existing, ...req.body, version: existing.version + 1, last_commit_sha: result.commitSha, last_deployment_id: result.railway?.deploymentId || existing.last_deployment_id, deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready') }, existing);
+    const updatedManageUrl = existing.deploy_type === 'server' && existing.railway_domain ? `https://${existing.railway_domain}${result.appManifest?.manage_path || '/?teacher=1'}` : existing.manage_url;
+    const nextA = normalizeActivity({ ...existing, ...req.body, version: existing.version + 1, manage_url: updatedManageUrl, railway_volume_id: result.railway?.volumeInfo?.volumeId || existing.railway_volume_id || '', last_commit_sha: result.commitSha, last_deployment_id: result.railway?.deploymentId || existing.last_deployment_id, deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready') }, existing);
     nextA.version = existing.version + 1;
     nextA.histories = [...(existing.histories || []), historyItem(nextA, 'patch', result.commitSha, result.githubNote || result.railway?.warning || '')].slice(-20);
     s.activities[i] = nextA; await saveState(s);
@@ -625,8 +853,9 @@ app.delete('/api/admin/activities/:id', needTeacher, async (req, res, next) => {
 app.get('/api/admin/check/:id', needTeacher, async (req, res, next) => {
   try {
     const s = await getState(); const a = s.activities.find(x => x.id === req.params.id); if (!a) return res.status(404).json({ error: '없음' });
-    const url = a.target_url?.startsWith('/') ? `${req.protocol}://${req.get('host')}${a.target_url}` : a.target_url;
-    if (!url) return res.json({ ok: false, detail: '주소 없음' });
+    const rawUrl = a.target_url || (a.deploy_type==='server' && a.railway_domain ? `https://${a.railway_domain}` : '');
+    const url = rawUrl?.startsWith('/') ? `${req.protocol}://${req.get('host')}${rawUrl}` : rawUrl;
+    if (!url) return res.json({ ok: false, detail: '배포 주소가 등록되지 않았습니다.' });
     const r = await fetch(url, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(7000) });
     res.json({ ok: r.status >= 200 && r.status < 400, status: r.status, url });
   } catch(e){res.json({ok:false,detail:e.message});}
