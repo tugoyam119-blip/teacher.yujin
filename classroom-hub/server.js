@@ -90,10 +90,7 @@ function normalizeActivity(x = {}, existing = {}) {
     manage_url: text(x.manage_url ?? existing.manage_url, 1000),
     railway_service_id: text(x.railway_service_id ?? existing.railway_service_id, 200),
     railway_domain: text(x.railway_domain ?? existing.railway_domain, 500),
-    railway_volume_id: text(x.railway_volume_id ?? existing.railway_volume_id, 200),
     version: Math.max(1, Number(x.version ?? existing.version ?? 1)),
-    version_label: text(x.version_label ?? existing.version_label ?? ('v'+Math.max(1, Number(x.version ?? existing.version ?? 1))), 40),
-    update_mode: text(x.update_mode ?? existing.update_mode ?? (deployType === 'external' ? 'external' : 'chatgpt'), 30),
     deploy_status: text(x.deploy_status ?? existing.deploy_status ?? 'ready', 40),
     last_commit_sha: text(x.last_commit_sha ?? existing.last_commit_sha, 80),
     last_deployment_id: text(x.last_deployment_id ?? existing.last_deployment_id, 200),
@@ -153,25 +150,7 @@ async function mergeRegistry() {
     if (i < 0) { s.activities.push(normalizeActivity(seed, seed)); changed = true; }
     else {
       const cur=s.activities[i], seedVersion=Number(seed.version||1), curVersion=Number(cur.version||1);
-      if (seedVersion>curVersion || (seed.updated_at && String(seed.updated_at)>String(cur.updated_at||''))) {
-        // Registry metadata may intentionally omit runtime deployment addresses.
-        // Never erase a working Railway binding just because the seed has an empty string.
-        const merged={...seed};
-        for (const k of ['target_url','manage_url','railway_service_id','railway_domain','railway_volume_id','last_deployment_id']) {
-          if (!String(merged[k]||'').trim() && String(cur[k]||'').trim()) merged[k]=cur[k];
-        }
-        s.activities[i]=normalizeActivity(merged, cur);
-        s.activities[i].version=seedVersion;
-        s.activities[i].histories=Array.isArray(seed.histories)?seed.histories:cur.histories||[];
-        changed=true;
-      }
-    }
-  }
-  // Self-heal server URLs after upgrades: Railway domain is the source of truth.
-  for (const a of s.activities) {
-    if (a.deploy_type==='server' && !String(a.target_url||'').trim() && String(a.railway_domain||'').trim()) {
-      a.target_url=`https://${a.railway_domain}`;
-      changed=true;
+      if (seedVersion>curVersion || (seed.updated_at && String(seed.updated_at)>String(cur.updated_at||''))) { s.activities[i]=normalizeActivity(seed, cur); s.activities[i].version=seedVersion; s.activities[i].histories=Array.isArray(seed.histories)?seed.histories:cur.histories||[]; changed=true; }
     }
   }
   if (changed) await saveState(s);
@@ -323,8 +302,7 @@ function parseAppManifest(filesOrPath) {
     healthcheck_path: text(m.healthcheck_path || '/health', 120),
     manage_path: text(m.manage_path || '/?teacher=1', 300),
     inherit_env: Array.isArray(m.inherit_env) ? m.inherit_env.map(x=>text(x,80)).filter(Boolean).slice(0,20) : ['TEACHER_PIN'],
-    variables: m.variables && typeof m.variables === 'object' && !Array.isArray(m.variables) ? m.variables : {},
-    volume_mount_path: text(m.volume_mount_path || '', 200)
+    variables: m.variables && typeof m.variables === 'object' && !Array.isArray(m.variables) ? m.variables : {}
   };
 }
 
@@ -339,34 +317,16 @@ async function railwaySetVariables(serviceId, manifest = {}) {
   return { count: Object.keys(vars).length, names: Object.keys(vars) };
 }
 
-async function railwayCreateVolume(serviceId, mountPath) {
-  const mp = text(mountPath || '', 200);
-  if (!mp) return { volumeId: '' };
-  const q = `mutation volumeCreate($input:VolumeCreateInput!){volumeCreate(input:$input){id}}`;
-  const d = await railwayGraphql(q, { input: { projectId: RAILWAY_PROJECT_ID, serviceId, mountPath: mp } });
-  return { volumeId: d.volumeCreate?.id || '', mountPath: mp };
-}
-
-async function railwaySyncInfrastructure(serviceId, slug, manifest = {}, existingVolumeId = '') {
-  const qUpdate = `mutation serviceInstanceUpdate($serviceId:String!,$environmentId:String!,$input:ServiceInstanceUpdateInput!){serviceInstanceUpdate(serviceId:$serviceId,environmentId:$environmentId,input:$input)}`;
-  await railwayGraphql(qUpdate, { serviceId, environmentId: RAILWAY_ENVIRONMENT_ID, input: { rootDirectory: `/services/${slug}`, healthcheckPath: manifest.healthcheck_path || '/health' } });
-  let variableInfo={count:0}, volumeInfo={volumeId:existingVolumeId||'',mountPath:manifest.volume_mount_path||''}, warnings=[];
-  try { variableInfo=await railwaySetVariables(serviceId, manifest); } catch(e) { warnings.push('환경변수: '+e.message); }
-  if (manifest.volume_mount_path && !existingVolumeId) {
-    try { volumeInfo=await railwayCreateVolume(serviceId, manifest.volume_mount_path); } catch(e) { warnings.push('영구 저장소: '+e.message); }
-  }
-  return { variableInfo, volumeInfo, warning:warnings.join(' / ') };
-}
-
 async function railwayCreateService(slug, commitSha, manifest = {}) {
   if (!railwayConfigured()) throw new Error('Railway 자동 생성에 필요한 PROJECT/ENVIRONMENT 정보가 없습니다.');
   if (!REPO_FULL) throw new Error('GitHub 저장소 정보가 없습니다.');
   const qCreate = `mutation serviceCreate($input: ServiceCreateInput!) { serviceCreate(input: $input) { id name } }`;
   const created = await railwayGraphql(qCreate, { input: { projectId: RAILWAY_PROJECT_ID, environmentId: RAILWAY_ENVIRONMENT_ID, name: `yt-${slug}`, source: { repo: REPO_FULL } } });
   const serviceId = created.serviceCreate.id;
-  const infra = await railwaySyncInfrastructure(serviceId, slug, manifest, '');
-  const variableInfo = infra.variableInfo;
-  const volumeInfo = infra.volumeInfo;
+  const qUpdate = `mutation serviceInstanceUpdate($serviceId:String!,$environmentId:String!,$input:ServiceInstanceUpdateInput!){serviceInstanceUpdate(serviceId:$serviceId,environmentId:$environmentId,input:$input)}`;
+  await railwayGraphql(qUpdate, { serviceId, environmentId: RAILWAY_ENVIRONMENT_ID, input: { rootDirectory: `/services/${slug}`, healthcheckPath: manifest.healthcheck_path || '/health' } });
+  let variableInfo={count:0};
+  try { variableInfo=await railwaySetVariables(serviceId, manifest); } catch(e) { variableInfo={count:0, warning:e.message}; }
   const qDomain = `mutation serviceDomainCreate($input:ServiceDomainCreateInput!){serviceDomainCreate(input:$input){id domain}}`;
   const domainData = await railwayGraphql(qDomain, { input: { serviceId, environmentId: RAILWAY_ENVIRONMENT_ID } });
   let deploymentId = '';
@@ -376,9 +336,9 @@ async function railwayCreateService(slug, commitSha, manifest = {}) {
     deploymentId = d.serviceInstanceDeployV2 || '';
   } catch (e) {
     // GitHub auto deploy may already be queued. Keep service/domain and surface detail to UI.
-    return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId: '', warning: [infra.warning,e.message].filter(Boolean).join(' / '), variableInfo, volumeInfo, managePath: manifest.manage_path || '/?teacher=1' };
+    return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId: '', warning: [variableInfo.warning,e.message].filter(Boolean).join(' / '), variableInfo, managePath: manifest.manage_path || '/?teacher=1' };
   }
-  return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId, warning: infra.warning || '', variableInfo, volumeInfo, managePath: manifest.manage_path || '/?teacher=1' };
+  return { serviceId, domain: domainData.serviceDomainCreate.domain, deploymentId, warning: variableInfo.warning || '', variableInfo, managePath: manifest.manage_path || '/?teacher=1' };
 }
 
 async function railwayDeployExisting(serviceId, commitSha) {
@@ -503,14 +463,8 @@ async function deployUpload({ existing, fields, file }) {
   }
   let railway = null;
   if (mode === 'server') {
-    if (existing?.railway_service_id) {
-      const infra = await railwaySyncInfrastructure(existing.railway_service_id, slug, appManifest, existing.railway_volume_id || '');
-      railway = await railwayDeployExisting(existing.railway_service_id, commitSha);
-      railway.warning = [infra.warning, railway.warning].filter(Boolean).join(' / ');
-      railway.volumeInfo = infra.volumeInfo;
-      railway.variableInfo = infra.variableInfo;
-      railway.managePath = appManifest.manage_path || '/?teacher=1';
-    } else railway = await railwayCreateService(slug, commitSha, appManifest);
+    if (existing?.railway_service_id) railway = await railwayDeployExisting(existing.railway_service_id, commitSha);
+    else railway = await railwayCreateService(slug, commitSha, appManifest);
   } else if (RAILWAY_HUB_SERVICE_ID && railwayConfigured() && commitSha) {
     try { railway = await railwayDeployExisting(RAILWAY_HUB_SERVICE_ID, commitSha); } catch (e) { railway = { warning: e.message }; }
   }
@@ -547,9 +501,8 @@ app.get('/go/:slug', async (req, res, next) => {
     const s = await getState(); const a = s.activities.find(x => x.slug === req.params.slug);
     if (!a || !a.published) return res.status(404).send('활동을 찾을 수 없습니다.');
     if (a.audience === 'teacher' && !isTeacher(req)) return res.status(403).send('교사 전용 활동입니다.');
-    const target = a.target_url || (a.deploy_type==='server' && a.railway_domain ? `https://${a.railway_domain}` : '');
-    if (!target) return res.status(503).send('아직 배포 주소가 준비되지 않았습니다.');
-    res.redirect(target);
+    if (!a.target_url) return res.status(503).send('아직 배포 주소가 준비되지 않았습니다.');
+    res.redirect(a.target_url);
   } catch (e) { next(e); }
 });
 app.get('/open/:slug', needTeacher, async (req, res, next) => { try { const s = await getState(); const a = s.activities.find(x => x.slug === req.params.slug); if (!a) return res.status(404).send('없음'); res.redirect(a.target_url || stableUrl(a)); } catch(e){next(e);} });
@@ -565,7 +518,7 @@ app.get('/api/admin/system', needTeacher, async (req, res) => {
   });
 });
 
-app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) { const ds=String(st.status).toLowerCase(); /* Railway는 새 배포가 생기면 이전 deployment를 REMOVED로 표시할 수 있다. 오래된 deployment id 때문에 프로그램 자체가 제거된 것처럼 보이지 않도록 REMOVED는 무시한다. */ if (ds !== 'removed') a.deploy_status = ds; } } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), updated_at: s.updated_at }); } catch(e){next(e);} });
+app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) a.deploy_status = String(st.status).toLowerCase(); } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), updated_at: s.updated_at }); } catch(e){next(e);} });
 
 app.post('/api/admin/activities/external', needTeacher, async (req, res, next) => {
   try {
@@ -587,7 +540,7 @@ app.post('/api/admin/deploy/new', needTeacher, upload.single('package'), async (
       ...fields, slug, deploy_type: fields.deploy_type === 'server' ? 'server' : 'static', repo_path: result.prefix,
       target_url: fields.deploy_type === 'server' ? (result.railway?.domain ? `https://${result.railway.domain}` : '') : `/apps/${slug}/`,
       manage_url: fields.deploy_type === 'server' && result.railway?.domain ? `https://${result.railway.domain}${result.railway.managePath || '/?teacher=1'}` : '',
-      railway_service_id: result.railway?.serviceId || '', railway_domain: result.railway?.domain || '', railway_volume_id: result.railway?.volumeInfo?.volumeId || '',
+      railway_service_id: result.railway?.serviceId || '', railway_domain: result.railway?.domain || '',
       last_commit_sha: result.commitSha, last_deployment_id: result.railway?.deploymentId || '', deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready'), version: 1
     });
     a.histories.push(historyItem(a, 'create', result.commitSha, result.githubNote || result.railway?.warning || ''));
@@ -607,26 +560,11 @@ app.post('/api/admin/deploy/:id/provision', needTeacher, async (req, res, next) 
     const head = await getGithubHead();
     const localManifest = parseAppManifest(path.join(ROOT, '..', a.repo_path));
     const rw = await railwayCreateService(a.slug, head.sha, localManifest);
-    const nextA = normalizeActivity({ ...a, railway_service_id: rw.serviceId, railway_domain: rw.domain, railway_volume_id: rw.volumeInfo?.volumeId || '', target_url: `https://${rw.domain}`, manage_url: `https://${rw.domain}${rw.managePath || '/?teacher=1'}`, last_commit_sha: head.sha, last_deployment_id: rw.deploymentId || '', deploy_status: rw.warning ? 'warning' : (rw.deploymentId ? 'deploying' : 'ready') }, a);
+    const nextA = normalizeActivity({ ...a, railway_service_id: rw.serviceId, railway_domain: rw.domain, target_url: `https://${rw.domain}`, manage_url: `https://${rw.domain}${rw.managePath || '/?teacher=1'}`, last_commit_sha: head.sha, last_deployment_id: rw.deploymentId || '', deploy_status: rw.warning ? 'warning' : (rw.deploymentId ? 'deploying' : 'ready') }, a);
     nextA.histories = [...(a.histories || []), historyItem(nextA, 'provision', head.sha, rw.warning || 'Railway 서비스 자동 생성')].slice(-20);
     s.activities[i] = nextA; await saveState(s);
     try { const registrySha = await syncRegistryToGithub(s, `유진T 클래스룸: 서버 연결 ${nextA.name}`); if (registrySha) nextA.last_commit_sha = registrySha; } catch(e) { nextA.deploy_status = 'warning'; }
     await saveState(s); res.json({ ok: true, activity: nextA, railway: rw });
-  } catch(e) { next(e); }
-});
-
-app.post('/api/admin/deploy/:id/sync-infra', needTeacher, async (req, res, next) => {
-  try {
-    const s = await getState(); const i = s.activities.findIndex(a => a.id === req.params.id); if (i < 0) return res.status(404).json({ error: '프로그램을 찾지 못했습니다.' });
-    const a = s.activities[i]; if (a.deploy_type !== 'server' || !a.railway_service_id) return res.status(400).json({ error: '연결된 서버형 프로그램만 설정 동기화를 사용할 수 있습니다.' });
-    let localManifest = parseAppManifest(path.join(ROOT, '..', a.repo_path));
-    // The classroom service may run with /classroom-hub as its Railway root directory,
-    // so sibling service manifests are not guaranteed to exist at runtime.
-    if (a.id==='human-rights') localManifest={...localManifest,healthcheck_path:'/health',manage_path:'/teacher',inherit_env:['TEACHER_PIN'],variables:{...(localManifest.variables||{}),DATA_DIR:'/data'},volume_mount_path:'/data'};
-    const infra = await railwaySyncInfrastructure(a.railway_service_id, a.slug, localManifest, a.railway_volume_id || '');
-    const nextA = normalizeActivity({ ...a, target_url: a.railway_domain ? `https://${a.railway_domain}` : a.target_url, railway_volume_id: infra.volumeInfo?.volumeId || a.railway_volume_id || '', manage_url: a.railway_domain ? `https://${a.railway_domain}${localManifest.manage_path || '/?teacher=1'}` : a.manage_url, deploy_status: infra.warning ? 'warning' : a.deploy_status }, a);
-    s.activities[i] = nextA; await saveState(s);
-    res.json({ ok:true, activity:nextA, infrastructure:infra });
   } catch(e) { next(e); }
 });
 
@@ -637,8 +575,7 @@ app.post('/api/admin/deploy/:id/patch', needTeacher, upload.single('package'), a
     const existing = s.activities[i]; if (existing.deploy_type === 'external') return res.status(400).json({ error: '외부 링크 활동은 파일 패치를 지원하지 않습니다.' });
     const fields = { ...existing, ...req.body, slug: existing.slug, deploy_type: existing.deploy_type };
     const result = await deployUpload({ existing, fields, file: req.file });
-    const updatedManageUrl = existing.deploy_type === 'server' && existing.railway_domain ? `https://${existing.railway_domain}${result.appManifest?.manage_path || '/?teacher=1'}` : existing.manage_url;
-    const nextA = normalizeActivity({ ...existing, ...req.body, version: existing.version + 1, manage_url: updatedManageUrl, railway_volume_id: result.railway?.volumeInfo?.volumeId || existing.railway_volume_id || '', last_commit_sha: result.commitSha, last_deployment_id: result.railway?.deploymentId || existing.last_deployment_id, deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready') }, existing);
+    const nextA = normalizeActivity({ ...existing, ...req.body, version: existing.version + 1, last_commit_sha: result.commitSha, last_deployment_id: result.railway?.deploymentId || existing.last_deployment_id, deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready') }, existing);
     nextA.version = existing.version + 1;
     nextA.histories = [...(existing.histories || []), historyItem(nextA, 'patch', result.commitSha, result.githubNote || result.railway?.warning || '')].slice(-20);
     s.activities[i] = nextA; await saveState(s);
@@ -688,9 +625,8 @@ app.delete('/api/admin/activities/:id', needTeacher, async (req, res, next) => {
 app.get('/api/admin/check/:id', needTeacher, async (req, res, next) => {
   try {
     const s = await getState(); const a = s.activities.find(x => x.id === req.params.id); if (!a) return res.status(404).json({ error: '없음' });
-    const rawUrl = a.target_url || (a.deploy_type==='server' && a.railway_domain ? `https://${a.railway_domain}` : '');
-    const url = rawUrl?.startsWith('/') ? `${req.protocol}://${req.get('host')}${rawUrl}` : rawUrl;
-    if (!url) return res.json({ ok: false, detail: '배포 주소가 등록되지 않았습니다.' });
+    const url = a.target_url?.startsWith('/') ? `${req.protocol}://${req.get('host')}${a.target_url}` : a.target_url;
+    if (!url) return res.json({ ok: false, detail: '주소 없음' });
     const r = await fetch(url, { method: 'GET', redirect: 'manual', signal: AbortSignal.timeout(7000) });
     res.json({ ok: r.status >= 200 && r.status < 400, status: r.status, url });
   } catch(e){res.json({ok:false,detail:e.message});}

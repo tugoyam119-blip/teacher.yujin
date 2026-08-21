@@ -1,16 +1,10 @@
 {
-  "name": "yujint-classroom-v4",
-  "version": "4.0.0",
+  "name": "yujint-classroom-v3",
+  "version": "3.0.0",
   "private": true,
-  "description": "유진T 클래스룸 v4 - 신규 프로그램 최초 등록 / 기존 프로그램 ChatGPT 관리형",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "check": "node --check server.js"
-  },
-  "engines": {
-    "node": ">=20"
-  },
+  "description": "유진T 클래스룸 v3 - 수업 프로그램 업로드/패치/자동배포 플랫폼",
+  "scripts": {"start":"node server.js","dev":"node server.js","check":"node --check server.js"},
+  "engines": {"node": ">=20"},
   "dependencies": {
     "adm-zip": "^0.5.16",
     "express": "^5.1.0",
