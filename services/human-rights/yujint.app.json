@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "10.1",
+  "version": "10.2",
   "app_id": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "healthcheck_path": "/health",
@@ -15,5 +15,5 @@
     "DATA_DIR": "/data"
   },
   "volume_mount_path": "/data",
-  "description": "정책판단보드형 · 반별 2차시 90분 · 자료·권리·이해관계 조립 · 재판단 · 실시간 관리 · AI 가채점"
+  "description": "정책판단보드형 · 학생화면 안정화 · 현재 접속/접속 이력/미접속/제출 상태 반별 모니터 · AI 가채점"
 }
