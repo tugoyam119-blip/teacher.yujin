@@ -5,7 +5,7 @@
   "slug": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "repo_path": "services/human-rights",
-  "version": "10.0",
+  "version": "10.1",
   "type": "server",
-  "description": "인권도시 정책결정 수행평가 정책판단보드형 v10.0 자동패치"
+  "description": "인권도시 정책결정 수행평가 정책판단보드형 v10.1 교사용 화면 분리 안정화"
 }
