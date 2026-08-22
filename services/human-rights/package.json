@@ -1,13 +1,9 @@
 {
-  "name": "hr-city-v9-2-yujint",
-  "version": "9.2.0",
+  "name": "hr-city-v10-policy-board-yujint",
+  "version": "10.0.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v9.2 - 유진T 클래스룸 Railway 서버형",
+  "description": "인권도시 정책결정 수행평가 v10.0 - 정책판단보드형 · 유진T 클래스룸 Railway 서버형",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": ">=20"
-  }
+  "scripts": {"start": "node server.js"},
+  "engines": {"node": ">=20"}
 }

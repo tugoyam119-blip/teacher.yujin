@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "target_id": "human-rights",
+  "app_id": "human-rights",
+  "slug": "human-rights",
+  "name": "인권도시 정책결정 수행평가",
+  "repo_path": "services/human-rights",
+  "version": "10.0",
+  "type": "server",
+  "description": "인권도시 정책결정 수행평가 정책판단보드형 v10.0 자동패치"
+}

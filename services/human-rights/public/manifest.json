@@ -1,8 +1,0 @@
-﻿{
-  "name": "인권도시 정책결정 수행평가",
-  "short_name": "인권도시",
-  "start_url": "./student.html",
-  "display": "standalone",
-  "background_color": "#f4f7fb",
-  "theme_color": "#10233f"
-}
