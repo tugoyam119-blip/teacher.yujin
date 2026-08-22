@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v10-2-policy-board-yujint",
-  "version": "10.2.0",
+  "name": "hr-city-v10-4-policy-board-yujint",
+  "version": "10.4.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v10.2 - 학생화면 안정화 및 교사 실시간 상태 모니터 개편",
+  "description": "인권도시 정책결정 수행평가 v10.4 - 학생화면 부팅 안정화 및 교사 실시간 상태 모니터",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

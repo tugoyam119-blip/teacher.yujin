@@ -5,7 +5,7 @@
   "slug": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "repo_path": "services/human-rights",
-  "version": "10.2",
+  "version": "10.4",
   "type": "server",
-  "description": "v10.2 학생 화면 안정화 + 교사용 실시간 상태/반별 모니터 개편"
+  "description": "v10.4 학생 화면 Chrome 전역 이름 충돌 수정 + 브라우저 저장공간 안전 초기화 + 교사용 반별 실시간 상태 모니터"
 }
