@@ -5,7 +5,7 @@
   "slug": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "repo_path": "services/human-rights",
-  "version": "11.2",
+  "version": "11.4",
   "type": "server",
-  "description": "선택한 자료 이미지 1-B/2-C/3-B/4-B/5-C를 학생 자료에 적용. 이미지에 이미 포함된 수치·설명은 상세 페이지에서 반복하지 않고, 자료 4만 구체적인 직접 발언을 추가해 역할을 분리."
+  "description": "STEP 2에서 단계 이동 없이 자료 1~5 즉시 재확인, 자료함 근거에 출처·원자료 보기 추가, STEP 4 사고 흐름 시각화, STEP 6 처음 정책·새 정보·최종안 비교 카드 추가."
 }

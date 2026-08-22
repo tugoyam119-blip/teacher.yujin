@@ -1,4 +1,4 @@
-const VERSION='v11.2';
+const VERSION='v11.4';
 const root=document.getElementById('root');
 function fatalStudentScreen(message='학생 화면을 불러오지 못했습니다.'){
   if(!root)return;
@@ -72,6 +72,6 @@ const EVIDENCE=[
 const ALLOWED_EVIDENCE=new Set(EVIDENCE.map(x=>x[0]));
 
 function resourceVisual(id){
- if(id==='voices')return `<div class="resourceVisual"><h3>💬 구체적인 시민·이용자 발언</h3><div class="voiceGrid"><div class="voiceCard"><b>♿ 휠체어 이용 시민 · 복지센터역</b>“복지센터 수업이 있는 날에는 계단을 피하려고 두 정거장 전에 내려 택시를 탑니다. 이동시간과 교통비가 매번 더 듭니다.”</div><div class="voiceCard"><b>🏥 대학병원 이용 보호자 · 대학병원역</b>“재활치료가 끝난 뒤에는 환자가 더 지쳐 있습니다. 그 상태에서 계단을 오르내리게 하는 것이 가장 걱정됩니다.”</div><div class="voiceCard"><b>🏪 전통시장 상인 · 전통시장역</b>“장보기 짐을 든 고령 손님이 계단 앞에서 돌아가는 경우가 있습니다. 시장뿐 아니라 노인복지관 이동도 함께 봐주면 좋겠습니다.”</div><div class="voiceCard"><b>🧑‍💼 통근 시민 · 새봄중앙역</b>“매일 많은 사람이 환승하는 역도 중요합니다. 다만 이용객 수만으로 정하지 말고 더 절박한 이동이 어디인지도 비교해야 합니다.”</div><div class="voiceCard"><b>🎒 새봄고 학생 · 새봄고역</b>“특수학급 친구가 등하교할 때 다른 사람의 도움 없이 학교까지 이어서 이동할 수 있었으면 좋겠습니다.”</div><div class="voiceCard"><b>🧑‍🍼 유모차 이용 보호자 · 푸른공원역</b>“아이와 짐을 함께 들고 계단을 이용하기 어렵습니다. 가족 이동도 생활 속 접근성 문제라고 생각합니다.”</div></div></div>`;
+ if(id==='voices')return `<div class="resourceVisual"><h3>💬 구체적인 시민·이용자 발언</h3><div class="voiceGrid"><div class="voiceCard"><b>♿ 휠체어 이용 시민 · 복지센터역</b>“복지센터에 갈 때 계단을 피하려고 두 정거장 전에 내려 택시를 탑니다. 시간과 교통비가 더 듭니다.”</div><div class="voiceCard"><b>🏥 대학병원 이용 보호자 · 대학병원역</b>“재활치료 뒤 환자가 지쳐 있어 계단을 오르내리는 것이 가장 걱정됩니다.”</div><div class="voiceCard"><b>🏪 전통시장 상인 · 전통시장역</b>“장보기 짐을 든 고령 손님이 계단 앞에서 돌아가는 경우가 있습니다. 노인복지관 이동도 함께 봐주세요.”</div><div class="voiceCard"><b>🧑‍💼 통근 시민 · 새봄중앙역</b>“많은 사람이 매일 환승하지만 이용객 수만 보지 말고 더 절박한 이동도 함께 비교했으면 합니다.”</div><div class="voiceCard"><b>🎒 새봄고 학생 · 새봄고역</b>“특수학급 친구가 다른 사람의 도움 없이 학교까지 이어서 이동할 수 있었으면 좋겠습니다.”</div><div class="voiceCard"><b>🧑‍🍼 유모차 이용 보호자 · 푸른공원역</b>“아이와 짐을 함께 들고 계단을 이용하기 어렵습니다. 가족 이동도 생활 속 접근성 문제입니다.”</div></div></div>`;
  return '';
 }

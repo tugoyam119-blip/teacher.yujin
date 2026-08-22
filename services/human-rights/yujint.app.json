@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "11.2",
+  "version": "11.4",
   "app_id": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "healthcheck_path": "/health",
@@ -15,5 +15,5 @@
     "DATA_DIR": "/data"
   },
   "volume_mount_path": "/data",
-  "description": "정책판단보드형 · 최종 선택 자료 이미지 5종 · 이미지/본문 중복 설명 축소 · 자료 이미지 확대 · 교사용 테스트 우회 · 수동 임시저장·제출 잠금 · 자기평가 · 반별 실시간 모니터"
+  "description": "정책판단보드형 · STEP 2 자료 즉시 재확인·근거 출처 연결 · STEP 4 혜택→대기→한계→보완 흐름 · STEP 6 처음 정책→새 정보→최종안 비교 · 스마트폰 최적화 · 자료 이미지 확대 · 교사용 테스트 우회 · 수동 임시저장·제출 잠금 · 자기평가 · 반별 실시간 모니터"
 }

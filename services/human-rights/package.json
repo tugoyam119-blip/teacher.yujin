@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v11-2-policy-board-yujint",
-  "version": "11.2.0",
+  "name": "hr-city-v11-4-policy-board-yujint",
+  "version": "11.4.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v11.2 - 최종 선택 자료 이미지 적용, 자료 상세 중복 설명 축소, 스마트폰 자료 읽기 흐름 정리",
+  "description": "인권도시 정책결정 수행평가 v11.4 - STEP 2 자료 즉시 재확인, 근거 출처 연결, STEP 4 사고 흐름, STEP 6 재판단 비교 개선",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
