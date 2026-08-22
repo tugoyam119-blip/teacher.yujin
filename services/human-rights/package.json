@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v10-8-policy-board-yujint",
-  "version": "10.8.0",
+  "name": "hr-city-v10-9-policy-board-yujint",
+  "version": "10.9.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v10.8 - 교사용 학생화면 테스트 우회 모드 추가",
+  "description": "인권도시 정책결정 수행평가 v10.9 - 학생 자료 이미지 정리 및 전체화면 확대 보기 복원",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
