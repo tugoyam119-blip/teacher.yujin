@@ -1,4 +1,4 @@
-const VERSION='v10.6';
+const VERSION='v10.7';
 const root=document.getElementById('root');
 function fatalStudentScreen(message='학생 화면을 불러오지 못했습니다.'){
   if(!root)return;
