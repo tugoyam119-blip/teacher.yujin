@@ -130,20 +130,13 @@
     "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5",
     "railway_domain": "yt-human-rights-production.up.railway.app",
     "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
-    "version": 109,
-    "version_label": "v10.9",
+    "version": 110,
+    "version_label": "v11.0",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "d2e2dd37b59b98ba282868c1fda5eb1508c0dece",
-    "last_deployment_id": "e44228e8-6fa9-4943-9bc1-8a9fbac343a5",
+    "last_commit_sha": "66c0a2895305f2526a4b876c238f0328e798234e",
+    "last_deployment_id": "dca23c1b-07d2-482b-9e31-05c3d4db983c",
     "histories": [
-      {
-        "at": "2026-08-20T23:31:17.708Z",
-        "note": "Railway 서비스 자동 생성",
-        "action": "provision",
-        "version": 1,
-        "commit_sha": "9d76be0dba7f53d96755a8babd1b6c41bedb794f"
-      },
       {
         "at": "2026-08-22T05:04:47.243Z",
         "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
@@ -201,15 +194,22 @@
         "commit_sha": "7fe20464336b302478cc0ee42d175b36a5416b89"
       },
       {
-        "version": 109,
-        "action": "auto-patch",
-        "commit_sha": "d2e2dd37b59b98ba282868c1fda5eb1508c0dece",
         "at": "2026-08-22T10:28:47.761Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 109,
+        "commit_sha": "d2e2dd37b59b98ba282868c1fda5eb1508c0dece"
+      },
+      {
+        "version": 110,
+        "action": "auto-patch",
+        "commit_sha": "66c0a2895305f2526a4b876c238f0328e798234e",
+        "at": "2026-08-22T10:59:26.248Z",
         "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인"
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-22T10:28:47.761Z"
+    "updated_at": "2026-08-22T10:59:26.248Z"
   },
   {
     "id": "f8ba00b3-e0c4-47b8-af35-e3cfe0547003",
