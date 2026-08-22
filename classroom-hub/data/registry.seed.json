@@ -130,20 +130,13 @@
     "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5",
     "railway_domain": "yt-human-rights-production.up.railway.app",
     "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
-    "version": 113,
-    "version_label": "v11.2",
+    "version": 114,
+    "version_label": "v11.4",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "96bea3eddfaa4555a1009ebeefc29d3a177f1145",
-    "last_deployment_id": "2a56418d-a3d1-4877-842c-13cef8a8435c",
+    "last_commit_sha": "72c2b3c282998b82ae84ada93819f8db8e36fdb2",
+    "last_deployment_id": "816eef20-6b36-4b8c-961a-5870e109e537",
     "histories": [
-      {
-        "at": "2026-08-22T06:04:47.255Z",
-        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-        "action": "auto-patch",
-        "version": 104,
-        "commit_sha": "ea2bd53138a70d5cfb77d912b139d1c351f40837"
-      },
       {
         "at": "2026-08-22T06:25:17.232Z",
         "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
@@ -201,15 +194,22 @@
         "commit_sha": "32ceeabf36d8aa64575cac4b806515f828963efc"
       },
       {
-        "version": 113,
-        "action": "auto-patch",
-        "commit_sha": "96bea3eddfaa4555a1009ebeefc29d3a177f1145",
         "at": "2026-08-22T14:47:59.509Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 113,
+        "commit_sha": "96bea3eddfaa4555a1009ebeefc29d3a177f1145"
+      },
+      {
+        "version": 114,
+        "action": "auto-patch",
+        "commit_sha": "72c2b3c282998b82ae84ada93819f8db8e36fdb2",
+        "at": "2026-08-22T17:47:12.420Z",
         "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인"
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-22T14:47:59.509Z"
+    "updated_at": "2026-08-22T17:47:12.420Z"
   },
   {
     "id": "f8ba00b3-e0c4-47b8-af35-e3cfe0547003",
