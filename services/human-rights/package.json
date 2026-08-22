@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v10-5-policy-board-yujint",
-  "version": "10.5.0",
+  "name": "hr-city-v10-6-policy-board-yujint",
+  "version": "10.6.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v10.5 - STEP 1 자료탐색 개편 및 자료함 최대 5개",
+  "description": "인권도시 정책결정 수행평가 v10.6 - 자료탐구 보강·레이아웃 개선·200자 작성기준·임시저장·자기평가",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

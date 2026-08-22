@@ -5,7 +5,7 @@
   "slug": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "repo_path": "services/human-rights",
-  "version": "10.5",
+  "version": "10.6",
   "type": "server",
-  "description": "v10.5 STEP 1 자료실을 자료 하나씩 열어 확인하는 방식으로 개편하고 배경 안내를 보강, 내 자료함 최대 5개 지원"
+  "description": "v10.6 배경·자료탐구 강화, 전체 하단 레이아웃 개선, 200자 작성 상태 표시, 기타 의견, 긴급정보 강조, 수동 임시저장 및 활동시간 외 자기평가 추가"
 }
