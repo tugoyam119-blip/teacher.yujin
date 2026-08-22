@@ -5,7 +5,7 @@
   "slug": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "repo_path": "services/human-rights",
-  "version": "10.4",
+  "version": "10.5",
   "type": "server",
-  "description": "v10.4 학생 화면 Chrome 전역 이름 충돌 수정 + 브라우저 저장공간 안전 초기화 + 교사용 반별 실시간 상태 모니터"
+  "description": "v10.5 STEP 1 자료실을 자료 하나씩 열어 확인하는 방식으로 개편하고 배경 안내를 보강, 내 자료함 최대 5개 지원"
 }
