@@ -130,12 +130,12 @@
     "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5",
     "railway_domain": "yt-human-rights-production.up.railway.app",
     "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
-    "version": 104,
-    "version_label": "v10.4",
+    "version": 105,
+    "version_label": "v10.5",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "ea2bd53138a70d5cfb77d912b139d1c351f40837",
-    "last_deployment_id": "c3396a4d-9966-416f-a364-60da760d335c",
+    "last_commit_sha": "44ddae6ce84a07c539e4ee78c9ce3a9c22c9d269",
+    "last_deployment_id": "750561c2-d7e1-4a25-a969-3256ee094715",
     "histories": [
       {
         "at": "2026-08-20T23:31:17.708Z",
@@ -166,15 +166,22 @@
         "commit_sha": "084b4f510a75bf675059de858411b984f5b9fd68"
       },
       {
-        "version": 104,
-        "action": "auto-patch",
-        "commit_sha": "ea2bd53138a70d5cfb77d912b139d1c351f40837",
         "at": "2026-08-22T06:04:47.255Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 104,
+        "commit_sha": "ea2bd53138a70d5cfb77d912b139d1c351f40837"
+      },
+      {
+        "version": 105,
+        "action": "auto-patch",
+        "commit_sha": "44ddae6ce84a07c539e4ee78c9ce3a9c22c9d269",
+        "at": "2026-08-22T06:25:17.232Z",
         "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인"
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-22T06:04:47.255Z"
+    "updated_at": "2026-08-22T06:25:17.231Z"
   },
   {
     "id": "f8ba00b3-e0c4-47b8-af35-e3cfe0547003",
