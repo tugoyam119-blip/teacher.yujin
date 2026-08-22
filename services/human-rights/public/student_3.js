@@ -17,7 +17,7 @@ function step1(){
    <div class="resourceSlots">${Array.from({length:5},(_,i)=>`<div class="resourceSlot ${i<state.evidence.length?'filled':''}">${i<state.evidence.length?'⭐ '+(i+1):'빈칸'}</div>`).join('')}</div>
  </section>
  <section class="card"><h2>🗂️ 자료 5개</h2><p class="muted">자료는 한 번에 펼쳐지지 않습니다. <b>자료 보기</b>를 눌러 하나씩 살펴보세요.</p>${RESOURCES.map(resourceCompactCard).join('')}</section>
- <section class="card"><h2>⭐ 내 자료함</h2><p class="muted">정책을 정할 때 실제로 근거로 사용할 정보만 골라두세요. 최소 3개, 최대 5개까지 저장할 수 있습니다.</p>${state.evidence.length?state.evidence.map(x=>`<div class="evidence on">⭐ ${esc(evidenceName(x))}</div>`).join(''):'<div class="notice">아직 저장한 근거가 없습니다. 위의 자료를 열고 중요한 정보의 ☆ 버튼을 눌러보세요.</div>'}</section>`;
+ <section class="card"><h2>⭐ 내 자료함</h2><p class="muted">정책을 정할 때 실제로 근거로 사용할 정보만 골라두세요. 최소 3개, 최대 5개까지 저장할 수 있습니다.</p>${state.evidence.length?state.evidence.map(x=>evidenceRow(x,true)).join(''):'<div class="notice">아직 저장한 근거가 없습니다. 위의 자료를 열고 중요한 정보의 ☆ 버튼을 눌러보세요.</div>'}</section>`;
  let enabled=allDone&&state.evidence.length>=3&&state.evidence.length<=5;
  root.innerHTML=shell(body,{bottom:bottomBar('50억 정책 만들기','goStep(2)',enabled,'goStep(0)')});
 }

@@ -5,7 +5,7 @@
   "slug": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "repo_path": "services/human-rights",
-  "version": "10.9",
+  "version": "11.0",
   "type": "server",
   "description": "학생 자료 이미지의 제작·수정 설명 문구 제거 및 학습 목적 안내로 교체. 자료 이미지 클릭 시 전체화면 확대/축소/맞춤/이동/닫기 기능 복원. 실제 학생 규칙과 교사용 테스트 우회 기능은 유지."
 }
