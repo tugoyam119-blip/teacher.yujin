@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "11.0",
+  "version": "11.1",
   "app_id": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "healthcheck_path": "/health",
@@ -15,5 +15,5 @@
     "DATA_DIR": "/data"
   },
   "volume_mount_path": "/data",
-  "description": "정책판단보드형 · 심화 자료탐구 · 자료 이미지 전체화면 확대 · 서술 분량/내용안내 분리 · 교사용 학생화면 테스트 우회 · 수동 임시저장·제출 잠금 · 자기평가 · 반별 실시간 모니터"
+  "description": "정책판단보드형 · 심화 자료 유지 · 중복 안내/요약 축소 · 자료 이미지 확대 · 교사용 테스트 우회 · 수동 임시저장·제출 잠금 · 자기평가 · 반별 실시간 모니터"
 }

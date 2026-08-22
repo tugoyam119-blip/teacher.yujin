@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v11-0-policy-board-yujint",
-  "version": "11.0.0",
+  "name": "hr-city-v11-1-policy-board-yujint",
+  "version": "11.1.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v11.0 - 학생 자료 6개 역 비교·노선 시설 보강·시민자료 차별화·자료함 삭제·스마트폰 최적화",
+  "description": "인권도시 정책결정 수행평가 v11.1 - 중복 안내·요약 축소, 자료1·4 재구성, 스마트폰 읽기 피로 개선",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
