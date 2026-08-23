@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "11.9",
+  "version": "12.0",
   "app_id": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "healthcheck_path": "/health",
@@ -15,5 +15,5 @@
     "DATA_DIR": "/data"
   },
   "volume_mount_path": "/data",
-  "description": "정책판단보드형 · v11.8 학생 사전 튜토리얼 유지 · 학번/이름 기반 사전준비 완료 저장 및 반별 현황 · TRADE-OFF 사례형 연습 · 서술구조 연습 · 수행 중 STEP별 짧은 개념 도움 · 평가/채점/시간 규칙 유지"
+  "description": "정책판단보드형 · 전체 학생 서버는 1~7반에 한 번만 개방 · 실제 수행은 반/차시별 원클릭 시작 · 반 종료 후 서버 유지 · 학생 미리보기 버튼 상단 도구 통합 · v11.9 사전준비/TRADE-OFF/서술구조/개념도움 및 평가·채점·시간 규칙 유지"
 }

@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v11-9-prep-check-yujint",
-  "version": "11.9.0",
+  "name": "hr-city-v12-0-global-server-class-session-yujint",
+  "version": "12.0.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v11.9 - 사전준비 완료현황·TRADE-OFF 사례연습·서술구조 연습·수행 중 짧은 개념 도움",
+  "description": "인권도시 정책결정 수행평가 v12.0 - 전체 학생 서버 1회 열기·반별 수행 원클릭 시작·학생 미리보기 버튼 상단 통합",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
