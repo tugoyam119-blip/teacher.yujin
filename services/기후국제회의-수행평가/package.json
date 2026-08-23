@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "private": true,
-  "description": "기후국제회의 수행평가 v2.3.1 · 국가배정 룰렛·자료 배경 강화·5억 단위 예산 유지, 핵심 서술형 4개에 최소 100자·권장 300자 인권정책형 작성 기준 적용",
+  "description": "기후국제회의 수행평가 v2.4.0 · 교사 일괄 시간정지, 명단 업로드, 반별 균등 국가배정, 제출 검토 재오픈, AI 가채점, 1점 단위 채점, 한글 CSV",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

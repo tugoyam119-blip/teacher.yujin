@@ -11,8 +11,8 @@
   <div class="topbar">
     <div class="topbar-inner">
       <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가</div>
-      <div class="lesson-pill" id="lessonPill">2차시 · 수행 활동 기준 90분</div>
-      <div class="topbar-tools"><button id="countryGuideBtn" class="topbar-btn hidden">4개국 배경</button><button id="decisionReviewBtn" class="topbar-btn hidden">나의 결정 전체보기</button><button id="glossaryBtn" class="topbar-btn hidden">개념 도움말</button></div><div class="version">학생용 v2.3.1</div>
+      <div class="lesson-pill" id="lessonPill">수행 활동 · 기준 90분</div>
+      <div class="topbar-tools"><button id="countryGuideBtn" class="topbar-btn hidden">4개국 배경</button><button id="decisionReviewBtn" class="topbar-btn hidden">나의 결정 전체보기</button><button id="glossaryBtn" class="topbar-btn hidden">개념 도움말</button></div><div class="version">학생용 v2.4.0</div>
       <div id="timer" class="timer hidden">90:00</div>
     </div>
     <div class="progress-wrap"><div id="progress" class="progress"></div></div>
@@ -24,10 +24,10 @@
       <h1>100억 원으로<br>기후위기를 해결하라</h1>
       <p>2035 국제기후회의의 국가 대표가 되어 <b>자료를 근거로 국가 입장을 만들고</b>, 다른 국가와의 충돌을 조정해 <b>최종 국제협상안</b>을 완성합니다.</p>
       <div class="lesson-overview">
-        <div><b>1차시 · 입장 설계</b><span>자료 분석 → 우선순위 → 100억 예산 → TRADE-OFF → 1차 입장</span></div>
-        <div><b>2차시 · 국제협상</b><span>협약 선택 → 상대국 분석 → 절충 → 역할 분담 → 최종 합의</span></div>
+        <div><b>국가 입장 만들기</b><span>자료 분석 → 우선순위 → 100억 예산 → TRADE-OFF → 초기 입장</span></div>
+        <div><b>국제협상과 재판단</b><span>협약 선택 → 상대국 분석 → 절충 → 역할 분담 → 최종 합의</span></div>
       </div>
-      <div class="notice"><b>수행 활동 기준 90분 · 2차시 운영</b> · 이 평가는 두 차시에 걸쳐 진행됩니다. <b>쉬는시간과 1·2차시 전환 시점은 담당 교사의 안내를 따르세요.</b> 화면의 남은 시간은 전체 수행 진행을 돕기 위한 기준입니다.</div>
+      <div class="notice"><b>전체 수행 활동 기준 90분</b> · 활동은 순서대로 이어집니다. <b>중간에 별도 대기 화면은 없으며, 빠르게 진행한 학생은 바로 다음 활동으로 계속 진행할 수 있습니다.</b> 학교 수업 운영과 쉬는시간에 관한 안내는 담당 교사의 지시를 따르세요.</div>
       <div class="notice soft"><b>평가의 핵심</b> · 정답을 맞히는 활동이 아닙니다. <b>자료를 근거로 선택하고, 이해관계의 충돌을 파악한 뒤, 필요하면 자신의 판단을 조정하는 과정</b>을 평가합니다.</div>
       <div class="form-grid">
         <div class="field"><label for="studentId">학번</label><input id="studentId" inputmode="numeric" maxlength="6" placeholder="예: 30101"></div>
@@ -44,19 +44,11 @@
       <div id="countryIntroGrid"></div>
       <div class="roulette-section">
         <div class="roulette-copy"><div class="eyebrow">국가 배정 룰렛</div><h2>이제 내가 대표할 국가를 확인하세요.</h2><p>네 국가 중 하나가 배정됩니다. 배정된 국가의 상황을 바탕으로 이후 모든 정책을 판단하게 됩니다.</p></div>
-        <div class="roulette-wrap"><div class="roulette-pointer">▼</div><div id="rouletteWheel" class="roulette-wheel"><span class="wheel-label wheel-hanbit">한빛국</span><span class="wheel-label wheel-saebom">새봄국</span><span class="wheel-label wheel-pureun">푸른섬국</span><span class="wheel-label wheel-taeyang">태양국</span><div class="wheel-center">국가<br>배정</div></div></div>
+        <div class="roulette-wrap"><div class="roulette-pointer">▼</div><div id="rouletteWheel" class="roulette-wheel"><div class="wheel-center">국가<br>배정</div></div></div>
+        <div class="roulette-legend" aria-label="룰렛 색상 안내"><span class="legend-hanbit"><i></i>한빛국</span><span class="legend-saebom"><i></i>새봄국</span><span class="legend-pureun"><i></i>푸른섬국</span><span class="legend-taeyang"><i></i>태양국</span></div>
         <button id="spinCountryBtn" class="primary roulette-button">룰렛 돌려 내 국가 확인하기</button>
       </div>
       <div id="rouletteResult" class="assigned-result hidden"><div class="eyebrow">배정 결과</div><h2><span id="assignedCountryName"></span> 대표로 배정되었습니다.</h2><div id="assignedCountryType" class="assigned-type"></div><p id="assignedCountryStory"></p><div id="assignedCountryDilemma" class="dilemma"></div><button id="beginAssignedBtn" class="primary">내 국가로 수행 시작하기 →</button></div>
-    </section>
-
-    <section id="phaseBreak" class="hero hidden">
-      <div class="eyebrow">1차시 권장 종료 지점</div>
-      <h1>국가의 1차 입장이<br>저장되었습니다.</h1>
-      <p>이제 2차시에서는 다른 국가의 이해관계를 확인하고 실제 국제협상을 진행합니다.</p>
-      <div id="phase1Recap" class="recap-card"></div>
-      <div class="notice"><b>차시 전환</b> · 2차시를 언제 시작할지는 담당 교사의 안내를 따르세요. 앞에서 작성한 답안은 저장되어 있습니다.</div>
-      <div class="actions"><button id="reviewPhase1Btn" class="ghost">← 1차시 답안 다시 보기</button><button id="continuePhase2Btn" class="primary">2차시 국제협상 시작하기 →</button></div>
     </section>
 
     <section id="assessment" class="panel hidden">
@@ -69,11 +61,22 @@
       </div>
     </section>
 
+    <section id="finalReview" class="hero hidden final-review-screen">
+      <div class="eyebrow">최종 제출 전 검토</div>
+      <h1>내 최종 입장을
+다시 확인하세요.</h1>
+      <p>아래 내용이 실제 제출될 답안입니다. 빠진 내용이나 바꾸고 싶은 판단이 있다면 <b>수정하기</b>를 눌러 해당 단계로 돌아갈 수 있습니다.</p>
+      <div id="finalReviewSummary"></div>
+      <div class="notice soft"><b>수정 가능</b> · 이 화면에서 최종 제출하기 전까지는 답안을 자유롭게 수정할 수 있습니다. 수정 후에는 다시 이 검토 화면으로 돌아옵니다.</div>
+      <div class="actions"><button id="reviewBackBtn" class="ghost">← 최종 합의문 다시 보기</button><button id="confirmFinalSubmitBtn" class="primary">이 내용으로 최종 제출 →</button></div>
+    </section>
+
     <section id="done" class="hero hidden">
       <div class="eyebrow">최종 제출 완료</div>
       <h1>국제기후회의가<br>마무리되었습니다.</h1>
-      <p>1차시의 국가 입장과 2차시의 협상·재판단 결과가 함께 제출되었습니다.</p>
+      <p>국가 입장부터 국제협상·재판단까지의 결과가 함께 제출되었습니다.</p>
       <div id="doneInfo" class="notice success"></div>
+      <div class="submitted-summary-wrap"><div class="eyebrow">내가 최종 제출한 내용</div><div id="doneSummary"></div></div>
     </section>
   </main>
 

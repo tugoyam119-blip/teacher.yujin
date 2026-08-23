@@ -24,13 +24,9 @@
       <div class="operate-brand-block">
         <div class="operate-kicker">기후국제회의 수행평가 · 교실 운영</div>
         <h1>국제기후회의 수행평가</h1>
-        <div class="operate-meta"><span>2차시</span><span>총 90분</span><span id="syncStatus">학생 현황 연결 중</span></div>
+        <div class="operate-meta"><span>수행 활동 기준 90분</span><span>빠른 학생은 끝까지 진행 가능</span><span id="syncStatus">학생 현황 연결 중</span></div>
       </div>
-      <div class="class-timer-card" id="timerCard">
-        <span>교실 공용 타이머</span>
-        <b id="classTimer">90:00</b>
-        <small id="timerHint">수업 시작과 함께 시작하세요</small>
-      </div>
+      <div class="operate-time-note"><b>학생 실제 수행시간</b><strong id="operateTimerStatus">상태 확인 중</strong><span>쉬는시간에는 아래 조작 패널에서 전체 학생 시간을 일시정지하세요.</span></div>
     </header>
 
     <section class="operate-main-grid">
@@ -50,8 +46,8 @@
         <div class="operate-stat-grid">
           <div><span>응시 시작</span><b id="oAll">0</b></div>
           <div><span>제출 완료</span><b id="oSubmitted">0</b></div>
-          <div><span>1차시 진행</span><b id="oPhase1">0</b></div>
-          <div><span>2차시 진행</span><b id="oPhase2">0</b></div>
+          <div><span>국가 입장 단계</span><b id="oPhase1">0</b></div>
+          <div><span>국제협상 단계</span><b id="oPhase2">0</b></div>
         </div>
         <div class="operate-progress-block">
           <div class="operate-progress-label"><span>전체 평균 진행률</span><b id="avgProgress">0%</b></div>
@@ -62,11 +58,11 @@
     </section>
 
     <section class="operate-phase-strip">
-      <div class="phase-box phase1"><span>1차시 진행</span><b id="phase1Count">0명</b><small>STEP 1~4</small></div>
+      <div class="phase-box phase1"><span>국가 입장 만들기</span><b id="phase1Count">0명</b><small>STEP 1~5</small></div>
       <div class="phase-arrow">→</div>
-      <div class="phase-box phasebreak"><span>협상 전 입장 / 전환</span><b id="breakCount">0명</b><small>STEP 5 · 1차시 완료</small></div>
+      <div class="phase-box phasebreak"><span>협상 전 입장</span><b id="breakCount">0명</b><small>STEP 5</small></div>
       <div class="phase-arrow">→</div>
-      <div class="phase-box phase2"><span>2차시 진행</span><b id="phase2Count">0명</b><small>STEP 6~10</small></div>
+      <div class="phase-box phase2"><span>국제협상·재판단</span><b id="phase2Count">0명</b><small>STEP 6~10</small></div>
       <div class="phase-arrow">→</div>
       <div class="phase-box submitted"><span>최종 제출</span><b id="submittedCount">0명</b><small>수행 완료</small></div>
     </section>
@@ -87,11 +83,10 @@
 
       <div class="operate-control-grid">
         <div class="control-panel timer-controls">
-          <h3>90분 공용 타이머</h3>
-          <div class="button-row"><button id="timerStart" class="operate-btn strong">시작</button><button id="timerPause" class="operate-btn">일시정지</button><button id="timerReset" class="operate-btn danger">90분으로 초기화</button></div>
-          <p>학생 개인 타이머를 조작하는 기능이 아니라, 교실 앞에 함께 보여주는 수업 운영용 타이머입니다.</p>
+          <h3>학생 실제 90분 시간</h3>
+          <div class="button-row"><button id="operatePauseTimers" class="operate-btn">⏸ 전체 일시정지</button><button id="operateResumeTimers" class="operate-btn strong">▶ 전체 재개</button></div>
+          <p>이 버튼은 표시용 타이머가 아니라 <b>학생 각자의 실제 수행시간</b>을 멈추거나 다시 진행합니다.</p>
         </div>
-
         <div class="control-panel step-controls">
           <h3>화면에 보여줄 단계</h3>
           <select id="stepSelect">

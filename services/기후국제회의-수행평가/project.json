@@ -5,8 +5,8 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.3.1",
-  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.3.1 패치. v2.3.0의 국가배정 룰렛·자료 배경 강화·5억 단위 예산을 유지하고, 인권정책 수행평가와 같은 문장 작성 원칙을 핵심 서술형 4개에 적용해 최소 100자·권장 300자로 통일. 권장 분량은 강제하지 않고 자료 근거·판단 연결과 무성의 입력 방지를 중점 평가.",
+  "version": "2.4.0",
+  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.4.0 패치. 학생 실제 90분 타이머의 교사 일괄 일시정지·재개, 추후 학생명단 CSV 업로드와 미시작·반별 필터, 반별 균등 국가 배정, 제출 답안을 유지한 최종 검토 재오픈, AI 가채점과 근거문장 강조, 1점 단위 교사 최종채점, CSV 전체 한글화를 추가.",
   "theme": {
     "name": "green",
     "primary": "#1f6b45",
@@ -28,7 +28,8 @@
       "compromise": 15,
       "governance": 10,
       "reflectionFinal": 10
-    }
+    },
+    "phaseGate": false
   },
   "routes": {
     "student": "/",
@@ -54,10 +55,21 @@
       "description": "교사용 관리 비밀번호. 로그인 화면에는 표시하지 않음."
     },
     {
+      "name": "OPENAI_API_KEY",
+      "required": false,
+      "description": "AI 가채점 사용 시 필요한 OpenAI API 키. 미설정 시 AI 가채점만 비활성화됨."
+    },
+    {
+      "name": "OPENAI_MODEL",
+      "required": false,
+      "default": "gpt-5.6-luna",
+      "description": "AI 가채점 모델. 기본값 gpt-5.6-luna."
+    },
+    {
       "name": "DATA_DIR",
       "required": false,
       "default": "./data",
-      "description": "학생 답안 영구 저장 경로"
+      "description": "학생 답안·명단·타이머 상태 영구 저장 경로"
     }
   ],
   "persistentPaths": [
@@ -79,7 +91,6 @@
   "features": [
     "classroom-operation-display",
     "live-aggregate-progress",
-    "classroom-90min-timer",
     "auto-manual-step-display",
     "presentation-mode",
     "country-background-preview",
@@ -88,6 +99,20 @@
     "5-billion-budget-steps",
     "human-rights-style-writing-guidance",
     "100-char-minimum-core-writing",
-    "300-char-recommended-core-writing"
+    "300-char-recommended-core-writing",
+    "continuous-step-flow",
+    "roulette-external-labels",
+    "assigned-country-highlighting",
+    "all-writing-length-guidance",
+    "pre-submit-full-review-edit",
+    "teacher-global-student-timer-pause-resume",
+    "future-roster-csv-upload",
+    "not-started-and-class-filters",
+    "balanced-country-assignment-per-class",
+    "reopen-submitted-to-final-review",
+    "ai-provisional-grading",
+    "ai-evidence-highlighting",
+    "one-point-manual-scoring",
+    "fully-korean-csv"
   ]
 }

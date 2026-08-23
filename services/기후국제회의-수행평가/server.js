@@ -6,127 +6,141 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '2.3.1';
+const APP_VERSION = '2.4.0';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.6-luna';
+const TOTAL_SECONDS = 90 * 60;
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'public');
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const LOG_FILE = path.join(DATA_DIR, 'events.jsonl');
+const ROSTER_FILE = path.join(DATA_DIR, 'roster.json');
+const RUNTIME_FILE = path.join(DATA_DIR, 'runtime.json');
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(LOG_FILE)) fs.writeFileSync(LOG_FILE, '');
+if (!fs.existsSync(ROSTER_FILE)) fs.writeFileSync(ROSTER_FILE, JSON.stringify({updatedAt:null, students:[]}, null, 2));
+if (!fs.existsSync(RUNTIME_FILE)) fs.writeFileSync(RUNTIME_FILE, JSON.stringify({timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}, null, 2));
 
 const countries = ['hanbit', 'saebom', 'pureun', 'taeyang'];
-const mime = {'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.csv':'text/csv; charset=utf-8','.png':'image/png','.svg':'image/svg+xml'};
-const now = () => new Date().toISOString();
-const newId = () => crypto.randomUUID();
-const hashCountry = studentId => countries[crypto.createHash('sha256').update(String(studentId)).digest()[0] % countries.length];
+const countryLabels={hanbit:'한빛국',saebom:'새봄국',pureun:'푸른섬국',taeyang:'태양국'};
+const priorityLabels={growth:'경제 성장',reduction:'온실가스 감축',energy:'에너지 안정',damage:'기후위기 피해 감소',responsibility:'국제적 책임'};
+const budgets={renewable:'개발도상국 재생에너지 지원',disaster:'기후재난 피해국 지원',tech:'친환경 기술 개발',forest:'산림 보호',transition:'화석연료 산업 전환 지원'};
+const agreementLabels={A:'A안 · 동일책임안',B:'B안 · 차등책임안',C:'C안 · 자율감축안'};
+const actorLabels={state:'개별 국가',un:'UN',org:'국제환경기구',business:'기업',ngo:'NGO',citizen:'시민'};
+const actorRoleLabels={negotiation:'국가 간 협상·합의 조정',finance:'재정·기술 지원',implementation:'정책·기술의 실제 이행',monitoring:'이행 감시·정보 공개',representation:'피해 집단·시민 의견 반영'};
+const evidenceLabels={responsibility:'자료 1 · 배출 책임',vulnerability:'자료 2 · 기후피해 위험',energy:'자료 3 · 에너지·전환 조건'};
+const compromiseLabels={rate:'감축률',finance:'재정 지원',time:'이행 시기',technology:'기술 지원',other:'기타 조건'};
+const scoreMax={dataAnalysis:15,nationalDecision:15,budgetTradeoff:20,international:15,compromise:15,governance:10,reflection:10};
+const scoreLabels={dataAnalysis:'자료 분석',nationalDecision:'국가 입장 결정',budgetTradeoff:'예산·TRADE-OFF',international:'국제관계 이해',compromise:'갈등 조정',governance:'국제협력 이해',reflection:'재판단·최종 합의'};
+const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.csv':'text/csv; charset=utf-8','.png':'image/png','.svg':'image/svg+xml'};
+const now=()=>new Date().toISOString();
+const newId=()=>crypto.randomUUID();
+const hashInt=s=>crypto.createHash('sha256').update(String(s)).digest().readUInt32BE(0);
 
-async function appendEvent(event) { await fsp.appendFile(LOG_FILE, JSON.stringify({ ...event, ts: now() }) + '\n', 'utf8'); }
-async function readEvents() {
-  const txt = await fsp.readFile(LOG_FILE, 'utf8');
-  return txt.split('\n').filter(Boolean).map(line => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean);
+async function appendEvent(event){await fsp.appendFile(LOG_FILE,JSON.stringify({...event,ts:now()})+'\n','utf8');}
+async function readEvents(){const txt=await fsp.readFile(LOG_FILE,'utf8');return txt.split('\n').filter(Boolean).map(line=>{try{return JSON.parse(line)}catch{return null}}).filter(Boolean);}
+async function readRoster(){try{const j=JSON.parse(await fsp.readFile(ROSTER_FILE,'utf8'));return {updatedAt:j.updatedAt||null,students:Array.isArray(j.students)?j.students:[]};}catch{return {updatedAt:null,students:[]};}}
+async function writeRoster(students){const data={updatedAt:now(),students};await fsp.writeFile(ROSTER_FILE,JSON.stringify(data,null,2),'utf8');return data;}
+async function readRuntime(){try{return {...{timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null},...JSON.parse(await fsp.readFile(RUNTIME_FILE,'utf8'))}}catch{return {timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}}}
+async function writeRuntime(rt){rt.updatedAt=now();await fsp.writeFile(RUNTIME_FILE,JSON.stringify(rt,null,2),'utf8');return rt;}
+function effectivePausedMs(rt,at=Date.now()){let v=Number(rt.totalPausedMs||0);if(rt.timerPaused&&rt.pauseStartedAt){const p=Date.parse(rt.pauseStartedAt);if(Number.isFinite(p))v+=Math.max(0,at-p);}return v;}
+function deriveClass(studentId){const s=String(studentId||'');if(/^\d{5}$/.test(s))return `${Number(s.slice(1,3))}반`;return ''}
+function deriveNumber(studentId){const s=String(studentId||'');if(/^\d{5}$/.test(s))return Number(s.slice(-2));return null}
+function fallbackCountry(studentId,className=''){const n=deriveNumber(studentId);const cls=className||deriveClass(studentId);if(Number.isFinite(n)&&n>0){const offset=hashInt(cls||String(studentId).slice(0,-2))%4;return countries[(n-1+offset)%4];}return countries[hashInt(studentId)%4];}
+function assignBalancedCountries(entries){const groups=new Map();for(const e of entries){const cls=e.className||deriveClass(e.studentId)||'미분류';if(!groups.has(cls))groups.set(cls,[]);groups.get(cls).push(e);}const out=[];for(const [cls,list] of groups){list.sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko'));const offset=hashInt(cls)%4;list.forEach((e,i)=>out.push({...e,className:e.className||deriveClass(e.studentId),country:countries[(i+offset)%4]}));}return out.sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko'))}
+
+function reconstruct(events){
+ const sessions=new Map();
+ for(const e of events){
+  if(!e.sessionId)continue;
+  if(e.type==='start')sessions.set(e.sessionId,{sessionId:e.sessionId,studentId:e.studentId,name:e.name,className:e.className||deriveClass(e.studentId),country:e.country,pauseBaseMs:Number(e.pauseBaseMs||0),startedAt:e.ts,updatedAt:e.ts,submittedAt:null,status:'in_progress',progress:0,data:{},score:null,teacherNote:'',aiGrade:null,timerExempt:false,reopenedAt:null});
+  const s=sessions.get(e.sessionId);if(!s)continue;
+  if(e.type==='save'){s.data={...s.data,...(e.data||{})};s.progress=Math.max(s.progress||0,Number(e.progress||0));s.updatedAt=e.ts;}
+  if(e.type==='submit'){s.data={...s.data,...(e.data||{})};s.progress=100;s.status='submitted';s.submittedAt=e.ts;s.updatedAt=e.ts;s.timerExempt=false;}
+  if(e.type==='score'){s.score=e.score;s.teacherNote=e.teacherNote||'';s.updatedAt=e.ts;}
+  if(e.type==='ai_grade'){s.aiGrade=e.aiGrade;s.updatedAt=e.ts;}
+  if(e.type==='reopen'){s.status='review_reopened';s.reopenedAt=e.ts;s.updatedAt=e.ts;s.timerExempt=true;s.data={...s.data,reviewReady:true};}
+  if(e.type==='reset'){s.status='reset';s.updatedAt=e.ts;}
+ }
+ return [...sessions.values()].filter(s=>s.status!=='reset');
 }
-function reconstruct(events) {
-  const sessions = new Map();
-  for (const e of events) {
-    if (!e.sessionId) continue;
-    if (e.type === 'start') sessions.set(e.sessionId, {sessionId:e.sessionId,studentId:e.studentId,name:e.name,country:e.country,startedAt:e.ts,updatedAt:e.ts,submittedAt:null,status:'in_progress',progress:0,data:{},score:null,teacherNote:''});
-    const s = sessions.get(e.sessionId); if (!s) continue;
-    if (e.type === 'save') { s.data={...s.data,...(e.data||{})}; s.progress=Math.max(s.progress||0,Number(e.progress||0)); s.updatedAt=e.ts; }
-    if (e.type === 'submit') { s.data={...s.data,...(e.data||{})}; s.progress=100; s.status='submitted'; s.submittedAt=e.ts; s.updatedAt=e.ts; }
-    if (e.type === 'score') { s.score=e.score; s.teacherNote=e.teacherNote||''; s.updatedAt=e.ts; }
-    if (e.type === 'reset') { s.status='reset'; s.updatedAt=e.ts; }
+async function latestByStudent(studentId){return reconstruct(await readEvents()).filter(s=>s.studentId===studentId).sort((a,b)=>new Date(b.startedAt)-new Date(a.startedAt))[0]||null;}
+async function timerForSession(s){const rt=await readRuntime();if(s.timerExempt)return {remainingSeconds:null,paused:true,exempt:true,totalSeconds:TOTAL_SECONDS};const start=Date.parse(s.startedAt);if(!Number.isFinite(start))return {remainingSeconds:TOTAL_SECONDS,paused:rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS};const pausedSinceStart=Math.max(0,effectivePausedMs(rt)-Number(s.pauseBaseMs||0));const activeElapsed=Math.max(0,Date.now()-start-pausedSinceStart);return {remainingSeconds:Math.max(0,TOTAL_SECONDS-Math.floor(activeElapsed/1000)),paused:!!rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS};}
+function sendJson(res,status,obj){const body=JSON.stringify(obj);res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store'});res.end(body);}
+function sendText(res,status,body,type='text/plain; charset=utf-8',extra={}){res.writeHead(status,{'Content-Type':type,'Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store',...extra});res.end(body);}
+async function bodyJson(req){return await new Promise((resolve,reject)=>{let data='';req.on('data',c=>{data+=c;if(data.length>3_000_000){reject(new Error('too large'));req.destroy();}});req.on('end',()=>{try{resolve(data?JSON.parse(data):{})}catch(e){reject(e)}});req.on('error',reject)});}
+function teacherOK(req,url){return (req.headers['x-teacher-key']||url.searchParams.get('password')||'')===TEACHER_PASSWORD;}
+function csvEscape(v){const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
+function koStatus(s){return s==='submitted'?'제출 완료':s==='review_reopened'?'수정 재개':'진행 중'}
+
+function studentPayloadForAI(s){const d=s.data||{},b=d.budget||{};return {country:countryLabels[s.country]||s.country,evidenceSources:(d.evidenceSources||[]).map(x=>evidenceLabels[x]||x),evidenceReason:d.evidenceReason||'',priorities:[priorityLabels[d.priority1]||d.priority1||'',priorityLabels[d.priority2]||d.priority2||''],priorityReason:d.priorityReason||'',budget:Object.fromEntries(Object.entries(b).map(([k,v])=>[budgets[k]||k,v])),budgetHighReason:d.budgetHighReason||'',budgetCut:budgets[d.budgetCut]||d.budgetCut||'',budgetCutReason:d.budgetCutReason||'',initialPosition:d.initialPosition||'',agreement:agreementLabels[d.agreement]||d.agreement||'',agreementReason:d.agreementReason||'',unfavorableAgreement:agreementLabels[d.unfavorableAgreement]||d.unfavorableAgreement||'',unfavorableReason:d.unfavorableReason||'',opposingCountry:countryLabels[d.opposingCountry]||d.opposingCountry||'',oppositionReason:d.oppositionReason||'',compromiseDimension:compromiseLabels[d.compromiseDimension]||d.compromiseDimension||'',compromise:d.compromise||'',actors:(d.actors||[]).map(k=>({actor:actorLabels[k]||k,role:actorRoleLabels[d.actorAssignments?.[k]]||d.actorAssignments?.[k]||''})),actorReason:d.actorReason||'',reconsiderChoice:d.reconsiderChoice==='revise'?'입장 수정':'입장 유지',finalDeclaration:d.finalDeclaration||''};}
+function aiPrompt(s){return `당신은 고등학교 '국제 관계와 국제기구' 수행평가의 교사용 가채점 보조자입니다. 최종 점수 결정자는 교사입니다. 학생 개인정보는 제공되지 않습니다.\n\n중요 원칙:\n- 특정 국가, 협약, 예산 배분을 정답으로 간주하지 마세요.\n- 학생에게 배정된 국가 조건과 학생이 제시한 근거 사이의 일관성, 자료 사용, 이해관계 분석, 절충의 구체성을 평가하세요.\n- 문장 표현력보다 교과적 사고와 근거를 우선하세요.\n- 답안에 없는 내용을 추정하지 마세요.\n- 근거문장은 반드시 학생 답안에서 그대로 복사한 짧은 구절만 사용하세요. 각 구절은 60자 이내, 영역당 최대 2개입니다.\n- 점수는 1점 단위 정수로 줄 수 있습니다.\n\n배점:\n자료 분석 15, 국가 입장 결정 15, 예산·TRADE-OFF 20, 국제관계 이해 15, 갈등 조정 15, 국제협력 이해 10, 재판단·최종 합의 10. 총 100점.\n\n평가기준:\n1) 자료 분석: 자료의 구체적 사실·수치를 정확히 사용하고 국가 판단과 연결하는가.\n2) 국가 입장: 국가 경제·에너지·기후 조건과 우선순위, 협상 전 입장이 일관되는가.\n3) 예산·TRADE-OFF: 예산 우선순위와 예산 축소 시 포기 기준이 국가 조건과 논리적으로 연결되는가.\n4) 국제관계: 상대국의 산업·에너지·피해 조건을 근거로 충돌을 분석하는가.\n5) 갈등 조정: 양측이 무엇을 얻고 양보하는지 드러나는 구체적 절충인가.\n6) 국제협력: 서로 다른 행위자의 성격에 맞는 역할을 구분하고 협력 이유를 설명하는가.\n7) 재판단·최종합의: 협상 과정에서 새롭게 고려한 요소가 최종 판단에 반영되는가.\n\n반드시 아래 JSON 형식만 출력하세요. markdown 코드블록은 사용하지 마세요.\n{"confidence":"high|medium|low","overall":"전체 판단 2~3문장","reviewFlags":["교사가 확인할 점"],"areas":{"dataAnalysis":{"score":0,"reason":"","evidence":[]},"nationalDecision":{"score":0,"reason":"","evidence":[]},"budgetTradeoff":{"score":0,"reason":"","evidence":[]},"international":{"score":0,"reason":"","evidence":[]},"compromise":{"score":0,"reason":"","evidence":[]},"governance":{"score":0,"reason":"","evidence":[]},"reflection":{"score":0,"reason":"","evidence":[]}}}\n\n학생 답안:\n${JSON.stringify(studentPayloadForAI(s),null,2)}`;}
+function extractResponseText(j){if(typeof j.output_text==='string')return j.output_text;return (j.output||[]).flatMap(x=>x.content||[]).filter(x=>x.type==='output_text'||typeof x.text==='string').map(x=>x.text||'').join('');}
+function validateAIGrade(raw){const areas={},src=raw?.areas||{};for(const [k,max] of Object.entries(scoreMax)){const a=src[k]||{},score=Math.max(0,Math.min(max,Math.round(Number(a.score)||0)));areas[k]={score,reason:String(a.reason||'').slice(0,700),evidence:(Array.isArray(a.evidence)?a.evidence:[]).map(x=>String(x).slice(0,60)).filter(Boolean).slice(0,2)};}const total=Object.values(areas).reduce((a,x)=>a+x.score,0);return {model:OPENAI_MODEL,createdAt:now(),total,confidence:['high','medium','low'].includes(raw?.confidence)?raw.confidence:'medium',overall:String(raw?.overall||'').slice(0,1200),reviewFlags:(Array.isArray(raw?.reviewFlags)?raw.reviewFlags:[]).map(x=>String(x).slice(0,300)).slice(0,8),areas};}
+async function runAIGrade(s){if(!OPENAI_API_KEY)throw new Error('OPENAI_API_KEY가 설정되지 않았습니다. Railway Variables에 API 키를 등록하세요.');const r=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${OPENAI_API_KEY}`},body:JSON.stringify({model:OPENAI_MODEL,input:aiPrompt(s),max_output_tokens:2600})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j?.error?.message||`AI 요청 실패 (${r.status})`);let text=extractResponseText(j).trim().replace(/^```json\s*/,'').replace(/```$/,'').trim();let parsed;try{parsed=JSON.parse(text)}catch{const m=text.match(/\{[\s\S]*\}/);if(!m)throw new Error('AI 응답을 점수 형식으로 읽지 못했습니다.');parsed=JSON.parse(m[0]);}return validateAIGrade(parsed);}
+
+async function serveStatic(req,res,url){let pathname=decodeURIComponent(url.pathname);if(pathname==='/')pathname='/index.html';if(pathname==='/teacher')pathname='/teacher.html';if(pathname==='/operate'||pathname==='/classroom')pathname='/operate.html';const safe=path.normalize(pathname).replace(/^(\.\.[/\\])+/,'');const file=path.join(PUBLIC,safe);if(!file.startsWith(PUBLIC))return sendText(res,403,'Forbidden');try{const stat=await fsp.stat(file);if(!stat.isFile())throw new Error();const data=await fsp.readFile(file);res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Content-Length':data.length,'Cache-Control':'no-store'});res.end(data)}catch{sendText(res,404,'Not found')}}
+
+async function handle(req,res){
+ const url=new URL(req.url,`http://${req.headers.host||'localhost'}`);
+ try{
+  if(req.method==='GET'&&url.pathname==='/'&&(url.searchParams.get('operate')==='1'||url.searchParams.get('mode')==='operate'||url.searchParams.get('classroom')==='1')){res.writeHead(302,{Location:'/operate','Cache-Control':'no-store'});return res.end()}
+  if(req.method==='GET'&&url.pathname==='/'&&(url.searchParams.get('teacher')==='1'||url.searchParams.get('mode')==='teacher')){res.writeHead(302,{Location:'/teacher','Cache-Control':'no-store'});return res.end()}
+  if(req.method==='GET'&&['/operate/','/operate.html','/classroom/','/classroom.html'].includes(url.pathname)){res.writeHead(302,{Location:'/operate','Cache-Control':'no-store'});return res.end()}
+  if(req.method==='GET'&&['/teacher/','/teacher.html'].includes(url.pathname)){res.writeHead(302,{Location:'/teacher','Cache-Control':'no-store'});return res.end()}
+  if(req.method==='GET'&&url.pathname==='/health')return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
+  if(req.method==='GET'&&url.pathname==='/api/project-info')return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',operatePath:'/operate',theme:'green',mobileOptimized:true,totalActiveMinutes:90,phaseGate:false,teacherPause:true,rosterUpload:true,aiGrading:true});
+  if(req.method==='POST'&&url.pathname==='/api/teacher/auth'){const b=await bodyJson(req);if(String(b.password||'')!==TEACHER_PASSWORD)return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});return sendJson(res,200,{ok:true});}
+
+  if(req.method==='POST'&&url.pathname==='/api/start'){
+   const b=await bodyJson(req),studentId=String(b.studentId||'').trim(),name=String(b.name||'').trim();
+   if(!/^\d{4,6}$/.test(studentId))return sendJson(res,400,{error:'학번은 숫자 4~6자리로 입력하세요.'});
+   if(name.length<2||name.length>20)return sendJson(res,400,{error:'이름을 정확히 입력하세요.'});
+   const roster=await readRoster(), rosterEntry=roster.students.find(x=>String(x.studentId)===studentId);
+   if(roster.students.length&&!rosterEntry)return sendJson(res,400,{error:'등록된 학생 명단에서 학번을 찾을 수 없습니다. 학번을 확인하거나 교사에게 문의하세요.'});
+   if(rosterEntry&&String(rosterEntry.name).trim()!==name)return sendJson(res,400,{error:'등록된 학생 명단의 이름과 일치하지 않습니다. 이름을 정확히 입력하세요.'});
+   const existing=await latestByStudent(studentId);
+   if(existing&&existing.status==='submitted')return sendJson(res,409,{error:'이미 제출이 완료된 학번입니다. 수정이 필요하면 교사에게 문의하세요.'});
+   if(existing&&['in_progress','review_reopened'].includes(existing.status)&&existing.name===name)return sendJson(res,200,{resumed:true,session:existing,serverNow:now(),timer:await timerForSession(existing)});
+   if(existing&&['in_progress','review_reopened'].includes(existing.status)&&existing.name!==name)return sendJson(res,409,{error:'같은 학번으로 진행 중인 수행평가가 있습니다. 교사에게 문의하세요.'});
+   const rt=await readRuntime(),className=rosterEntry?.className||deriveClass(studentId),country=rosterEntry?.country||fallbackCountry(studentId,className),pauseBaseMs=effectivePausedMs(rt),sessionId=newId();
+   await appendEvent({type:'start',sessionId,studentId,name,className,country,pauseBaseMs});
+   const s={sessionId,studentId,name,className,country,pauseBaseMs,data:{},progress:0,status:'in_progress',startedAt:now(),timerExempt:false};
+   return sendJson(res,200,{resumed:false,session:s,serverNow:now(),timer:await timerForSession(s)});
   }
-  return [...sessions.values()].filter(s => s.status !== 'reset');
-}
-async function latestByStudent(studentId) { return reconstruct(await readEvents()).filter(s=>s.studentId===studentId).sort((a,b)=>new Date(b.startedAt)-new Date(a.startedAt))[0] || null; }
-function sendJson(res, status, obj) { const body=JSON.stringify(obj); res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Content-Length':Buffer.byteLength(body)}); res.end(body); }
-function sendText(res, status, body, type='text/plain; charset=utf-8', extra={}) { res.writeHead(status,{'Content-Type':type,'Content-Length':Buffer.byteLength(body),...extra}); res.end(body); }
-async function bodyJson(req) { return await new Promise((resolve,reject)=>{let data='';req.on('data',c=>{data+=c;if(data.length>1_000_000){reject(new Error('too large'));req.destroy();}});req.on('end',()=>{try{resolve(data?JSON.parse(data):{});}catch(e){reject(e)}});req.on('error',reject)}); }
-function teacherOK(req, url) { return (req.headers['x-teacher-key'] || url.searchParams.get('password') || '') === TEACHER_PASSWORD; }
-function csvEscape(v) { const s=v==null?'':String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }
+  if(req.method==='POST'&&url.pathname==='/api/save'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'save',sessionId:b.sessionId,data:b.data||{},progress:Number(b.progress||0)});return sendJson(res,200,{ok:true,savedAt:now()});}
+  if(req.method==='POST'&&url.pathname==='/api/submit'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'submit',sessionId:b.sessionId,data:b.data||{}});return sendJson(res,200,{ok:true,submittedAt:now()});}
+  if(req.method==='GET'&&url.pathname.startsWith('/api/session/')){const id=url.pathname.split('/').pop(),s=reconstruct(await readEvents()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});return sendJson(res,200,{session:s,serverNow:now(),timer:await timerForSession(s)});}
+  if(req.method==='GET'&&url.pathname.startsWith('/api/timer/')){const id=url.pathname.split('/').pop(),s=reconstruct(await readEvents()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});return sendJson(res,200,await timerForSession(s));}
 
-async function serveStatic(req,res,url) {
-  let pathname = decodeURIComponent(url.pathname);
-  if (pathname === '/') pathname='/index.html';
-  if (pathname === '/teacher') pathname='/teacher.html';
-  if (pathname === '/operate' || pathname === '/classroom') pathname='/operate.html';
-  const safe = path.normalize(pathname).replace(/^(\.\.[/\\])+/, '');
-  const file = path.join(PUBLIC, safe);
-  if (!file.startsWith(PUBLIC)) return sendText(res,403,'Forbidden');
-  try { const stat=await fsp.stat(file); if(!stat.isFile()) throw new Error(); const data=await fsp.readFile(file); res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Content-Length':data.length,'Cache-Control':'no-store'}); res.end(data); }
-  catch { sendText(res,404,'Not found'); }
+  if(url.pathname.startsWith('/api/teacher/')&&!teacherOK(req,url))return sendJson(res,401,{error:'교사용 비밀번호가 올바르지 않습니다.'});
+  if(req.method==='GET'&&url.pathname==='/api/teacher/submissions'){const roster=await readRoster(),rt=await readRuntime();return sendJson(res,200,{sessions:reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko')),roster, timer:{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt},ai:{configured:!!OPENAI_API_KEY,model:OPENAI_MODEL}});}
+  if(req.method==='GET'&&url.pathname==='/api/teacher/timer'){const rt=await readRuntime();return sendJson(res,200,{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt,updatedAt:rt.updatedAt});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/timer'){const b=await bodyJson(req),action=String(b.action||'');let rt=await readRuntime();if(action==='pause'&&!rt.timerPaused){rt.timerPaused=true;rt.pauseStartedAt=now();await writeRuntime(rt);}else if(action==='resume'&&rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;await writeRuntime(rt);}return sendJson(res,200,{ok:true,paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt});}
+  if(req.method==='GET'&&url.pathname==='/api/teacher/roster')return sendJson(res,200,await readRoster());
+  if(req.method==='POST'&&url.pathname==='/api/teacher/roster'){
+   const b=await bodyJson(req),raw=Array.isArray(b.students)?b.students:[];if(!raw.length)return sendJson(res,400,{error:'학생 명단이 비어 있습니다.'});
+   const seen=new Set(),clean=[];for(const x of raw){const studentId=String(x.studentId||'').trim(),name=String(x.name||'').trim(),className=String(x.className||'').trim()||deriveClass(studentId);if(!/^\d{4,6}$/.test(studentId)||name.length<2)continue;if(seen.has(studentId))return sendJson(res,400,{error:`중복 학번이 있습니다: ${studentId}`});seen.add(studentId);clean.push({studentId,name,className});}
+   if(!clean.length)return sendJson(res,400,{error:'인식할 수 있는 학생이 없습니다. 열 이름을 확인하세요.'});const roster=await writeRoster(assignBalancedCountries(clean));return sendJson(res,200,{ok:true,count:roster.students.length,roster});
+  }
+  if(req.method==='DELETE'&&url.pathname==='/api/teacher/roster'){await writeRoster([]);return sendJson(res,200,{ok:true});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/reopen'){const b=await bodyJson(req),s=reconstruct(await readEvents()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 학생만 최종 검토 상태로 다시 열 수 있습니다.'});await appendEvent({type:'reopen',sessionId:s.sessionId});return sendJson(res,200,{ok:true});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/reset'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'reset',sessionId:b.sessionId});return sendJson(res,200,{ok:true});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/ai-grade'){const b=await bodyJson(req),s=reconstruct(await readEvents()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 답안만 AI 가채점할 수 있습니다.'});try{const aiGrade=await runAIGrade(s);await appendEvent({type:'ai_grade',sessionId:s.sessionId,aiGrade});return sendJson(res,200,{ok:true,aiGrade});}catch(e){return sendJson(res,503,{error:e.message});}}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/score'){
+   const b=await bodyJson(req),fields=Object.keys(scoreMax),clean={};if(!b.sessionId||!b.score)return sendJson(res,400,{error:'채점 정보가 부족합니다.'});
+   for(const f of fields){const v=Number(b.score[f]),max=scoreMax[f];if(!Number.isInteger(v)||v<0||v>max)return sendJson(res,400,{error:`${scoreLabels[f]} 점수는 0~${max}점 사이의 정수로 입력하세요.`});clean[f]=v;}clean.total=fields.reduce((a,f)=>a+clean[f],0);await appendEvent({type:'score',sessionId:b.sessionId,score:clean,teacherNote:String(b.teacherNote||'').slice(0,1000)});return sendJson(res,200,{ok:true,score:clean});
+  }
+  if(req.method==='GET'&&url.pathname==='/api/teacher/export.csv'){
+   const sessions=reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko')),roster=await readRoster();const sessionById=new Map(sessions.map(s=>[s.studentId,s]));const base=roster.students.length?roster.students: sessions.map(s=>({studentId:s.studentId,name:s.name,className:s.className,country:s.country}));
+   const headers=['반','학번','이름','국가','상태','진행률','시작시각','제출시각','선택자료','자료근거','1순위','2순위','우선순위이유','예산_재생에너지지원','예산_기후재난지원','예산_친환경기술','예산_산림보호','예산_산업전환','예산_최우선이유','70억_우선감액','70억_감액이유','협상전_1차입장','선택협약','협약선택이유','불리한협약','불리한이유','반대국가','반대이유','절충조정요소','절충안','협력주체','협력주체역할배정','협력이유','재판단','최종합의문','AI가채점','AI신뢰도','자료분석점수','국가입장점수','예산TRADEOFF점수','국제관계점수','갈등조정점수','국제협력점수','재판단최종합의점수','최종총점','교사메모'];
+   const rows=base.map(r=>{const s=sessionById.get(r.studentId),d=s?.data||{},b=d.budget||{},sc=s?.score||{};return[r.className||deriveClass(r.studentId),r.studentId,r.name,countryLabels[s?.country||r.country]||'',s?koStatus(s.status):'미시작',s?.progress??0,s?.startedAt||'',s?.submittedAt||'',(d.evidenceSources||[]).map(x=>evidenceLabels[x]||x).join(' | '),d.evidenceReason||'',priorityLabels[d.priority1]||'',priorityLabels[d.priority2]||'',d.priorityReason||'',b.renewable??'',b.disaster??'',b.tech??'',b.forest??'',b.transition??'',d.budgetHighReason||'',budgets[d.budgetCut]||'',d.budgetCutReason||'',d.initialPosition||'',agreementLabels[d.agreement]||'',d.agreementReason||'',agreementLabels[d.unfavorableAgreement]||'',d.unfavorableReason||'',countryLabels[d.opposingCountry]||'',d.oppositionReason||'',compromiseLabels[d.compromiseDimension]||d.compromiseDimension||'',d.compromise||'',(d.actors||[]).map(x=>actorLabels[x]||x).join(' | '),(d.actors||[]).map(k=>`${actorLabels[k]||k}: ${actorRoleLabels[d.actorAssignments?.[k]]||''}`).join(' | '),d.actorReason||'',d.reconsiderChoice==='revise'?'입장 수정':d.reconsiderChoice?'입장 유지':'',d.finalDeclaration||'',s?.aiGrade?.total??'',s?.aiGrade?.confidence==='high'?'높음':s?.aiGrade?.confidence==='medium'?'보통':s?.aiGrade?.confidence==='low'?'낮음':'',sc.dataAnalysis??'',sc.nationalDecision??'',sc.budgetTradeoff??'',sc.international??'',sc.compromise??'',sc.governance??'',sc.reflection??'',sc.total??'',s?.teacherNote||''];});
+   const csv='\uFEFF'+[headers,...rows].map(r=>r.map(csvEscape).join(',')).join('\n');return sendText(res,200,csv,'text/csv; charset=utf-8',{'Content-Disposition':'attachment; filename="climate_assessment_results_ko.csv"'});
+  }
+  return serveStatic(req,res,url);
+ }catch(e){console.error(e);return sendJson(res,500,{error:'서버 처리 중 오류가 발생했습니다.'});}
 }
-
-async function handle(req,res) {
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  try {
-    // 교사용 진입 호환성: 관리 서버가 ?teacher=1 형태로 링크해도 교사용 화면으로 이동합니다.
-    if (req.method==='GET' && url.pathname==='/' && (url.searchParams.get('operate')==='1' || url.searchParams.get('mode')==='operate' || url.searchParams.get('classroom')==='1')) {
-      res.writeHead(302, { Location: '/operate', 'Cache-Control':'no-store' });
-      return res.end();
-    }
-    if (req.method==='GET' && url.pathname==='/' && (url.searchParams.get('teacher')==='1' || url.searchParams.get('mode')==='teacher')) {
-      res.writeHead(302, { Location: '/teacher', 'Cache-Control':'no-store' });
-      return res.end();
-    }
-    if (req.method==='GET' && (url.pathname==='/operate/' || url.pathname==='/operate.html' || url.pathname==='/classroom/' || url.pathname==='/classroom.html')) {
-      res.writeHead(302, { Location: '/operate', 'Cache-Control':'no-store' });
-      return res.end();
-    }
-    if (req.method==='GET' && (url.pathname==='/teacher/' || url.pathname==='/teacher.html')) {
-      res.writeHead(302, { Location: '/teacher', 'Cache-Control':'no-store' });
-      return res.end();
-    }
-    if (req.method==='GET' && url.pathname==='/health') return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
-    if (req.method==='GET' && url.pathname==='/api/project-info') return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',teacherQuery:'/?teacher=1',operatePath:'/operate',operateQuery:'/?operate=1',theme:'green',mobileOptimized:true,lessons:2,totalMinutes:90,recommendedMinutesPerLesson:45});
-    if (req.method==='POST' && url.pathname==='/api/teacher/auth') {
-      const b=await bodyJson(req);
-      const supplied=String(b.password||'');
-      if (supplied!==TEACHER_PASSWORD) return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});
-      return sendJson(res,200,{ok:true});
-    }
-    if (req.method==='POST' && url.pathname==='/api/start') {
-      const b=await bodyJson(req), studentId=String(b.studentId||'').trim(), name=String(b.name||'').trim();
-      if(!/^\d{4,6}$/.test(studentId)) return sendJson(res,400,{error:'학번은 숫자 4~6자리로 입력하세요.'});
-      if(name.length<2||name.length>20) return sendJson(res,400,{error:'이름을 정확히 입력하세요.'});
-      const existing=await latestByStudent(studentId);
-      if(existing&&existing.status==='submitted') return sendJson(res,409,{error:'이미 제출이 완료된 학번입니다. 수정이 필요하면 교사에게 문의하세요.'});
-      if(existing&&existing.status==='in_progress'&&existing.name===name) return sendJson(res,200,{resumed:true,session:existing,serverNow:now()});
-      if(existing&&existing.status==='in_progress'&&existing.name!==name) return sendJson(res,409,{error:'같은 학번으로 진행 중인 수행평가가 있습니다. 이름을 처음과 다르게 입력했다면 교사에게 문의하세요.'});
-      const sessionId=newId(), country=hashCountry(studentId); await appendEvent({type:'start',sessionId,studentId,name,country});
-      return sendJson(res,200,{resumed:false,session:{sessionId,studentId,name,country,data:{},progress:0,status:'in_progress'},serverNow:now()});
-    }
-    if (req.method==='POST' && url.pathname==='/api/save') {
-      const b=await bodyJson(req); if(!b.sessionId) return sendJson(res,400,{error:'세션 정보가 없습니다.'});
-      await appendEvent({type:'save',sessionId:b.sessionId,data:b.data||{},progress:Number(b.progress||0)}); return sendJson(res,200,{ok:true,savedAt:now()});
-    }
-    if (req.method==='POST' && url.pathname==='/api/submit') {
-      const b=await bodyJson(req); if(!b.sessionId) return sendJson(res,400,{error:'세션 정보가 없습니다.'});
-      await appendEvent({type:'submit',sessionId:b.sessionId,data:b.data||{}}); return sendJson(res,200,{ok:true,submittedAt:now()});
-    }
-    if (req.method==='GET' && url.pathname.startsWith('/api/session/')) {
-      const id=url.pathname.split('/').pop(), s=reconstruct(await readEvents()).find(x=>x.sessionId===id); if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'}); return sendJson(res,200,{session:s,serverNow:now()});
-    }
-    if (url.pathname.startsWith('/api/teacher/') && !teacherOK(req,url)) return sendJson(res,401,{error:'교사용 비밀번호가 올바르지 않습니다.'});
-    if (req.method==='GET' && url.pathname==='/api/teacher/submissions') return sendJson(res,200,{sessions:reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko'))});
-    if (req.method==='POST' && url.pathname==='/api/teacher/score') {
-      const b=await bodyJson(req), allowed={dataAnalysis:[0,5,10,15],nationalDecision:[0,5,10,15],budgetTradeoff:[0,5,10,15,20],international:[0,5,10,15],compromise:[0,5,10,15],governance:[0,5,10],reflection:[0,5,10]}, fields=Object.keys(allowed), clean={};
-      if(!b.sessionId||!b.score)return sendJson(res,400,{error:'채점 정보가 부족합니다.'});
-      for(const f of fields){const v=Number(b.score[f]);if(!Number.isFinite(v)||!allowed[f].includes(v))return sendJson(res,400,{error:`${f} 점수를 확인하세요.`});clean[f]=v;}clean.total=fields.reduce((a,f)=>a+clean[f],0);
-      await appendEvent({type:'score',sessionId:b.sessionId,score:clean,teacherNote:String(b.teacherNote||'').slice(0,1000)}); return sendJson(res,200,{ok:true,score:clean});
-    }
-    if (req.method==='POST' && url.pathname==='/api/teacher/reset') { const b=await bodyJson(req); if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'}); await appendEvent({type:'reset',sessionId:b.sessionId}); return sendJson(res,200,{ok:true}); }
-    if (req.method==='GET' && url.pathname==='/api/teacher/export.csv') {
-      const sessions=reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko'));
-      const headers=['학번','이름','국가','상태','진행률','시작시각','제출시각','선택자료','자료근거','1순위','2순위','우선순위이유','예산_재생에너지','예산_재난지원','예산_기술개발','예산_산림보호','예산_산업전환','예산_최우선이유','70억_우선감액','70억_감액이유','협상전_1차입장','선택협약','협약선택이유','불리한협약','불리한이유','반대국가','반대이유','절충조정요소','절충안','협력주체','협력주체역할배정','협력이유','재판단','최종합의문','총점','교사메모'];
-      const rows=sessions.map(s=>{const d=s.data||{},b=d.budget||{};return[s.studentId,s.name,s.country,s.status,s.progress,s.startedAt,s.submittedAt,(d.evidenceSources||[]).join('|'),d.evidenceReason,d.priority1,d.priority2,d.priorityReason,b.renewable,b.disaster,b.tech,b.forest,b.transition,d.budgetHighReason,d.budgetCut,d.budgetCutReason,d.initialPosition,d.agreement,d.agreementReason,d.unfavorableAgreement,d.unfavorableReason,d.opposingCountry,d.oppositionReason,d.compromiseDimension,d.compromise,(d.actors||[]).join('|'),(d.actors||[]).map(k=>`${k}:${d.actorAssignments?.[k]||''}`).join('|'),d.actorReason,d.reconsiderChoice,d.finalDeclaration,s.score?.total??'',s.teacherNote||'']});
-      const csv='\uFEFF'+[headers,...rows].map(r=>r.map(csvEscape).join(',')).join('\n'); return sendText(res,200,csv,'text/csv; charset=utf-8',{'Content-Disposition':'attachment; filename="climate_assessment_results.csv"'});
-    }
-    return serveStatic(req,res,url);
-  } catch(e) { console.error(e); return sendJson(res,500,{error:'서버 처리 중 오류가 발생했습니다.'}); }
-}
-
 http.createServer(handle).listen(PORT,()=>console.log(`${PROJECT_NAME} v${APP_VERSION} running on http://localhost:${PORT}`));
