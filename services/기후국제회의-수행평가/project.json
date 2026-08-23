@@ -1,12 +1,12 @@
 {
   "id": "international-climate-conference-assessment",
-  "name": "국제기후회의 수행평가",
-  "displayName": "국제기후회의 수행평가 · 처음 운영 지원형 · 100점",
+  "name": "기후국제회의 수행평가",
+  "displayName": "기후국제회의 수행평가",
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.2.1",
-  "description": "가상 국가 자료 분석, 100억 기후예산, 국제협상과 절충을 수행하며 학생용 결정 전체보기와 교사용 첫 운영 가이드·클릭형 루브릭을 포함한 90분 개인형 웹 수행평가",
+  "version": "2.2.2",
+  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.2.2 패치. 교사용 ?teacher=1 및 /teacher 진입 수정, 학생 휴대폰 화면 최적화, 90분·100점 평가 구조를 포함.",
   "theme": {
     "name": "green",
     "primary": "#1f6b45",
@@ -33,7 +33,13 @@
   "routes": {
     "student": "/",
     "teacher": "/teacher",
-    "health": "/health"
+    "health": "/health",
+    "teacherAliases": [
+      "/?teacher=1",
+      "/?mode=teacher",
+      "/teacher/",
+      "/teacher.html"
+    ]
   },
   "runtime": {
     "kind": "node",
@@ -58,5 +64,15 @@
   "persistentPaths": [
     "data"
   ],
-  "entry": "server.js"
+  "entry": "server.js",
+  "mobile": {
+    "optimized": true,
+    "targetWidth": "360-430px",
+    "stickyNavigation": true,
+    "inputFontSize": "16px"
+  },
+  "slug": "기후국제회의-수행평가",
+  "programName": "기후국제회의 수행평가",
+  "targetProgramName": "기후국제회의 수행평가",
+  "patchFor": "기후국제회의 수행평가"
 }

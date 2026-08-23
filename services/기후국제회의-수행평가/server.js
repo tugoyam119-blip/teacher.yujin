@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '2.2.1';
+const APP_VERSION = '2.2.2';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '국제기후회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -62,8 +62,23 @@ async function serveStatic(req,res,url) {
 async function handle(req,res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   try {
+    // 교사용 진입 호환성: 관리 서버가 ?teacher=1 형태로 링크해도 교사용 화면으로 이동합니다.
+    if (req.method==='GET' && url.pathname==='/' && (url.searchParams.get('teacher')==='1' || url.searchParams.get('mode')==='teacher')) {
+      res.writeHead(302, { Location: '/teacher', 'Cache-Control':'no-store' });
+      return res.end();
+    }
+    if (req.method==='GET' && (url.pathname==='/teacher/' || url.pathname==='/teacher.html')) {
+      res.writeHead(302, { Location: '/teacher', 'Cache-Control':'no-store' });
+      return res.end();
+    }
     if (req.method==='GET' && url.pathname==='/health') return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
-    if (req.method==='GET' && url.pathname==='/api/project-info') return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',theme:'green',lessons:2,totalMinutes:90,recommendedMinutesPerLesson:45});
+    if (req.method==='GET' && url.pathname==='/api/project-info') return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',teacherQuery:'/?teacher=1',theme:'green',mobileOptimized:true,lessons:2,totalMinutes:90,recommendedMinutesPerLesson:45});
+    if (req.method==='POST' && url.pathname==='/api/teacher/auth') {
+      const b=await bodyJson(req);
+      const supplied=String(b.password||'');
+      if (supplied!==TEACHER_PASSWORD) return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});
+      return sendJson(res,200,{ok:true});
+    }
     if (req.method==='POST' && url.pathname==='/api/start') {
       const b=await bodyJson(req), studentId=String(b.studentId||'').trim(), name=String(b.name||'').trim();
       if(!/^\d{4,6}$/.test(studentId)) return sendJson(res,400,{error:'학번은 숫자 4~6자리로 입력하세요.'});

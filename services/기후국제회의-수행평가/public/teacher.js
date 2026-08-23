@@ -36,7 +36,19 @@ function setGuideTab(name){document.querySelectorAll('.guide-tab').forEach(b=>b.
 function openGuide(){localStorage.setItem('climateTeacherGuideSeen','1');$('#teacherGuide').classList.remove('hidden');setGuideTab('before');$('#teacherGuide').scrollIntoView({behavior:'smooth',block:'start'})}
 function restoreChecklist(){document.querySelectorAll('[data-preflight]').forEach(cb=>{cb.checked=localStorage.getItem(`climatePreflight:${cb.dataset.preflight}`)==='1';cb.addEventListener('change',()=>localStorage.setItem(`climatePreflight:${cb.dataset.preflight}`,cb.checked?'1':'0'))})}
 
-$('#loginTeacher').onclick=async()=>{key=$('#teacherPassword').value;if(await load()){$('#teacherLogin').classList.add('hidden');$('#dashboard').classList.remove('hidden');restoreChecklist();if(localStorage.getItem('climateTeacherGuideSeen')!=='1')openGuide()}};
+async function teacherLogin(){
+ key=$('#teacherPassword').value.trim();
+ const msg=$('#teacherLoginMessage'); msg.classList.add('hidden');
+ if(!key){msg.textContent='교사용 비밀번호를 입력하세요.';msg.classList.remove('hidden');return}
+ try{
+  const auth=await fetch('/api/teacher/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:key})});
+  const aj=await auth.json().catch(()=>({}));
+  if(!auth.ok){msg.textContent=aj.error||'교사용 비밀번호가 올바르지 않습니다.';msg.classList.remove('hidden');return}
+  if(await load()){$('#teacherLogin').classList.add('hidden');$('#dashboard').classList.remove('hidden');restoreChecklist();if(localStorage.getItem('climateTeacherGuideSeen')!=='1')openGuide()}
+ }catch(e){msg.textContent='교사용 서버에 연결하지 못했습니다. 잠시 후 새로고침하거나 배포 상태를 확인하세요.';msg.classList.remove('hidden')}
+}
+$('#loginTeacher').onclick=teacherLogin;
+$('#teacherPassword').addEventListener('keydown',e=>{if(e.key==='Enter')teacherLogin()});
 $('#refresh').onclick=load;$('#search').oninput=renderRows;$('#statusFilter').onchange=renderRows;$('#exportCsv').onclick=()=>{window.location=`/api/teacher/export.csv?password=${encodeURIComponent(key)}`};
 $('#openGuide').onclick=openGuide;$('#closeGuide').onclick=()=>$('#teacherGuide').classList.add('hidden');
 document.querySelectorAll('.guide-tab').forEach(b=>b.addEventListener('click',()=>setGuideTab(b.dataset.guideTab)));
