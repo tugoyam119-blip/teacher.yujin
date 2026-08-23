@@ -265,12 +265,12 @@
     "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9",
     "railway_domain": "yt-production-66c8.up.railway.app",
     "railway_volume_id": "",
-    "version": 223,
-    "version_label": "v2.2.3",
+    "version": 224,
+    "version_label": "v2.2.4",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "dff9a8263d64ad2edc4fe02846dca58fcbc36563",
-    "last_deployment_id": "02794155-28ca-4c44-aea1-a0152753e2c9",
+    "last_commit_sha": "15c0271905187a1fd0c4c7791216eb33e1d4a061",
+    "last_deployment_id": "91a9abb9-ecb3-424b-8c54-d300b98952df",
     "histories": [
       {
         "at": "2026-08-23T10:00:15.387Z",
@@ -287,14 +287,21 @@
         "commit_sha": "734a6a30d267867a8c58aa582ae7a42494e3c08f"
       },
       {
-        "version": 223,
-        "action": "auto-patch",
-        "commit_sha": "dff9a8263d64ad2edc4fe02846dca58fcbc36563",
         "at": "2026-08-23T10:50:32.728Z",
+        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
+        "action": "auto-patch",
+        "version": 223,
+        "commit_sha": "dff9a8263d64ad2edc4fe02846dca58fcbc36563"
+      },
+      {
+        "version": 224,
+        "action": "auto-patch",
+        "commit_sha": "15c0271905187a1fd0c4c7791216eb33e1d4a061",
+        "at": "2026-08-23T11:05:02.661Z",
         "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인"
       }
     ],
     "created_at": "2026-08-23T10:00:15.387Z",
-    "updated_at": "2026-08-23T10:50:32.728Z"
+    "updated_at": "2026-08-23T11:05:02.661Z"
   }
 ]
