@@ -6,11 +6,11 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.4.1';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+const ENV_OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.6-luna';
 const TOTAL_SECONDS = 90 * 60;
 const ROOT = __dirname;
@@ -19,10 +19,13 @@ const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
 const LOG_FILE = path.join(DATA_DIR, 'events.jsonl');
 const ROSTER_FILE = path.join(DATA_DIR, 'roster.json');
 const RUNTIME_FILE = path.join(DATA_DIR, 'runtime.json');
+const SETTINGS_FILE = path.join(DATA_DIR, 'teacher-settings.json');
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(LOG_FILE)) fs.writeFileSync(LOG_FILE, '');
 if (!fs.existsSync(ROSTER_FILE)) fs.writeFileSync(ROSTER_FILE, JSON.stringify({updatedAt:null, students:[]}, null, 2));
 if (!fs.existsSync(RUNTIME_FILE)) fs.writeFileSync(RUNTIME_FILE, JSON.stringify({timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}, null, 2));
+if (!fs.existsSync(SETTINGS_FILE)) { fs.writeFileSync(SETTINGS_FILE, JSON.stringify({openaiApiKeyEnc:null,updatedAt:null}, null, 2), {mode:0o600}); }
+try{fs.chmodSync(SETTINGS_FILE,0o600)}catch{}
 
 const countries = ['hanbit', 'saebom', 'pureun', 'taeyang'];
 const countryLabels={hanbit:'한빛국',saebom:'새봄국',pureun:'푸른섬국',taeyang:'태양국'};
@@ -46,6 +49,14 @@ async function readRoster(){try{const j=JSON.parse(await fsp.readFile(ROSTER_FIL
 async function writeRoster(students){const data={updatedAt:now(),students};await fsp.writeFile(ROSTER_FILE,JSON.stringify(data,null,2),'utf8');return data;}
 async function readRuntime(){try{return {...{timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null},...JSON.parse(await fsp.readFile(RUNTIME_FILE,'utf8'))}}catch{return {timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}}}
 async function writeRuntime(rt){rt.updatedAt=now();await fsp.writeFile(RUNTIME_FILE,JSON.stringify(rt,null,2),'utf8');return rt;}
+function settingsCipherKey(){return crypto.createHash('sha256').update(`${PROJECT_ID}|${TEACHER_PASSWORD}|openai-key`).digest();}
+function encryptSecret(value){const text=String(value||'');if(!text)return null;const iv=crypto.randomBytes(12),cipher=crypto.createCipheriv('aes-256-gcm',settingsCipherKey(),iv);const enc=Buffer.concat([cipher.update(text,'utf8'),cipher.final()]);return {v:1,iv:iv.toString('base64'),tag:cipher.getAuthTag().toString('base64'),data:enc.toString('base64')};}
+function decryptSecret(payload){if(!payload||!payload.iv||!payload.tag||!payload.data)return '';try{const decipher=crypto.createDecipheriv('aes-256-gcm',settingsCipherKey(),Buffer.from(payload.iv,'base64'));decipher.setAuthTag(Buffer.from(payload.tag,'base64'));return Buffer.concat([decipher.update(Buffer.from(payload.data,'base64')),decipher.final()]).toString('utf8');}catch{return '';}}
+async function readSettings(){try{const j=JSON.parse(await fsp.readFile(SETTINGS_FILE,'utf8'));const legacy=String(j.openaiApiKey||'');const decrypted=decryptSecret(j.openaiApiKeyEnc);return {openaiApiKey:decrypted||legacy,updatedAt:j.updatedAt||null};}catch{return {openaiApiKey:'',updatedAt:null};}}
+async function writeSettings(next){const key=String(next.openaiApiKey||'');const data={openaiApiKeyEnc:encryptSecret(key),updatedAt:now()};await fsp.writeFile(SETTINGS_FILE,JSON.stringify(data,null,2),{encoding:'utf8',mode:0o600});try{await fsp.chmod(SETTINGS_FILE,0o600)}catch{}return data;}
+async function openAIConfig(){const s=await readSettings();const saved=String(s.openaiApiKey||'').trim();const env=String(ENV_OPENAI_API_KEY||'').trim();const apiKey=saved||env;return {apiKey,configured:!!apiKey,source:saved?'teacher-settings':env?'environment':'none',updatedAt:s.updatedAt||null,model:OPENAI_MODEL};}
+function validOpenAIKey(value){const s=String(value||'').trim();return s.length>=20&&!/\s/.test(s)&&s.startsWith('sk-');}
+
 function effectivePausedMs(rt,at=Date.now()){let v=Number(rt.totalPausedMs||0);if(rt.timerPaused&&rt.pauseStartedAt){const p=Date.parse(rt.pauseStartedAt);if(Number.isFinite(p))v+=Math.max(0,at-p);}return v;}
 function deriveClass(studentId){const s=String(studentId||'');if(/^\d{5}$/.test(s))return `${Number(s.slice(1,3))}반`;return ''}
 function deriveNumber(studentId){const s=String(studentId||'');if(/^\d{5}$/.test(s))return Number(s.slice(-2));return null}
@@ -80,7 +91,7 @@ function studentPayloadForAI(s){const d=s.data||{},b=d.budget||{};return {countr
 function aiPrompt(s){return `당신은 고등학교 '국제 관계와 국제기구' 수행평가의 교사용 가채점 보조자입니다. 최종 점수 결정자는 교사입니다. 학생 개인정보는 제공되지 않습니다.\n\n중요 원칙:\n- 특정 국가, 협약, 예산 배분을 정답으로 간주하지 마세요.\n- 학생에게 배정된 국가 조건과 학생이 제시한 근거 사이의 일관성, 자료 사용, 이해관계 분석, 절충의 구체성을 평가하세요.\n- 문장 표현력보다 교과적 사고와 근거를 우선하세요.\n- 답안에 없는 내용을 추정하지 마세요.\n- 근거문장은 반드시 학생 답안에서 그대로 복사한 짧은 구절만 사용하세요. 각 구절은 60자 이내, 영역당 최대 2개입니다.\n- 점수는 1점 단위 정수로 줄 수 있습니다.\n\n배점:\n자료 분석 15, 국가 입장 결정 15, 예산·TRADE-OFF 20, 국제관계 이해 15, 갈등 조정 15, 국제협력 이해 10, 재판단·최종 합의 10. 총 100점.\n\n평가기준:\n1) 자료 분석: 자료의 구체적 사실·수치를 정확히 사용하고 국가 판단과 연결하는가.\n2) 국가 입장: 국가 경제·에너지·기후 조건과 우선순위, 협상 전 입장이 일관되는가.\n3) 예산·TRADE-OFF: 예산 우선순위와 예산 축소 시 포기 기준이 국가 조건과 논리적으로 연결되는가.\n4) 국제관계: 상대국의 산업·에너지·피해 조건을 근거로 충돌을 분석하는가.\n5) 갈등 조정: 양측이 무엇을 얻고 양보하는지 드러나는 구체적 절충인가.\n6) 국제협력: 서로 다른 행위자의 성격에 맞는 역할을 구분하고 협력 이유를 설명하는가.\n7) 재판단·최종합의: 협상 과정에서 새롭게 고려한 요소가 최종 판단에 반영되는가.\n\n반드시 아래 JSON 형식만 출력하세요. markdown 코드블록은 사용하지 마세요.\n{"confidence":"high|medium|low","overall":"전체 판단 2~3문장","reviewFlags":["교사가 확인할 점"],"areas":{"dataAnalysis":{"score":0,"reason":"","evidence":[]},"nationalDecision":{"score":0,"reason":"","evidence":[]},"budgetTradeoff":{"score":0,"reason":"","evidence":[]},"international":{"score":0,"reason":"","evidence":[]},"compromise":{"score":0,"reason":"","evidence":[]},"governance":{"score":0,"reason":"","evidence":[]},"reflection":{"score":0,"reason":"","evidence":[]}}}\n\n학생 답안:\n${JSON.stringify(studentPayloadForAI(s),null,2)}`;}
 function extractResponseText(j){if(typeof j.output_text==='string')return j.output_text;return (j.output||[]).flatMap(x=>x.content||[]).filter(x=>x.type==='output_text'||typeof x.text==='string').map(x=>x.text||'').join('');}
 function validateAIGrade(raw){const areas={},src=raw?.areas||{};for(const [k,max] of Object.entries(scoreMax)){const a=src[k]||{},score=Math.max(0,Math.min(max,Math.round(Number(a.score)||0)));areas[k]={score,reason:String(a.reason||'').slice(0,700),evidence:(Array.isArray(a.evidence)?a.evidence:[]).map(x=>String(x).slice(0,60)).filter(Boolean).slice(0,2)};}const total=Object.values(areas).reduce((a,x)=>a+x.score,0);return {model:OPENAI_MODEL,createdAt:now(),total,confidence:['high','medium','low'].includes(raw?.confidence)?raw.confidence:'medium',overall:String(raw?.overall||'').slice(0,1200),reviewFlags:(Array.isArray(raw?.reviewFlags)?raw.reviewFlags:[]).map(x=>String(x).slice(0,300)).slice(0,8),areas};}
-async function runAIGrade(s){if(!OPENAI_API_KEY)throw new Error('OPENAI_API_KEY가 설정되지 않았습니다. Railway Variables에 API 키를 등록하세요.');const r=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${OPENAI_API_KEY}`},body:JSON.stringify({model:OPENAI_MODEL,input:aiPrompt(s),max_output_tokens:2600})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j?.error?.message||`AI 요청 실패 (${r.status})`);let text=extractResponseText(j).trim().replace(/^```json\s*/,'').replace(/```$/,'').trim();let parsed;try{parsed=JSON.parse(text)}catch{const m=text.match(/\{[\s\S]*\}/);if(!m)throw new Error('AI 응답을 점수 형식으로 읽지 못했습니다.');parsed=JSON.parse(m[0]);}return validateAIGrade(parsed);}
+async function runAIGrade(s){const cfg=await openAIConfig();if(!cfg.apiKey)throw new Error('OPENAI_API_KEY가 설정되지 않았습니다. 교사용 페이지의 AI 가채점 설정에서 API 키를 저장하세요.');const r=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${cfg.apiKey}`},body:JSON.stringify({model:OPENAI_MODEL,input:aiPrompt(s),max_output_tokens:2600})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j?.error?.message||`AI 요청 실패 (${r.status})`);let text=extractResponseText(j).trim().replace(/^```json\s*/,'').replace(/```$/,'').trim();let parsed;try{parsed=JSON.parse(text)}catch{const m=text.match(/\{[\s\S]*\}/);if(!m)throw new Error('AI 응답을 점수 형식으로 읽지 못했습니다.');parsed=JSON.parse(m[0]);}return validateAIGrade(parsed);}
 
 async function serveStatic(req,res,url){let pathname=decodeURIComponent(url.pathname);if(pathname==='/')pathname='/index.html';if(pathname==='/teacher')pathname='/teacher.html';if(pathname==='/operate'||pathname==='/classroom')pathname='/operate.html';const safe=path.normalize(pathname).replace(/^(\.\.[/\\])+/,'');const file=path.join(PUBLIC,safe);if(!file.startsWith(PUBLIC))return sendText(res,403,'Forbidden');try{const stat=await fsp.stat(file);if(!stat.isFile())throw new Error();const data=await fsp.readFile(file);res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Content-Length':data.length,'Cache-Control':'no-store'});res.end(data)}catch{sendText(res,404,'Not found')}}
 
@@ -92,7 +103,7 @@ async function handle(req,res){
   if(req.method==='GET'&&['/operate/','/operate.html','/classroom/','/classroom.html'].includes(url.pathname)){res.writeHead(302,{Location:'/operate','Cache-Control':'no-store'});return res.end()}
   if(req.method==='GET'&&['/teacher/','/teacher.html'].includes(url.pathname)){res.writeHead(302,{Location:'/teacher','Cache-Control':'no-store'});return res.end()}
   if(req.method==='GET'&&url.pathname==='/health')return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
-  if(req.method==='GET'&&url.pathname==='/api/project-info')return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',operatePath:'/operate',theme:'green',mobileOptimized:true,totalActiveMinutes:90,phaseGate:false,teacherPause:true,rosterUpload:true,aiGrading:true});
+  if(req.method==='GET'&&url.pathname==='/api/project-info')return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',operatePath:'/operate',theme:'green',mobileOptimized:true,totalActiveMinutes:90,phaseGate:false,teacherPause:true,rosterUpload:true,aiGrading:true,teacherApiKeyInput:true});
   if(req.method==='POST'&&url.pathname==='/api/teacher/auth'){const b=await bodyJson(req);if(String(b.password||'')!==TEACHER_PASSWORD)return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});return sendJson(res,200,{ok:true});}
 
   if(req.method==='POST'&&url.pathname==='/api/start'){
@@ -117,7 +128,11 @@ async function handle(req,res){
   if(req.method==='GET'&&url.pathname.startsWith('/api/timer/')){const id=url.pathname.split('/').pop(),s=reconstruct(await readEvents()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});return sendJson(res,200,await timerForSession(s));}
 
   if(url.pathname.startsWith('/api/teacher/')&&!teacherOK(req,url))return sendJson(res,401,{error:'교사용 비밀번호가 올바르지 않습니다.'});
-  if(req.method==='GET'&&url.pathname==='/api/teacher/submissions'){const roster=await readRoster(),rt=await readRuntime();return sendJson(res,200,{sessions:reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko')),roster, timer:{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt},ai:{configured:!!OPENAI_API_KEY,model:OPENAI_MODEL}});}
+  if(req.method==='GET'&&url.pathname==='/api/teacher/submissions'){const roster=await readRoster(),rt=await readRuntime(),cfg=await openAIConfig();return sendJson(res,200,{sessions:reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko')),roster, timer:{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt},ai:{configured:cfg.configured,model:cfg.model,source:cfg.source,updatedAt:cfg.updatedAt}});}
+  if(req.method==='GET'&&url.pathname==='/api/teacher/ai-settings'){const cfg=await openAIConfig();return sendJson(res,200,{configured:cfg.configured,source:cfg.source,updatedAt:cfg.updatedAt,model:cfg.model});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/ai-settings'){const b=await bodyJson(req),apiKey=String(b.apiKey||'').trim();if(!validOpenAIKey(apiKey))return sendJson(res,400,{error:'API 키 형식을 확인하세요. 공백 없이 sk- 로 시작하는 OpenAI API 키를 입력하세요.'});await writeSettings({openaiApiKey:apiKey});return sendJson(res,200,{ok:true,configured:true,source:'teacher-settings',model:OPENAI_MODEL});}
+  if(req.method==='DELETE'&&url.pathname==='/api/teacher/ai-settings'){await writeSettings({openaiApiKey:''});const cfg=await openAIConfig();return sendJson(res,200,{ok:true,configured:cfg.configured,source:cfg.source,model:cfg.model});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/ai-settings/test'){const cfg=await openAIConfig();if(!cfg.apiKey)return sendJson(res,400,{error:'저장된 API 키가 없습니다.'});try{const rr=await fetch('https://api.openai.com/v1/models',{headers:{'Authorization':`Bearer ${cfg.apiKey}`}});const jj=await rr.json().catch(()=>({}));if(!rr.ok)return sendJson(res,400,{error:jj?.error?.message||`OpenAI 연결 확인 실패 (${rr.status})`});return sendJson(res,200,{ok:true,message:'OpenAI API 연결이 정상입니다.'});}catch(e){return sendJson(res,503,{error:'OpenAI API에 연결하지 못했습니다. 네트워크 상태를 확인하세요.'});}}
   if(req.method==='GET'&&url.pathname==='/api/teacher/timer'){const rt=await readRuntime();return sendJson(res,200,{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt,updatedAt:rt.updatedAt});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/timer'){const b=await bodyJson(req),action=String(b.action||'');let rt=await readRuntime();if(action==='pause'&&!rt.timerPaused){rt.timerPaused=true;rt.pauseStartedAt=now();await writeRuntime(rt);}else if(action==='resume'&&rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;await writeRuntime(rt);}return sendJson(res,200,{ok:true,paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt});}
   if(req.method==='GET'&&url.pathname==='/api/teacher/roster')return sendJson(res,200,await readRoster());

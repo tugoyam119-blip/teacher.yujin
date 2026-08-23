@@ -5,8 +5,8 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.4.0",
-  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.4.0 패치. 학생 실제 90분 타이머의 교사 일괄 일시정지·재개, 추후 학생명단 CSV 업로드와 미시작·반별 필터, 반별 균등 국가 배정, 제출 답안을 유지한 최종 검토 재오픈, AI 가채점과 근거문장 강조, 1점 단위 교사 최종채점, CSV 전체 한글화를 추가.",
+  "version": "2.4.1",
+  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.4.1 패치. v2.4.0 운영·AI 가채점 기능을 유지하면서 교사용 페이지 안에서 OPENAI_API_KEY를 안전하게 입력·서버 저장·연결 확인·삭제할 수 있는 설정 UI를 추가.",
   "theme": {
     "name": "green",
     "primary": "#1f6b45",
@@ -113,6 +113,9 @@
     "ai-provisional-grading",
     "ai-evidence-highlighting",
     "one-point-manual-scoring",
-    "fully-korean-csv"
+    "fully-korean-csv",
+    "teacher-openai-api-key-input",
+    "server-side-api-key-storage",
+    "openai-api-connection-test"
   ]
 }

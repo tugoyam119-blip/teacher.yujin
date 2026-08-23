@@ -135,3 +135,8 @@ main{max-width:940px;margin:26px auto 70px;padding:0 18px}.hero,.panel{backgroun
 .operate-time-note strong{font-size:21px;color:#1f6b45}.operate-time-note strong.timer-stopped{color:#7d5b00}.operate-time-note{align-content:center}
 @media(max-width:900px){.teacher-ops-grid{grid-template-columns:1fr}.stats-six{grid-template-columns:repeat(3,1fr)}.toolbar-wide{grid-template-columns:1fr 1fr}.ai-area-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.stats-six{grid-template-columns:repeat(2,1fr)}.toolbar-wide{grid-template-columns:1fr}.ai-grade-head{flex-direction:column}.op-actions>*{flex:1}.score-stepper{grid-template-columns:46px 1fr 46px}}
+
+
+/* v2.4.1 교사용 API 키 설정 */
+.api-key-field{margin-top:12px}.api-key-field input{width:100%;min-height:46px;font-size:16px}.api-key-field small{display:block;margin-top:6px;line-height:1.5}.api-key-actions{margin-top:10px;flex-wrap:wrap}.soft-divider{border:0;border-top:1px solid #d8e8dd;margin:16px 0}.ai-control-card{min-width:0}
+@media(max-width:640px){.api-key-actions button{flex:1 1 100%}}

@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v2.4.0 · 교사 일괄 시간정지, 명단 업로드, 반별 균등 국가배정, 제출 검토 재오픈, AI 가채점, 1점 단위 채점, 한글 CSV",
+  "description": "기후국제회의 수행평가 v2.4.1 · 교사용 OPENAI_API_KEY 입력·서버 저장 UI 추가",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

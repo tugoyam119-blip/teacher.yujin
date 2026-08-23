@@ -147,6 +147,14 @@
     <article class="teacher-op-card ai-control-card">
       <div class="op-card-head"><div><span class="eyebrow">교사 최종 확정</span><h3>AI 가채점</h3></div><span id="aiStateBadge" class="badge">확인 중</span></div>
       <p>AI는 정답을 정하지 않고 <b>근거·일관성·상대국 분석·절충</b>을 기준으로 1점 단위 추천점수와 근거문장을 제시합니다.</p>
+      <div class="field api-key-field">
+        <label for="openAiApiKey">OPENAI_API_KEY</label>
+        <input id="openAiApiKey" type="password" autocomplete="new-password" spellcheck="false" placeholder="sk-... API 키 붙여넣기">
+        <small>키는 서버에만 저장되며 저장 후 전체 값은 다시 표시되지 않습니다. 학생 화면·CSV·브라우저 주소에는 노출하지 않습니다.</small>
+      </div>
+      <div class="op-actions api-key-actions"><button id="saveOpenAiKey" class="primary">API 키 저장</button><button id="testOpenAiKey" class="secondary">연결 확인</button><button id="clearOpenAiKey" class="ghost">저장 키 삭제</button></div>
+      <small id="apiKeyMessage" class="sub"></small>
+      <hr class="soft-divider">
       <div class="op-actions"><button id="bulkAiGrade" class="secondary">미가채점 제출자 일괄 가채점</button><span id="bulkAiProgress" class="sub"></span></div>
     </article>
   </section>
