@@ -114,28 +114,13 @@
   },
   {
     "id": "human-rights",
+    "icon": "🏛️",
+    "kind": "수행평가",
     "name": "인권도시 정책결정 수행평가",
     "slug": "human-rights",
-    "kind": "수행평가",
     "subject": "통합사회2",
-    "audience": "student",
-    "description": "새봄시 지하철 엘리베이터 우선 설치 정책결정 수행평가",
-    "icon": "🏛️",
-    "published": true,
-    "sort_order": 40,
-    "deploy_type": "server",
-    "repo_path": "services/human-rights",
-    "target_url": "https://yt-human-rights-production.up.railway.app",
-    "manage_url": "https://yt-human-rights-production.up.railway.app/teacher",
-    "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5",
-    "railway_domain": "yt-human-rights-production.up.railway.app",
-    "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
     "version": 119,
-    "version_label": "v11.9",
-    "update_mode": "chatgpt",
-    "deploy_status": "deploying",
-    "last_commit_sha": "42224c2626a9ccdb2e9bc306724183daa435d3d7",
-    "last_deployment_id": "f88d8f6d-e68d-4b22-9167-4b2d9bcfd7d1",
+    "audience": "student",
     "histories": [
       {
         "at": "2026-08-22T10:59:26.248Z",
@@ -201,15 +186,30 @@
         "commit_sha": "00c989d4070a49a64bfc2b1ebb058ce89d631d9e"
       },
       {
-        "version": 119,
-        "action": "auto-patch",
-        "commit_sha": "42224c2626a9ccdb2e9bc306724183daa435d3d7",
         "at": "2026-08-23T06:05:46.142Z",
-        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인"
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 119,
+        "commit_sha": "42224c2626a9ccdb2e9bc306724183daa435d3d7"
       }
     ],
+    "published": true,
+    "repo_path": "services/human-rights",
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-23T06:05:46.142Z"
+    "manage_url": "https://yt-human-rights-production.up.railway.app/teacher",
+    "sort_order": 40,
+    "target_url": "https://yt-human-rights-production.up.railway.app",
+    "updated_at": "2026-08-23T06:06:04.946Z",
+    "deploy_type": "server",
+    "description": "새봄시 지하철 엘리베이터 우선 설치 정책결정 수행평가",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "version_label": "v11.9",
+    "railway_domain": "yt-human-rights-production.up.railway.app",
+    "last_commit_sha": "c24283412bf8f5be39043a6bfb0e23f7ff73bf8f",
+    "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
+    "last_deployment_id": "f88d8f6d-e68d-4b22-9167-4b2d9bcfd7d1",
+    "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5"
   },
   {
     "id": "f8ba00b3-e0c4-47b8-af35-e3cfe0547003",
@@ -246,5 +246,41 @@
     "railway_volume_id": "",
     "last_deployment_id": "8f109478-57cf-4252-b6c9-4b8b6bc63972",
     "railway_service_id": ""
+  },
+  {
+    "id": "65f76e71-29bb-49dc-9447-4e057f30da83",
+    "name": "기후국제회의 수행평가",
+    "slug": "기후국제회의-수행평가",
+    "kind": "수행평가",
+    "subject": "공통",
+    "audience": "teacher",
+    "description": "",
+    "icon": "🔗",
+    "published": true,
+    "sort_order": 100,
+    "deploy_type": "server",
+    "repo_path": "services/기후국제회의-수행평가",
+    "target_url": "https://yt-production-66c8.up.railway.app",
+    "manage_url": "https://yt-production-66c8.up.railway.app/?teacher=1",
+    "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9",
+    "railway_domain": "yt-production-66c8.up.railway.app",
+    "railway_volume_id": "",
+    "version": 1,
+    "version_label": "v1",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "last_commit_sha": "2c2e274d6e12beb59ee2fbc9711e3cedb9d196e1",
+    "last_deployment_id": "b0bb494f-0050-40ff-8db3-24a2ee9df5db",
+    "histories": [
+      {
+        "version": 1,
+        "action": "create",
+        "commit_sha": "2c2e274d6e12beb59ee2fbc9711e3cedb9d196e1",
+        "at": "2026-08-23T10:00:15.387Z",
+        "note": ""
+      }
+    ],
+    "created_at": "2026-08-23T10:00:15.387Z",
+    "updated_at": "2026-08-23T10:00:15.387Z"
   }
 ]
