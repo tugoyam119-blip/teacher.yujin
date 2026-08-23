@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v11-8-student-guide-yujint",
-  "version": "11.8.0",
+  "name": "hr-city-v11-9-prep-check-yujint",
+  "version": "11.9.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v11.8 - 학생 사전 튜토리얼·교실 설명 모드·v11.7 교실운영 기능 유지",
+  "description": "인권도시 정책결정 수행평가 v11.9 - 사전준비 완료현황·TRADE-OFF 사례연습·서술구조 연습·수행 중 짧은 개념 도움",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
