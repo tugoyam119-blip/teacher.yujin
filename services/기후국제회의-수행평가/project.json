@@ -5,8 +5,8 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.2.2",
-  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.2.2 패치. 교사용 ?teacher=1 및 /teacher 진입 수정, 학생 휴대폰 화면 최적화, 90분·100점 평가 구조를 포함.",
+  "version": "2.2.3",
+  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.2.3 패치. 교사용 로그인 화면의 비밀번호 노출 제거, CSV 인증 보안 개선, 기존 모바일 최적화와 90분·100점 평가 구조 유지.",
   "theme": {
     "name": "green",
     "primary": "#1f6b45",
@@ -51,8 +51,7 @@
     {
       "name": "TEACHER_PASSWORD",
       "required": false,
-      "default": "000000",
-      "description": "교사용 관리 비밀번호"
+      "description": "교사용 관리 비밀번호. 로그인 화면에는 표시하지 않음."
     },
     {
       "name": "DATA_DIR",

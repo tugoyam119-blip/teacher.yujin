@@ -49,7 +49,7 @@ async function teacherLogin(){
 }
 $('#loginTeacher').onclick=teacherLogin;
 $('#teacherPassword').addEventListener('keydown',e=>{if(e.key==='Enter')teacherLogin()});
-$('#refresh').onclick=load;$('#search').oninput=renderRows;$('#statusFilter').onchange=renderRows;$('#exportCsv').onclick=()=>{window.location=`/api/teacher/export.csv?password=${encodeURIComponent(key)}`};
+$('#refresh').onclick=load;$('#search').oninput=renderRows;$('#statusFilter').onchange=renderRows;$('#exportCsv').onclick=async()=>{try{const r=await fetch('/api/teacher/export.csv',{headers:{'x-teacher-key':key}});if(!r.ok)return alert('CSV 내보내기에 실패했습니다. 다시 로그인해 주세요.');const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='기후국제회의_수행평가_채점결과.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}catch(e){alert('CSV 내보내기에 실패했습니다.')}};
 $('#openGuide').onclick=openGuide;$('#closeGuide').onclick=()=>$('#teacherGuide').classList.add('hidden');
 document.querySelectorAll('.guide-tab').forEach(b=>b.addEventListener('click',()=>setGuideTab(b.dataset.guideTab)));
 document.querySelectorAll('.copy-script').forEach(b=>b.addEventListener('click',async()=>{const t=document.getElementById(b.dataset.copyTarget)?.value||'';try{await navigator.clipboard.writeText(t);const old=b.textContent;b.textContent='복사 완료';setTimeout(()=>b.textContent=old,1200)}catch{alert(t)}}));
