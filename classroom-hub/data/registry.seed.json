@@ -265,12 +265,12 @@
     "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9",
     "railway_domain": "yt-production-66c8.up.railway.app",
     "railway_volume_id": "",
-    "version": 241,
-    "version_label": "v2.4.1",
+    "version": 242,
+    "version_label": "v2.4.2",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "1347a5062607cf3e1bf4434a861e277269370e0d",
-    "last_deployment_id": "9a89e64b-7ed7-4fe0-ad4c-17fd6757fc0f",
+    "last_commit_sha": "18639d4b87c77fe18de625e181c3d20b25d6724b",
+    "last_deployment_id": "068a0f87-6df5-4773-909b-cc8ee29f1b1d",
     "histories": [
       {
         "at": "2026-08-23T10:00:15.387Z",
@@ -315,14 +315,21 @@
         "commit_sha": "0f9faac21988ca3a150293c6856e616de5406fa9"
       },
       {
-        "version": 241,
-        "action": "auto-patch",
-        "commit_sha": "1347a5062607cf3e1bf4434a861e277269370e0d",
         "at": "2026-08-23T13:41:55.276Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 241,
+        "commit_sha": "1347a5062607cf3e1bf4434a861e277269370e0d"
+      },
+      {
+        "version": 242,
+        "action": "auto-patch",
+        "commit_sha": "18639d4b87c77fe18de625e181c3d20b25d6724b",
+        "at": "2026-08-23T13:54:24.390Z",
         "note": "자동 연결: 교사가 직접 대상 선택"
       }
     ],
     "created_at": "2026-08-23T10:00:15.387Z",
-    "updated_at": "2026-08-23T13:41:55.276Z"
+    "updated_at": "2026-08-23T13:54:24.390Z"
   }
 ]
