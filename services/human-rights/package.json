@@ -1,8 +1,8 @@
 {
-  "name": "hr-city-v11-7-first-teacher-guide-yujint",
-  "version": "11.7.0",
+  "name": "hr-city-v11-8-student-guide-yujint",
+  "version": "11.8.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v11.7 - 처음 운영하는 선생님 모드·단계별 공동안내·v11.6 교실운영 안정화 유지",
+  "description": "인권도시 정책결정 수행평가 v11.8 - 학생 사전 튜토리얼·교실 설명 모드·v11.7 교실운영 기능 유지",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

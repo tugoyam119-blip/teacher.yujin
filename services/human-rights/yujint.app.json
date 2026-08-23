@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "11.7",
+  "version": "11.8",
   "app_id": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "healthcheck_path": "/health",
@@ -15,5 +15,5 @@
     "DATA_DIR": "/data"
   },
   "volume_mount_path": "/data",
-  "description": "정책판단보드형 · v11.6 반별시간·자동정지·교실운영 안정화 유지 · /operate 처음 운영하는 선생님 모드 · STEP 자동추적 · 공동교사 설명 허용/금지 기준 · 학생 수행화면 무변경"
+  "description": "정책판단보드형 · v11.7 교실운영 안정화 유지 · /guide 학생 사전 튜토리얼 · 교실 설명 모드 · 점수 미반영 확인문제 · 실제 평가 정답/역 선택 힌트 없음"
 }
