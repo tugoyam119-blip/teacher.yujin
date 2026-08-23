@@ -1,0 +1,62 @@
+{
+  "id": "international-climate-conference-assessment",
+  "name": "국제기후회의 수행평가",
+  "displayName": "국제기후회의 수행평가 · 처음 운영 지원형 · 100점",
+  "subject": "국제 관계와 국제기구",
+  "unit": "5단원 환경과 에너지",
+  "type": "server",
+  "version": "2.2.1",
+  "description": "가상 국가 자료 분석, 100억 기후예산, 국제협상과 절충을 수행하며 학생용 결정 전체보기와 교사용 첫 운영 가이드·클릭형 루브릭을 포함한 90분 개인형 웹 수행평가",
+  "theme": {
+    "name": "green",
+    "primary": "#1f6b45",
+    "secondary": "#2d8056",
+    "soft": "#e7f5ec"
+  },
+  "assessment": {
+    "lessons": 2,
+    "totalMinutes": 90,
+    "recommendedMinutesPerLesson": 45,
+    "totalPoints": 100,
+    "phase1Steps": 5,
+    "phase2Steps": 5,
+    "rubric": {
+      "dataAnalysis": 15,
+      "nationalDecision": 15,
+      "budgetTradeoff": 20,
+      "internationalRelations": 15,
+      "compromise": 15,
+      "governance": 10,
+      "reflectionFinal": 10
+    }
+  },
+  "routes": {
+    "student": "/",
+    "teacher": "/teacher",
+    "health": "/health"
+  },
+  "runtime": {
+    "kind": "node",
+    "node": ">=20",
+    "startCommand": "npm start",
+    "portEnv": "PORT"
+  },
+  "environment": [
+    {
+      "name": "TEACHER_PASSWORD",
+      "required": false,
+      "default": "000000",
+      "description": "교사용 관리 비밀번호"
+    },
+    {
+      "name": "DATA_DIR",
+      "required": false,
+      "default": "./data",
+      "description": "학생 답안 영구 저장 경로"
+    }
+  ],
+  "persistentPaths": [
+    "data"
+  ],
+  "entry": "server.js"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "international-climate-conference-assessment",
+  "version": "2.2.1",
+  "private": true,
+  "description": "국제기후회의 수행평가 처음 운영 지원형 v2.2.1 · 100점 기준",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

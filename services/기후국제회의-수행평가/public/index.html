@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>국제기후회의 수행평가 | 100억 원으로 기후위기를 해결하라</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가</div>
+      <div class="lesson-pill" id="lessonPill">총 90분 · 2차시</div>
+      <div class="topbar-tools"><button id="decisionReviewBtn" class="topbar-btn hidden">나의 결정 전체보기</button><button id="glossaryBtn" class="topbar-btn hidden">개념 도움말</button></div><div class="version">학생용 v2.2</div>
+      <div id="timer" class="timer hidden">90:00</div>
+    </div>
+    <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+  </div>
+
+  <main>
+    <section id="login" class="hero">
+      <div class="eyebrow">국제 관계와 국제기구 · 5단원 환경과 에너지</div>
+      <h1>100억 원으로<br>기후위기를 해결하라</h1>
+      <p>2035 국제기후회의의 국가 대표가 되어 <b>자료를 근거로 국가 입장을 만들고</b>, 다른 국가와의 충돌을 조정해 <b>최종 국제협상안</b>을 완성합니다.</p>
+      <div class="lesson-overview">
+        <div><b>1차시 · 입장 설계</b><span>자료 분석 → 우선순위 → 100억 예산 → TRADE-OFF → 1차 입장</span></div>
+        <div><b>2차시 · 국제협상</b><span>협약 선택 → 상대국 분석 → 절충 → 역할 분담 → 최종 합의</span></div>
+      </div>
+      <div class="notice"><b>총 수행시간 90분</b> · 평가 시작 버튼을 누른 순간부터 90:00이 시작됩니다. 1차시와 2차시는 하나의 수행평가로 이어지며 타이머도 계속 진행됩니다.</div>
+      <div class="notice soft"><b>평가의 핵심</b> · 정답을 맞히는 활동이 아닙니다. <b>자료를 근거로 선택하고, 이해관계의 충돌을 파악한 뒤, 필요하면 자신의 판단을 조정하는 과정</b>을 평가합니다.</div>
+      <div class="form-grid">
+        <div class="field"><label for="studentId">학번</label><input id="studentId" inputmode="numeric" maxlength="6" placeholder="예: 30101"></div>
+        <div class="field"><label for="studentName">이름</label><input id="studentName" maxlength="20" placeholder="이름"></div>
+      </div>
+      <div class="actions"><div></div><button id="startBtn" class="primary">90분 수행평가 시작하기</button></div>
+    </section>
+
+    <section id="phaseBreak" class="hero hidden">
+      <div class="eyebrow">1차시 권장 종료 지점</div>
+      <h1>국가의 1차 입장이<br>저장되었습니다.</h1>
+      <p>이제 2차시에서는 다른 국가의 이해관계를 확인하고 실제 국제협상을 진행합니다.</p>
+      <div id="phase1Recap" class="recap-card"></div>
+      <div class="notice warning"><b>중요</b> · 총 90분 타이머는 멈추지 않습니다. 교사의 안내에 따라 바로 2차시를 이어가세요.</div>
+      <div class="actions"><button id="reviewPhase1Btn" class="ghost">← 1차시 답안 다시 보기</button><button id="continuePhase2Btn" class="primary">2차시 국제협상 시작하기 →</button></div>
+    </section>
+
+    <section id="assessment" class="panel hidden">
+      <div class="lesson-header" id="lessonHeader"></div>
+      <div id="stepHost"></div>
+      <div id="inlineMessage" class="notice warning hidden"></div>
+      <div class="actions">
+        <button id="prevBtn" class="ghost">← 이전 단계</button>
+        <div class="right"><button id="saveBtn" class="secondary">임시 저장</button><button id="nextBtn" class="primary">다음 단계 →</button></div>
+      </div>
+    </section>
+
+    <section id="done" class="hero hidden">
+      <div class="eyebrow">최종 제출 완료</div>
+      <h1>국제기후회의가<br>마무리되었습니다.</h1>
+      <p>1차시의 국가 입장과 2차시의 협상·재판단 결과가 함께 제출되었습니다.</p>
+      <div id="doneInfo" class="notice success"></div>
+    </section>
+  </main>
+  <div id="decisionModal" class="modal hidden" aria-hidden="true"><div class="modal-backdrop" data-close-modal="decisionModal"></div><div class="modal-card"><div class="modal-head"><div><div class="eyebrow">조회 전용</div><h2>지금까지 나의 결정</h2></div><button class="modal-close" data-close-modal="decisionModal">×</button></div><div id="decisionSummary"></div><div class="notice soft">이 화면은 앞선 선택을 기억하기 위한 도움말입니다. 여기에서는 답안을 수정할 수 없습니다.</div></div></div>
+  <div id="glossaryModal" class="modal hidden" aria-hidden="true"><div class="modal-backdrop" data-close-modal="glossaryModal"></div><div class="modal-card"><div class="modal-head"><div><div class="eyebrow">개념 도움말</div><h2>헷갈리는 용어를 확인하세요</h2></div><button class="modal-close" data-close-modal="glossaryModal">×</button></div><div class="glossary-grid">
+    <div><b>기후재정</b><span>기후변화 대응·피해 지원을 위해 국가나 국제기구 등이 제공하는 자금</span></div>
+    <div><b>감축률</b><span>기준 시점과 비교해 온실가스 배출을 얼마나 줄일지 나타낸 비율</span></div>
+    <div><b>화석연료 의존</b><span>석탄·석유·천연가스에 에너지나 경제가 얼마나 크게 기대는지 나타내는 정도</span></div>
+    <div><b>친환경 전환</b><span>화석연료 중심 산업·에너지 구조를 저탄소 방식으로 바꾸는 과정</span></div>
+    <div><b>TRADE-OFF</b><span>한 선택을 더 중요하게 하면 다른 선택의 기회나 자원이 줄어드는 관계</span></div>
+    <div><b>글로벌 거버넌스</b><span>국가뿐 아니라 국제기구·기업·NGO·시민 등이 함께 국제문제를 해결하는 방식</span></div>
+  </div><div class="notice soft">용어의 뜻만 제공하는 도움말입니다. 어떤 정책을 선택해야 하는지는 직접 판단하세요.</div></div></div>
+  <div id="toast" class="toast">저장되었습니다.</div>
+  <script src="/app.js"></script>
+</body>
+</html>
