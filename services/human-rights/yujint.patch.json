@@ -5,7 +5,7 @@
   "slug": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "repo_path": "services/human-rights",
-  "version": "11.4",
+  "version": "11.5",
   "type": "server",
-  "description": "STEP 2에서 단계 이동 없이 자료 1~5 즉시 재확인, 자료함 근거에 출처·원자료 보기 추가, STEP 4 사고 흐름 시각화, STEP 6 처음 정책·새 정보·최종안 비교 카드 추가."
+  "description": "교사 운영 중심 개편: 서버 관리와 교실 운영 분리, 45분 자동 일시정지·재개, 학생 자율 5분 추가 개방, 도움 요청·진행 분포·정체/저장 이상 확인, 교실 공개화면·전체 안내."
 }
