@@ -106,3 +106,6 @@ main{max-width:940px;margin:26px auto 70px;padding:0 18px}.hero,.panel{backgroun
 @media(max-width:380px){
   .hero h1{font-size:27px}.brand{font-size:12px}.lesson-pill{font-size:10px}.topbar-btn{font-size:11px}.step-title h2{font-size:19px}.metric-line{grid-template-columns:74px minmax(0,1fr) 24px}.panel>.actions{grid-template-columns:1fr 1fr}
 }
+/* v2.2.4 · classroom operation display */
+.teacher-head-actions{display:flex;gap:8px;flex-wrap:wrap}.button-link{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+@media(max-width:760px){.teacher-head-actions{width:100%;display:grid;grid-template-columns:1fr}.teacher-head-actions>*{width:100%}}

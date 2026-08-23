@@ -5,7 +5,7 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.2.3 패치. 교사용 로그인 화면의 비밀번호 노출 제거, CSV 인증 보안 개선, 기존 모바일 최적화와 90분·100점 평가 구조 유지.",
   "theme": {
     "name": "green",
@@ -73,5 +73,14 @@
   "slug": "기후국제회의-수행평가",
   "programName": "기후국제회의 수행평가",
   "targetProgramName": "기후국제회의 수행평가",
-  "patchFor": "기후국제회의 수행평가"
+  "patchFor": "기후국제회의 수행평가",
+  "patchType": "existing-program-patch",
+  "operatePath": "/operate",
+  "features": [
+    "classroom-operation-display",
+    "live-aggregate-progress",
+    "classroom-90min-timer",
+    "auto-manual-step-display",
+    "presentation-mode"
+  ]
 }

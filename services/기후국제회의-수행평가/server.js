@@ -6,9 +6,9 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '2.2.3';
+const APP_VERSION = '2.2.4';
 const PROJECT_ID = 'international-climate-conference-assessment';
-const PROJECT_NAME = '국제기후회의 수행평가';
+const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'public');
@@ -52,6 +52,7 @@ async function serveStatic(req,res,url) {
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname='/index.html';
   if (pathname === '/teacher') pathname='/teacher.html';
+  if (pathname === '/operate' || pathname === '/classroom') pathname='/operate.html';
   const safe = path.normalize(pathname).replace(/^(\.\.[/\\])+/, '');
   const file = path.join(PUBLIC, safe);
   if (!file.startsWith(PUBLIC)) return sendText(res,403,'Forbidden');
@@ -63,8 +64,16 @@ async function handle(req,res) {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   try {
     // 교사용 진입 호환성: 관리 서버가 ?teacher=1 형태로 링크해도 교사용 화면으로 이동합니다.
+    if (req.method==='GET' && url.pathname==='/' && (url.searchParams.get('operate')==='1' || url.searchParams.get('mode')==='operate' || url.searchParams.get('classroom')==='1')) {
+      res.writeHead(302, { Location: '/operate', 'Cache-Control':'no-store' });
+      return res.end();
+    }
     if (req.method==='GET' && url.pathname==='/' && (url.searchParams.get('teacher')==='1' || url.searchParams.get('mode')==='teacher')) {
       res.writeHead(302, { Location: '/teacher', 'Cache-Control':'no-store' });
+      return res.end();
+    }
+    if (req.method==='GET' && (url.pathname==='/operate/' || url.pathname==='/operate.html' || url.pathname==='/classroom/' || url.pathname==='/classroom.html')) {
+      res.writeHead(302, { Location: '/operate', 'Cache-Control':'no-store' });
       return res.end();
     }
     if (req.method==='GET' && (url.pathname==='/teacher/' || url.pathname==='/teacher.html')) {
@@ -72,7 +81,7 @@ async function handle(req,res) {
       return res.end();
     }
     if (req.method==='GET' && url.pathname==='/health') return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
-    if (req.method==='GET' && url.pathname==='/api/project-info') return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',teacherQuery:'/?teacher=1',theme:'green',mobileOptimized:true,lessons:2,totalMinutes:90,recommendedMinutesPerLesson:45});
+    if (req.method==='GET' && url.pathname==='/api/project-info') return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',teacherQuery:'/?teacher=1',operatePath:'/operate',operateQuery:'/?operate=1',theme:'green',mobileOptimized:true,lessons:2,totalMinutes:90,recommendedMinutesPerLesson:45});
     if (req.method==='POST' && url.pathname==='/api/teacher/auth') {
       const b=await bodyJson(req);
       const supplied=String(b.password||'');

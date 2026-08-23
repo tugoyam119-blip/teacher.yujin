@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>기후국제회의 수행평가 | 교실 운영 화면</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/operate.css">
+</head>
+<body class="operate-body">
+  <section id="operateLogin" class="operate-login-card">
+    <div class="operate-login-badge">교사용 · 교실 운영 화면</div>
+    <h1>기후국제회의 수행평가<br>수업 운영 화면</h1>
+    <p>수행평가 중 교사 컴퓨터·학교 컴퓨터·프로젝터에 띄워두는 화면입니다. 학생 개인정보는 표시하지 않습니다.</p>
+    <label class="operate-login-label" for="operatePassword">교사용 비밀번호</label>
+    <input id="operatePassword" type="password" inputmode="numeric" autocomplete="current-password" placeholder="교사용 비밀번호">
+    <div id="operateLoginMessage" class="notice warning hidden"></div>
+    <button id="operateLoginBtn" class="operate-login-btn">교실 운영 화면 열기</button>
+    <div class="operate-login-links"><a href="/teacher">관리·채점 화면으로 이동</a><a href="/">학생 화면 보기</a></div>
+  </section>
+
+  <main id="operateApp" class="operate-shell hidden">
+    <header class="operate-header">
+      <div class="operate-brand-block">
+        <div class="operate-kicker">기후국제회의 수행평가 · 교실 운영</div>
+        <h1>국제기후회의 수행평가</h1>
+        <div class="operate-meta"><span>2차시</span><span>총 90분</span><span id="syncStatus">학생 현황 연결 중</span></div>
+      </div>
+      <div class="class-timer-card" id="timerCard">
+        <span>교실 공용 타이머</span>
+        <b id="classTimer">90:00</b>
+        <small id="timerHint">수업 시작과 함께 시작하세요</small>
+      </div>
+    </header>
+
+    <section class="operate-main-grid">
+      <article class="operate-step-card">
+        <div class="operate-step-head">
+          <span id="stepPhase" class="operate-phase">시작 안내</span>
+          <span id="stepModeBadge" class="operate-auto-badge">자동 추적</span>
+        </div>
+        <div class="operate-step-number" id="stepNumber">STEP 0</div>
+        <h2 id="stepTitle">수행평가를 시작합니다</h2>
+        <p id="stepDesc">학번과 이름을 정확히 입력하고, 교사의 안내에 따라 수행평가를 시작하세요.</p>
+        <div id="studentNotice" class="operate-student-notice">정답 하나를 찾는 활동이 아닙니다. <b>자료와 국가 상황을 근거로 왜 그렇게 판단했는지</b>가 중요합니다.</div>
+      </article>
+
+      <aside class="operate-status-card">
+        <div class="operate-status-head"><span>실시간 전체 현황</span><b id="lastUpdated">-</b></div>
+        <div class="operate-stat-grid">
+          <div><span>응시 시작</span><b id="oAll">0</b></div>
+          <div><span>제출 완료</span><b id="oSubmitted">0</b></div>
+          <div><span>1차시 진행</span><b id="oPhase1">0</b></div>
+          <div><span>2차시 진행</span><b id="oPhase2">0</b></div>
+        </div>
+        <div class="operate-progress-block">
+          <div class="operate-progress-label"><span>전체 평균 진행률</span><b id="avgProgress">0%</b></div>
+          <div class="operate-progress-track"><i id="avgProgressBar"></i></div>
+        </div>
+        <div class="operate-focus-row"><span>가장 많은 학생이 있는 단계</span><b id="crowdedStep">아직 시작 전</b></div>
+      </aside>
+    </section>
+
+    <section class="operate-phase-strip">
+      <div class="phase-box phase1"><span>1차시 진행</span><b id="phase1Count">0명</b><small>STEP 1~4</small></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-box phasebreak"><span>협상 전 입장 / 전환</span><b id="breakCount">0명</b><small>STEP 5 · 1차시 완료</small></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-box phase2"><span>2차시 진행</span><b id="phase2Count">0명</b><small>STEP 6~10</small></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-box submitted"><span>최종 제출</span><b id="submittedCount">0명</b><small>수행 완료</small></div>
+    </section>
+
+    <section class="operate-announcement" id="announcementBox">
+      <span>교사 공지</span><b id="announcementText">앞 단계의 선택은 ‘나의 결정 전체보기’에서 다시 확인할 수 있습니다.</b>
+    </section>
+
+    <section id="operateControls" class="operate-controls">
+      <div class="operate-controls-head">
+        <div><b>교사용 조작 패널</b><span>프로젝터에 띄운 뒤 ‘발표 모드’를 누르면 이 패널이 숨겨집니다.</span></div>
+        <div class="operate-control-actions">
+          <button id="presentationBtn" class="operate-btn strong">발표 모드</button>
+          <button id="fullScreenBtn" class="operate-btn">전체 화면</button>
+          <a href="/teacher" target="_blank" rel="noopener" class="operate-btn link-btn">관리 화면</a>
+        </div>
+      </div>
+
+      <div class="operate-control-grid">
+        <div class="control-panel timer-controls">
+          <h3>90분 공용 타이머</h3>
+          <div class="button-row"><button id="timerStart" class="operate-btn strong">시작</button><button id="timerPause" class="operate-btn">일시정지</button><button id="timerReset" class="operate-btn danger">90분으로 초기화</button></div>
+          <p>학생 개인 타이머를 조작하는 기능이 아니라, 교실 앞에 함께 보여주는 수업 운영용 타이머입니다.</p>
+        </div>
+
+        <div class="control-panel step-controls">
+          <h3>화면에 보여줄 단계</h3>
+          <select id="stepSelect">
+            <option value="auto">자동 · 가장 많은 학생 단계</option>
+            <option value="0">STEP 0 · 시작 안내</option>
+            <option value="1">STEP 1 · 자료 분석</option>
+            <option value="2">STEP 2 · 국가 우선순위</option>
+            <option value="3">STEP 3 · 100억 예산 배분</option>
+            <option value="4">STEP 4 · TRADE-OFF</option>
+            <option value="5">STEP 5 · 협상 전 1차 입장</option>
+            <option value="6">STEP 6 · 국제기후협약 선택</option>
+            <option value="7">STEP 7 · 상대국 이해관계</option>
+            <option value="8">STEP 8 · 절충안</option>
+            <option value="9">STEP 9 · 국제협력 역할</option>
+            <option value="10">STEP 10 · 최종 합의</option>
+          </select>
+          <p>자동 모드에서는 현재 진행 중인 학생 중 가장 많은 학생이 있는 단계가 크게 표시됩니다.</p>
+        </div>
+
+        <div class="control-panel announcement-controls">
+          <h3>교사 공지 바꾸기</h3>
+          <input id="announcementInput" maxlength="90" value="앞 단계의 선택은 ‘나의 결정 전체보기’에서 다시 확인할 수 있습니다.">
+          <div class="button-row"><button id="announcementApply" class="operate-btn strong">공지 적용</button><button id="announcementDefault" class="operate-btn">기본 문구</button></div>
+        </div>
+      </div>
+    </section>
+
+    <button id="exitPresentation" class="exit-presentation hidden">조작 패널 다시 열기</button>
+  </main>
+  <script src="/operate.js"></script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "private": true,
-  "description": "국제기후회의 수행평가 v2.2.3 · 교사용 비밀번호 화면 노출 제거 및 CSV 인증 보안 개선",
+  "description": "기후국제회의 수행평가 v2.2.4 · 교실 앞 모니터/프로젝터용 운영 화면 추가, 실시간 진행 현황·90분 공용 타이머·자동/수동 STEP 표시·발표 모드",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
