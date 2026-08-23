@@ -140,3 +140,9 @@ main{max-width:940px;margin:26px auto 70px;padding:0 18px}.hero,.panel{backgroun
 /* v2.4.1 교사용 API 키 설정 */
 .api-key-field{margin-top:12px}.api-key-field input{width:100%;min-height:46px;font-size:16px}.api-key-field small{display:block;margin-top:6px;line-height:1.5}.api-key-actions{margin-top:10px;flex-wrap:wrap}.soft-divider{border:0;border-top:1px solid #d8e8dd;margin:16px 0}.ai-control-card{min-width:0}
 @media(max-width:640px){.api-key-actions button{flex:1 1 100%}}
+
+
+/* v2.4.2 · teacher-controlled assessment server gate */
+.server-gate{position:fixed;inset:0;z-index:5000;background:rgba(239,247,242,.97);display:grid;place-items:center;padding:20px;backdrop-filter:blur(7px)}
+.server-gate.hidden{display:none!important}.server-gate-card{width:min(560px,100%);background:#fff;border:2px solid #bddac7;border-radius:24px;padding:34px 30px;text-align:center;box-shadow:0 24px 70px rgba(24,85,55,.18)}.server-gate-icon{font-size:42px}.server-gate-card h2{font-size:29px;line-height:1.25;color:var(--primary);margin:9px 0 12px}.server-gate-card p{font-size:15px;line-height:1.7;color:#53675a}.server-gate-status{display:inline-flex;align-items:center;gap:8px;margin-top:16px;border-radius:999px;padding:9px 14px;background:#eef7f1;color:var(--primary)}.pulse-dot{width:9px;height:9px;border-radius:50%;background:var(--primary);animation:serverPulse 1.4s infinite}@keyframes serverPulse{50%{opacity:.3;transform:scale(.8)}}
+@media(max-width:600px){.server-gate{padding:12px}.server-gate-card{padding:26px 18px;border-radius:20px}.server-gate-card h2{font-size:24px}.server-gate-card p{font-size:14px}}

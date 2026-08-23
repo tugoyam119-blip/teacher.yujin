@@ -1,8 +1,8 @@
-const VERSION='2.4.0';
+const VERSION='2.4.2';
 const TOTAL_SECONDS=90*60;
 const stepProgress=[8,17,27,38,50,60,70,80,90,100];
 const $=s=>document.querySelector(s);
-let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=false, timerExempt=false, autoSubmitting=false, saveTimer=null, reviewEditStep=null;
+let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null;
 
 const countryData={
  hanbit:{name:'한빛국',type:'선진 산업국',tags:['고소득 산업국','과거 배출 책임 큼','친환경 전환 역량 높음'],story:'한빛국은 약 40년 동안 자동차·철강·반도체 같은 수출 제조업을 중심으로 빠르게 성장한 고소득 국가입니다. 성장 과정에서 석탄과 석유를 많이 사용해 누적 온실가스 배출 책임이 크지만, 최근에는 재생에너지와 저탄소 기술에 대규모로 투자하고 있습니다. 다만 제조업 일자리와 수출 경쟁력이 중요해 너무 빠른 감축에는 국내 산업계의 반발도 큽니다.',facts:['경제·산업: 자동차·철강·반도체 중심의 수출 제조업 강국','에너지: 화석연료 사용을 줄이는 중이며 재생에너지·저탄소 기술 투자가 큼','기후 대응: 재정과 기술 역량이 높아 자체 대응 능력이 비교적 강함','국제회의 쟁점: 과거에 많이 배출한 만큼 더 큰 감축과 기후재정 부담을 요구받음'],dilemma:'책임과 능력은 크지만 산업 경쟁력과 일자리도 지켜야 한다.',metrics:{past:92,current:68,damage:34,fossil:44,transition:88},metricNotes:{responsibility:'오랜 산업화 과정에서 화석연료를 많이 사용해 누적 배출 책임이 매우 큽니다.',vulnerability:'방재 시설과 재정 여력이 있어 기후재난 피해 위험은 취약국보다 낮은 편입니다.',energy:'화석연료 의존은 중간 수준이지만 자본·기술이 충분해 친환경 전환 능력이 매우 높습니다.'}},
@@ -51,7 +51,10 @@ function coreWritingGuide(items=''){return `<div class="answer-criteria core-wri
 function shortWritingGuide(items=''){return `<div class="answer-criteria short-writing-guide"><b>문장 작성 안내 · 이유/근거</b><span>① <strong>최소 30자</strong> · <strong>권장 100자</strong>입니다. 100자는 권장 분량이며 의무가 아닙니다.</span>${items}<span>‘좋아서’, ‘필요해서’처럼 결론만 쓰지 말고 문항에서 요구한 근거를 포함하세요.</span></div>`}
 function initState(){const defaults={budget:{renewable:10,disaster:10,tech:10,forest:10,transition:10},actors:[],evidenceSources:[],actorAssignments:{}};state={...defaults,...(session?.data||{})};state.budget={...defaults.budget,...(session?.data?.budget||{})};state.actors=[...(session?.data?.actors||[])];state.evidenceSources=[...(session?.data?.evidenceSources||[])];state.actorAssignments={...(session?.data?.actorAssignments||{})}}
 
+function applyServerGate(open){serverOpen=!!open;const gate=$('#serverGate');if(gate)gate.classList.toggle('hidden',serverOpen);const start=$('#startBtn');if(start)start.disabled=!serverOpen;if(!serverOpen){timerPaused=true;updateTimer()} }
+async function syncServerGate(){try{const r=await fetch('/api/server-status',{cache:'no-store'});if(!r.ok)return;const j=await r.json();applyServerGate(!!j.open)}catch{}}
 async function startAssessment(){
+ if(!serverOpen){await syncServerGate();if(!serverOpen){alert('담당 교사가 아직 수행평가 서버를 열지 않았습니다. 교사의 안내를 기다리세요.');return}}
  message('');const studentId=$('#studentId').value.trim(),name=$('#studentName').value.trim();
  try{
   const r=await fetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId,name})});const j=await r.json();if(!r.ok)throw new Error(j.error||'시작 오류');
@@ -80,10 +83,10 @@ async function spinCountryRoulette(){
  setTimeout(async()=>{state.countryRevealDone=true;await save(false);showAssignedCountryResult();toast(`${countryLabels[session.country]} 대표로 배정되었습니다.`)},2900)
 }
 async function beginAssignedAssessment(){state.countryRevealDone=true;await save(false);$('#countryAssign').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();window.scrollTo({top:0,behavior:'smooth'})}
-function applyTimerState(t={}){timerExempt=!!t.exempt;timerPaused=!!t.paused;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
+function applyTimerState(t={}){timerExempt=!!t.exempt;if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
 async function syncTimer(){if(!session)return;try{const r=await fetch(`/api/timer/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}}
 function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===45*60)toast('수행 활동 시간이 45분 남았습니다.');if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,5000);syncTimer()}
-function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60;el.textContent=timerPaused?`⏸ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.title=timerPaused?'교사가 쉬는시간 등으로 수행 시간을 일시정지했습니다.':'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
+function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60;el.textContent=timerPaused?`⏸ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.title=timerPaused?'수행평가 서버가 닫혀 있어 시간이 멈춰 있습니다.':'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
 async function autoSubmitOnTime(){if(autoSubmitting||timerExempt)return;autoSubmitting=true;collect();state.timeExpired=true;await save(false);await finalSubmit(true)}
 function showAssessment(){$('#finalReview').classList.add('hidden');$('#assessment').classList.remove('hidden')}
 function render(){
@@ -201,3 +204,6 @@ $('#glossaryBtn').addEventListener('click',()=>openModal('glossaryModal'));
 $('#countryGuideBtn').addEventListener('click',()=>{document.getElementById('countryGuideBody').innerHTML=allCountryOverview();openModal('countryGuideModal')});
 document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',()=>closeModal(el.dataset.closeModal)));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('decisionModal');closeModal('glossaryModal');closeModal('countryGuideModal')}});
+
+// v2.4.2 · 학생 접속 게이트: 교사가 서버를 열어야 수행 시작/진행 가능
+syncServerGate();clearInterval(serverGateHandle);serverGateHandle=setInterval(syncServerGate,3000);

@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '2.4.1';
+const APP_VERSION = '2.4.2';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -23,7 +23,20 @@ const SETTINGS_FILE = path.join(DATA_DIR, 'teacher-settings.json');
 fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(LOG_FILE)) fs.writeFileSync(LOG_FILE, '');
 if (!fs.existsSync(ROSTER_FILE)) fs.writeFileSync(ROSTER_FILE, JSON.stringify({updatedAt:null, students:[]}, null, 2));
-if (!fs.existsSync(RUNTIME_FILE)) fs.writeFileSync(RUNTIME_FILE, JSON.stringify({timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}, null, 2));
+if (!fs.existsSync(RUNTIME_FILE)) fs.writeFileSync(RUNTIME_FILE, JSON.stringify({serverOpen:false,timerPaused:true,pauseStartedAt:new Date().toISOString(),totalPausedMs:0,updatedAt:null}, null, 2));
+else {
+ try {
+  const legacyRuntime=JSON.parse(fs.readFileSync(RUNTIME_FILE,'utf8'));
+  if(typeof legacyRuntime.serverOpen!=='boolean'){
+   legacyRuntime.serverOpen=false;
+   legacyRuntime.timerPaused=true;
+   legacyRuntime.pauseStartedAt=legacyRuntime.pauseStartedAt||new Date().toISOString();
+   legacyRuntime.totalPausedMs=Number(legacyRuntime.totalPausedMs||0);
+   legacyRuntime.updatedAt=new Date().toISOString();
+   fs.writeFileSync(RUNTIME_FILE,JSON.stringify(legacyRuntime,null,2));
+  }
+ }catch{fs.writeFileSync(RUNTIME_FILE, JSON.stringify({serverOpen:false,timerPaused:true,pauseStartedAt:new Date().toISOString(),totalPausedMs:0,updatedAt:null}, null, 2));}
+}
 if (!fs.existsSync(SETTINGS_FILE)) { fs.writeFileSync(SETTINGS_FILE, JSON.stringify({openaiApiKeyEnc:null,updatedAt:null}, null, 2), {mode:0o600}); }
 try{fs.chmodSync(SETTINGS_FILE,0o600)}catch{}
 
@@ -47,7 +60,7 @@ async function appendEvent(event){await fsp.appendFile(LOG_FILE,JSON.stringify({
 async function readEvents(){const txt=await fsp.readFile(LOG_FILE,'utf8');return txt.split('\n').filter(Boolean).map(line=>{try{return JSON.parse(line)}catch{return null}}).filter(Boolean);}
 async function readRoster(){try{const j=JSON.parse(await fsp.readFile(ROSTER_FILE,'utf8'));return {updatedAt:j.updatedAt||null,students:Array.isArray(j.students)?j.students:[]};}catch{return {updatedAt:null,students:[]};}}
 async function writeRoster(students){const data={updatedAt:now(),students};await fsp.writeFile(ROSTER_FILE,JSON.stringify(data,null,2),'utf8');return data;}
-async function readRuntime(){try{return {...{timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null},...JSON.parse(await fsp.readFile(RUNTIME_FILE,'utf8'))}}catch{return {timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}}}
+async function readRuntime(){try{return {...{serverOpen:false,timerPaused:true,pauseStartedAt:null,totalPausedMs:0,updatedAt:null},...JSON.parse(await fsp.readFile(RUNTIME_FILE,'utf8'))}}catch{return {serverOpen:false,timerPaused:true,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}}}
 async function writeRuntime(rt){rt.updatedAt=now();await fsp.writeFile(RUNTIME_FILE,JSON.stringify(rt,null,2),'utf8');return rt;}
 function settingsCipherKey(){return crypto.createHash('sha256').update(`${PROJECT_ID}|${TEACHER_PASSWORD}|openai-key`).digest();}
 function encryptSecret(value){const text=String(value||'');if(!text)return null;const iv=crypto.randomBytes(12),cipher=crypto.createCipheriv('aes-256-gcm',settingsCipherKey(),iv);const enc=Buffer.concat([cipher.update(text,'utf8'),cipher.final()]);return {v:1,iv:iv.toString('base64'),tag:cipher.getAuthTag().toString('base64'),data:enc.toString('base64')};}
@@ -79,7 +92,7 @@ function reconstruct(events){
  return [...sessions.values()].filter(s=>s.status!=='reset');
 }
 async function latestByStudent(studentId){return reconstruct(await readEvents()).filter(s=>s.studentId===studentId).sort((a,b)=>new Date(b.startedAt)-new Date(a.startedAt))[0]||null;}
-async function timerForSession(s){const rt=await readRuntime();if(s.timerExempt)return {remainingSeconds:null,paused:true,exempt:true,totalSeconds:TOTAL_SECONDS};const start=Date.parse(s.startedAt);if(!Number.isFinite(start))return {remainingSeconds:TOTAL_SECONDS,paused:rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS};const pausedSinceStart=Math.max(0,effectivePausedMs(rt)-Number(s.pauseBaseMs||0));const activeElapsed=Math.max(0,Date.now()-start-pausedSinceStart);return {remainingSeconds:Math.max(0,TOTAL_SECONDS-Math.floor(activeElapsed/1000)),paused:!!rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS};}
+async function timerForSession(s){const rt=await readRuntime();if(s.timerExempt)return {remainingSeconds:null,paused:true,exempt:true,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};const start=Date.parse(s.startedAt);if(!Number.isFinite(start))return {remainingSeconds:TOTAL_SECONDS,paused:rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};const pausedSinceStart=Math.max(0,effectivePausedMs(rt)-Number(s.pauseBaseMs||0));const activeElapsed=Math.max(0,Date.now()-start-pausedSinceStart);return {remainingSeconds:Math.max(0,TOTAL_SECONDS-Math.floor(activeElapsed/1000)),paused:!!rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};}
 function sendJson(res,status,obj){const body=JSON.stringify(obj);res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store'});res.end(body);}
 function sendText(res,status,body,type='text/plain; charset=utf-8',extra={}){res.writeHead(status,{'Content-Type':type,'Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store',...extra});res.end(body);}
 async function bodyJson(req){return await new Promise((resolve,reject)=>{let data='';req.on('data',c=>{data+=c;if(data.length>3_000_000){reject(new Error('too large'));req.destroy();}});req.on('end',()=>{try{resolve(data?JSON.parse(data):{})}catch(e){reject(e)}});req.on('error',reject)});}
@@ -103,10 +116,12 @@ async function handle(req,res){
   if(req.method==='GET'&&['/operate/','/operate.html','/classroom/','/classroom.html'].includes(url.pathname)){res.writeHead(302,{Location:'/operate','Cache-Control':'no-store'});return res.end()}
   if(req.method==='GET'&&['/teacher/','/teacher.html'].includes(url.pathname)){res.writeHead(302,{Location:'/teacher','Cache-Control':'no-store'});return res.end()}
   if(req.method==='GET'&&url.pathname==='/health')return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
-  if(req.method==='GET'&&url.pathname==='/api/project-info')return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',operatePath:'/operate',theme:'green',mobileOptimized:true,totalActiveMinutes:90,phaseGate:false,teacherPause:true,rosterUpload:true,aiGrading:true,teacherApiKeyInput:true});
+  if(req.method==='GET'&&url.pathname==='/api/project-info')return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',operatePath:'/operate',theme:'green',mobileOptimized:true,totalActiveMinutes:90,phaseGate:false,teacherPause:false,serverGate:true,rosterUpload:true,aiGrading:true,teacherApiKeyInput:true});
   if(req.method==='POST'&&url.pathname==='/api/teacher/auth'){const b=await bodyJson(req);if(String(b.password||'')!==TEACHER_PASSWORD)return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});return sendJson(res,200,{ok:true});}
+  if(req.method==='GET'&&url.pathname==='/api/server-status'){const rt=await readRuntime();return sendJson(res,200,{open:!!rt.serverOpen,paused:!!rt.timerPaused,updatedAt:rt.updatedAt});}
 
   if(req.method==='POST'&&url.pathname==='/api/start'){
+   const gate=await readRuntime();if(!gate.serverOpen)return sendJson(res,423,{error:'담당 교사가 아직 수행평가 서버를 열지 않았습니다. 교사의 안내를 기다리세요.',serverClosed:true});
    const b=await bodyJson(req),studentId=String(b.studentId||'').trim(),name=String(b.name||'').trim();
    if(!/^\d{4,6}$/.test(studentId))return sendJson(res,400,{error:'학번은 숫자 4~6자리로 입력하세요.'});
    if(name.length<2||name.length>20)return sendJson(res,400,{error:'이름을 정확히 입력하세요.'});
@@ -123,18 +138,26 @@ async function handle(req,res){
    return sendJson(res,200,{resumed:false,session:s,serverNow:now(),timer:await timerForSession(s)});
   }
   if(req.method==='POST'&&url.pathname==='/api/save'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'save',sessionId:b.sessionId,data:b.data||{},progress:Number(b.progress||0)});return sendJson(res,200,{ok:true,savedAt:now()});}
-  if(req.method==='POST'&&url.pathname==='/api/submit'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'submit',sessionId:b.sessionId,data:b.data||{}});return sendJson(res,200,{ok:true,submittedAt:now()});}
+  if(req.method==='POST'&&url.pathname==='/api/submit'){const gate=await readRuntime();if(!gate.serverOpen)return sendJson(res,423,{error:'수행평가 서버가 닫혀 있습니다. 교사가 다시 연 뒤 제출하세요.',serverClosed:true});const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'submit',sessionId:b.sessionId,data:b.data||{}});return sendJson(res,200,{ok:true,submittedAt:now()});}
   if(req.method==='GET'&&url.pathname.startsWith('/api/session/')){const id=url.pathname.split('/').pop(),s=reconstruct(await readEvents()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});return sendJson(res,200,{session:s,serverNow:now(),timer:await timerForSession(s)});}
   if(req.method==='GET'&&url.pathname.startsWith('/api/timer/')){const id=url.pathname.split('/').pop(),s=reconstruct(await readEvents()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});return sendJson(res,200,await timerForSession(s));}
 
   if(url.pathname.startsWith('/api/teacher/')&&!teacherOK(req,url))return sendJson(res,401,{error:'교사용 비밀번호가 올바르지 않습니다.'});
-  if(req.method==='GET'&&url.pathname==='/api/teacher/submissions'){const roster=await readRoster(),rt=await readRuntime(),cfg=await openAIConfig();return sendJson(res,200,{sessions:reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko')),roster, timer:{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt},ai:{configured:cfg.configured,model:cfg.model,source:cfg.source,updatedAt:cfg.updatedAt}});}
+  if(req.method==='GET'&&url.pathname==='/api/teacher/submissions'){const roster=await readRoster(),rt=await readRuntime(),cfg=await openAIConfig();return sendJson(res,200,{sessions:reconstruct(await readEvents()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko')),roster, server:{open:!!rt.serverOpen,updatedAt:rt.updatedAt}, timer:{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt},ai:{configured:cfg.configured,model:cfg.model,source:cfg.source,updatedAt:cfg.updatedAt}});}
   if(req.method==='GET'&&url.pathname==='/api/teacher/ai-settings'){const cfg=await openAIConfig();return sendJson(res,200,{configured:cfg.configured,source:cfg.source,updatedAt:cfg.updatedAt,model:cfg.model});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/ai-settings'){const b=await bodyJson(req),apiKey=String(b.apiKey||'').trim();if(!validOpenAIKey(apiKey))return sendJson(res,400,{error:'API 키 형식을 확인하세요. 공백 없이 sk- 로 시작하는 OpenAI API 키를 입력하세요.'});await writeSettings({openaiApiKey:apiKey});return sendJson(res,200,{ok:true,configured:true,source:'teacher-settings',model:OPENAI_MODEL});}
   if(req.method==='DELETE'&&url.pathname==='/api/teacher/ai-settings'){await writeSettings({openaiApiKey:''});const cfg=await openAIConfig();return sendJson(res,200,{ok:true,configured:cfg.configured,source:cfg.source,model:cfg.model});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/ai-settings/test'){const cfg=await openAIConfig();if(!cfg.apiKey)return sendJson(res,400,{error:'저장된 API 키가 없습니다.'});try{const rr=await fetch('https://api.openai.com/v1/models',{headers:{'Authorization':`Bearer ${cfg.apiKey}`}});const jj=await rr.json().catch(()=>({}));if(!rr.ok)return sendJson(res,400,{error:jj?.error?.message||`OpenAI 연결 확인 실패 (${rr.status})`});return sendJson(res,200,{ok:true,message:'OpenAI API 연결이 정상입니다.'});}catch(e){return sendJson(res,503,{error:'OpenAI API에 연결하지 못했습니다. 네트워크 상태를 확인하세요.'});}}
-  if(req.method==='GET'&&url.pathname==='/api/teacher/timer'){const rt=await readRuntime();return sendJson(res,200,{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt,updatedAt:rt.updatedAt});}
-  if(req.method==='POST'&&url.pathname==='/api/teacher/timer'){const b=await bodyJson(req),action=String(b.action||'');let rt=await readRuntime();if(action==='pause'&&!rt.timerPaused){rt.timerPaused=true;rt.pauseStartedAt=now();await writeRuntime(rt);}else if(action==='resume'&&rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;await writeRuntime(rt);}return sendJson(res,200,{ok:true,paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt});}
+  if(req.method==='GET'&&url.pathname==='/api/teacher/server'){const rt=await readRuntime();return sendJson(res,200,{open:!!rt.serverOpen,paused:!!rt.timerPaused,updatedAt:rt.updatedAt});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/server'){
+   const b=await bodyJson(req),action=String(b.action||'');let rt=await readRuntime();
+   if(action==='close'&&rt.serverOpen){if(!rt.timerPaused){rt.timerPaused=true;rt.pauseStartedAt=now();}rt.serverOpen=false;await writeRuntime(rt);}
+   else if(action==='open'&&!rt.serverOpen){if(rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;}rt.serverOpen=true;await writeRuntime(rt);}
+   return sendJson(res,200,{ok:true,open:!!rt.serverOpen,paused:!!rt.timerPaused,updatedAt:rt.updatedAt});
+  }
+  // 이전 버전 UI와의 호환: 일시정지=서버 닫기, 재개=서버 열기
+  if(req.method==='GET'&&url.pathname==='/api/teacher/timer'){const rt=await readRuntime();return sendJson(res,200,{paused:rt.timerPaused,pauseStartedAt:rt.pauseStartedAt,updatedAt:rt.updatedAt,serverOpen:!!rt.serverOpen});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/timer'){const b=await bodyJson(req),action=String(b.action||'');req.url='/api/teacher/server';let rt=await readRuntime();const mapped=action==='pause'?'close':action==='resume'?'open':'';if(mapped==='close'&&rt.serverOpen){if(!rt.timerPaused){rt.timerPaused=true;rt.pauseStartedAt=now();}rt.serverOpen=false;await writeRuntime(rt);}else if(mapped==='open'&&!rt.serverOpen){if(rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;}rt.serverOpen=true;await writeRuntime(rt);}return sendJson(res,200,{ok:true,paused:rt.timerPaused,serverOpen:!!rt.serverOpen});}
   if(req.method==='GET'&&url.pathname==='/api/teacher/roster')return sendJson(res,200,await readRoster());
   if(req.method==='POST'&&url.pathname==='/api/teacher/roster'){
    const b=await bodyJson(req),raw=Array.isArray(b.students)?b.students:[];if(!raw.length)return sendJson(res,400,{error:'학생 명단이 비어 있습니다.'});

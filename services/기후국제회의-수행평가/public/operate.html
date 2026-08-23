@@ -26,7 +26,7 @@
         <h1>국제기후회의 수행평가</h1>
         <div class="operate-meta"><span>수행 활동 기준 90분</span><span>빠른 학생은 끝까지 진행 가능</span><span id="syncStatus">학생 현황 연결 중</span></div>
       </div>
-      <div class="operate-time-note"><b>학생 실제 수행시간</b><strong id="operateTimerStatus">상태 확인 중</strong><span>쉬는시간에는 아래 조작 패널에서 전체 학생 시간을 일시정지하세요.</span></div>
+      <div class="operate-time-note"><b>수행평가 서버</b><strong id="operateServerStatus">상태 확인 중</strong><span>설명 직후 이 화면에서 바로 서버를 열 수 있습니다. 닫으면 학생 진행과 실제 시간이 함께 멈춥니다.</span></div>
     </header>
 
     <section class="operate-main-grid">
@@ -82,10 +82,10 @@
       </div>
 
       <div class="operate-control-grid">
-        <div class="control-panel timer-controls">
-          <h3>학생 실제 90분 시간</h3>
-          <div class="button-row"><button id="operatePauseTimers" class="operate-btn">⏸ 전체 일시정지</button><button id="operateResumeTimers" class="operate-btn strong">▶ 전체 재개</button></div>
-          <p>이 버튼은 표시용 타이머가 아니라 <b>학생 각자의 실제 수행시간</b>을 멈추거나 다시 진행합니다.</p>
+        <div class="control-panel server-controls">
+          <h3>학생 수행평가 서버</h3>
+          <div class="button-row"><button id="operateCloseServer" class="operate-btn">🔒 서버 닫기</button><button id="operateOpenServer" class="operate-btn strong">🔓 수행평가 서버 열기</button></div>
+          <p><b>수업 설명이 끝난 직후 이 화면에서 바로 열 수 있습니다.</b> 서버를 닫으면 학생의 새 접속·진행과 실제 수행시간이 함께 멈춥니다.</p>
         </div>
         <div class="control-panel step-controls">
           <h3>화면에 보여줄 단계</h3>

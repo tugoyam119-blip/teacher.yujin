@@ -5,8 +5,8 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.4.1",
-  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.4.1 패치. v2.4.0 운영·AI 가채점 기능을 유지하면서 교사용 페이지 안에서 OPENAI_API_KEY를 안전하게 입력·서버 저장·연결 확인·삭제할 수 있는 설정 UI를 추가.",
+  "version": "2.4.2",
+  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.4.2 패치. 학생 90분 타이머 개별 제어를 교사 제어형 수행평가 서버 열기/닫기로 통합하고, 교사용 관리 화면과 교실 운영 화면 양쪽에서 서버를 열고 닫을 수 있도록 개선. 서버 닫힘 동안 학생 접속·진행과 실제 수행시간이 함께 정지됨.",
   "theme": {
     "name": "green",
     "primary": "#1f6b45",
@@ -29,7 +29,9 @@
       "governance": 10,
       "reflectionFinal": 10
     },
-    "phaseGate": false
+    "phaseGate": false,
+    "serverGate": true,
+    "serverDefaultOpen": false
   },
   "routes": {
     "student": "/",
