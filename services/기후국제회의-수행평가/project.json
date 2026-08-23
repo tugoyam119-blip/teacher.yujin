@@ -5,8 +5,8 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.2.4",
-  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.2.3 패치. 교사용 로그인 화면의 비밀번호 노출 제거, CSV 인증 보안 개선, 기존 모바일 최적화와 90분·100점 평가 구조 유지.",
+  "version": "2.3.1",
+  "description": "기존 등록 프로그램 「기후국제회의 수행평가」용 v2.3.1 패치. v2.3.0의 국가배정 룰렛·자료 배경 강화·5억 단위 예산을 유지하고, 인권정책 수행평가와 같은 문장 작성 원칙을 핵심 서술형 4개에 적용해 최소 100자·권장 300자로 통일. 권장 분량은 강제하지 않고 자료 근거·판단 연결과 무성의 입력 방지를 중점 평가.",
   "theme": {
     "name": "green",
     "primary": "#1f6b45",
@@ -81,6 +81,13 @@
     "live-aggregate-progress",
     "classroom-90min-timer",
     "auto-manual-step-display",
-    "presentation-mode"
+    "presentation-mode",
+    "country-background-preview",
+    "country-assignment-roulette",
+    "country-context-modal",
+    "5-billion-budget-steps",
+    "human-rights-style-writing-guidance",
+    "100-char-minimum-core-writing",
+    "300-char-recommended-core-writing"
   ]
 }

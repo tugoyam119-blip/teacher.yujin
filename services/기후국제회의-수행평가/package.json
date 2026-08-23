@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "2.2.4",
+  "version": "2.3.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v2.2.4 · 교실 앞 모니터/프로젝터용 운영 화면 추가, 실시간 진행 현황·90분 공용 타이머·자동/수동 STEP 표시·발표 모드",
+  "description": "기후국제회의 수행평가 v2.3.1 · 국가배정 룰렛·자료 배경 강화·5억 단위 예산 유지, 핵심 서술형 4개에 최소 100자·권장 300자 인권정책형 작성 기준 적용",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

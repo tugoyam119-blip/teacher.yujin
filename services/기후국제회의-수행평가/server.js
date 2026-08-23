@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '2.2.4';
+const APP_VERSION = '2.3.1';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
