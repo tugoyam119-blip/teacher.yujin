@@ -1,49 +1,265 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no"><title>유진T 클래스룸 · 교사</title><link rel="stylesheet" href="/assets/app.css"></head><body><div class="shell"><header class="topbar"><div class="brand"><div class="brandmark">YT</div><div><h1>유진T 클래스룸</h1><p>ChatGPT Managed Classroom · v4.3</p></div></div><div class="toolbar"><a class="btn secondary small" href="/student" target="_blank">학생 화면</a><button class="btn ghost small" id="refresh">새로고침</button><button class="btn ghost small" id="logout">로그아웃</button></div></header>
-<section class="hero"><div class="eyebrow">CHATGPT MANAGED CLASSROOM</div><h2>새 프로그램만 최초 등록하고, 기존 프로그램 업데이트는 ChatGPT가 처리합니다</h2><p>완전히 새로운 프로젝트만 이 화면에서 한 번 등록합니다. 이미 등록된 프로그램은 ChatGPT에서 수정 요청을 하면 기존 GitHub 경로에 반영되고 Railway가 자동 재배포합니다. 학생용 고정 주소는 그대로 유지됩니다.</p><div class="hero-actions"><button class="btn secondary" id="newProgram">＋ 새 프로그램 최초 등록</button><button class="btn secondary" id="newExternal">＋ 외부 링크 최초 등록</button><button class="btn secondary" id="exportBtn">설정 백업</button><a class="btn" href="/teacher/chatgpt-patch">🤖 ChatGPT 안전 패치함</a></div></section>
-<section class="card" style="margin:14px 0"><div class="section-head" style="margin-top:0"><div><h3>패치 파일 자동 적용</h3><p>기존 프로그램의 새 패치 파일을 하나 올리면 파일명, 내부 메타데이터, 프로그램 이름과 자료 내용을 분석해 연결된 프로그램을 찾아 같은 주소에 자동 적용합니다.</p></div></div><form id="autoPatchForm" enctype="multipart/form-data"><div class="dropzone"><b>새 패치 ZIP 또는 HTML을 선택하세요</b><div class="hint">대상을 매번 고를 필요가 없습니다. 자동으로 가장 연관성이 높은 기존 프로그램을 찾아 GitHub 반영과 재배포까지 진행합니다.</div><input type="file" name="package" id="autoPatchFile" accept=".zip,.html,.htm" required></div><div class="form-grid" style="margin-top:10px"><div class="field full"><label>자동 판단 실패 시만 직접 선택</label><select id="autoPatchTarget" name="target_id"><option value="">자동으로 판단</option></select><div class="hint">평소에는 '자동으로 판단' 그대로 두세요.</div></div></div><div class="toolbar" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="autoPatchSubmit">자동 분석 후 패치 적용</button></div><div class="progressbox" id="autoPatchProgress">패치 파일을 분석하고 연결된 프로그램을 찾아 업데이트하고 있습니다. GitHub 커밋과 Railway 재배포까지 진행될 수 있으니 창을 닫지 마세요.</div><div class="notice" id="autoPatchResult" style="display:none;margin-top:10px"></div></form></section><div class="notice" style="margin:14px 0"><b>운영 방식</b><br>완전히 새로운 프로젝트만 ‘새 프로그램 최초 등록’을 사용합니다. 이미 등록된 프로그램의 새 버전은 위 ‘패치 파일 자동 적용’에 파일만 올리면 됩니다.</div>
-<div class="stats"><div class="stat"><span>전체 프로그램</span><strong id="sAll">-</strong></div><div class="stat"><span>학생 공개</span><strong id="sStudent">-</strong></div><div class="stat"><span>클래스룸 내부 앱</span><strong id="sStatic">-</strong></div><div class="stat"><span>서버형</span><strong id="sServer">-</strong></div><div class="stat"><span>배포 경고</span><strong id="sWarn">-</strong></div></div>
-<div class="section-head"><div><h3>시스템 연결</h3><p>기존 프로그램 자동 업데이트에 필요한 연결 상태입니다.</p></div></div><div class="system-grid"><div class="system-card"><div class="system-head"><h4>GitHub</h4><span class="status" id="ghStatus">확인 중</span></div><p id="ghDetail">-</p></div><div class="system-card"><div class="system-head"><h4>Railway</h4><span class="status" id="rwStatus">확인 중</span></div><p id="rwDetail">-</p></div><div class="system-card"><div class="system-head"><h4>데이터 저장</h4><span class="status" id="dbStatus">확인 중</span></div><p id="dbDetail">-</p></div></div>
-<div class="section-head"><div><h3>등록된 프로그램</h3><p>프로그램 ID와 GitHub 경로는 ChatGPT가 기존 프로그램을 정확히 찾아 업데이트하는 기준입니다.</p></div></div><div id="cards" class="grid"></div>
-<div class="section-head"><div><h3>프로그램 기준표</h3><p>완전히 새로운 프로그램을 최초 등록한 뒤에는 이 표의 경로를 계속 유지합니다.</p></div></div><div class="table-wrap"><table><thead><tr><th>프로그램</th><th>프로그램 ID</th><th>현재 버전</th><th>고정 학생 주소</th><th>GitHub 경로</th><th>배포 상태</th></tr></thead><tbody id="rows"></tbody></table></div><div class="footer">유진T 클래스룸 v4.3 · 패치 자동 식별·연결·배포 / 신규 프로젝트 최초 등록</div></div>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<title>유진T 클래스룸 · 교사</title>
+<link rel="stylesheet" href="/assets/app.css">
+<style>
+:root{--ink:#17365f;--muted:#6b778c;--line:#dfe6ef;--soft:#f6f8fb;--good:#137a4e;--warn:#a35d12;--bad:#b42318}
+body{background:#f5f7fb}
+.simple-shell{max-width:1180px;margin:auto;padding:16px}
+.simple-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.simple-brand{display:flex;align-items:center;gap:10px}.simple-brand strong{font-size:20px;color:#18375f}.simple-brand span{font-size:12px;color:var(--muted)}
+.top-actions,.main-actions,.card-actions,.modal-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btnx{appearance:none;border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btnx.primary{background:#18375f;color:#fff}.btnx.secondary{background:#eaf0f7;color:#233b5c}.btnx.ghost{background:#fff;color:#42536c;border:1px solid var(--line)}.btnx.danger{background:#fff1f0;color:#b42318;border:1px solid #f2c4bf}.btnx.small{padding:7px 10px;font-size:12px}.btnx:disabled{opacity:.55;cursor:wait}
+.hero-simple{background:#18375f;color:#fff;border-radius:18px;padding:22px;margin-bottom:14px}.hero-simple h1{font-size:24px;margin:0 0 7px}.hero-simple p{margin:0;color:#dbe7f6;line-height:1.6;font-size:14px}.hero-simple .main-actions{margin-top:16px}.hero-simple .btnx.secondary{background:#fff;color:#18375f}
+.patch-card,.program-section,.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 7px 20px rgba(31,48,73,.05)}
+.section-head-simple{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.section-head-simple h2{margin:0;font-size:19px;color:#253b59}.section-head-simple p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.patch-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}.filebox{border:2px dashed #c9d5e5;background:#f8fafc;border-radius:12px;padding:14px}.filebox input{width:100%;margin-top:8px}.filebox b{color:#2c4260}.hint{font-size:12px;color:var(--muted);line-height:1.55}
+details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}details.advanced summary{cursor:pointer;color:#66758a;font-size:12px;font-weight:700}
+.field-simple{display:flex;flex-direction:column;gap:5px;margin-top:9px}.field-simple label{font-size:12px;color:#55657a;font-weight:800}.field-simple input,.field-simple select,.field-simple textarea{width:100%;border:1px solid #ccd6e3;border-radius:9px;padding:10px;background:#fff;font:inherit;box-sizing:border-box}
+.result{display:none;margin-top:10px;padding:11px 12px;border-radius:10px;background:#f5f8fc;border:1px solid #dbe5f1;line-height:1.6;font-size:13px}.result.ok{background:#edf9f2;border-color:#c5e8d3}.result.bad{background:#fff4f2;border-color:#f0cbc5}
+.program-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.program-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;display:flex;flex-direction:column;gap:10px}.program-title{display:flex;gap:10px;align-items:flex-start}.program-icon{width:42px;height:42px;border-radius:11px;background:#eef3f9;display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto}.program-title h3{margin:0;font-size:16px;color:#243a58}.meta{margin-top:3px;font-size:12px;color:var(--muted)}.desc{font-size:13px;color:#5e6e82;line-height:1.5;min-height:20px}.statusline{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#6c7a8c}.status{font-weight:800}.status.good{color:var(--good)}.status.warn{color:var(--warn)}.status.bad{color:var(--bad)}.card-actions .btnx.primary{flex:1}.card-actions .btnx.secondary{flex:1}
+.undo-row{padding-top:8px;border-top:1px solid #edf1f5;display:flex;align-items:center;justify-content:space-between;gap:8px}.undo-row span{font-size:11px;color:#7b8797}
+.empty{padding:18px;text-align:center;color:#7a8797;background:#fafbfc;border-radius:12px}
+.modal-bg{position:fixed;inset:0;background:rgba(22,34,52,.46);display:none;align-items:center;justify-content:center;padding:18px;z-index:1000}.modal-bg.show{display:flex}.modalx{width:min(720px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:16px;padding:18px;box-shadow:0 20px 55px rgba(15,23,42,.25)}.modalx h2{margin:0 0 12px;font-size:20px;color:#263c59}.modalx h3{font-size:15px;margin:18px 0 8px;color:#314968}.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.tool-list{display:flex;flex-direction:column;gap:8px}.tool-row{border:1px solid #e2e8f0;border-radius:11px;padding:11px;display:flex;justify-content:space-between;gap:10px;align-items:center}.tool-row p{margin:3px 0 0;color:#6b778c;font-size:12px}.system-box{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.system-item{background:#f7f9fc;border:1px solid #e3e8f0;border-radius:10px;padding:10px}.system-item b{display:block;font-size:12px}.system-item span{font-size:11px;color:#6f7d8f;word-break:break-word}
+.searchline{display:flex;gap:8px;align-items:center}.searchline input{flex:1;border:1px solid #d4dce7;border-radius:9px;padding:9px 10px}
+.kebab{min-width:38px;padding-left:10px!important;padding-right:10px!important}
+@media(max-width:760px){.simple-shell{padding:10px}.simple-top{align-items:flex-start;flex-direction:column}.patch-row{grid-template-columns:1fr}.program-grid{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.full{grid-column:auto}.system-box{grid-template-columns:1fr}.hero-simple{padding:18px}.card-actions .btnx{flex:1 1 45%}}
+</style>
+</head>
+<body>
+<div class="simple-shell">
+  <div class="simple-top">
+    <div class="simple-brand"><div class="brandmark">YT</div><div><strong>유진T 클래스룸</strong><br><span>교사용 간편 화면</span></div></div>
+    <div class="top-actions">
+      <a class="btnx ghost small" href="/student" target="_blank">학생 화면</a>
+      <button class="btnx ghost small" id="refreshBtn">새로고침</button>
+      <button class="btnx ghost small" id="logoutBtn">로그아웃</button>
+    </div>
+  </div>
 
-<div class="modal-backdrop" id="newModal"><div class="modal wide"><h3>완전히 새 프로그램 최초 등록</h3><form id="newForm" enctype="multipart/form-data"><div class="notice" style="margin-bottom:12px"><b>이 기능은 완전히 새로운 프로젝트에만 사용하세요.</b><br>이미 등록된 프로그램의 새 버전은 ChatGPT에 수정 요청하면 기존 경로에 자동 반영하는 방식으로 운영합니다.</div><div class="form-grid"><div class="field"><label>프로그램 이름</label><input name="name" id="nName" required placeholder="예: 기회비용 게임"></div><div class="field"><label>고정 주소 이름</label><input name="slug" id="nSlug" required placeholder="예: opportunity-cost"></div><div class="field"><label>프로그램 종류</label><select name="kind"><option>수업자료</option><option>학습게임</option><option>수행평가</option><option>기타</option></select></div><div class="field"><label>과목</label><input name="subject" value="공통"></div><div class="field"><label>사용 대상</label><select name="audience"><option value="teacher">교사 전용</option><option value="student">학생 전용</option><option value="both">교사·학생 모두</option></select></div><div class="field"><label>배포 방식</label><select name="deploy_type" id="deployType"><option value="static">정적 웹앱 · HTML/ZIP</option><option value="server">서버형 · ZIP</option></select></div><div class="field"><label>아이콘</label><input name="icon" value="🔗"></div><div class="field"><label>정렬 순서</label><input name="sort_order" type="number" value="100"></div><div class="field full"><label>설명</label><textarea name="description" rows="2"></textarea></div><div class="field full"><div class="dropzone"><b id="uploadGuide">HTML 파일 또는 ZIP을 선택하세요</b><div class="hint" id="uploadHint">최초 등록 후에는 이 경로가 해당 프로그램의 고정 경로가 됩니다.</div><input type="file" name="package" id="newFile" accept=".html,.htm,.zip" required></div></div><div class="field"><label>공개 상태</label><select name="published"><option value="true">공개</option><option value="false">숨김</option></select></div></div><div class="progressbox" id="newProgress">최초 등록과 배포를 진행하고 있습니다. 창을 닫지 마세요.</div><div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button type="button" class="btn secondary" data-close="newModal">취소</button><button class="btn" id="newSubmit">최초 등록</button></div></form></div></div>
+  <section class="hero-simple">
+    <h1>수업할 때 자주 쓰는 기능만 앞에 두었습니다</h1>
+    <p>프로그램은 바로 열고, 새 버전은 아래에 파일만 넣어 적용하세요. 백업·GitHub 반영·Railway 재배포·복구 기록은 뒤에서 자동으로 처리합니다.</p>
+    <div class="main-actions">
+      <button class="btnx secondary" id="newProgramBtn">＋ 새 프로그램 등록</button>
+      <button class="btnx ghost" id="globalToolsBtn">관리 도구</button>
+    </div>
+  </section>
 
-<div class="modal-backdrop" id="historyModal"><div class="modal"><h3><span id="historyName"></span> 버전 기록</h3><div class="notice warn" style="margin-bottom:12px">복구는 안전장치입니다. 평소 새 버전 업데이트는 ChatGPT에서 진행합니다.</div><div id="historyList" class="history"></div><div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button class="btn secondary" data-close="historyModal">닫기</button></div></div></div>
+  <section class="patch-card">
+    <div class="section-head-simple">
+      <div><h2>기존 프로그램 업데이트</h2><p>평소에는 대상 선택 없이 파일만 넣으면 됩니다.</p></div>
+    </div>
+    <form id="safePatchForm">
+      <div class="patch-row">
+        <div class="filebox">
+          <b>새 패치 ZIP 또는 HTML</b>
+          <div class="hint">패치 직전 원본을 자동 백업한 뒤 안전하게 적용합니다.</div>
+          <input id="safePatchFile" type="file" accept=".zip,.html,.htm" required>
+        </div>
+        <button class="btnx primary" id="safePatchSubmit">안전하게 패치 적용</button>
+      </div>
+      <details class="advanced">
+        <summary>자동 판단이 틀릴 때만 대상 직접 선택</summary>
+        <div class="field-simple"><label>대상 프로그램</label><select id="safePatchTarget"><option value="">자동으로 판단</option></select></div>
+      </details>
+      <div class="result" id="safePatchResult"></div>
+    </form>
+  </section>
 
-<div class="modal-backdrop" id="settingsModal"><div class="modal"><h3>프로그램 설정</h3><form id="settingsForm"><input type="hidden" id="setId"><div class="form-grid"><div class="field"><label>프로그램명</label><input id="setName"></div><div class="field"><label>과목</label><input id="setSubject"></div><div class="field"><label>구분</label><select id="setKind"><option>수업자료</option><option>학습게임</option><option>수행평가</option><option>기타</option></select></div><div class="field"><label>대상</label><select id="setAudience"><option value="teacher">교사 전용</option><option value="student">학생 전용</option><option value="both">교사·학생 모두</option></select></div><div class="field"><label>아이콘</label><input id="setIcon"></div><div class="field"><label>정렬</label><input id="setOrder" type="number"></div><div class="field full"><label>설명</label><textarea id="setDesc" rows="2"></textarea></div><div class="field"><label>공개 상태</label><select id="setPublished"><option value="true">공개</option><option value="false">숨김</option></select></div></div><div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button type="button" class="btn secondary" data-close="settingsModal">취소</button><button class="btn">저장</button></div></form></div></div>
+  <section class="program-section">
+    <div class="section-head-simple">
+      <div><h2>내 프로그램</h2><p>수업할 때는 여기에서 바로 열면 됩니다.</p></div>
+      <div class="searchline"><input id="programSearch" placeholder="프로그램 찾기"></div>
+    </div>
+    <div id="programGrid" class="program-grid"></div>
+  </section>
+</div>
 
-<div class="modal-backdrop" id="externalModal"><div class="modal"><h3>새 외부 링크 최초 등록</h3><form id="externalForm"><div class="form-grid"><div class="field"><label>이름</label><input name="name" required></div><div class="field"><label>고정 주소</label><input name="slug" required></div><div class="field"><label>종류</label><select name="kind"><option>수업자료</option><option>학습게임</option><option>수행평가</option><option>기타</option></select></div><div class="field"><label>과목</label><input name="subject" value="공통"></div><div class="field"><label>대상</label><select name="audience"><option value="teacher">교사</option><option value="student">학생</option><option value="both">모두</option></select></div><div class="field"><label>아이콘</label><input name="icon" value="🔗"></div><div class="field full"><label>실제 주소</label><input name="target_url" type="url" required placeholder="https://..."></div><div class="field full"><label>교사용 관리주소 (선택)</label><input name="manage_url" type="url"></div><div class="field full"><label>설명</label><textarea name="description" rows="2"></textarea></div><input type="hidden" name="published" value="true"></div><div class="toolbar" style="justify-content:flex-end;margin-top:14px"><button type="button" class="btn secondary" data-close="externalModal">취소</button><button class="btn">최초 등록</button></div></form></div></div>
+<!-- 프로그램 고급 관리 -->
+<div class="modal-bg" id="manageModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2 id="manageName">프로그램 관리</h2><p id="manageMeta"></p></div><button class="btnx ghost small" data-close="manageModal">닫기</button></div>
+  <div class="tool-list" id="manageTools"></div>
+</div></div>
+
+<!-- 설정 -->
+<div class="modal-bg" id="settingsModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2>프로그램 설정</h2></div><button class="btnx ghost small" data-close="settingsModal">닫기</button></div>
+  <form id="settingsForm"><input id="setId" type="hidden">
+    <div class="modal-grid">
+      <div class="field-simple"><label>프로그램명</label><input id="setName"></div>
+      <div class="field-simple"><label>과목</label><input id="setSubject"></div>
+      <div class="field-simple"><label>구분</label><select id="setKind"><option>수업자료</option><option>학습게임</option><option>수행평가</option><option>기타</option></select></div>
+      <div class="field-simple"><label>대상</label><select id="setAudience"><option value="teacher">교사 전용</option><option value="student">학생 전용</option><option value="both">교사·학생 모두</option></select></div>
+      <div class="field-simple"><label>아이콘</label><input id="setIcon"></div>
+      <div class="field-simple"><label>정렬</label><input id="setOrder" type="number"></div>
+      <div class="field-simple full"><label>설명</label><textarea id="setDesc" rows="3"></textarea></div>
+      <div class="field-simple"><label>공개 상태</label><select id="setPublished"><option value="true">공개</option><option value="false">숨김</option></select></div>
+    </div>
+    <div class="modal-actions" style="justify-content:flex-end;margin-top:14px"><button class="btnx primary">저장</button></div>
+  </form>
+</div></div>
+
+<!-- 버전 기록 -->
+<div class="modal-bg" id="historyModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2 id="historyName">버전 기록</h2><p>안전 패치 이후 기록은 실제 파일까지 복구할 수 있습니다.</p></div><button class="btnx ghost small" data-close="historyModal">닫기</button></div>
+  <div class="tool-list" id="historyList"></div>
+</div></div>
+
+<!-- 신규 프로그램 -->
+<div class="modal-bg" id="newModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2>새 프로그램 등록</h2><p>완전히 새로운 프로그램을 처음 올릴 때만 사용합니다.</p></div><button class="btnx ghost small" data-close="newModal">닫기</button></div>
+  <form id="newForm" enctype="multipart/form-data">
+    <div class="modal-grid">
+      <div class="field-simple"><label>프로그램 이름</label><input name="name" id="nName" required></div>
+      <div class="field-simple"><label>고정 주소 이름</label><input name="slug" id="nSlug" required></div>
+      <div class="field-simple"><label>종류</label><select name="kind"><option>수업자료</option><option>학습게임</option><option>수행평가</option><option>기타</option></select></div>
+      <div class="field-simple"><label>과목</label><input name="subject" value="공통"></div>
+      <div class="field-simple"><label>대상</label><select name="audience"><option value="teacher">교사 전용</option><option value="student">학생 전용</option><option value="both">교사·학생 모두</option></select></div>
+      <div class="field-simple"><label>배포 방식</label><select name="deploy_type" id="deployType"><option value="static">정적 웹앱 · HTML/ZIP</option><option value="server">서버형 · ZIP</option></select></div>
+      <div class="field-simple"><label>아이콘</label><input name="icon" value="🔗"></div>
+      <div class="field-simple"><label>정렬 순서</label><input name="sort_order" type="number" value="100"></div>
+      <div class="field-simple full"><label>설명</label><textarea name="description" rows="2"></textarea></div>
+      <div class="field-simple full"><label id="newFileLabel">HTML 또는 ZIP</label><input type="file" name="package" id="newFile" accept=".html,.htm,.zip" required><div class="hint" id="newFileHint">정적 프로그램은 index.html을 기준으로 등록합니다.</div></div>
+      <div class="field-simple"><label>공개 상태</label><select name="published"><option value="true">공개</option><option value="false">숨김</option></select></div>
+    </div>
+    <div class="modal-actions" style="justify-content:flex-end;margin-top:14px"><button class="btnx primary" id="newSubmit">최초 등록</button></div>
+  </form>
+</div></div>
+
+<!-- 전체 관리 도구 -->
+<div class="modal-bg" id="globalModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2>관리 도구</h2><p>평소에는 쓰지 않아도 되는 기능을 모아두었습니다.</p></div><button class="btnx ghost small" data-close="globalModal">닫기</button></div>
+  <h3>시스템 연결</h3><div class="system-box" id="systemBox"></div>
+  <h3>도구</h3>
+  <div class="tool-list">
+    <div class="tool-row"><div><b>설정 백업</b><p>현재 프로그램 목록 설정을 JSON으로 내려받습니다.</p></div><a class="btnx secondary small" href="/api/admin/export">백업 다운로드</a></div>
+    <div class="tool-row"><div><b>외부 링크 등록</b><p>파일 없이 다른 웹사이트 주소만 클래스룸에 추가합니다.</p></div><button class="btnx secondary small" id="externalOpenBtn">등록</button></div>
+    <div class="tool-row"><div><b>클래스룸 코어 복구 기록</b><p>교사 화면 자체 패치가 잘못됐을 때만 사용합니다.</p></div><button class="btnx secondary small" id="coreHistoryBtn">보기</button></div>
+  </div>
+</div></div>
+
+<!-- 외부 링크 -->
+<div class="modal-bg" id="externalModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2>외부 링크 등록</h2></div><button class="btnx ghost small" data-close="externalModal">닫기</button></div>
+  <form id="externalForm">
+    <div class="modal-grid">
+      <div class="field-simple"><label>이름</label><input name="name" required></div>
+      <div class="field-simple"><label>고정 주소</label><input name="slug" required></div>
+      <div class="field-simple"><label>종류</label><select name="kind"><option>수업자료</option><option>학습게임</option><option>수행평가</option><option>기타</option></select></div>
+      <div class="field-simple"><label>과목</label><input name="subject" value="공통"></div>
+      <div class="field-simple"><label>대상</label><select name="audience"><option value="teacher">교사</option><option value="student">학생</option><option value="both">모두</option></select></div>
+      <div class="field-simple"><label>아이콘</label><input name="icon" value="🔗"></div>
+      <div class="field-simple full"><label>실제 주소</label><input name="target_url" type="url" required></div>
+      <div class="field-simple full"><label>교사용 관리주소 (선택)</label><input name="manage_url" type="url"></div>
+      <div class="field-simple full"><label>설명</label><textarea name="description" rows="2"></textarea></div>
+    </div>
+    <div class="modal-actions" style="justify-content:flex-end;margin-top:14px"><button class="btnx primary">등록</button></div>
+  </form>
+</div></div>
+
+<!-- 코어 기록 -->
+<div class="modal-bg" id="coreModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2>클래스룸 코어 복구 기록</h2><p>교사 화면 자체 변경에 대한 안전 기록입니다.</p></div><button class="btnx ghost small" data-close="coreModal">닫기</button></div>
+  <div class="tool-list" id="coreList"></div>
+</div></div>
+
 <script>
-let acts=[],system={};const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const badgeAudience=a=>a==='teacher'?'교사':a==='student'?'학생':'교사·학생';const statusLabel=s=>({ready:'준비됨',deploying:'배포 중',success:'배포 완료',failed:'실패',crashed:'오류',warning:'경고',building:'빌드 중'}[String(s||'').toLowerCase()]||s||'준비됨');
-function openModal(id){$('#'+id).classList.add('show')}function closeModal(id){$('#'+id).classList.remove('show')};document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));document.querySelectorAll('.modal-backdrop').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});
-async function api(url,opt={}){let r=await fetch(url,opt),j=await r.json().catch(()=>({}));if(r.status===401){location.href='/';throw Error('로그인 필요')}if(!r.ok)throw Error(j.error||'요청 실패');return j}
-async function load(){let [a,s]=await Promise.all([api('/api/admin/activities'),api('/api/admin/system')]);acts=a.activities||[];system=s;render();renderSystem()}
-function renderSystem(){for(const [prefix,x] of [['gh',system.github],['rw',system.railway]]){let st=$('#'+prefix+'Status'),dt=$('#'+prefix+'Detail');st.textContent=x?.ok?'연결됨':(x?.configured?'확인 필요':'미설정');st.className='status '+(x?.ok?'ok':x?.configured?'bad':'');dt.textContent=(x?.detail||'-')+(x?.repo?` · ${x.repo}`:'')}let d=system.database;$('#dbStatus').textContent=d?.ok?'PostgreSQL':'JSON';$('#dbStatus').className='status '+(d?.ok?'ok':'');$('#dbDetail').textContent=d?.detail||'-'}
-function deployBadge(a){let s=String(a.deploy_status||'ready').toLowerCase(),cls=['failed','crashed','warning'].includes(s)?'red':['success','ready'].includes(s)?'green':'gold';return `<span class="pill ${cls}">${esc(statusLabel(s))}</span>`}
-function versionOf(a){return esc(a.version_label||('v'+(a.version||1)))}
-function render(){
- $('#sAll').textContent=acts.length;$('#sStudent').textContent=acts.filter(a=>a.published&&(a.audience==='student'||a.audience==='both')).length;$('#sStatic').textContent=acts.filter(a=>a.deploy_type==='static').length;$('#sServer').textContent=acts.filter(a=>a.deploy_type==='server').length;$('#sWarn').textContent=acts.filter(a=>['failed','crashed','warning'].includes(String(a.deploy_status).toLowerCase())).length;
- $('#cards').innerHTML=acts.map(a=>`<article class="card activity"><div class="activity-top"><div class="icon">${esc(a.icon)}</div><div><h4>${esc(a.name)}</h4><div class="meta"><span class="pill blue">${esc(a.kind)}</span><span class="pill">${a.deploy_type==='static'?'내부 웹앱':a.deploy_type==='server'?'서버형':'외부 링크'}</span><span class="pill green">${a.deploy_type==='external'?'외부 관리':'ChatGPT 관리'}</span><span class="pill ${a.published?'green':'gold'}">${a.published?'공개':'숨김'}</span>${deployBadge(a)}</div></div></div><div class="desc">${esc(a.description)}</div><div class="versionline"><span>현재 <b>${versionOf(a)}</b></span><span>ID <code>${esc(a.id)}</code></span></div><div class="notice" style="margin:8px 0;padding:9px"><b>GitHub 경로</b> <code>${esc(a.repo_path||'-')}</code><br><span class="small muted">기존 프로그램 수정 시 ChatGPT가 이 경로를 업데이트합니다.</span></div><div class="copybox"><input class="input" readonly value="${esc(location.origin+'/go/'+a.slug)}"><button class="btn secondary small" onclick="copyLink('${esc(location.origin+'/go/'+a.slug)}')">링크 복사</button></div><div class="actions"><a class="btn small" href="/open/${encodeURIComponent(a.slug)}" target="_blank">열기</a>${a.manage_url?`<a class="btn secondary small" href="/manage/${encodeURIComponent(a.slug)}" target="_blank">관리</a>`:''}<button class="btn secondary small" onclick="checkAct('${a.id}')">연결 확인</button>${a.deploy_type==='server'&&!a.railway_service_id?`<button class="btn small" onclick="provisionAct('${a.id}')">서버 최초 연결</button>`:''}${a.deploy_type==='server'&&a.railway_service_id?`<button class="btn secondary small" onclick="syncInfraAct('${a.id}')">서버 설정 동기화</button>`:''}${a.deploy_type!=='external'?`<button class="btn secondary small" onclick="historyAct('${a.id}')">버전 기록</button>`:''}<button class="btn secondary small" onclick="settingsAct('${a.id}')">설정</button></div></article>`).join('');
- $('#rows').innerHTML=acts.map(a=>`<tr><td><b>${esc(a.icon)} ${esc(a.name)}</b><div class="muted small">${esc(a.subject)}</div></td><td><code>${esc(a.id)}</code></td><td>${versionOf(a)}</td><td><code>/go/${esc(a.slug)}</code></td><td><code>${esc(a.repo_path||'-')}</code></td><td>${deployBadge(a)}</td></tr>`).join('');
- let ap=$('#autoPatchTarget'); if(ap){let keep=ap.value;ap.innerHTML='<option value="">자동으로 판단</option>'+acts.filter(a=>a.deploy_type!=='external').map(a=>`<option value="${esc(a.id)}">${esc(a.name)} · ${versionOf(a)}</option>`).join('');if([...ap.options].some(o=>o.value===keep))ap.value=keep;}
+let acts=[],system={},historyData={core_histories:[],activities:[]};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+async function api(url,opt={}){const r=await fetch(url,opt);const j=await r.json().catch(()=>({}));if(r.status===401){location.href='/';throw Error('로그인이 필요합니다.')}if(!r.ok)throw Error(j.error||'요청 실패');return j}
+function openModal(id){$('#'+id).classList.add('show')}function closeModal(id){$('#'+id).classList.remove('show')}
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+document.querySelectorAll('.modal-bg').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});
+const ver=a=>a.version_label||('v'+(a.version||1));
+function deployClass(a){const s=String(a.deploy_status||'ready').toLowerCase();return ['failed','crashed'].includes(s)?'bad':s==='warning'?'warn':'good'}
+function deployText(a){const s=String(a.deploy_status||'ready').toLowerCase();return ({ready:'준비됨',success:'배포 완료',deploying:'배포 중',building:'빌드 중',warning:'확인 필요',failed:'실패',crashed:'오류'}[s]||s)}
+function latestSafe(a){return [...(a.histories||[])].reverse().find(h=>h?.id&&h?.restore_commit_sha)}
+async function load(){
+  const [a,s,h]=await Promise.all([
+    api('/api/admin/activities'),
+    api('/api/admin/system'),
+    api('/api/admin/chatgpt/history').catch(()=>({core_histories:[],activities:[]}))
+  ]);
+  acts=a.activities||[];system=s||{};historyData=h||{core_histories:[],activities:[]};
+  renderPrograms();renderTargets();renderSystem();
 }
-window.copyLink=async t=>{try{await navigator.clipboard.writeText(t);alert('학생용 고정 링크를 복사했습니다.')}catch{prompt('아래 링크를 복사하세요.',t)}};
-window.checkAct=async id=>{let j=await api('/api/admin/check/'+encodeURIComponent(id));alert(j.ok?`연결 정상 · HTTP ${j.status}`:`연결 확인 실패\n${j.detail||j.status||''}`)};
-window.provisionAct=async id=>{let a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}'의 Railway 서버를 최초로 만들고 연결할까요?`))return;try{await api('/api/admin/deploy/'+encodeURIComponent(id)+'/provision',{method:'POST'});alert('Railway 서비스와 주소 생성을 요청했습니다.');load()}catch(e){alert(e.message)}};
-window.syncInfraAct=async id=>{let a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}'의 Railway 설정을 현재 프로그램 규격과 동기화할까요?`))return;try{let j=await api('/api/admin/deploy/'+encodeURIComponent(id)+'/sync-infra',{method:'POST'});alert(j.infrastructure?.warning?'동기화 완료 · 확인 필요\n'+j.infrastructure.warning:'서버 설정 동기화가 완료되었습니다.');load()}catch(e){alert(e.message)}};
-window.historyAct=id=>{let a=acts.find(x=>x.id===id);$('#historyName').textContent=a.name;let h=[...(a.histories||[])].reverse();$('#historyList').innerHTML=h.length?h.map(x=>`<div class="history-item"><div><b>v${x.version} · ${esc(x.action)}</b><p>${esc((x.commit_sha||'').slice(0,10))} · ${esc(new Date(x.at).toLocaleString('ko-KR'))}${x.note?' · '+esc(x.note):''}</p></div>${x.commit_sha?`<button class="btn secondary small" onclick="rollback('${id}','${x.commit_sha}')">이 버전으로 복구</button>`:''}</div>`).join(''):'<div class="notice">아직 버전 기록이 없습니다.</div>';openModal('historyModal')};
-window.rollback=async()=>{alert('안전 복구는 ChatGPT 안전 패치함에서 진행합니다.');location.href='/teacher/chatgpt-patch#history'};
-window.settingsAct=id=>{let a=acts.find(x=>x.id===id);$('#setId').value=id;$('#setName').value=a.name;$('#setSubject').value=a.subject;$('#setKind').value=a.kind;$('#setAudience').value=a.audience;$('#setIcon').value=a.icon;$('#setOrder').value=a.sort_order;$('#setDesc').value=a.description||'';$('#setPublished').value=String(a.published);openModal('settingsModal')};
-
-$('#autoPatchFile').onchange=e=>{let f=e.target.files?.[0];let box=$('#autoPatchResult');if(!f){box.style.display='none';return;}box.style.display='block';box.className='notice';box.innerHTML=`선택한 파일: <b>${esc(f.name)}</b><br><span class="small muted">업로드하면 파일명과 내부 자료를 분석해 대상 프로그램을 자동 판단합니다.</span>`};
-$('#autoPatchForm').onsubmit=async e=>{e.preventDefault();let file=$('#autoPatchFile').files?.[0];if(!file)return alert('패치 파일을 선택하세요.');let f=new FormData();f.append('package',file);if($('#autoPatchTarget').value)f.append('target_id',$('#autoPatchTarget').value);let p=$('#autoPatchProgress'),b=$('#autoPatchSubmit'),r=$('#autoPatchResult');p.classList.add('show');b.disabled=true;r.style.display='block';r.className='notice';r.innerHTML='패치를 분석하고 있습니다…';try{let j=await api('/api/admin/deploy/auto-patch',{method:'POST',body:f});r.className='notice';r.innerHTML=`<b>자동 패치 적용 완료</b><br>${esc(j.matched?.name||'프로그램')} → <b>${esc(j.matched?.version_label||'새 버전')}</b><br><span class="small muted">판단 근거: ${esc(j.matched?.reason||'파일 내용 분석')}</span>`;$('#autoPatchFile').value='';$('#autoPatchTarget').value='';await load();}catch(err){r.className='notice warn';r.innerHTML=`<b>자동 적용하지 않았습니다.</b><br>${esc(err.message)}<br><span class="small muted">대상이 모호할 때만 위 선택창에서 프로그램을 직접 지정하고 다시 올리세요.</span>`;}finally{b.disabled=false;p.classList.remove('show')}};
-
-$('#newProgram').onclick=()=>{document.querySelector('#newForm').reset();$('#nSlug').dataset.touched='';$('#nSlug').value='';$('#newProgress').classList.remove('show');openModal('newModal')};$('#newExternal').onclick=()=>openModal('externalModal');$('#refresh').onclick=load;$('#exportBtn').onclick=()=>location.href='/api/admin/export';
-$('#nName').oninput=e=>{if(!$('#nSlug').dataset.touched)$('#nSlug').value=e.target.value.trim().toLowerCase().replace(/[^a-z0-9가-힣_-]+/g,'-').replace(/^-+|-+$/g,'')};$('#nSlug').oninput=()=>$('#nSlug').dataset.touched='1';
-$('#deployType').onchange=e=>{let server=e.target.value==='server';$('#uploadGuide').textContent=server?'서버형 ZIP을 선택하세요':'HTML 파일 또는 ZIP을 선택하세요';$('#uploadHint').textContent=server?'최초 등록용 ZIP 최상위에 package.json과 start 스크립트가 있어야 합니다.':'정적 웹앱은 index.html을 기준으로 최초 등록됩니다.';$('#newFile').accept=server?'.zip':'.html,.htm,.zip'};
-$('#newForm').onsubmit=async e=>{e.preventDefault();let f=new FormData(e.target);$('#newProgress').classList.add('show');$('#newSubmit').disabled=true;try{let j=await api('/api/admin/deploy/new',{method:'POST',body:f});alert(j.result?.githubNote||j.result?.railway?.warning?'최초 등록은 완료됐지만 일부 연결을 확인해야 합니다.':'새 프로그램 최초 등록이 완료되었습니다. 이후 버전은 ChatGPT에서 업데이트하세요.');closeModal('newModal');await load()}catch(err){alert(err.message)}finally{$('#newSubmit').disabled=false;$('#newProgress').classList.remove('show')}};
-$('#settingsForm').onsubmit=async e=>{e.preventDefault();let id=$('#setId').value,b={name:$('#setName').value,subject:$('#setSubject').value,kind:$('#setKind').value,audience:$('#setAudience').value,icon:$('#setIcon').value,sort_order:Number($('#setOrder').value),description:$('#setDesc').value,published:$('#setPublished').value==='true'};try{await api('/api/admin/activities/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});closeModal('settingsModal');load()}catch(err){alert(err.message)}};
-$('#externalForm').onsubmit=async e=>{e.preventDefault();let b=Object.fromEntries(new FormData(e.target).entries());b.published=true;try{await api('/api/admin/activities/external',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});closeModal('externalModal');e.target.reset();load()}catch(err){alert(err.message)}};
-$('#logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.href='/'};load();
-</script></body></html>
+function renderTargets(){
+  const el=$('#safePatchTarget'),keep=el.value;
+  el.innerHTML='<option value="">자동으로 판단</option>'+acts.filter(a=>a.deploy_type!=='external').map(a=>`<option value="${esc(a.id)}">${esc(a.name)} · ${esc(ver(a))}</option>`).join('');
+  if([...el.options].some(o=>o.value===keep))el.value=keep;
+}
+function renderPrograms(){
+  const q=$('#programSearch').value.trim().toLowerCase();
+  const rows=acts.filter(a=>!q||[a.name,a.subject,a.kind].join(' ').toLowerCase().includes(q));
+  $('#programGrid').innerHTML=rows.length?rows.map(a=>{
+    const safe=latestSafe(a);
+    return `<article class="program-card">
+      <div class="program-title"><div class="program-icon">${esc(a.icon)}</div><div><h3>${esc(a.name)}</h3><div class="meta">${esc(a.subject)} · ${esc(a.kind)} · ${esc(ver(a))}</div></div></div>
+      <div class="desc">${esc(a.description||'')}</div>
+      <div class="statusline"><span>${a.published?'공개':'숨김'} · ${a.deploy_type==='server'?'서버형':a.deploy_type==='static'?'내부 웹앱':'외부 링크'}</span><span class="status ${deployClass(a)}">${esc(deployText(a))}</span></div>
+      <div class="card-actions">
+        <a class="btnx primary small" href="/open/${encodeURIComponent(a.slug)}" target="_blank">열기</a>
+        ${a.manage_url?`<a class="btnx secondary small" href="/manage/${encodeURIComponent(a.slug)}" target="_blank">교사 관리</a>`:''}
+        <button class="btnx ghost small kebab" onclick="openManage('${esc(a.id)}')">⋯</button>
+      </div>
+      ${safe?`<div class="undo-row"><span>문제가 생겼다면 바로 이전 상태로</span><button class="btnx danger small" onclick="undoLatest('${esc(a.id)}','${esc(safe.id)}')">마지막 업데이트 취소</button></div>`:''}
+    </article>`;
+  }).join(''):'<div class="empty">조건에 맞는 프로그램이 없습니다.</div>';
+}
+window.copyLink=async t=>{try{await navigator.clipboard.writeText(t);alert('학생용 링크를 복사했습니다.')}catch{prompt('아래 링크를 복사하세요.',t)}}
+window.undoLatest=async(id,hid)=>{if(!confirm('마지막 안전 작업 직전 상태로 되돌릴까요?\\n학생 링크는 그대로 유지됩니다.'))return;try{await api('/api/admin/chatgpt/app-rollback/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('복구와 재배포를 요청했습니다.');await load()}catch(e){alert(e.message)}}
+window.openManage=id=>{
+  const a=acts.find(x=>x.id===id);if(!a)return;
+  $('#manageName').textContent=a.name;$('#manageMeta').textContent=`${a.subject} · ${ver(a)} · ${a.repo_path||''}`;
+  const items=[];
+  items.push(`<div class="tool-row"><div><b>학생 링크 복사</b><p>학생에게 보낼 고정 주소를 복사합니다.</p></div><button class="btnx secondary small" onclick="copyLink('${esc(location.origin+'/go/'+a.slug)}')">복사</button></div>`);
+  items.push(`<div class="tool-row"><div><b>프로그램 설정</b><p>이름·공개 상태·정렬 등을 바꿉니다.</p></div><button class="btnx secondary small" onclick="settingsAct('${esc(id)}')">열기</button></div>`);
+  if(a.deploy_type!=='external')items.push(`<div class="tool-row"><div><b>버전 기록</b><p>과거 기록을 확인하고 안전 기록은 실제 파일까지 복구합니다.</p></div><button class="btnx secondary small" onclick="historyAct('${esc(id)}')">보기</button></div>`);
+  items.push(`<div class="tool-row"><div><b>연결 확인</b><p>프로그램 주소가 실제로 열리는지 확인합니다.</p></div><button class="btnx secondary small" onclick="checkAct('${esc(id)}')">확인</button></div>`);
+  if(a.deploy_type==='server'&&!a.railway_service_id)items.push(`<div class="tool-row"><div><b>서버 최초 연결</b><p>Railway 서버를 처음 만듭니다.</p></div><button class="btnx secondary small" onclick="provisionAct('${esc(id)}')">연결</button></div>`);
+  if(a.deploy_type==='server'&&a.railway_service_id)items.push(`<div class="tool-row"><div><b>서버 설정 동기화</b><p>환경변수·저장소·헬스체크 설정을 맞춥니다.</p></div><button class="btnx secondary small" onclick="syncInfraAct('${esc(id)}')">동기화</button></div>`);
+  $('#manageTools').innerHTML=items.join('');openModal('manageModal');
+}
+window.checkAct=async id=>{try{const j=await api('/api/admin/check/'+encodeURIComponent(id));alert(j.ok?`연결 정상 · HTTP ${j.status}`:`연결 확인 실패\\n${j.detail||j.status||''}`)}catch(e){alert(e.message)}}
+window.provisionAct=async id=>{const a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}' 서버를 처음 만들고 연결할까요?`))return;try{await api('/api/admin/deploy/'+encodeURIComponent(id)+'/provision',{method:'POST'});alert('서버 연결을 요청했습니다.');closeModal('manageModal');await load()}catch(e){alert(e.message)}}
+window.syncInfraAct=async id=>{const a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}' 서버 설정을 동기화할까요?`))return;try{const j=await api('/api/admin/deploy/'+encodeURIComponent(id)+'/sync-infra',{method:'POST'});alert(j.infrastructure?.warning?'동기화 완료 · 확인 필요\\n'+j.infrastructure.warning:'서버 설정 동기화 완료');await load()}catch(e){alert(e.message)}}
+window.settingsAct=id=>{const a=acts.find(x=>x.id===id);if(!a)return;$('#setId').value=id;$('#setName').value=a.name;$('#setSubject').value=a.subject;$('#setKind').value=a.kind;$('#setAudience').value=a.audience;$('#setIcon').value=a.icon;$('#setOrder').value=a.sort_order;$('#setDesc').value=a.description||'';$('#setPublished').value=String(a.published);closeModal('manageModal');openModal('settingsModal')}
+window.historyAct=id=>{const a=acts.find(x=>x.id===id);if(!a)return;$('#historyName').textContent=a.name+' 버전 기록';const h=[...(a.histories||[])].reverse();$('#historyList').innerHTML=h.length?h.map(x=>{const safe=x.id&&x.restore_commit_sha;return `<div class="tool-row"><div><b>${esc(x.action||'기록')} · ${esc('v'+(x.version||''))}</b><p>${esc(new Date(x.at).toLocaleString('ko-KR'))} · ${esc((x.commit_sha||'').slice(0,10))}${x.note?' · '+esc(x.note):''}</p></div>${safe?`<button class="btnx danger small" onclick="restoreHistory('${esc(id)}','${esc(x.id)}')">이 작업 직전으로 복구</button>`:'<span class="hint">과거 기록 · 읽기 전용</span>'}</div>`}).join(''):'<div class="empty">버전 기록이 없습니다.</div>';closeModal('manageModal');openModal('historyModal')}
+window.restoreHistory=async(id,hid)=>{if(!confirm('이 작업 직전의 실제 파일로 복구할까요?'))return;try{await api('/api/admin/chatgpt/app-rollback/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('복구와 재배포를 요청했습니다.');closeModal('historyModal');await load()}catch(e){alert(e.message)}}
+function renderSystem(){
+  const vals=[['GitHub',system.github],['Railway',system.railway],['데이터 저장',system.database]];
+  $('#systemBox').innerHTML=vals.map(([name,x])=>`<div class="system-item"><b>${esc(name)} · ${x?.ok?'정상':'확인 필요'}</b><span>${esc(x?.detail||x?.repo||'-')}</span></div>`).join('');
+}
+$('#safePatchForm').onsubmit=async e=>{
+  e.preventDefault();const file=$('#safePatchFile').files?.[0];if(!file)return;
+  const fd=new FormData();fd.append('package',file);if($('#safePatchTarget').value)fd.append('target_id',$('#safePatchTarget').value);
+  const b=$('#safePatchSubmit'),r=$('#safePatchResult');b.disabled=true;r.style.display='block';r.className='result';r.textContent='원본 백업 → 대상 확인 → GitHub 반영 → Railway 재배포를 진행하고 있습니다...';
+  try{const j=await api('/api/admin/chatgpt/patch',{method:'POST',body:fd});r.className='result ok';r.innerHTML=`<b>안전 패치 완료</b><br>${esc(j.type==='core'?(j.label||'클래스룸 코어'):(j.matched?.name||'프로그램'))}<br><span class="hint">패치 직전 원본이 자동 저장되었습니다.</span>`;$('#safePatchFile').value='';$('#safePatchTarget').value='';await load()}
+  catch(err){r.className='result bad';r.innerHTML=`<b>적용하지 않았습니다.</b><br>${esc(err.message)}`}
+  finally{b.disabled=false}
+}
+$('#settingsForm').onsubmit=async e=>{e.preventDefault();const id=$('#setId').value;const body={name:$('#setName').value,subject:$('#setSubject').value,kind:$('#setKind').value,audience:$('#setAudience').value,icon:$('#setIcon').value,sort_order:Number($('#setOrder').value),description:$('#setDesc').value,published:$('#setPublished').value==='true'};try{await api('/api/admin/activities/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});closeModal('settingsModal');await load()}catch(e){alert(e.message)}}
+$('#newForm').onsubmit=async e=>{e.preventDefault();const b=$('#newSubmit');b.disabled=true;try{const j=await api('/api/admin/deploy/new',{method:'POST',body:new FormData(e.target)});alert(j.result?.railway?.warning?'등록 완료 · 일부 연결 확인 필요':'새 프로그램 등록 완료');closeModal('newModal');e.target.reset();await load()}catch(err){alert(err.message)}finally{b.disabled=false}}
+$('#externalForm').onsubmit=async e=>{e.preventDefault();const b=Object.fromEntries(new FormData(e.target).entries());b.published=true;try{await api('/api/admin/activities/external',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});closeModal('externalModal');e.target.reset();await load()}catch(err){alert(err.message)}}
+$('#newProgramBtn').onclick=()=>{document.querySelector('#newForm').reset();$('#nSlug').dataset.touched='';openModal('newModal')}
+$('#globalToolsBtn').onclick=()=>{renderSystem();openModal('globalModal')}
+$('#externalOpenBtn').onclick=()=>{closeModal('globalModal');openModal('externalModal')}
+$('#coreHistoryBtn').onclick=()=>{const h=[...(historyData.core_histories||[])].reverse();$('#coreList').innerHTML=h.length?h.map(x=>`<div class="tool-row"><div><b>${esc(x.label||x.action||'코어 작업')}</b><p>${esc(new Date(x.at).toLocaleString('ko-KR'))} · ${esc((x.commit_sha||'').slice(0,10))}</p></div>${x.backup_sha&&x.id?`<button class="btnx danger small" onclick="coreRollback('${esc(x.id)}')">이 작업 직전으로 복구</button>`:''}</div>`).join(''):'<div class="empty">코어 안전 기록이 없습니다.</div>';closeModal('globalModal');openModal('coreModal')}
+window.coreRollback=async hid=>{if(!confirm('교사 화면 자체를 이 작업 직전 상태로 복구할까요?'))return;try{await api('/api/admin/chatgpt/core-rollback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('코어 복구와 재배포를 요청했습니다.');closeModal('coreModal');await load()}catch(e){alert(e.message)}}
+$('#refreshBtn').onclick=load;$('#logoutBtn').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.href='/'}
+$('#programSearch').oninput=renderPrograms;
+$('#nName').oninput=e=>{if(!$('#nSlug').dataset.touched)$('#nSlug').value=e.target.value.trim().toLowerCase().replace(/[^a-z0-9가-힣_-]+/g,'-').replace(/^-+|-+$/g,'')}
+$('#nSlug').oninput=()=>$('#nSlug').dataset.touched='1';
+$('#deployType').onchange=e=>{const server=e.target.value==='server';$('#newFileLabel').textContent=server?'서버형 ZIP':'HTML 또는 ZIP';$('#newFileHint').textContent=server?'ZIP 최상위에 package.json과 start 스크립트가 필요합니다.':'정적 프로그램은 index.html을 기준으로 등록합니다.';$('#newFile').accept=server?'.zip':'.html,.htm,.zip'}
+load().catch(e=>alert(e.message));
+</script>
+</body>
+</html>
