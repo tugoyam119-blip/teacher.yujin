@@ -117,23 +117,30 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 50,
-    "version_label": "v50",
+    "version": 51,
+    "version_label": "v51",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "f7340a7b42701f548c01d421db4d3ad5d0777359",
-    "last_deployment_id": "a84bdcc1-a592-456d-9ba3-5a842b2f05f0",
+    "last_commit_sha": "530d1e2387b68aefd9b419bfb039322d4d18323e",
+    "last_deployment_id": "c646aef4-a3a7-4bb2-ae68-91b1bf61bd7e",
     "histories": [
       {
-        "version": 50,
-        "action": "auto-patch",
-        "commit_sha": "f7340a7b42701f548c01d421db4d3ad5d0777359",
         "at": "2026-08-24T04:42:16.013Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 50,
+        "commit_sha": "f7340a7b42701f548c01d421db4d3ad5d0777359"
+      },
+      {
+        "version": 51,
+        "action": "auto-patch",
+        "commit_sha": "530d1e2387b68aefd9b419bfb039322d4d18323e",
+        "at": "2026-08-24T05:49:55.774Z",
         "note": "자동 연결: 교사가 직접 대상 선택"
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-24T04:42:16.013Z"
+    "updated_at": "2026-08-24T05:49:55.774Z"
   },
   {
     "id": "human-rights",
