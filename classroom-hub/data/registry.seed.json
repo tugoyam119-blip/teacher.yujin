@@ -1,372 +1,372 @@
 [
-    {
-        "id":  "social2-unit1",
-        "icon":  "📘",
-        "kind":  "수업자료",
-        "name":  "통합사회2 1단원 교사설명용",
-        "slug":  "social2",
-        "subject":  "통합사회2",
-        "version":  13,
-        "audience":  "teacher",
-        "histories":  [
-                          {
-                              "at":  "2026-08-24T04:19:35.256Z",
-                              "note":  "자동 연결: 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
-                              "action":  "auto-patch",
-                              "version":  12,
-                              "commit_sha":  "6ccd4aed07fbc855293df23ace2866d0f6f23982"
-                          },
-                          {
-                              "at":  "2026-08-24T04:38:18.416Z",
-                              "note":  "복구 원본 e336f25",
-                              "action":  "rollback",
-                              "version":  13,
-                              "commit_sha":  "2601bfc497ecd2f64d6d36d8a931d8ff99851935"
-                          }
-                      ],
-        "published":  true,
-        "repo_path":  "classroom-hub/apps/social2",
-        "created_at":  "2026-08-20T22:09:46.658Z",
-        "manage_url":  "",
-        "sort_order":  10,
-        "target_url":  "/apps/social2/",
-        "updated_at":  "2026-08-24T04:38:18.416Z",
-        "deploy_type":  "static",
-        "description":  "통합사회2 1단원 교사용 설명 자료",
-        "update_mode":  "chatgpt",
-        "deploy_status":  "deploying",
-        "version_label":  "v12",
-        "railway_domain":  "",
-        "last_commit_sha":  "b2fcd1ac09541f91cd01d3dc8946c81abf0af5b1",
-        "railway_volume_id":  "",
-        "last_deployment_id":  "f27cecaa-0879-4870-b720-6ed60d3aa06e",
-        "railway_service_id":  ""
-    },
-    {
-        "id":  "international-relations",
-        "icon":  "🌐",
-        "kind":  "수업자료",
-        "name":  "국제 관계와 국제기구 교사설명용",
-        "slug":  "international-relations",
-        "subject":  "국제 관계와 국제기구",
-        "version":  20,
-        "audience":  "teacher",
-        "histories":  [
-                          {
-                              "at":  "2026-08-21T11:45:03.272Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 5개 확인",
-                              "action":  "auto-patch",
-                              "version":  16,
-                              "commit_sha":  "546861711cbbe91e67e1c1afa4c5adee13a4766f"
-                          },
-                          {
-                              "at":  "2026-08-21T12:52:33.005Z",
-                              "note":  "자동 연결: GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 4개 확인",
-                              "action":  "auto-patch",
-                              "version":  17,
-                              "commit_sha":  "534f324c893f4abcc361bdc07b564a0dc95a9173"
-                          },
-                          {
-                              "at":  "2026-08-21T12:53:50.142Z",
-                              "note":  "복구 원본 5468617",
-                              "action":  "rollback",
-                              "version":  18,
-                              "commit_sha":  "c3fe00d6009e1dfb5235e71f2a47d143a7d6ce9f"
-                          },
-                          {
-                              "at":  "2026-08-21T12:55:34.784Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 5개 확인",
-                              "action":  "auto-patch",
-                              "version":  19,
-                              "commit_sha":  "926bedcef33d4b349488edfec1d4381d9876e435"
-                          }
-                      ],
-        "published":  true,
-        "repo_path":  "classroom-hub/apps/international-relations",
-        "created_at":  "2026-08-20T22:09:46.658Z",
-        "manage_url":  "",
-        "sort_order":  20,
-        "target_url":  "/apps/international-relations/",
-        "updated_at":  "2026-08-24T07:10:52.5141356Z",
-        "deploy_type":  "static",
-        "description":  "국제 관계와 국제기구 교사용 설명 자료",
-        "update_mode":  "chatgpt",
-        "deploy_status":  "deploying",
-        "version_label":  "v20",
-        "railway_domain":  "",
-        "last_commit_sha":  "9865c898dbca3d9dc7c23d87ff4300ec4f284896",
-        "railway_volume_id":  "",
-        "last_deployment_id":  "1901c0b0-534c-4988-bc52-09790c64b78f",
-        "railway_service_id":  ""
-    },
-    {
-        "id":  "boardgame",
-        "name":  "학습 보드게임",
-        "slug":  "boardgame",
-        "kind":  "학습게임",
-        "subject":  "공통",
-        "audience":  "both",
-        "description":  "45칸 학습 보드게임",
-        "icon":  "🎲",
-        "published":  true,
-        "sort_order":  30,
-        "deploy_type":  "static",
-        "repo_path":  "classroom-hub/apps/boardgame",
-        "target_url":  "/apps/boardgame/",
-        "manage_url":  "",
-        "railway_service_id":  "",
-        "railway_domain":  "",
-        "railway_volume_id":  "",
-        "version":  51,
-        "version_label":  "v51",
-        "update_mode":  "chatgpt",
-        "deploy_status":  "deploying",
-        "last_commit_sha":  "530d1e2387b68aefd9b419bfb039322d4d18323e",
-        "last_deployment_id":  "c646aef4-a3a7-4bb2-ae68-91b1bf61bd7e",
-        "histories":  [
-                          {
-                              "at":  "2026-08-24T04:42:16.013Z",
-                              "note":  "자동 연결: 교사가 직접 대상 선택",
-                              "action":  "auto-patch",
-                              "version":  50,
-                              "commit_sha":  "f7340a7b42701f548c01d421db4d3ad5d0777359"
-                          },
-                          {
-                              "version":  51,
-                              "action":  "auto-patch",
-                              "commit_sha":  "530d1e2387b68aefd9b419bfb039322d4d18323e",
-                              "at":  "2026-08-24T05:49:55.774Z",
-                              "note":  "자동 연결: 교사가 직접 대상 선택"
-                          }
-                      ],
-        "created_at":  "2026-08-20T22:09:46.658Z",
-        "updated_at":  "2026-08-24T05:49:55.774Z"
-    },
-    {
-        "id":  "human-rights",
-        "icon":  "🏛️",
-        "kind":  "수행평가",
-        "name":  "인권도시 정책결정 수행평가",
-        "slug":  "human-rights",
-        "subject":  "통합사회2",
-        "version":  120,
-        "audience":  "teacher",
-        "histories":  [
-                          {
-                              "at":  "2026-08-22T11:43:34.640Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  111,
-                              "commit_sha":  "e5d752357cf7eef44ac2d498719f887ac0922520"
-                          },
-                          {
-                              "at":  "2026-08-22T14:38:15.897Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  112,
-                              "commit_sha":  "32ceeabf36d8aa64575cac4b806515f828963efc"
-                          },
-                          {
-                              "at":  "2026-08-22T14:47:59.509Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  113,
-                              "commit_sha":  "96bea3eddfaa4555a1009ebeefc29d3a177f1145"
-                          },
-                          {
-                              "at":  "2026-08-22T17:47:12.420Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  114,
-                              "commit_sha":  "72c2b3c282998b82ae84ada93819f8db8e36fdb2"
-                          },
-                          {
-                              "at":  "2026-08-23T03:44:33.403Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  115,
-                              "commit_sha":  "17bab264fefda73ca1c72d4054339893677ed923"
-                          },
-                          {
-                              "at":  "2026-08-23T04:44:32.765Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  116,
-                              "commit_sha":  "693f3507d76ca997ced9b4771968ebd38f5a8392"
-                          },
-                          {
-                              "at":  "2026-08-23T05:17:18.884Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  117,
-                              "commit_sha":  "15d0ddbf5e79fa80e0a2a31e5c0adda26b71d5f7"
-                          },
-                          {
-                              "at":  "2026-08-23T05:45:10.242Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  118,
-                              "commit_sha":  "00c989d4070a49a64bfc2b1ebb058ce89d631d9e"
-                          },
-                          {
-                              "at":  "2026-08-23T06:05:46.142Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  119,
-                              "commit_sha":  "42224c2626a9ccdb2e9bc306724183daa435d3d7"
-                          },
-                          {
-                              "at":  "2026-08-23T15:21:42.744Z",
-                              "note":  "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
-                              "action":  "auto-patch",
-                              "version":  120,
-                              "commit_sha":  "453add5f21c5a2376117687452aec96fa2c02522"
-                          }
-                      ],
-        "published":  true,
-        "repo_path":  "services/human-rights",
-        "created_at":  "2026-08-20T22:09:46.658Z",
-        "manage_url":  "https://yt-human-rights-production.up.railway.app/teacher",
-        "sort_order":  40,
-        "target_url":  "https://yt-human-rights-production.up.railway.app",
-        "updated_at":  "2026-08-24T00:33:28.061Z",
-        "deploy_type":  "server",
-        "description":  "새봄시 지하철 엘리베이터 우선 설치 정책결정 수행평가",
-        "update_mode":  "chatgpt",
-        "deploy_status":  "warning",
-        "version_label":  "v12.0",
-        "railway_domain":  "yt-human-rights-production.up.railway.app",
-        "last_commit_sha":  "cdf24533f91d4e3def61e4c2b1813da598c5df10",
-        "railway_volume_id":  "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
-        "last_deployment_id":  "3b0068b0-6cfe-4d81-903c-629d6eeb7909",
-        "railway_service_id":  "9a8f46db-efd3-43da-9911-2e7a24fef0f5"
-    },
-    {
-        "id":  "f8ba00b3-e0c4-47b8-af35-e3cfe0547003",
-        "icon":  "🔗",
-        "kind":  "수업자료",
-        "name":  "국제 관계와 국제기구 학생용",
-        "slug":  "국제-관계와-국제기구-학생용",
-        "subject":  "국제 관계와 국제기구",
-        "version":  3,
-        "audience":  "both",
-        "histories":  [
-                          {
-                              "at":  "2026-08-21T12:54:57.046Z",
-                              "note":  "",
-                              "action":  "create",
-                              "version":  1,
-                              "commit_sha":  "424ca34cb133603f5b572c641fa74d5a5c4b0b12"
-                          },
-                          {
-                              "at":  "2026-08-24T00:30:51.740Z",
-                              "note":  "자동 연결: 교사가 직접 대상 선택",
-                              "action":  "auto-patch",
-                              "version":  2,
-                              "commit_sha":  "e59d6489634b5181765c8ba52f60f2bb15230eb6"
-                          }
-                      ],
-        "published":  true,
-        "repo_path":  "classroom-hub/apps/국제-관계와-국제기구-학생용",
-        "created_at":  "2026-08-21T12:54:57.046Z",
-        "manage_url":  "",
-        "sort_order":  100,
-        "target_url":  "/apps/국제-관계와-국제기구-학생용/",
-        "updated_at":  "2026-08-24T07:10:52.5141356Z",
-        "deploy_type":  "static",
-        "description":  "",
-        "update_mode":  "chatgpt",
-        "deploy_status":  "deploying",
-        "version_label":  "v3",
-        "railway_domain":  "",
-        "last_commit_sha":  "6d09c950fcd8e11dee74f7df69f222f33cf19f87",
-        "railway_volume_id":  "",
-        "last_deployment_id":  "f0d76818-8640-4b43-9ecd-c1206cfc70b7",
-        "railway_service_id":  ""
-    },
-    {
-        "id":  "65f76e71-29bb-49dc-9447-4e057f30da83",
-        "icon":  "🔗",
-        "kind":  "수행평가",
-        "name":  "기후국제회의 수행평가",
-        "slug":  "기후국제회의-수행평가",
-        "subject":  "공통",
-        "version":  242,
-        "audience":  "teacher",
-        "histories":  [
-                          {
-                              "at":  "2026-08-23T10:00:15.387Z",
-                              "note":  "",
-                              "action":  "create",
-                              "version":  1,
-                              "commit_sha":  "2c2e274d6e12beb59ee2fbc9711e3cedb9d196e1"
-                          },
-                          {
-                              "at":  "2026-08-23T10:22:14.240Z",
-                              "note":  "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
-                              "action":  "auto-patch",
-                              "version":  222,
-                              "commit_sha":  "734a6a30d267867a8c58aa582ae7a42494e3c08f"
-                          },
-                          {
-                              "at":  "2026-08-23T10:50:32.728Z",
-                              "note":  "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
-                              "action":  "auto-patch",
-                              "version":  223,
-                              "commit_sha":  "dff9a8263d64ad2edc4fe02846dca58fcbc36563"
-                          },
-                          {
-                              "at":  "2026-08-23T11:05:02.661Z",
-                              "note":  "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
-                              "action":  "auto-patch",
-                              "version":  224,
-                              "commit_sha":  "15c0271905187a1fd0c4c7791216eb33e1d4a061"
-                          },
-                          {
-                              "at":  "2026-08-23T12:19:39.028Z",
-                              "note":  "자동 연결: 교사가 직접 대상 선택",
-                              "action":  "auto-patch",
-                              "version":  231,
-                              "commit_sha":  "35afdf90288b0105d7dc65b80ca4bc46d9d75279"
-                          },
-                          {
-                              "at":  "2026-08-23T13:21:15.435Z",
-                              "note":  "자동 연결: 교사가 직접 대상 선택",
-                              "action":  "auto-patch",
-                              "version":  240,
-                              "commit_sha":  "0f9faac21988ca3a150293c6856e616de5406fa9"
-                          },
-                          {
-                              "at":  "2026-08-23T13:41:55.276Z",
-                              "note":  "자동 연결: 교사가 직접 대상 선택",
-                              "action":  "auto-patch",
-                              "version":  241,
-                              "commit_sha":  "1347a5062607cf3e1bf4434a861e277269370e0d"
-                          },
-                          {
-                              "at":  "2026-08-23T13:54:24.390Z",
-                              "note":  "자동 연결: 교사가 직접 대상 선택",
-                              "action":  "auto-patch",
-                              "version":  242,
-                              "commit_sha":  "18639d4b87c77fe18de625e181c3d20b25d6724b"
-                          }
-                      ],
-        "published":  true,
-        "repo_path":  "services/기후국제회의-수행평가",
-        "created_at":  "2026-08-23T10:00:15.387Z",
-        "manage_url":  "https://yt-production-66c8.up.railway.app/?teacher=1",
-        "sort_order":  100,
-        "target_url":  "https://yt-production-66c8.up.railway.app",
-        "updated_at":  "2026-08-23T13:54:39.038Z",
-        "deploy_type":  "server",
-        "description":  "",
-        "update_mode":  "chatgpt",
-        "deploy_status":  "deploying",
-        "version_label":  "v2.4.2",
-        "railway_domain":  "yt-production-66c8.up.railway.app",
-        "last_commit_sha":  "73f72282a7219fabd7ae1d7ec0bcf67f8814dce8",
-        "railway_volume_id":  "",
-        "last_deployment_id":  "068a0f87-6df5-4773-909b-cc8ee29f1b1d",
-        "railway_service_id":  "568dcbbe-8109-4af6-98e1-944cad64d7f9"
-    }
+  {
+    "id": "social2-unit1",
+    "icon": "📘",
+    "kind": "수업자료",
+    "name": "통합사회2 1단원 교사설명용",
+    "slug": "social2",
+    "subject": "통합사회2",
+    "version": 13,
+    "audience": "teacher",
+    "histories": [
+      {
+        "at": "2026-08-24T04:19:35.256Z",
+        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
+        "action": "auto-patch",
+        "version": 12,
+        "commit_sha": "6ccd4aed07fbc855293df23ace2866d0f6f23982"
+      },
+      {
+        "at": "2026-08-24T04:38:18.416Z",
+        "note": "복구 원본 e336f25",
+        "action": "rollback",
+        "version": 13,
+        "commit_sha": "2601bfc497ecd2f64d6d36d8a931d8ff99851935"
+      }
+    ],
+    "published": true,
+    "repo_path": "classroom-hub/apps/social2",
+    "created_at": "2026-08-20T22:09:46.658Z",
+    "manage_url": "",
+    "sort_order": 10,
+    "target_url": "/apps/social2/",
+    "updated_at": "2026-08-24T04:38:18.416Z",
+    "deploy_type": "static",
+    "description": "통합사회2 1단원 교사용 설명 자료",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "version_label": "v12",
+    "railway_domain": "",
+    "last_commit_sha": "b2fcd1ac09541f91cd01d3dc8946c81abf0af5b1",
+    "railway_volume_id": "",
+    "last_deployment_id": "f27cecaa-0879-4870-b720-6ed60d3aa06e",
+    "railway_service_id": ""
+  },
+  {
+    "id": "international-relations",
+    "icon": "🌐",
+    "kind": "수업자료",
+    "name": "국제 관계와 국제기구 교사설명용",
+    "slug": "international-relations",
+    "subject": "국제 관계와 국제기구",
+    "version": 20,
+    "audience": "teacher",
+    "histories": [
+      {
+        "at": "2026-08-21T11:45:03.272Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 5개 확인",
+        "action": "auto-patch",
+        "version": 16,
+        "commit_sha": "546861711cbbe91e67e1c1afa4c5adee13a4766f"
+      },
+      {
+        "at": "2026-08-21T12:52:33.005Z",
+        "note": "자동 연결: GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 4개 확인",
+        "action": "auto-patch",
+        "version": 17,
+        "commit_sha": "534f324c893f4abcc361bdc07b564a0dc95a9173"
+      },
+      {
+        "at": "2026-08-21T12:53:50.142Z",
+        "note": "복구 원본 5468617",
+        "action": "rollback",
+        "version": 18,
+        "commit_sha": "c3fe00d6009e1dfb5235e71f2a47d143a7d6ce9f"
+      },
+      {
+        "at": "2026-08-21T12:55:34.784Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 5개 확인",
+        "action": "auto-patch",
+        "version": 19,
+        "commit_sha": "926bedcef33d4b349488edfec1d4381d9876e435"
+      }
+    ],
+    "published": true,
+    "repo_path": "classroom-hub/apps/international-relations",
+    "created_at": "2026-08-20T22:09:46.658Z",
+    "manage_url": "",
+    "sort_order": 20,
+    "target_url": "/apps/international-relations/",
+    "updated_at": "2026-08-24T07:11:23.297Z",
+    "deploy_type": "static",
+    "description": "국제 관계와 국제기구 교사용 설명 자료",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "version_label": "v20",
+    "railway_domain": "",
+    "last_commit_sha": "9865c898dbca3d9dc7c23d87ff4300ec4f284896",
+    "railway_volume_id": "",
+    "last_deployment_id": "1901c0b0-534c-4988-bc52-09790c64b78f",
+    "railway_service_id": ""
+  },
+  {
+    "id": "boardgame",
+    "name": "학습 보드게임",
+    "slug": "boardgame",
+    "kind": "학습게임",
+    "subject": "공통",
+    "audience": "both",
+    "description": "45칸 학습 보드게임",
+    "icon": "🎲",
+    "published": true,
+    "sort_order": 30,
+    "deploy_type": "static",
+    "repo_path": "classroom-hub/apps/boardgame",
+    "target_url": "/apps/boardgame/",
+    "manage_url": "",
+    "railway_service_id": "",
+    "railway_domain": "",
+    "railway_volume_id": "",
+    "version": 51,
+    "version_label": "v51",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "last_commit_sha": "fb694da7ae5c291ce9a075bd33e0abaa97bd8d22",
+    "last_deployment_id": "c646aef4-a3a7-4bb2-ae68-91b1bf61bd7e",
+    "histories": [
+      {
+        "at": "2026-08-24T04:42:16.013Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 50,
+        "commit_sha": "f7340a7b42701f548c01d421db4d3ad5d0777359"
+      },
+      {
+        "at": "2026-08-24T05:49:55.774Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 51,
+        "commit_sha": "530d1e2387b68aefd9b419bfb039322d4d18323e"
+      }
+    ],
+    "created_at": "2026-08-20T22:09:46.658Z",
+    "updated_at": "2026-08-24T07:27:21.133Z"
+  },
+  {
+    "id": "human-rights",
+    "icon": "🏛️",
+    "kind": "수행평가",
+    "name": "인권도시 정책결정 수행평가",
+    "slug": "human-rights",
+    "subject": "통합사회2",
+    "version": 120,
+    "audience": "teacher",
+    "histories": [
+      {
+        "at": "2026-08-22T11:43:34.640Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 111,
+        "commit_sha": "e5d752357cf7eef44ac2d498719f887ac0922520"
+      },
+      {
+        "at": "2026-08-22T14:38:15.897Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 112,
+        "commit_sha": "32ceeabf36d8aa64575cac4b806515f828963efc"
+      },
+      {
+        "at": "2026-08-22T14:47:59.509Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 113,
+        "commit_sha": "96bea3eddfaa4555a1009ebeefc29d3a177f1145"
+      },
+      {
+        "at": "2026-08-22T17:47:12.420Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 114,
+        "commit_sha": "72c2b3c282998b82ae84ada93819f8db8e36fdb2"
+      },
+      {
+        "at": "2026-08-23T03:44:33.403Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 115,
+        "commit_sha": "17bab264fefda73ca1c72d4054339893677ed923"
+      },
+      {
+        "at": "2026-08-23T04:44:32.765Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 116,
+        "commit_sha": "693f3507d76ca997ced9b4771968ebd38f5a8392"
+      },
+      {
+        "at": "2026-08-23T05:17:18.884Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 117,
+        "commit_sha": "15d0ddbf5e79fa80e0a2a31e5c0adda26b71d5f7"
+      },
+      {
+        "at": "2026-08-23T05:45:10.242Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 118,
+        "commit_sha": "00c989d4070a49a64bfc2b1ebb058ce89d631d9e"
+      },
+      {
+        "at": "2026-08-23T06:05:46.142Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 119,
+        "commit_sha": "42224c2626a9ccdb2e9bc306724183daa435d3d7"
+      },
+      {
+        "at": "2026-08-23T15:21:42.744Z",
+        "note": "자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 프로그램 이름 일치 · 관련 내용 7개 확인",
+        "action": "auto-patch",
+        "version": 120,
+        "commit_sha": "453add5f21c5a2376117687452aec96fa2c02522"
+      }
+    ],
+    "published": true,
+    "repo_path": "services/human-rights",
+    "created_at": "2026-08-20T22:09:46.658Z",
+    "manage_url": "https://yt-human-rights-production.up.railway.app/teacher",
+    "sort_order": 40,
+    "target_url": "https://yt-human-rights-production.up.railway.app",
+    "updated_at": "2026-08-24T00:33:28.061Z",
+    "deploy_type": "server",
+    "description": "새봄시 지하철 엘리베이터 우선 설치 정책결정 수행평가",
+    "update_mode": "chatgpt",
+    "deploy_status": "warning",
+    "version_label": "v12.0",
+    "railway_domain": "yt-human-rights-production.up.railway.app",
+    "last_commit_sha": "cdf24533f91d4e3def61e4c2b1813da598c5df10",
+    "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
+    "last_deployment_id": "3b0068b0-6cfe-4d81-903c-629d6eeb7909",
+    "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5"
+  },
+  {
+    "id": "f8ba00b3-e0c4-47b8-af35-e3cfe0547003",
+    "icon": "🔗",
+    "kind": "수업자료",
+    "name": "국제 관계와 국제기구 학생용",
+    "slug": "국제-관계와-국제기구-학생용",
+    "subject": "국제 관계와 국제기구",
+    "version": 3,
+    "audience": "both",
+    "histories": [
+      {
+        "at": "2026-08-21T12:54:57.046Z",
+        "note": "",
+        "action": "create",
+        "version": 1,
+        "commit_sha": "424ca34cb133603f5b572c641fa74d5a5c4b0b12"
+      },
+      {
+        "at": "2026-08-24T00:30:51.740Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 2,
+        "commit_sha": "e59d6489634b5181765c8ba52f60f2bb15230eb6"
+      }
+    ],
+    "published": true,
+    "repo_path": "classroom-hub/apps/국제-관계와-국제기구-학생용",
+    "created_at": "2026-08-21T12:54:57.046Z",
+    "manage_url": "",
+    "sort_order": 100,
+    "target_url": "/apps/국제-관계와-국제기구-학생용/",
+    "updated_at": "2026-08-24T07:11:23.297Z",
+    "deploy_type": "static",
+    "description": "",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "version_label": "v3",
+    "railway_domain": "",
+    "last_commit_sha": "6d09c950fcd8e11dee74f7df69f222f33cf19f87",
+    "railway_volume_id": "",
+    "last_deployment_id": "f0d76818-8640-4b43-9ecd-c1206cfc70b7",
+    "railway_service_id": ""
+  },
+  {
+    "id": "65f76e71-29bb-49dc-9447-4e057f30da83",
+    "icon": "🔗",
+    "kind": "수행평가",
+    "name": "기후국제회의 수행평가",
+    "slug": "기후국제회의-수행평가",
+    "subject": "공통",
+    "version": 242,
+    "audience": "teacher",
+    "histories": [
+      {
+        "at": "2026-08-23T10:00:15.387Z",
+        "note": "",
+        "action": "create",
+        "version": 1,
+        "commit_sha": "2c2e274d6e12beb59ee2fbc9711e3cedb9d196e1"
+      },
+      {
+        "at": "2026-08-23T10:22:14.240Z",
+        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
+        "action": "auto-patch",
+        "version": 222,
+        "commit_sha": "734a6a30d267867a8c58aa582ae7a42494e3c08f"
+      },
+      {
+        "at": "2026-08-23T10:50:32.728Z",
+        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
+        "action": "auto-patch",
+        "version": 223,
+        "commit_sha": "dff9a8263d64ad2edc4fe02846dca58fcbc36563"
+      },
+      {
+        "at": "2026-08-23T11:05:02.661Z",
+        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
+        "action": "auto-patch",
+        "version": 224,
+        "commit_sha": "15c0271905187a1fd0c4c7791216eb33e1d4a061"
+      },
+      {
+        "at": "2026-08-23T12:19:39.028Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 231,
+        "commit_sha": "35afdf90288b0105d7dc65b80ca4bc46d9d75279"
+      },
+      {
+        "at": "2026-08-23T13:21:15.435Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 240,
+        "commit_sha": "0f9faac21988ca3a150293c6856e616de5406fa9"
+      },
+      {
+        "at": "2026-08-23T13:41:55.276Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 241,
+        "commit_sha": "1347a5062607cf3e1bf4434a861e277269370e0d"
+      },
+      {
+        "at": "2026-08-23T13:54:24.390Z",
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 242,
+        "commit_sha": "18639d4b87c77fe18de625e181c3d20b25d6724b"
+      }
+    ],
+    "published": true,
+    "repo_path": "services/기후국제회의-수행평가",
+    "created_at": "2026-08-23T10:00:15.387Z",
+    "manage_url": "https://yt-production-66c8.up.railway.app/?teacher=1",
+    "sort_order": 100,
+    "target_url": "https://yt-production-66c8.up.railway.app",
+    "updated_at": "2026-08-23T13:54:39.038Z",
+    "deploy_type": "server",
+    "description": "",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "version_label": "v2.4.2",
+    "railway_domain": "yt-production-66c8.up.railway.app",
+    "last_commit_sha": "73f72282a7219fabd7ae1d7ec0bcf67f8814dce8",
+    "railway_volume_id": "",
+    "last_deployment_id": "068a0f87-6df5-4773-909b-cc8ee29f1b1d",
+    "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9"
+  }
 ]
