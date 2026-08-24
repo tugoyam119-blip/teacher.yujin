@@ -4,7 +4,7 @@
 <head><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>국제 관계와 국제기구 교사 설명용 ver14</title>
+<title>국제 관계와 국제기구 교사 설명용 · 클래스룸 v20</title>
 <style>
 :root{
   --bg:#f5f7fb; --paper:#fff; --ink:#1f2937; --muted:#64748b; --line:#dbe3ee;
@@ -126,10 +126,16 @@ html,body{margin:0!important;padding:0!important;width:100%!important;max-width:
 .v10-card-basic .v10-card-type{background:#fff0f5!important;color:#a55374!important}
 .v10-card-core .v10-card-type{background:#ffe2ed!important;color:#c42f6d!important}
 .quiz .v10-term,.quiz .v10-term-core,.quiz .v10-term-basic{all:unset!important;color:inherit!important;font:inherit!important}
-</style></head>
+</style><style id="yt50qa-focus-patch-css">
+.focus-nav{display:none!important} body.focus-mode .focus-nav{display:flex!important}
+body.focus-mode .v10-rail{display:none!important} body.focus-mode .v10-main{max-width:1100px!important;margin:0 auto!important}
+#focusBtn.active{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
+@media(max-width:700px){body.focus-mode .focus-nav{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;left:8px!important;right:8px!important;bottom:8px!important}body.focus-mode .focus-nav .current-lesson{text-align:center!important;max-width:none!important}}
+</style>
+</head>
 <body class="teacher-mode">
 <div class="topbar enhanced-topbar">
-<div class="brand">국제 관계와 국제기구<small>교사 설명용 · preview 본문 기반 ver4 · 교사용 전용</small></div>
+<div class="brand">국제 관계와 국제기구<small>교사 설명용 · 클래스룸 v20 · 50회 운영검증 반영</small></div>
 <div class="top-search-wrap"><input autocomplete="off" class="lesson-search" id="lessonSearch" placeholder="현재 자료에서 개념·용어 검색 (Enter: 다음 결과)"/></div>
 <div class="toolbar">
 <span class="btn active" style="cursor:default;pointer-events:none">교사용 전용</span>
@@ -530,6 +536,22 @@ document.addEventListener('DOMContentLoaded',()=>{v10Render();v10InitSearch();v1
       });
     });
   }
+})();
+</script>
+<script id="yt50qa-focus-patch-js">
+(function(){
+ function initFocusMode(){
+  const btn=document.getElementById('focusBtn'),prev=document.getElementById('prevLesson'),next=document.getElementById('nextLesson'),label=document.getElementById('currentLessonLabel');
+  const lessons=[...document.querySelectorAll('.lesson')],links=[...document.querySelectorAll('.v10-nav-link')]; if(!btn||!lessons.length)return; let idx=0;
+  const titleOf=el=>((el.querySelector('.lesson-no')?.textContent?.trim()||'')+' '+(el.querySelector('h2')?.textContent?.trim()||el.id||'')).trim();
+  function current(){const a=links.find(x=>x.classList.contains('active'));if(a){const id=(a.getAttribute('href')||'').replace(/^#/,'');const i=lessons.findIndex(x=>x.id===id);if(i>=0)return i;}let best=0,mark=Math.max(110,innerHeight*.28);lessons.forEach((x,i)=>{if(x.getBoundingClientRect().top<=mark)best=i});return best;}
+  function show(i,scroll=true){idx=Math.max(0,Math.min(lessons.length-1,i));lessons.forEach((x,j)=>x.classList.toggle('focus-active',j===idx));links.forEach(a=>a.classList.toggle('active',(a.getAttribute('href')||'')==='#'+lessons[idx].id));if(label)label.textContent=titleOf(lessons[idx]);if(prev)prev.disabled=idx===0;if(next)next.disabled=idx===lessons.length-1;if(scroll)scrollTo({top:0,behavior:'auto'});}
+  function mode(on){if(on){idx=current();document.body.classList.add('focus-mode');btn.classList.add('active');btn.textContent='전체 차시 보기';show(idx,false)}else{document.body.classList.remove('focus-mode');btn.classList.remove('active');btn.textContent='한 차시 보기';lessons.forEach(x=>x.classList.remove('focus-active'))}btn.setAttribute('aria-pressed',on?'true':'false');}
+  btn.addEventListener('click',()=>mode(!document.body.classList.contains('focus-mode')));prev?.addEventListener('click',()=>show(idx-1));next?.addEventListener('click',()=>show(idx+1));
+  links.forEach(a=>a.addEventListener('click',e=>{if(!document.body.classList.contains('focus-mode'))return;e.preventDefault();const id=(a.getAttribute('href')||'').replace(/^#/,'');const i=lessons.findIndex(x=>x.id===id);if(i>=0)show(i)}));
+  document.addEventListener('keydown',e=>{if(!document.body.classList.contains('focus-mode'))return;if(e.key==='ArrowLeft')show(idx-1);else if(e.key==='ArrowRight')show(idx+1);else if(e.key==='Escape')mode(false)});btn.setAttribute('aria-pressed','false');
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initFocusMode);else initFocusMode();
 })();
 </script>
 </body>
