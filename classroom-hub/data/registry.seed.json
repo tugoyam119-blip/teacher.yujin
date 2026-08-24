@@ -17,23 +17,30 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 12,
+    "version": 13,
     "version_label": "v12",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "6ccd4aed07fbc855293df23ace2866d0f6f23982",
-    "last_deployment_id": "9ad79c9a-7b20-4a78-9460-e29b095e4ace",
+    "last_commit_sha": "2601bfc497ecd2f64d6d36d8a931d8ff99851935",
+    "last_deployment_id": "f27cecaa-0879-4870-b720-6ed60d3aa06e",
     "histories": [
       {
-        "version": 12,
-        "action": "auto-patch",
-        "commit_sha": "6ccd4aed07fbc855293df23ace2866d0f6f23982",
         "at": "2026-08-24T04:19:35.256Z",
-        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인"
+        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
+        "action": "auto-patch",
+        "version": 12,
+        "commit_sha": "6ccd4aed07fbc855293df23ace2866d0f6f23982"
+      },
+      {
+        "version": 13,
+        "action": "rollback",
+        "commit_sha": "2601bfc497ecd2f64d6d36d8a931d8ff99851935",
+        "at": "2026-08-24T04:38:18.416Z",
+        "note": "복구 원본 e336f25"
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-24T04:19:35.256Z"
+    "updated_at": "2026-08-24T04:38:18.416Z"
   },
   {
     "id": "international-relations",
