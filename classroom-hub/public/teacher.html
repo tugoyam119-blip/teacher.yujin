@@ -29,7 +29,11 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 .modal-bg{position:fixed;inset:0;background:rgba(22,34,52,.46);display:none;align-items:center;justify-content:center;padding:18px;z-index:1000}.modal-bg.show{display:flex}.modalx{width:min(720px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:16px;padding:18px;box-shadow:0 20px 55px rgba(15,23,42,.25)}.modalx h2{margin:0 0 12px;font-size:20px;color:#263c59}.modalx h3{font-size:15px;margin:18px 0 8px;color:#314968}.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.tool-list{display:flex;flex-direction:column;gap:8px}.tool-row{border:1px solid #e2e8f0;border-radius:11px;padding:11px;display:flex;justify-content:space-between;gap:10px;align-items:center}.tool-row p{margin:3px 0 0;color:#6b778c;font-size:12px}.system-box{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.system-item{background:#f7f9fc;border:1px solid #e3e8f0;border-radius:10px;padding:10px}.system-item b{display:block;font-size:12px}.system-item span{font-size:11px;color:#6f7d8f;word-break:break-word}
 .searchline{display:flex;gap:8px;align-items:center}.searchline input{flex:1;border:1px solid #d4dce7;border-radius:9px;padding:9px 10px}
 .kebab{min-width:38px;padding-left:10px!important;padding-right:10px!important}
-@media(max-width:760px){.simple-shell{padding:10px}.simple-top{align-items:flex-start;flex-direction:column}.patch-row{grid-template-columns:1fr}.program-grid{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.full{grid-column:auto}.system-box{grid-template-columns:1fr}.hero-simple{padding:18px}.card-actions .btnx{flex:1 1 45%}}
+.program-card.pinned{border-color:#e2bd61;background:linear-gradient(180deg,#fffdf5,#fff);box-shadow:0 8px 22px rgba(165,122,25,.10)}
+.program-info{flex:1;min-width:0}
+.pin-btn{margin-left:auto;flex:0 0 auto;border:1px solid #d8e0eb;background:#fff;color:#65748a;border-radius:9px;padding:6px 9px;font-size:11px;font-weight:850;cursor:pointer;white-space:nowrap}
+.pin-btn:hover{background:#f7f9fc}.pin-btn.active{border-color:#e2bd61;background:#fff7d6;color:#865d05}
+@media(max-width:760px){.simple-shell{padding:10px}.simple-top{align-items:flex-start;flex-direction:column}.patch-row{grid-template-columns:1fr}.program-grid{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.full{grid-column:auto}.system-box{grid-template-columns:1fr}.hero-simple{padding:18px}.card-actions .btnx{flex:1 1 45%}.pin-btn{padding:6px 8px}}
 </style>
 </head>
 <body>
@@ -75,7 +79,7 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 
   <section class="program-section">
     <div class="section-head-simple">
-      <div><h2>내 프로그램</h2><p>수업할 때는 여기에서 바로 열면 됩니다.</p></div>
+      <div><h2>내 프로그램</h2><p>☆을 눌러 자주 쓰는 프로그램을 위에 고정할 수 있습니다.</p></div>
       <div class="searchline"><input id="programSearch" placeholder="프로그램 찾기"></div>
     </div>
     <div id="programGrid" class="program-grid"></div>
@@ -172,6 +176,10 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 
 <script>
 let acts=[],system={},historyData={core_histories:[],activities:[]};
+const PIN_KEY='yujint_teacher_pins_v1';
+function loadPins(){try{const x=JSON.parse(localStorage.getItem(PIN_KEY)||'[]');return new Set(Array.isArray(x)?x.map(String):[])}catch{return new Set()}}
+let pinnedIds=loadPins();
+function savePins(){try{localStorage.setItem(PIN_KEY,JSON.stringify([...pinnedIds]))}catch{}}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 async function api(url,opt={}){const r=await fetch(url,opt);const j=await r.json().catch(()=>({}));if(r.status===401){location.href='/';throw Error('로그인이 필요합니다.')}if(!r.ok)throw Error(j.error||'요청 실패');return j}
@@ -189,6 +197,7 @@ async function load(){
     api('/api/admin/chatgpt/history').catch(()=>({core_histories:[],activities:[]}))
   ]);
   acts=a.activities||[];system=s||{};historyData=h||{core_histories:[],activities:[]};
+  const validIds=new Set(acts.map(x=>String(x.id)));const beforePins=pinnedIds.size;pinnedIds=new Set([...pinnedIds].filter(id=>validIds.has(String(id))));if(pinnedIds.size!==beforePins)savePins();
   renderPrograms();renderTargets();renderSystem();
 }
 function renderTargets(){
@@ -198,11 +207,16 @@ function renderTargets(){
 }
 function renderPrograms(){
   const q=$('#programSearch').value.trim().toLowerCase();
-  const rows=acts.filter(a=>!q||[a.name,a.subject,a.kind].join(' ').toLowerCase().includes(q));
+  const rows=acts.filter(a=>!q||[a.name,a.subject,a.kind].join(' ').toLowerCase().includes(q)).sort((a,b)=>{
+    const pinDiff=Number(pinnedIds.has(String(b.id)))-Number(pinnedIds.has(String(a.id)));
+    if(pinDiff)return pinDiff;
+    const orderDiff=Number(a.sort_order||100)-Number(b.sort_order||100);
+    return orderDiff||String(a.name||'').localeCompare(String(b.name||''),'ko');
+  });
   $('#programGrid').innerHTML=rows.length?rows.map(a=>{
-    const safe=latestSafe(a);
-    return `<article class="program-card">
-      <div class="program-title"><div class="program-icon">${esc(a.icon)}</div><div><h3>${esc(a.name)}</h3><div class="meta">${esc(a.subject)} · ${esc(a.kind)} · ${esc(ver(a))}</div></div></div>
+    const safe=latestSafe(a),pinned=pinnedIds.has(String(a.id));
+    return `<article class="program-card ${pinned?'pinned':''}">
+      <div class="program-title"><div class="program-icon">${esc(a.icon)}</div><div class="program-info"><h3>${esc(a.name)}</h3><div class="meta">${esc(a.subject)} · ${esc(a.kind)} · ${esc(ver(a))}</div></div><button class="pin-btn ${pinned?'active':''}" onclick="togglePin('${esc(a.id)}')" aria-pressed="${pinned?'true':'false'}" title="${pinned?'고정 해제':'위에 고정'}">${pinned?'★ 고정됨':'☆ 고정'}</button></div>
       <div class="desc">${esc(a.description||'')}</div>
       <div class="statusline"><span>${a.published?'공개':'숨김'} · ${a.deploy_type==='server'?'서버형':a.deploy_type==='static'?'내부 웹앱':'외부 링크'}</span><span class="status ${deployClass(a)}">${esc(deployText(a))}</span></div>
       <div class="card-actions">
@@ -214,6 +228,7 @@ function renderPrograms(){
     </article>`;
   }).join(''):'<div class="empty">조건에 맞는 프로그램이 없습니다.</div>';
 }
+window.togglePin=id=>{id=String(id);if(pinnedIds.has(id))pinnedIds.delete(id);else pinnedIds.add(id);savePins();renderPrograms()}
 window.copyLink=async t=>{try{await navigator.clipboard.writeText(t);alert('학생용 링크를 복사했습니다.')}catch{prompt('아래 링크를 복사하세요.',t)}}
 window.undoLatest=async(id,hid)=>{if(!confirm('마지막 안전 작업 직전 상태로 되돌릴까요?\\n학생 링크는 그대로 유지됩니다.'))return;try{await api('/api/admin/chatgpt/app-rollback/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('복구와 재배포를 요청했습니다.');await load()}catch(e){alert(e.message)}}
 window.openManage=id=>{
