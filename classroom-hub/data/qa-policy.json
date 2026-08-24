@@ -1,0 +1,20 @@
+{
+    "requiredRunsBeforePatch":  50,
+    "name":  "유진T 클래스룸 50회 운영검증 정책",
+    "releaseRule":  "중대 오류 0건 + 핵심 시나리오 100% 통과 후 정식 승격",
+    "perspectives":  [
+                         "교사 수업 준비",
+                         "학생 안내",
+                         "수업 중 통제",
+                         "저장·재접속",
+                         "제출·채점",
+                         "초기화·복구",
+                         "다음 반 재사용",
+                         "모바일·화면크기",
+                         "오류 입력·파일",
+                         "버전 확인"
+                     ],
+    "reuseRule":  "좋은 기능은 feature-registry에 승격하고 불편했던 패턴은 deprecated로 기록한다.",
+    "schemaVersion":  1,
+    "requiredRunsAfterPatch":  50
+}
