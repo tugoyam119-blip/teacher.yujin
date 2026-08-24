@@ -1,28 +1,13 @@
 [
   {
     "id": "social2-unit1",
+    "icon": "📘",
+    "kind": "수업자료",
     "name": "통합사회2 1단원 교사설명용",
     "slug": "social2",
-    "kind": "수업자료",
     "subject": "통합사회2",
-    "audience": "teacher",
-    "description": "통합사회2 1단원 교사용 설명 자료",
-    "icon": "📘",
-    "published": true,
-    "sort_order": 10,
-    "deploy_type": "static",
-    "repo_path": "classroom-hub/apps/social2",
-    "target_url": "/apps/social2/",
-    "manage_url": "",
-    "railway_service_id": "",
-    "railway_domain": "",
-    "railway_volume_id": "",
     "version": 13,
-    "version_label": "v12",
-    "update_mode": "chatgpt",
-    "deploy_status": "deploying",
-    "last_commit_sha": "b2fcd1ac09541f91cd01d3dc8946c81abf0af5b1",
-    "last_deployment_id": "f27cecaa-0879-4870-b720-6ed60d3aa06e",
+    "audience": "teacher",
     "histories": [
       {
         "at": "2026-08-24T04:19:35.256Z",
@@ -39,8 +24,23 @@
         "commit_sha": "2601bfc497ecd2f64d6d36d8a931d8ff99851935"
       }
     ],
+    "published": true,
+    "repo_path": "classroom-hub/apps/social2",
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-08-24T07:29:47.972Z"
+    "manage_url": "",
+    "sort_order": 10,
+    "target_url": "/apps/social2/",
+    "updated_at": "2026-08-24T07:29:50.086Z",
+    "deploy_type": "static",
+    "description": "통합사회2 1단원 교사용 설명 자료",
+    "update_mode": "chatgpt",
+    "deploy_status": "warning",
+    "version_label": "v12",
+    "railway_domain": "",
+    "last_commit_sha": "b2fcd1ac09541f91cd01d3dc8946c81abf0af5b1",
+    "railway_volume_id": "",
+    "last_deployment_id": "f27cecaa-0879-4870-b720-6ed60d3aa06e",
+    "railway_service_id": ""
   },
   {
     "id": "international-relations",
@@ -368,5 +368,41 @@
     "railway_volume_id": "",
     "last_deployment_id": "068a0f87-6df5-4773-909b-cc8ee29f1b1d",
     "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9"
+  },
+  {
+    "id": "335893b2-c0c1-40bd-b96e-ac07babc6d55",
+    "name": "환율 비상! 국제경제 대응팀",
+    "slug": "환율-비상-국제경제-대응팀",
+    "kind": "수업자료",
+    "subject": "국제 관계와 국제 기구",
+    "audience": "teacher",
+    "description": "",
+    "icon": "💱",
+    "published": true,
+    "sort_order": 100,
+    "deploy_type": "server",
+    "repo_path": "services/환율-비상-국제경제-대응팀",
+    "target_url": "https://yt-production-2571.up.railway.app",
+    "manage_url": "https://yt-production-2571.up.railway.app/?teacher=1",
+    "railway_service_id": "e583f37b-f207-4f49-8f40-ced8cc350171",
+    "railway_domain": "yt-production-2571.up.railway.app",
+    "railway_volume_id": "",
+    "version": 1,
+    "version_label": "v1",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "last_commit_sha": "86c4733430561cc90839043463827c667a401611",
+    "last_deployment_id": "440521cd-4b4e-44b9-9a92-20863160917e",
+    "histories": [
+      {
+        "version": 1,
+        "action": "create",
+        "commit_sha": "86c4733430561cc90839043463827c667a401611",
+        "at": "2026-08-24T08:52:41.254Z",
+        "note": ""
+      }
+    ],
+    "created_at": "2026-08-24T08:52:41.254Z",
+    "updated_at": "2026-08-24T08:52:41.254Z"
   }
 ]
