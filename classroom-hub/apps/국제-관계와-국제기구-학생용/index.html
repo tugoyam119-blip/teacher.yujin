@@ -4,7 +4,7 @@
 <head><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>국제 관계와 국제기구 · 학생용 개념 학습노트</title>
+<title>국제 관계와 국제기구 · 학생용 개념 학습노트 · 클래스룸 v3</title>
 <style>
 :root{
   --bg:#f5f7fb; --paper:#fff; --ink:#1f2937; --muted:#64748b; --line:#dbe3ee;
@@ -304,10 +304,15 @@ body.student-mode{background:#f6f8fb!important}
   .v10-mobile-close:active{background:#eef3f8!important;transform:scale(.98)}
 }
 </style>
+<style id="yt50qa-mobile-concept-close-css">
+.v10-mobile-close{display:none!important}
+@media(max-width:700px){.v10-rail.mobile-open{padding-top:48px!important}.v10-mobile-close{display:flex!important;position:sticky!important;top:-9px!important;z-index:5!important;margin:-39px 0 9px auto!important;width:max-content!important;align-items:center!important;gap:5px!important;border:1px solid #d8e0e9!important;background:#fff!important;color:#3d526c!important;border-radius:999px!important;padding:7px 11px!important;font-size:11px!important;font-weight:900!important;box-shadow:0 3px 12px rgba(30,40,60,.10)!important;cursor:pointer!important}.v10-mobile-scrim{display:none;position:fixed;inset:0;background:rgba(20,31,47,.22);z-index:119}.v10-mobile-scrim.open{display:block}}
+@media print{.v10-mobile-close,.v10-mobile-scrim{display:none!important}}
+</style>
 </head>
 <body class="student-mode">
 <div class="topbar enhanced-topbar">
-<div class="brand">국제 관계와 국제기구<small>학생용 개념 학습노트</small></div>
+<div class="brand">국제 관계와 국제기구<small>학생용 개념 학습노트 · 클래스룸 v3</small></div>
 <div class="top-search-wrap"><input autocomplete="off" class="lesson-search" id="lessonSearch" placeholder="현재 자료에서 개념·용어 검색 (Enter: 다음 결과)"/></div>
 <div class="toolbar">
 <span class="btn active" style="cursor:default;pointer-events:none">학생용</span>
@@ -762,6 +767,12 @@ document.addEventListener('DOMContentLoaded',()=>{v10Render();v10InitSearch();v1
     if(!rail.contains(e.target))closeConceptRail();
   },true);
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeConceptRail();});
+})();
+</script>
+<script id="yt50qa-mobile-concept-close-js">
+(function(){
+ function init(){const rail=document.querySelector('.v10-rail');if(!rail)return;let close=rail.querySelector('.v10-mobile-close');if(!close){close=document.createElement('button');close.type='button';close.className='v10-mobile-close';close.textContent='✕ 개념창 닫기';close.setAttribute('aria-label','최근 개념 창 닫기');rail.prepend(close)}let scrim=document.querySelector('.v10-mobile-scrim');if(!scrim){scrim=document.createElement('div');scrim.className='v10-mobile-scrim';scrim.setAttribute('aria-hidden','true');document.body.append(scrim)}const mobile=()=>matchMedia('(max-width:700px)').matches;function sync(){const open=mobile()&&rail.classList.contains('mobile-open');scrim.classList.toggle('open',open);scrim.setAttribute('aria-hidden',open?'false':'true')}function shut(){rail.classList.remove('mobile-open');sync()}close.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();shut()});scrim.addEventListener('click',shut);document.addEventListener('keydown',e=>{if(e.key==='Escape')shut()});document.addEventListener('click',e=>{if(!mobile())return;if(e.target.closest('.v10-term[data-term],.v10-pin-open'))setTimeout(sync,0)},true);new MutationObserver(sync).observe(rail,{attributes:true,attributeFilter:['class']});addEventListener('resize',()=>{if(!mobile())rail.classList.remove('mobile-open');sync()});sync()}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
 </body>
