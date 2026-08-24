@@ -1,0 +1,55 @@
+{
+    "schemaVersion":  1,
+    "features":  [
+                     {
+                         "reuse":  "문제은행/Excel 업로드·저장·불러오기",
+                         "status":  "recommended",
+                         "source":  "학습 보드게임 v53",
+                         "id":  "question-bank-storage"
+                     },
+                     {
+                         "reuse":  "간단한 시작→문제→즉시 해설",
+                         "status":  "recommended",
+                         "source":  "고양이 학습퀴즈 v1.6",
+                         "id":  "simple-quiz-flow"
+                     },
+                     {
+                         "reuse":  "반별 진도·검색·개념카드",
+                         "status":  "recommended",
+                         "source":  "국제 관계와 국제기구 교사용",
+                         "id":  "teacher-progress"
+                     },
+                     {
+                         "reuse":  "학생 메모·답안확인",
+                         "status":  "recommended-with-guard",
+                         "source":  "국제 관계와 국제기구 학생용",
+                         "id":  "student-memo",
+                         "note":  "공용기기 학생/세션 분리 필요"
+                     },
+                     {
+                         "reuse":  "수업 개방·명단·테스트 학생·진행 확인·안전 초기화",
+                         "status":  "recommended",
+                         "source":  "인권도시 v11.1",
+                         "id":  "teacher-operations-console"
+                     },
+                     {
+                         "reuse":  "서버 열기/닫기·반별 배정·API 설정·CSV",
+                         "status":  "recommended",
+                         "source":  "기후국제회의 v2.4.4",
+                         "id":  "server-class-control"
+                     },
+                     {
+                         "status":  "deprecated",
+                         "source":  "국제관계 학생용 이전 구현",
+                         "id":  "uncloseable-mobile-panel",
+                         "replacement":  "모바일 오버레이는 닫기 버튼+바깥 클릭+ESC 중 최소 2개 제공"
+                     },
+                     {
+                         "status":  "deprecated",
+                         "source":  "국제관계 교사용 한 차시 보기 이전 구현",
+                         "id":  "orphan-ui-button",
+                         "replacement":  "릴리스 전 주요 버튼 상태변화 자동검사"
+                     }
+                 ],
+    "updated":  "2026-08-24"
+}
