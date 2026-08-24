@@ -652,7 +652,7 @@ app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHe
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
 app.get('/student', (req, res) => res.sendFile(path.join(PUBLIC, 'student.html')));
-app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.3.0', storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
+app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.4.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
 
 app.post('/api/auth/login', (req, res) => {
   if (String(req.body.pin || '') !== TEACHER_PIN) return res.status(401).json({ error: '교사 PIN이 올바르지 않습니다.' });
@@ -862,6 +862,462 @@ app.get('/api/admin/check/:id', needTeacher, async (req, res, next) => {
 });
 
 app.get('/api/admin/export', needTeacher, async (req,res,next)=>{try{const s=await getState();res.setHeader('Content-Disposition','attachment; filename="yujint-v3-registry.json"');res.json(s.activities);}catch(e){next(e);}});
+
+
+// === CHATGPT_PATCH_RECEIVER_V1 ================================================
+// 안전한 패치 수신함: 교사 로그인 + GitHub 직전 HEAD 백업 + 실제 파일 복구
+function safePatchSameFileMap(left = {}, right = {}) {
+  const lk = Object.keys(left).sort(), rk = Object.keys(right).sort();
+  if (lk.length !== rk.length) return false;
+  for (let i = 0; i < lk.length; i++) {
+    if (lk[i] !== rk[i]) return false;
+    if (!Buffer.from(left[lk[i]]).equals(Buffer.from(right[rk[i]]))) return false;
+  }
+  return true;
+}
+
+function inspectChatgptCorePackage(file) {
+  const ext = path.extname(file?.originalname || '').toLowerCase();
+  if (ext !== '.zip') return null;
+  const zip = new AdmZip(file.buffer);
+  const entries = zip.getEntries().filter(e => !e.isDirectory);
+  if (!entries.length) return null;
+  const rawNames = entries.map(e => e.entryName.replace(/\\/g, '/')).filter(Boolean);
+  const firstSeg = rawNames[0]?.split('/')[0];
+  const strip = firstSeg && rawNames.every(n => n.startsWith(firstSeg + '/')) ? firstSeg + '/' : '';
+  const normalized = [];
+  for (const e of entries) {
+    let n = e.entryName.replace(/\\/g, '/');
+    if (strip && n.startsWith(strip)) n = n.slice(strip.length);
+    if (n) normalized.push({ name: n, data: e.getData() });
+  }
+  const manifestEntry = normalized.find(x => x.name.toLowerCase() === 'yujint.chatgpt.patch.json');
+  if (!manifestEntry) return null;
+  const manifest = parse(manifestEntry.data.toString('utf8'), null);
+  if (!manifest || manifest.target !== 'yujint-classroom-core') {
+    throw new Error('ChatGPT 코어 패치의 target은 yujint-classroom-core 이어야 합니다.');
+  }
+  const allowedExact = new Set(['server.js','package.json','package-lock.json','railway.json']);
+  const files = {};
+  let total = 0;
+  for (const item of normalized) {
+    const rel = item.name.replace(/^\/+/, '');
+    if (rel === 'yujint.chatgpt.patch.json') continue;
+    if (!rel || rel.includes('../') || rel.startsWith('.') || rel.split('/').includes('.git') || rel.split('/').includes('node_modules')) {
+      throw new Error(`허용되지 않은 코어 패치 경로: ${rel}`);
+    }
+    const low = rel.toLowerCase();
+    if (low.includes('.env') || low.includes('secret') || low.includes('credential') || low.includes('token')) {
+      throw new Error(`비밀정보로 보이는 파일은 코어 패치에 포함할 수 없습니다: ${rel}`);
+    }
+    const allowed = allowedExact.has(rel) || rel.startsWith('public/') || rel.startsWith('lib/');
+    if (!allowed) throw new Error(`코어 패치에서 허용되지 않은 경로입니다: ${rel}`);
+    total += item.data.length;
+    if (total > 30 * 1024 * 1024) throw new Error('코어 패치 전체 크기는 30MB를 넘을 수 없습니다.');
+    files[rel] = Buffer.from(item.data);
+  }
+  if (!Object.keys(files).length) throw new Error('코어 패치에 실제 변경 파일이 없습니다.');
+  return {
+    manifest,
+    files,
+    label: text(manifest.label || manifest.name || 'ChatGPT 코어 패치', 120),
+    version: text(manifest.version || '', 40),
+    note: text(manifest.note || '', 300)
+  };
+}
+
+async function commitChatgptCoreFiles(files, message) {
+  if (!githubConfigured()) throw new Error('GitHub 연결이 필요합니다.');
+  const head = await getGithubHead();
+  const treeEntries = [];
+  const changedPaths = [];
+  for (const [rel, buffer] of Object.entries(files)) {
+    const repoPath = `classroom-hub/${rel}`.replace(/\/+/g, '/');
+    const blob = await gh('POST', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/blobs`, {
+      content: b64(buffer),
+      encoding: 'base64'
+    });
+    treeEntries.push({ path: repoPath, mode: '100644', type: 'blob', sha: blob.sha });
+    changedPaths.push(repoPath);
+  }
+  const newTree = await gh('POST', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/trees`, {
+    base_tree: head.treeSha,
+    tree: treeEntries
+  });
+  const commit = await gh('POST', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/commits`, {
+    message,
+    tree: newTree.sha,
+    parents: [head.sha]
+  });
+  await gh('PATCH', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/refs/heads/${encodeURIComponent(GITHUB_BRANCH)}`, {
+    sha: commit.sha,
+    force: false
+  });
+  return { commitSha: commit.sha, backupSha: head.sha, files: changedPaths };
+}
+
+async function restoreChatgptCoreFiles(sourceSha, repoPaths, message) {
+  if (!githubConfigured()) throw new Error('GitHub 연결이 필요합니다.');
+  const head = await getGithubHead();
+  const sourceCommit = await gh('GET', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/commits/${encodeURIComponent(sourceSha)}`);
+  const sourceTree = await getTree(sourceCommit.tree.sha);
+  const currentTree = await getTree(head.treeSha);
+  const sm = new Map((sourceTree.tree || []).filter(x => x.type === 'blob').map(x => [x.path, x]));
+  const cm = new Map((currentTree.tree || []).filter(x => x.type === 'blob').map(x => [x.path, x]));
+  let different = false;
+  const treeEntries = [];
+  for (const p of repoPaths) {
+    const src = sm.get(p);
+    const cur = cm.get(p);
+    const srcSha = src?.sha || null, curSha = cur?.sha || null;
+    if (srcSha !== curSha) different = true;
+    treeEntries.push({ path: p, mode: src?.mode || cur?.mode || '100644', type: 'blob', sha: srcSha });
+  }
+  if (!different) throw new Error('선택한 복구 원본과 현재 코어 파일이 같습니다.');
+  const newTree = await gh('POST', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/trees`, {
+    base_tree: head.treeSha,
+    tree: treeEntries
+  });
+  const commit = await gh('POST', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/commits`, {
+    message,
+    tree: newTree.sha,
+    parents: [head.sha]
+  });
+  await gh('PATCH', `/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/git/refs/heads/${encodeURIComponent(GITHUB_BRANCH)}`, {
+    sha: commit.sha,
+    force: false
+  });
+  return { commitSha: commit.sha, backupSha: head.sha, files: repoPaths };
+}
+
+async function deployHubAfterChatgptPatch(commitSha) {
+  if (!RAILWAY_HUB_SERVICE_ID || !railwayConfigured()) return { deploymentId: '', warning: 'Railway 허브 서비스 자동배포 설정이 없어 GitHub 자동배포를 기다립니다.' };
+  try {
+    return await railwayDeployExisting(RAILWAY_HUB_SERVICE_ID, commitSha);
+  } catch (e) {
+    return { deploymentId: '', warning: e.message };
+  }
+}
+
+async function applySafeActivityPatch(req) {
+  if (!githubConfigured()) throw new Error('안전 패치는 GitHub 연결이 필요합니다.');
+  const s = await getState();
+  const info = inspectPatchPackage(req.file);
+  const matched = detectPatchTarget(info, s.activities, text(req.body.target_id, 100));
+  const i = s.activities.findIndex(a => a.id === matched.activity.id);
+  if (i < 0) throw new Error('대상 프로그램을 현재 목록에서 찾지 못했습니다.');
+  const existing = s.activities[i];
+  if (existing.deploy_type === 'external') throw new Error('외부 링크는 파일 패치를 지원하지 않습니다.');
+  if (info.detected_mode && info.detected_mode !== existing.deploy_type) {
+    throw new Error(`패치 파일 형식(${info.detected_mode})과 대상 프로그램 형식(${existing.deploy_type})이 다릅니다.`);
+  }
+
+  const before = await getGithubHead();
+  const fields = { ...existing, slug: existing.slug, deploy_type: existing.deploy_type };
+  const result = await deployUpload({ existing, fields, file: req.file });
+  const v = patchVersionInfo(info, existing);
+  const updatedManageUrl = existing.deploy_type === 'server' && existing.railway_domain
+    ? `https://${existing.railway_domain}${result.appManifest?.manage_path || '/?teacher=1'}`
+    : existing.manage_url;
+
+  const nextA = normalizeActivity({
+    ...existing,
+    version: v.version,
+    version_label: v.version_label,
+    manage_url: updatedManageUrl,
+    railway_volume_id: result.railway?.volumeInfo?.volumeId || existing.railway_volume_id || '',
+    last_commit_sha: result.commitSha,
+    last_deployment_id: result.railway?.deploymentId || existing.last_deployment_id,
+    deploy_status: result.railway?.warning ? 'warning' : (result.railway?.deploymentId ? 'deploying' : 'ready')
+  }, existing);
+  nextA.version = v.version;
+  nextA.version_label = v.version_label;
+
+  const h = historyItem(nextA, 'safe-patch', result.commitSha,
+    `안전 패치 · 자동 연결: ${matched.reason}${result.railway?.warning ? ' · ' + result.railway.warning : ''}`);
+  h.id = crypto.randomUUID();
+  h.restore_commit_sha = before.sha;
+  h.applied_commit_sha = result.commitSha;
+  h.safe_restore = true;
+
+  nextA.histories = [...(existing.histories || []), h].slice(-20);
+  s.activities[i] = nextA;
+  await saveState(s);
+  try {
+    const registrySha = await syncRegistryToGithub(s, `유진T 클래스룸: 안전 패치 ${nextA.name} ${nextA.version_label}`);
+    if (registrySha) nextA.last_commit_sha = registrySha;
+  } catch (e) {
+    nextA.deploy_status = 'warning';
+    result.registryWarning = e.message;
+  }
+  await saveState(s);
+  return {
+    type: 'activity',
+    activity: nextA,
+    matched: { id: nextA.id, name: nextA.name, version_label: nextA.version_label, reason: matched.reason },
+    backup_sha: before.sha,
+    result
+  };
+}
+
+async function safeRollbackActivity(activityId, historyId) {
+  if (!githubConfigured()) throw new Error('GitHub 연결이 필요합니다.');
+  const s = await getState();
+  const i = s.activities.findIndex(a => a.id === activityId);
+  if (i < 0) throw new Error('프로그램을 찾지 못했습니다.');
+  const a = s.activities[i];
+  const h = (a.histories || []).find(x => x.id === historyId);
+  if (!h?.restore_commit_sha) throw new Error('이 기록에는 안전 복구 원본이 없습니다.');
+
+  const rollbackHead = await getGithubHead();
+  const currentFiles = await filesFromGithubPrefix(rollbackHead.sha, a.repo_path);
+  const oldFiles = await filesFromGithubPrefix(h.restore_commit_sha, a.repo_path);
+  if (safePatchSameFileMap(currentFiles, oldFiles)) throw new Error('복구 원본과 현재 프로그램 파일이 같습니다.');
+
+  const newSha = await commitFiles({
+    files: oldFiles,
+    replacePrefix: a.repo_path,
+    message: `유진T 클래스룸: ${a.name} 안전 복구`
+  });
+
+  if (a.deploy_type === 'static') {
+    const local = {};
+    const prefix = a.repo_path.replace(/^\/+|\/+$/g, '') + '/';
+    for (const [p,b] of Object.entries(oldFiles)) local[p.slice(prefix.length)] = b;
+    await writeLocalStatic(a.slug, local);
+  }
+
+  let deploymentId = '', deployWarning = '';
+  try {
+    if (a.deploy_type === 'server' && a.railway_service_id) {
+      deploymentId = (await railwayDeployExisting(a.railway_service_id, newSha)).deploymentId || '';
+    } else if (a.deploy_type === 'static' && RAILWAY_HUB_SERVICE_ID) {
+      deploymentId = (await railwayDeployExisting(RAILWAY_HUB_SERVICE_ID, newSha)).deploymentId || '';
+    }
+  } catch (e) {
+    deployWarning = e.message;
+  }
+
+  const nextA = normalizeActivity({
+    ...a,
+    version: Number(a.version || 1) + 1,
+    version_label: `v${Number(a.version || 1) + 1}`,
+    last_commit_sha: newSha,
+    last_deployment_id: deploymentId || a.last_deployment_id,
+    deploy_status: deployWarning ? 'warning' : (deploymentId ? 'deploying' : 'ready')
+  }, a);
+  nextA.version = Number(a.version || 1) + 1;
+  nextA.version_label = `v${nextA.version}`;
+
+  const rh = historyItem(nextA, 'safe-rollback', newSha, `안전 복구 원본 ${h.restore_commit_sha.slice(0,7)}${deployWarning ? ' · ' + deployWarning : ''}`);
+  rh.id = crypto.randomUUID();
+  rh.restore_commit_sha = rollbackHead.sha;
+  rh.applied_commit_sha = newSha;
+  rh.safe_restore = true;
+  nextA.histories = [...(a.histories || []), rh].slice(-20);
+
+  s.activities[i] = nextA;
+  await saveState(s);
+  try {
+    const registrySha = await syncRegistryToGithub(s, `유진T 클래스룸: 안전 복구 정보 ${nextA.name}`);
+    if (registrySha) nextA.last_commit_sha = registrySha;
+  } catch (e) {
+    nextA.deploy_status = 'warning';
+  }
+  await saveState(s);
+  return { activity: nextA, commit_sha: newSha, backup_sha: rollbackHead.sha, deployment_id: deploymentId, warning: deployWarning };
+}
+
+function chatgptPatchPageHtml() {
+  return `<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>유진T 클래스룸 · ChatGPT 패치함</title>
+<style>
+body{margin:0;background:#f4f6fa;color:#1f2937;font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+h1{margin:0;font-size:24px}.muted{color:#64748b;font-size:13px}.card{background:#fff;border:1px solid #dbe2ee;border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 8px 24px rgba(15,23,42,.06)}
+.notice{padding:12px 14px;border-radius:12px;background:#eef6ff;border:1px solid #bfdbfe;line-height:1.6}.safe{background:#ecfdf3;border-color:#bbf7d0}
+.drop{padding:22px;border:2px dashed #b8c4d5;border-radius:14px;text-align:center;background:#f8fafc}.drop input{margin-top:12px;max-width:100%}
+select,button,a.btn{font:inherit}.row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}
+select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}.btn,button{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:10px 14px;background:#17365f;color:#fff;font-weight:800;text-decoration:none;cursor:pointer}
+.btn.secondary,button.secondary{background:#e9eef5;color:#24364f}.btn.danger,button.danger{background:#fee2e2;color:#991b1b}
+button:disabled{opacity:.55;cursor:wait}.result{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#f8fafc;border:1px solid #dbe2ee;white-space:pre-wrap}
+.hist{display:flex;flex-direction:column;gap:9px}.item{border:1px solid #e2e8f0;border-radius:12px;padding:12px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.item b{display:block}.item p{margin:4px 0 0;color:#64748b;font-size:12px}.actions{display:flex;gap:7px;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.tabs button{background:#eef2f7;color:#334155}.tabs button.active{background:#17365f;color:#fff}
+@media(max-width:700px){.row{grid-template-columns:1fr}.item{align-items:flex-start;flex-direction:column}.top{align-items:flex-start;flex-direction:column}}
+</style></head><body><div class="wrap">
+<div class="top"><div><h1>🤖 ChatGPT 패치함</h1><div class="muted">패치 적용 전 원본을 자동 저장하고, 실제 GitHub 파일과 Railway 배포까지 안전하게 관리합니다.</div></div><a class="btn secondary" href="/teacher">← 교사 화면</a></div>
+
+<div class="notice safe"><b>앞으로는 콘솔이나 BAT 파일이 필요 없습니다.</b><br>
+ChatGPT가 만들어 준 ZIP/HTML 파일을 아래에 넣고 한 번만 누르세요. 일반 프로그램 패치와 유진T 클래스룸 자체 코어 패치를 자동으로 구분합니다.</div>
+
+<div class="card"><h2>패치 적용</h2>
+<div class="drop"><b>ChatGPT가 만들어 준 패치 ZIP 또는 HTML</b><br><span class="muted">코어 패치는 yujint.chatgpt.patch.json을 포함한 ZIP으로 자동 인식됩니다.</span><br>
+<input type="file" id="file" accept=".zip,.html,.htm"></div>
+<div class="row"><div><div class="muted" style="margin-bottom:5px">일반 프로그램 자동 판단이 애매할 때만 직접 선택</div><select id="target"><option value="">자동으로 판단</option></select></div>
+<button id="apply">안전 백업 후 패치 적용</button></div>
+<div class="result" id="result"></div></div>
+
+<div class="card" id="history"><h2>안전 복구 기록</h2>
+<div class="tabs"><button id="tabApps" class="active">프로그램</button><button id="tabCore">클래스룸 코어</button></div>
+<div id="appChooser"><select id="histTarget"></select></div>
+<div class="hist" id="hist" style="margin-top:10px"></div></div>
+</div>
+<script>
+const $=s=>document.querySelector(s);let acts=[],historyData=null,mode='apps';
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+async function api(u,o={}){const r=await fetch(u,o);const j=await r.json().catch(()=>({}));if(r.status===401){location.href='/';throw Error('로그인이 필요합니다.')}if(!r.ok)throw Error(j.error||'요청 실패');return j}
+async function load(){
+ const a=await api('/api/admin/activities');acts=a.activities||[];
+ $('#target').innerHTML='<option value="">자동으로 판단</option>'+acts.filter(x=>x.deploy_type!=='external').map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+' · '+esc(x.version_label||('v'+x.version))+'</option>').join('');
+ $('#histTarget').innerHTML=acts.filter(x=>x.deploy_type!=='external').map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('');
+ historyData=await api('/api/admin/chatgpt/history');renderHistory();
+}
+function when(x){try{return new Date(x).toLocaleString('ko-KR')}catch{return x||''}}
+function renderHistory(){
+ const box=$('#hist');$('#appChooser').style.display=mode==='apps'?'block':'none';
+ if(mode==='core'){
+  const h=[...(historyData?.core_histories||[])].reverse();
+  box.innerHTML=h.length?h.map(x=>'<div class="item"><div><b>'+esc(x.label||x.action||'코어 작업')+'</b><p>'+esc(when(x.at))+' · 적용 '+esc((x.commit_sha||'').slice(0,10))+' · 원본 '+esc((x.backup_sha||'').slice(0,10))+'</p></div><div class="actions">'+(x.backup_sha?'<button class="danger" onclick="coreRollback(\\''+esc(x.id)+'\\')">이 작업 직전으로 복구</button>':'')+'</div></div>').join(''):'<div class="muted">아직 코어 안전 기록이 없습니다.</div>';
+  return;
+ }
+ const id=$('#histTarget').value||acts.find(x=>x.deploy_type!=='external')?.id;
+ const a=historyData?.activities?.find(x=>x.id===id);
+ const h=[...(a?.histories||[])].filter(x=>x.restore_commit_sha).reverse();
+ box.innerHTML=h.length?h.map(x=>'<div class="item"><div><b>'+esc(a.name)+' · '+esc(x.action)+'</b><p>'+esc(when(x.at))+' · 적용 '+esc((x.applied_commit_sha||x.commit_sha||'').slice(0,10))+' · 직전 원본 '+esc((x.restore_commit_sha||'').slice(0,10))+'</p></div><div class="actions"><button class="danger" onclick="appRollback(\\''+esc(a.id)+'\\',\\''+esc(x.id)+'\\')">패치 직전으로 복구</button></div></div>').join(''):'<div class="muted">이 프로그램에는 아직 새 안전 패치 기록이 없습니다. 다음 패치부터 자동 저장됩니다.</div>';
+}
+$('#histTarget').onchange=renderHistory;
+$('#tabApps').onclick=()=>{mode='apps';$('#tabApps').classList.add('active');$('#tabCore').classList.remove('active');renderHistory()};
+$('#tabCore').onclick=()=>{mode='core';$('#tabCore').classList.add('active');$('#tabApps').classList.remove('active');renderHistory()};
+$('#apply').onclick=async()=>{
+ const f=$('#file').files?.[0];if(!f)return alert('패치 파일을 선택하세요.');
+ const fd=new FormData();fd.append('package',f);if($('#target').value)fd.append('target_id',$('#target').value);
+ const b=$('#apply'),r=$('#result');b.disabled=true;r.style.display='block';r.textContent='원본 백업 → 패치 적용 → GitHub 커밋 → Railway 재배포를 진행하고 있습니다...';
+ try{
+  const j=await api('/api/admin/chatgpt/patch',{method:'POST',body:fd});
+  r.textContent=(j.type==='core'?'클래스룸 코어 패치 완료':'프로그램 안전 패치 완료')+'\\n원본 백업: '+(j.backup_sha||'-')+'\\n새 커밋: '+(j.commit_sha||j.result?.commitSha||'-')+'\\n'+(j.warning||'');
+  $('#file').value='';await load();
+ }catch(e){r.textContent='적용하지 않았습니다.\\n'+e.message}
+ finally{b.disabled=false}
+};
+window.appRollback=async(id,hid)=>{
+ if(!confirm('이 패치가 적용되기 직전의 실제 파일로 복구할까요?\\n학생 링크는 그대로 유지됩니다.'))return;
+ try{await api('/api/admin/chatgpt/app-rollback/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('안전 복구와 재배포를 요청했습니다.');await load()}catch(e){alert(e.message)}
+};
+window.coreRollback=async(hid)=>{
+ if(!confirm('이 코어 작업 직전 상태로 실제 파일을 복구할까요?'))return;
+ try{await api('/api/admin/chatgpt/core-rollback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('코어 안전 복구와 재배포를 요청했습니다.');await load()}catch(e){alert(e.message)}
+};
+load().catch(e=>$('#result').textContent=e.message);
+</script></body></html>`;
+}
+
+app.get('/teacher/chatgpt-patch', (req, res) => {
+  if (!isTeacher(req)) return res.redirect('/');
+  res.setHeader('Cache-Control', 'no-store');
+  res.send(chatgptPatchPageHtml());
+});
+
+app.get('/api/admin/chatgpt/history', needTeacher, async (req, res, next) => {
+  try {
+    const s = await getState();
+    res.json({
+      core_histories: Array.isArray(s.core_histories) ? s.core_histories.slice(-20) : [],
+      activities: (s.activities || []).map(a => ({
+        id: a.id, name: a.name, version: a.version, version_label: a.version_label,
+        histories: (a.histories || []).filter(h => h.restore_commit_sha).slice(-20)
+      }))
+    });
+  } catch (e) { next(e); }
+});
+
+app.post('/api/admin/chatgpt/patch', needTeacher, upload.single('package'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: '패치 ZIP 또는 HTML을 선택하세요.' });
+    const core = inspectChatgptCorePackage(req.file);
+    if (!core) {
+      const out = await applySafeActivityPatch(req);
+      return res.json({ ok: true, ...out, commit_sha: out.result?.commitSha || '' });
+    }
+
+    const commit = await commitChatgptCoreFiles(core.files, `유진T 클래스룸: ChatGPT 코어 패치 ${core.label}${core.version ? ' ' + core.version : ''}`);
+    const deploy = await deployHubAfterChatgptPatch(commit.commitSha);
+    const s = await getState();
+    const h = {
+      id: crypto.randomUUID(),
+      action: 'core-patch',
+      label: core.label,
+      version: core.version,
+      note: core.note,
+      commit_sha: commit.commitSha,
+      backup_sha: commit.backupSha,
+      files: commit.files,
+      deployment_id: deploy.deploymentId || '',
+      at: iso()
+    };
+    s.core_histories = [...(Array.isArray(s.core_histories) ? s.core_histories : []), h].slice(-20);
+    await saveState(s);
+    res.json({
+      ok: true,
+      type: 'core',
+      label: core.label,
+      version: core.version,
+      backup_sha: commit.backupSha,
+      commit_sha: commit.commitSha,
+      deployment_id: deploy.deploymentId || '',
+      warning: deploy.warning || ''
+    });
+  } catch (e) { next(e); }
+});
+
+app.post('/api/admin/chatgpt/app-rollback/:id', needTeacher, async (req, res, next) => {
+  try {
+    const historyId = text(req.body.history_id, 100);
+    if (!historyId) return res.status(400).json({ error: '복구 기록 ID가 필요합니다.' });
+    const out = await safeRollbackActivity(req.params.id, historyId);
+    res.json({ ok: true, ...out });
+  } catch (e) { next(e); }
+});
+
+app.post('/api/admin/chatgpt/core-rollback', needTeacher, async (req, res, next) => {
+  try {
+    const historyId = text(req.body.history_id, 100);
+    if (!historyId) return res.status(400).json({ error: '복구 기록 ID가 필요합니다.' });
+    const s = await getState();
+    const histories = Array.isArray(s.core_histories) ? s.core_histories : [];
+    const h = histories.find(x => x.id === historyId);
+    if (!h?.backup_sha || !Array.isArray(h.files) || !h.files.length) {
+      return res.status(400).json({ error: '이 기록에는 복구 가능한 코어 원본이 없습니다.' });
+    }
+    const restored = await restoreChatgptCoreFiles(h.backup_sha, h.files, `유진T 클래스룸: 코어 안전 복구 (${h.label || h.action || '이전 상태'})`);
+    const deploy = await deployHubAfterChatgptPatch(restored.commitSha);
+    const rh = {
+      id: crypto.randomUUID(),
+      action: 'core-rollback',
+      label: `복구: ${h.label || h.action || '이전 상태'}`,
+      version: '',
+      note: `복구 원본 ${h.backup_sha.slice(0,7)}`,
+      commit_sha: restored.commitSha,
+      backup_sha: restored.backupSha,
+      files: restored.files,
+      deployment_id: deploy.deploymentId || '',
+      at: iso()
+    };
+    s.core_histories = [...histories, rh].slice(-20);
+    await saveState(s);
+    res.json({
+      ok: true,
+      type: 'core-rollback',
+      backup_sha: restored.backupSha,
+      commit_sha: restored.commitSha,
+      deployment_id: deploy.deploymentId || '',
+      warning: deploy.warning || ''
+    });
+  } catch (e) { next(e); }
+});
+// === /CHATGPT_PATCH_RECEIVER_V1 ===============================================
+
 
 app.use((err, req, res, next) => {
   console.error('[v3]', err);
