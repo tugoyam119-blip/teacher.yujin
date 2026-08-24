@@ -387,12 +387,12 @@
     "railway_service_id": "e583f37b-f207-4f49-8f40-ced8cc350171",
     "railway_domain": "yt-production-2571.up.railway.app",
     "railway_volume_id": "",
-    "version": 2,
-    "version_label": "v2",
+    "version": 3,
+    "version_label": "v3",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "f362a8d4971109773d6a9bfd69b49fdc145ba0c5",
-    "last_deployment_id": "4a4ac5db-bea4-4f7c-8e0b-bcba4ccfd2ae",
+    "last_commit_sha": "f2c285eecf6338bcb75570ced021b8b94f817c61",
+    "last_deployment_id": "8a3144dc-8093-4539-b1cc-014dce93b04f",
     "histories": [
       {
         "at": "2026-08-24T08:52:41.254Z",
@@ -402,18 +402,29 @@
         "commit_sha": "86c4733430561cc90839043463827c667a401611"
       },
       {
-        "version": 2,
-        "action": "safe-patch",
-        "commit_sha": "f362a8d4971109773d6a9bfd69b49fdc145ba0c5",
         "at": "2026-08-24T08:57:43.401Z",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "id": "3794c7c4-9b16-4abd-af31-1d31cfdd257e",
-        "restore_commit_sha": "5fd495eceace20813a1c3cfaec47b4fe2aaf8f8f",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "action": "safe-patch",
+        "version": 2,
+        "commit_sha": "f362a8d4971109773d6a9bfd69b49fdc145ba0c5",
+        "safe_restore": true,
         "applied_commit_sha": "f362a8d4971109773d6a9bfd69b49fdc145ba0c5",
+        "restore_commit_sha": "5fd495eceace20813a1c3cfaec47b4fe2aaf8f8f"
+      },
+      {
+        "version": 3,
+        "action": "safe-patch",
+        "commit_sha": "f2c285eecf6338bcb75570ced021b8b94f817c61",
+        "at": "2026-08-24T08:58:19.760Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "06b9484f-dd02-4970-b9b6-90259eff5ca5",
+        "restore_commit_sha": "6004d9940b96cb64aa13d982c32e55bcf7b881b5",
+        "applied_commit_sha": "f2c285eecf6338bcb75570ced021b8b94f817c61",
         "safe_restore": true
       }
     ],
     "created_at": "2026-08-24T08:52:41.254Z",
-    "updated_at": "2026-08-24T08:57:43.401Z"
+    "updated_at": "2026-08-24T08:58:19.760Z"
   }
 ]
