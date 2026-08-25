@@ -16,7 +16,7 @@
     <input id="operatePassword" type="password" inputmode="numeric" autocomplete="current-password" placeholder="교사용 비밀번호">
     <div id="operateLoginMessage" class="notice warning hidden"></div>
     <button id="operateLoginBtn" class="operate-login-btn">교실 운영 화면 열기</button>
-    <div class="operate-login-links"><a href="/teacher">관리·채점 화면으로 이동</a><a href="/">학생 화면 보기</a></div>
+    <div class="operate-login-links"><a href="/manage">관리·채점 화면으로 이동</a><a href="/teacher">통합 교사센터</a><a href="/">학생 화면 보기</a></div>
   </section>
 
   <main id="operateApp" class="operate-shell hidden">
@@ -67,6 +67,12 @@
       <div class="phase-box submitted"><span>최종 제출</span><b id="submittedCount">0명</b><small>수행 완료</small></div>
     </section>
 
+    <section class="operate-live-card">
+      <div class="operate-live-head"><div><b>선택 반 접속·제출 현황</b><span>학생 이름과 학번은 교사용 조작 화면에서만 표시됩니다.</span></div><input id="operateStudentSearch" placeholder="학번 또는 이름 검색"></div>
+      <div class="operate-live-stats"><div><span>현재 접속</span><b id="liveOnline">0</b></div><div><span>접속한 적 있음</span><b id="liveEntered">0</b></div><div><span>미접속</span><b id="liveNever">0</b></div><div><span>제출 완료</span><b id="liveSubmitted">0</b></div><div><span>전체 대상</span><b id="liveTotal">0</b></div></div>
+      <div id="operateStudentRows" class="operate-student-rows"></div>
+    </section>
+
     <section class="operate-announcement" id="announcementBox">
       <span>교사 공지</span><b id="announcementText">앞 단계의 선택은 ‘나의 결정 전체보기’에서 다시 확인할 수 있습니다.</b>
     </section>
@@ -77,15 +83,22 @@
         <div class="operate-control-actions">
           <button id="presentationBtn" class="operate-btn strong">발표 모드</button>
           <button id="fullScreenBtn" class="operate-btn">전체 화면</button>
-          <a href="/teacher" target="_blank" rel="noopener" class="operate-btn link-btn">관리 화면</a>
+          <a href="/manage" target="_blank" rel="noopener" class="operate-btn link-btn">관리 화면</a>
         </div>
       </div>
 
       <div class="operate-control-grid">
         <div class="control-panel server-controls">
-          <h3>학생 수행평가 서버</h3>
+          <h3>① 전체 학생 서버</h3>
           <div class="button-row"><button id="operateCloseServer" class="operate-btn">🔒 서버 닫기</button><button id="operateOpenServer" class="operate-btn strong">🔓 수행평가 서버 열기</button></div>
-          <p><b>수업 설명이 끝난 직후 이 화면에서 바로 열 수 있습니다.</b> 서버를 닫으면 학생의 새 접속·진행과 실제 수행시간이 함께 멈춥니다.</p>
+          <p>학생이 서비스에 접속할 수 있는 전체 게이트입니다. <b>서버를 열어도 신규 반별 타이머는 시작되지 않습니다.</b></p>
+        </div>
+        <div class="control-panel class-session-controls">
+          <h3>② 선택 반 수행 운영</h3>
+          <div class="class-control-selects"><select id="operateClassSelect"><option value="1">1반</option><option value="2">2반</option><option value="3">3반</option><option value="4">4반</option><option value="5">5반</option><option value="6">6반</option><option value="7">7반</option></select><select id="operateModeSelect"><option value="regular">정규 수행</option><option value="makeup">결석·보충</option></select></div>
+          <div id="classSessionState" class="class-session-state">입장 닫힘 · 00:00 / 90:00</div>
+          <div class="button-row wrap"><button id="openClassAdmission" class="operate-btn">입장 열기</button><button id="startClassSession" class="operate-btn strong">수행 시작</button><button id="pauseClassSession" class="operate-btn">일시정지</button><button id="resumeClassSession" class="operate-btn strong">재개</button><button id="finishClassSession" class="operate-btn danger">종료</button></div>
+          <p>입장 열기 상태에서는 로그인만 가능하고 시간은 흐르지 않습니다. 시작 버튼을 누른 뒤 45분에 자동 일시정지됩니다.</p>
         </div>
         <div class="control-panel step-controls">
           <h3>화면에 보여줄 단계</h3>

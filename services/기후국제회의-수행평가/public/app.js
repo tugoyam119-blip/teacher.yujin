@@ -1,8 +1,8 @@
-const VERSION='2.4.2';
+const VERSION='2.5.0';
 const TOTAL_SECONDS=90*60;
 const stepProgress=[8,17,27,38,50,60,70,80,90,100];
 const $=s=>document.querySelector(s);
-let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null;
+let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null;
 
 const countryData={
  hanbit:{name:'한빛국',type:'선진 산업국',tags:['고소득 산업국','과거 배출 책임 큼','친환경 전환 역량 높음'],story:'한빛국은 약 40년 동안 자동차·철강·반도체 같은 수출 제조업을 중심으로 빠르게 성장한 고소득 국가입니다. 성장 과정에서 석탄과 석유를 많이 사용해 누적 온실가스 배출 책임이 크지만, 최근에는 재생에너지와 저탄소 기술에 대규모로 투자하고 있습니다. 다만 제조업 일자리와 수출 경쟁력이 중요해 너무 빠른 감축에는 국내 산업계의 반발도 큽니다.',facts:['경제·산업: 자동차·철강·반도체 중심의 수출 제조업 강국','에너지: 화석연료 사용을 줄이는 중이며 재생에너지·저탄소 기술 투자가 큼','기후 대응: 재정과 기술 역량이 높아 자체 대응 능력이 비교적 강함','국제회의 쟁점: 과거에 많이 배출한 만큼 더 큰 감축과 기후재정 부담을 요구받음'],dilemma:'책임과 능력은 크지만 산업 경쟁력과 일자리도 지켜야 한다.',metrics:{past:92,current:68,damage:34,fossil:44,transition:88},metricNotes:{responsibility:'오랜 산업화 과정에서 화석연료를 많이 사용해 누적 배출 책임이 매우 큽니다.',vulnerability:'방재 시설과 재정 여력이 있어 기후재난 피해 위험은 취약국보다 낮은 편입니다.',energy:'화석연료 의존은 중간 수준이지만 자본·기술이 충분해 친환경 전환 능력이 매우 높습니다.'}},
@@ -83,10 +83,10 @@ async function spinCountryRoulette(){
  setTimeout(async()=>{state.countryRevealDone=true;await save(false);showAssignedCountryResult();toast(`${countryLabels[session.country]} 대표로 배정되었습니다.`)},2900)
 }
 async function beginAssignedAssessment(){state.countryRevealDone=true;await save(false);$('#countryAssign').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();window.scrollTo({top:0,behavior:'smooth'})}
-function applyTimerState(t={}){timerExempt=!!t.exempt;if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
+function applyTimerState(t={}){timerExempt=!!t.exempt;timerPhase=String(t.phase||'');if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
 async function syncTimer(){if(!session)return;try{const r=await fetch(`/api/timer/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}}
 function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===45*60)toast('수행 활동 시간이 45분 남았습니다.');if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,5000);syncTimer()}
-function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60;el.textContent=timerPaused?`⏸ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.title=timerPaused?'수행평가 서버가 닫혀 있어 시간이 멈춰 있습니다.':'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
+function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60;el.textContent=timerPaused?`⏸ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;const phaseMessage={ready:'선생님이 수행을 시작하면 시간이 시작됩니다.',paused:'선생님이 수행을 일시정지했습니다. 답안은 보존됩니다.',auto_paused:'45분 활동이 완료되어 자동 일시정지되었습니다. 다음 차시 재개를 기다리세요.',finished:'총 90분 수행시간이 종료되었습니다.'};el.title=timerPaused?(phaseMessage[timerPhase]||'수행평가 시간이 일시정지되어 있습니다.'):'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
 async function autoSubmitOnTime(){if(autoSubmitting||timerExempt)return;autoSubmitting=true;collect();state.timeExpired=true;await save(false);await finalSubmit(true)}
 function showAssessment(){$('#finalReview').classList.add('hidden');$('#assessment').classList.remove('hidden')}
 function render(){
