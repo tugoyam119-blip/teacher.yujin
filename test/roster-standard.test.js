@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('assert');
+const {parseRoster,toHumanRightsRows,toClimateRows}=require('../shared/roster-standard');
+const fs=require('fs'),path=require('path'),canonical=fs.readFileSync(path.join(__dirname,'../shared/roster-standard.js'),'utf8');
+for(const service of ['human-rights','기후국제회의-수행평가','환율-비상-국제경제-대응팀'])assert.equal(fs.readFileSync(path.join(__dirname,'../services',service,'lib/roster-standard.js'),'utf8'),canonical,`${service} 공통 파서 사본이 다릅니다.`);
+let r=parseRoster('\uFEFF반,학번,이름\r\n1반,10101, 홍길동 \r\n01,10102,김학생\r\n2,10201,이유진\r\n');
+assert.equal(r.summary.accepted,3);assert.deepEqual(r.summary.byClass,{1:2,2:1});assert.equal(r.errors.length,0);
+r=parseRoster('학급,학생번호,성명\n2,10201,이유진\n2,10201,중복\n3반,10301,');
+assert.equal(r.summary.accepted,1);assert.equal(r.summary.duplicates,1);assert.equal(r.summary.errors,2);
+r=parseRoster('class,student_id,name\n3,10301,박학생');assert.equal(r.students[0].classNo,3);
+r=parseRoster([{className:'4반',studentId:10401,name:'최학생'}]);assert.deepEqual(toClimateRows(r.students),[{studentId:'10401',name:'최학생',className:'4반'}]);assert.deepEqual(toHumanRightsRows(r.students),[{student_id:'10401',name:'최학생'}]);
+r=parseRoster('반,학번,이름\n2,10101,불일치');assert.equal(r.warnings[0].code,'CLASS_MISMATCH');assert.equal(r.students[0].classNo,2);
+console.log('roster-standard: ok');

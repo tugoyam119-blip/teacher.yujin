@@ -4,6 +4,7 @@ const fsp = fs.promises;
 const path = require('path');
 const crypto = require('crypto');
 const { URL } = require('url');
+const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
 const APP_VERSION = '2.5.0';
@@ -190,9 +191,7 @@ async function handle(req,res){
   if(req.method==='POST'&&url.pathname==='/api/teacher/timer'){const b=await bodyJson(req),action=String(b.action||'');req.url='/api/teacher/server';let rt=await readRuntime();const mapped=action==='pause'?'close':action==='resume'?'open':'';if(mapped==='close'&&rt.serverOpen){if(!rt.timerPaused){rt.timerPaused=true;rt.pauseStartedAt=now();}rt.serverOpen=false;await writeRuntime(rt);}else if(mapped==='open'&&!rt.serverOpen){if(rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;}rt.serverOpen=true;await writeRuntime(rt);}return sendJson(res,200,{ok:true,paused:rt.timerPaused,serverOpen:!!rt.serverOpen});}
   if(req.method==='GET'&&url.pathname==='/api/teacher/roster')return sendJson(res,200,await readRoster());
   if(req.method==='POST'&&url.pathname==='/api/teacher/roster'){
-   const b=await bodyJson(req),raw=Array.isArray(b.students)?b.students:[];if(!raw.length)return sendJson(res,400,{error:'학생 명단이 비어 있습니다.'});
-   const seen=new Set(),clean=[];for(const x of raw){const studentId=String(x.studentId||'').trim(),name=String(x.name||'').trim(),className=String(x.className||'').trim()||deriveClass(studentId);if(!/^\d{4,6}$/.test(studentId)||name.length<2)continue;if(seen.has(studentId))return sendJson(res,400,{error:`중복 학번이 있습니다: ${studentId}`});seen.add(studentId);clean.push({studentId,name,className});}
-   if(!clean.length)return sendJson(res,400,{error:'인식할 수 있는 학생이 없습니다. 열 이름을 확인하세요.'});const roster=await writeRoster(assignBalancedCountries(clean));return sendJson(res,200,{ok:true,count:roster.students.length,roster});
+   const b=await bodyJson(req),parsed=parseRoster(typeof b.csvText==='string'?b.csvText:(b.students||[]));if(!parsed.students.length)return sendJson(res,400,{error:parsed.errors[0]?.message||'인식할 수 있는 학생이 없습니다.',report:parsed});const clean=toClimateRows(parsed.students);if(b.preview)return sendJson(res,200,{ok:true,preview:true,count:clean.length,students:clean,report:parsed});const roster=await writeRoster(assignBalancedCountries(clean));return sendJson(res,200,{ok:true,count:roster.students.length,roster,report:parsed});
   }
   if(req.method==='DELETE'&&url.pathname==='/api/teacher/roster'){await writeRoster([]);return sendJson(res,200,{ok:true});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/reopen'){const b=await bodyJson(req),s=reconstruct(await readEvents()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 학생만 최종 검토 상태로 다시 열 수 있습니다.'});await appendEvent({type:'reopen',sessionId:s.sessionId});return sendJson(res,200,{ok:true});}
