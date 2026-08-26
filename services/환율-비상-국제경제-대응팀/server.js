@@ -12,12 +12,12 @@ http.createServer((req, res) => {
   if(req.url==='/api/roster/validate'&&req.method==='POST'){
     let raw='';req.on('data',c=>{raw+=c;if(raw.length>2_000_000)req.destroy()});req.on('end',()=>{try{const body=JSON.parse(raw||'{}'),report=parseRoster(body.csvText||body.students||[]);res.writeHead(report.students.length?200:400,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify({ok:!!report.students.length,report}))}catch(e){res.writeHead(400,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify({ok:false,error:'명단 요청을 읽지 못했습니다.'}))}});return;
   }
-  if (req.url === '/' || req.url === '/teacher') {
-    res.writeHead(302, { Location: `${BASE}/teacher` });
+  if (req.url === '/' || req.url === '/student') {
+    res.writeHead(302, { Location: `${BASE}/student` });
     return res.end();
   }
-  if (req.url === '/student') {
-    res.writeHead(302, { Location: `${BASE}/student` });
+  if (req.url === '/teacher') {
+    res.writeHead(302, { Location: `${BASE}/teacher` });
     return res.end();
   }
   if (req.url === '/health') {
