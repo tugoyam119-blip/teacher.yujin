@@ -11,6 +11,7 @@ const APP_VERSION = '2.5.0';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
+const TEACHER_STUDENT_ID = '000000';
 const ENV_OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.6-luna';
 const TOTAL_SECONDS = 90 * 60;
@@ -111,7 +112,8 @@ async function timerForSession(s){const rt=await readRuntime();if(s.timerExempt)
 function sendJson(res,status,obj){const body=JSON.stringify(obj);res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store'});res.end(body);}
 function sendText(res,status,body,type='text/plain; charset=utf-8',extra={}){res.writeHead(status,{'Content-Type':type,'Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store',...extra});res.end(body);}
 async function bodyJson(req){return await new Promise((resolve,reject)=>{let data='';req.on('data',c=>{data+=c;if(data.length>3_000_000){reject(new Error('too large'));req.destroy();}});req.on('end',()=>{try{resolve(data?JSON.parse(data):{})}catch(e){reject(e)}});req.on('error',reject)});}
-function teacherOK(req,url){return (req.headers['x-teacher-key']||url.searchParams.get('password')||'')===TEACHER_PASSWORD;}
+function validTeacherKey(value){const key=String(value||'');return key===TEACHER_PASSWORD||key===TEACHER_STUDENT_ID;}
+function teacherOK(req,url){return validTeacherKey(req.headers['x-teacher-key']||url.searchParams.get('password'));}
 function csvEscape(v){const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
 function koStatus(s){return s==='submitted'?'제출 완료':s==='review_reopened'?'수정 재개':'진행 중'}
 function progressToStepServer(p){p=Number(p||0);if(p>=100)return 10;if(p>=90)return 9;if(p>=80)return 8;if(p>=70)return 7;if(p>=60)return 6;if(p>=50)return 5;if(p>=38)return 4;if(p>=27)return 3;if(p>=17)return 2;if(p>=8)return 1;return 0;}
@@ -136,7 +138,7 @@ async function handle(req,res){
   if(req.method==='GET'&&['/teacher/','/teacher.html'].includes(url.pathname)){res.writeHead(302,{Location:'/teacher','Cache-Control':'no-store'});return res.end()}
   if(req.method==='GET'&&url.pathname==='/health')return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
   if(req.method==='GET'&&url.pathname==='/api/project-info')return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',operatePath:'/operate',theme:'green',mobileOptimized:true,totalActiveMinutes:90,phaseGate:false,teacherPause:false,serverGate:true,rosterUpload:true,aiGrading:true,teacherApiKeyInput:true});
-  if(req.method==='POST'&&url.pathname==='/api/teacher/auth'){const b=await bodyJson(req);if(String(b.password||'')!==TEACHER_PASSWORD)return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});return sendJson(res,200,{ok:true});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/auth'){const b=await bodyJson(req);if(!validTeacherKey(b.password))return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});return sendJson(res,200,{ok:true});}
   if(req.method==='GET'&&url.pathname==='/api/server-status'){const rt=await readRuntime();return sendJson(res,200,{open:!!rt.serverOpen,paused:!!rt.timerPaused,updatedAt:rt.updatedAt});}
   if(req.method==='GET'&&url.pathname==='/api/classroom/public'){const classNo=Math.max(1,Math.min(7,Number(url.searchParams.get('classNo')||1))),className=`${classNo}반`,roster=await readRoster(),sessions=reconstruct(await readEvents()),presence=readPresence(),targets=roster.students.length?roster.students.filter(x=>(x.className||deriveClass(x.studentId))===className):sessions.filter(s=>(s.className||deriveClass(s.studentId))===className),ids=new Set(targets.map(x=>String(x.studentId))),classSessions=sessions.filter(s=>ids.has(String(s.studentId))||(s.className||deriveClass(s.studentId))===className),uniqueEntered=new Set(classSessions.map(s=>String(s.studentId))),submitted=new Set(classSessions.filter(s=>s.status==='submitted').map(s=>String(s.studentId))),online=[...ids].filter(id=>presence[id]?.lastSeen&&Date.now()-Date.parse(presence[id].lastSeen)<=25000).length,cr=await classRuntimeView(),runtime=cr.classes.find(x=>x.classNo===classNo);return sendJson(res,200,{classNo,runtime,summary:{total:ids.size||uniqueEntered.size,online,entered:uniqueEntered.size,never:Math.max(0,(ids.size||uniqueEntered.size)-uniqueEntered.size),submitted:submitted.size},stageCounts:Array.from({length:11},(_,step)=>classSessions.filter(s=>s.status!=='submitted'&&progressToStepServer(s.progress)===step).length)});}
 

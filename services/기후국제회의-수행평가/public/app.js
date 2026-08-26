@@ -3,6 +3,7 @@ const TOTAL_SECONDS=90*60;
 const stepProgress=[8,17,27,38,50,60,70,80,90,100];
 const $=s=>document.querySelector(s);
 let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null;
+const TEACHER_STUDENT_ID='000000';
 
 const countryData={
  hanbit:{name:'한빛국',type:'선진 산업국',tags:['고소득 산업국','과거 배출 책임 큼','친환경 전환 역량 높음'],story:'한빛국은 약 40년 동안 자동차·철강·반도체 같은 수출 제조업을 중심으로 빠르게 성장한 고소득 국가입니다. 성장 과정에서 석탄과 석유를 많이 사용해 누적 온실가스 배출 책임이 크지만, 최근에는 재생에너지와 저탄소 기술에 대규모로 투자하고 있습니다. 다만 제조업 일자리와 수출 경쟁력이 중요해 너무 빠른 감축에는 국내 산업계의 반발도 큽니다.',facts:['경제·산업: 자동차·철강·반도체 중심의 수출 제조업 강국','에너지: 화석연료 사용을 줄이는 중이며 재생에너지·저탄소 기술 투자가 큼','기후 대응: 재정과 기술 역량이 높아 자체 대응 능력이 비교적 강함','국제회의 쟁점: 과거에 많이 배출한 만큼 더 큰 감축과 기후재정 부담을 요구받음'],dilemma:'책임과 능력은 크지만 산업 경쟁력과 일자리도 지켜야 한다.',metrics:{past:92,current:68,damage:34,fossil:44,transition:88},metricNotes:{responsibility:'오랜 산업화 과정에서 화석연료를 많이 사용해 누적 배출 책임이 매우 큽니다.',vulnerability:'방재 시설과 재정 여력이 있어 기후재난 피해 위험은 취약국보다 낮은 편입니다.',energy:'화석연료 의존은 중간 수준이지만 자본·기술이 충분해 친환경 전환 능력이 매우 높습니다.'}},
@@ -51,9 +52,11 @@ function coreWritingGuide(items=''){return `<div class="answer-criteria core-wri
 function shortWritingGuide(items=''){return `<div class="answer-criteria short-writing-guide"><b>문장 작성 안내 · 이유/근거</b><span>① <strong>최소 30자</strong> · <strong>권장 100자</strong>입니다. 100자는 권장 분량이며 의무가 아닙니다.</span>${items}<span>‘좋아서’, ‘필요해서’처럼 결론만 쓰지 말고 문항에서 요구한 근거를 포함하세요.</span></div>`}
 function initState(){const defaults={budget:{renewable:10,disaster:10,tech:10,forest:10,transition:10},actors:[],evidenceSources:[],actorAssignments:{}};state={...defaults,...(session?.data||{})};state.budget={...defaults.budget,...(session?.data?.budget||{})};state.actors=[...(session?.data?.actors||[])];state.evidenceSources=[...(session?.data?.evidenceSources||[])];state.actorAssignments={...(session?.data?.actorAssignments||{})}}
 
-function applyServerGate(open){serverOpen=!!open;const gate=$('#serverGate');if(gate)gate.classList.toggle('hidden',serverOpen);const start=$('#startBtn');if(start)start.disabled=!serverOpen;if(!serverOpen){timerPaused=true;updateTimer()} }
+function isTeacherEntry(){return $('#studentId')?.value.trim()===TEACHER_STUDENT_ID}
+function applyServerGate(open){serverOpen=!!open;const gate=$('#serverGate');if(gate)gate.classList.toggle('hidden',serverOpen||isTeacherEntry());const start=$('#startBtn');if(start)start.disabled=!serverOpen&&!isTeacherEntry();if(!serverOpen){timerPaused=true;updateTimer()} }
 async function syncServerGate(){try{const r=await fetch('/api/server-status',{cache:'no-store'});if(!r.ok)return;const j=await r.json();applyServerGate(!!j.open)}catch{}}
 async function startAssessment(){
+ if(isTeacherEntry()){sessionStorage.setItem('climateTeacherKey',TEACHER_STUDENT_ID);sessionStorage.setItem('climateOperateTeacherKey',TEACHER_STUDENT_ID);location.assign('/teacher');return}
  if(!serverOpen){await syncServerGate();if(!serverOpen){alert('담당 교사가 아직 수행평가 서버를 열지 않았습니다. 교사의 안내를 기다리세요.');return}}
  message('');const studentId=$('#studentId').value.trim(),name=$('#studentName').value.trim();
  try{
@@ -190,6 +193,8 @@ function ensureReviewReturnButton(){let btn=document.getElementById('returnRevie
 async function finalSubmit(auto=false){collect();if(!auto&& !confirm('이 내용으로 최종 제출하시겠습니까? 제출 후에는 학생 화면에서 수정할 수 없습니다.'))return;try{const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,data:state})});const j=await r.json();if(!r.ok)throw new Error(j.error||'제출 실패');clearInterval(timerHandle);clearInterval(timerSyncHandle);$('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#done').classList.remove('hidden');$('#progress').style.width='100%';$('#timer').classList.add('hidden');$('#doneInfo').innerHTML=`<b>${esc(session.studentId)} ${esc(session.name)}</b> · ${countryLabels[session.country]}<br>${auto?'총 90분 제한 시간이 종료되어 현재까지 작성한 내용이 자동 제출되었습니다.':'최종 제출이 정상적으로 완료되었습니다.'}`;$('#doneSummary').innerHTML=finalReviewSummaryHtml(false);}catch(e){alert(e.message)}}
 
 $('#startBtn').addEventListener('click',startAssessment);
+$('#studentId').addEventListener('input',()=>applyServerGate(serverOpen));
+$('#studentId').addEventListener('keydown',e=>{if(e.key==='Enter'&&isTeacherEntry()){e.preventDefault();startAssessment()}});
 $('#spinCountryBtn').addEventListener('click',spinCountryRoulette);
 $('#beginAssignedBtn').addEventListener('click',beginAssignedAssessment);
 $('#nextBtn').addEventListener('click',goNext);
