@@ -69,20 +69,20 @@ async function startAssessment(){
   $('#login').classList.add('hidden');$('#timer').classList.remove('hidden');$('#glossaryBtn').classList.remove('hidden');$('#countryGuideBtn').classList.remove('hidden');
   applyTimerState(j.timer||{});startTimer();
   if(session.status==='review_reopened'){state.countryRevealDone=true;state.reviewReady=true;$('#decisionReviewBtn').classList.remove('hidden');showFinalReview();toast('교사가 최종 검토 화면을 다시 열었습니다. 필요한 부분을 수정한 뒤 다시 제출하세요.');}
-  else if(!state.countryRevealDone){state.countryRevealDone=true;await save(false);$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render()}
+  else if(!state.countryRevealDone){showCountryAssignment()}
   else if(state.reviewReady){$('#decisionReviewBtn').classList.remove('hidden');showFinalReview()}
   else{$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render()}
   if(j.resumed)toast('이전 진행 내용을 불러왔습니다.');
  }catch(e){alert(e.message)}
 }
-function allCountryOverview(){return `<div class="country-overview-grid">${Object.entries(countryData).map(([k,c])=>`<article class="country-overview-card ${state.countryRevealDone&&session?.country===k?'my-country':''}">${state.countryRevealDone&&session?.country===k?'<span class="my-country-badge">내 국가</span>':''}<div class="country-overview-head"><span class="country-symbol">${{hanbit:'🏭',saebom:'🏗️',pureun:'🌊',taeyang:'☀️'}[k]}</span><div><h3>${c.name}</h3><span>${c.type}</span></div></div><p>${c.story}</p><div class="country-overview-points"><b>국제회의에서의 핵심 고민</b><span>${c.dilemma}</span></div></article>`).join('')}</div>`}
+function allCountryOverview(){const intro={hanbit:'책임과 기술력은 크지만 산업과 일자리를 지켜야 합니다.',saebom:'발전이 필요하지만 석탄 사용과 배출도 줄여야 합니다.',pureun:'배출 책임은 작지만 해수면 상승 피해가 매우 큽니다.',taeyang:'석유 산업을 유지하면서 친환경 산업으로 바꿔야 합니다.'};return `<div class="country-overview-grid">${Object.entries(countryData).map(([k,c])=>`<article class="country-overview-card ${state.countryRevealDone&&session?.country===k?'my-country':''}">${state.countryRevealDone&&session?.country===k?'<span class="my-country-badge">내 국가</span>':''}<div class="country-overview-head"><span class="country-symbol">${{hanbit:'🏭',saebom:'🏗️',pureun:'🌊',taeyang:'☀️'}[k]}</span><div><h3>${c.name}</h3><span>${c.type}</span></div></div><p>${intro[k]}</p><div class="country-overview-points"><b>회의에서 해결할 문제</b><span>${c.dilemma}</span></div></article>`).join('')}</div>`}
 function showCountryAssignment(){
  $('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#countryAssign').classList.remove('hidden');$('#decisionReviewBtn').classList.add('hidden');$('#progress').style.width='3%';$('#lessonPill').textContent='국가 배정 · 수행 시작';
  $('#countryIntroGrid').innerHTML=allCountryOverview();
  if(state.countryRevealDone){showAssignedCountryResult()}else{$('#rouletteResult').classList.add('hidden');$('#spinCountryBtn').classList.remove('hidden')}
 }
 function showAssignedCountryResult(){
- const c=countryData[session.country];$('#countryIntroGrid').innerHTML=allCountryOverview();$('#rouletteResult').classList.remove('hidden');$('#assignedCountryName').textContent=c.name;$('#assignedCountryType').textContent=c.type;$('#assignedCountryStory').textContent=c.story;$('#assignedCountryDilemma').textContent=`핵심 딜레마 · ${c.dilemma}`;$('#spinCountryBtn').classList.add('hidden');
+ const c=countryData[session.country];$('#countryIntroGrid').innerHTML=allCountryOverview();$('#rouletteResult').classList.remove('hidden');$('#assignedCountryName').textContent=c.name;$('#assignedCountryType').textContent=c.type;$('#assignedCountryStory').textContent=c.story;$('#assignedCountryStrength').textContent=c.facts[2];$('#assignedCountryWorry').textContent=c.dilemma;$('#assignedCountryMission').textContent=`국제회의에서 ${c.name}의 상황을 지키면서 다른 국가도 받아들일 수 있는 합의를 만드세요.`;$('#assignedCountryDilemma').textContent=`핵심 과제 · ${c.dilemma}`;$('#spinCountryBtn').classList.add('hidden');
 }
 async function spinCountryRoulette(){
  const btn=$('#spinCountryBtn'),wheel=$('#rouletteWheel');if(btn.disabled)return;btn.disabled=true;btn.textContent='국가를 배정하고 있습니다…';
