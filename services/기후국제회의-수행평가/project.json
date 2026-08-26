@@ -5,8 +5,8 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "2.5.0",
-  "description": "기존 v2.4.2 세션의 시간 계산을 보존하면서 신규 세션에 반별 교사 시작형 45+45분 타이머와 통합 교사센터를 적용한 호환 패치.",
+  "version": "3.0.0",
+  "description": "국가 판단, 정책 선택, 상대국 절충, 최종 합의로 구성한 쉬운 4단계 40분 수행평가.",
   "theme": {
     "name": "green",
     "primary": "#1f6b45",
@@ -14,20 +14,17 @@
     "soft": "#e7f5ec"
   },
   "assessment": {
-    "lessons": 2,
-    "totalMinutes": 90,
-    "recommendedMinutesPerLesson": 45,
+    "lessons": 1,
+    "totalMinutes": 40,
+    "recommendedMinutesPerLesson": 40,
     "totalPoints": 100,
-    "phase1Steps": 5,
-    "phase2Steps": 5,
+    "phase1Steps": 2,
+    "phase2Steps": 2,
     "rubric": {
-      "dataAnalysis": 15,
-      "nationalDecision": 15,
-      "budgetTradeoff": 20,
-      "internationalRelations": 15,
-      "compromise": 15,
-      "governance": 10,
-      "reflectionFinal": 10
+      "countryUnderstanding": 25,
+      "policyChoice": 25,
+      "compromise": 25,
+      "reflection": 25
     },
     "phaseGate": false,
     "serverGate": true,

@@ -24,7 +24,7 @@
       <div class="operate-brand-block">
         <div class="operate-kicker">기후국제회의 수행평가 · 교실 운영</div>
         <h1>국제기후회의 수행평가</h1>
-        <div class="operate-meta"><span>수행 활동 기준 90분</span><span>빠른 학생은 끝까지 진행 가능</span><span id="syncStatus">학생 현황 연결 중</span></div>
+        <div class="operate-meta"><span>수행 활동 기준 40분</span><span>4단계 간단 수행</span><span id="syncStatus">학생 현황 연결 중</span></div>
       </div>
       <div class="operate-time-note"><b>수행평가 서버</b><strong id="operateServerStatus">상태 확인 중</strong><span>설명 직후 이 화면에서 바로 서버를 열 수 있습니다. 닫으면 학생 진행과 실제 시간이 함께 멈춥니다.</span></div>
     </header>
@@ -98,23 +98,17 @@
           <div class="class-control-selects"><select id="operateClassSelect"><option value="1">1반</option><option value="2">2반</option><option value="3">3반</option><option value="4">4반</option><option value="5">5반</option><option value="6">6반</option><option value="7">7반</option></select><select id="operateModeSelect"><option value="regular">정규 수행</option><option value="makeup">결석·보충</option></select></div>
           <div id="classSessionState" class="class-session-state">입장 닫힘 · 00:00 / 90:00</div>
           <div class="button-row wrap"><button id="openClassAdmission" class="operate-btn">입장 열기</button><button id="startClassSession" class="operate-btn strong">수행 시작</button><button id="pauseClassSession" class="operate-btn">일시정지</button><button id="resumeClassSession" class="operate-btn strong">재개</button><button id="finishClassSession" class="operate-btn danger">종료</button></div>
-          <p>입장 열기 상태에서는 로그인만 가능하고 시간은 흐르지 않습니다. 시작 버튼을 누른 뒤 45분에 자동 일시정지됩니다.</p>
+          <p>입장 열기 상태에서는 로그인만 가능하고 시간은 흐르지 않습니다. 시작 버튼을 누르면 40분 타이머가 시작됩니다.</p>
         </div>
         <div class="control-panel step-controls">
           <h3>화면에 보여줄 단계</h3>
           <select id="stepSelect">
             <option value="auto">자동 · 가장 많은 학생 단계</option>
             <option value="0">STEP 0 · 시작 안내</option>
-            <option value="1">STEP 1 · 자료 분석</option>
-            <option value="2">STEP 2 · 국가 우선순위</option>
-            <option value="3">STEP 3 · 100억 예산 배분</option>
-            <option value="4">STEP 4 · TRADE-OFF</option>
-            <option value="5">STEP 5 · 협상 전 1차 입장</option>
-            <option value="6">STEP 6 · 국제기후협약 선택</option>
-            <option value="7">STEP 7 · 상대국 이해관계</option>
-            <option value="8">STEP 8 · 절충안</option>
-            <option value="9">STEP 9 · 국제협력 역할</option>
-            <option value="10">STEP 10 · 최종 합의</option>
+            <option value="1">STEP 1 · 국가와 처음 판단</option>
+            <option value="2">STEP 2 · 정책 선택</option>
+            <option value="3">STEP 3 · 상대국과 절충</option>
+            <option value="4">STEP 4 · 최종 합의</option>
           </select>
           <p>자동 모드에서는 현재 진행 중인 학생 중 가장 많은 학생이 있는 단계가 크게 표시됩니다.</p>
         </div>

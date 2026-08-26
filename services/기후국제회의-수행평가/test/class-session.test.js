@@ -27,7 +27,7 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
 (async()=>{try{
   await waitForServer();
   const legacy=await get('/api/timer/legacy-1');
-  const legacyExpected=Math.max(0,5400-Math.floor((Date.now()-Date.parse(legacyStartedAt))/1000));
+  const legacyExpected=Math.max(0,2400-Math.floor((Date.now()-Date.parse(legacyStartedAt))/1000));
   assert.ok(Math.abs(legacy.remainingSeconds-legacyExpected)<=1,'legacy remaining time changed');
   assert.equal(legacy.timerMode,undefined);
 
@@ -40,19 +40,13 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   await post('/api/teacher/class-runtime',{action:'open_admission',classNo:1,mode:'regular'},teacherHeaders);
   const ready=await post('/api/start',{studentId:'10102',name:'신규일반'});
   assert.equal(ready.session.timerMode,'class_session_v1');
-  assert.equal(ready.timer.remainingSeconds,5400);
+  assert.equal(ready.timer.remainingSeconds,2400);
   assert.equal(ready.timer.phase,'ready');
   await sleep(250);
-  assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds,5400,'ready phase consumed time');
+  assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds,2400,'ready phase consumed time');
 
   await post('/api/teacher/class-runtime',{action:'start',classNo:1,mode:'regular'},teacherHeaders);
-  await editClass(1,r=>{r.elapsedSeconds=2699;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2700});
-  const autoPaused=await get(`/api/timer/${ready.session.sessionId}`);
-  assert.equal(autoPaused.phase,'auto_paused');
-  assert.equal(autoPaused.remainingSeconds,2700);
-
-  await post('/api/teacher/class-runtime',{action:'resume',classNo:1,mode:'regular'},teacherHeaders);
-  await editClass(1,r=>{r.elapsedSeconds=5399;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=5400});
+  await editClass(1,r=>{r.elapsedSeconds=2399;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2400});
   const finished=await get(`/api/timer/${ready.session.sessionId}`);
   assert.equal(finished.phase,'finished');
   assert.equal(finished.remainingSeconds,0);
@@ -64,9 +58,9 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   await editClass(2,r=>{r.elapsedSeconds=300;r.runStartedAt=null;r.phase='paused'});
   const class1After=(await get('/api/teacher/class-runtime',teacherHeaders)).classes.find(x=>x.classNo===1);
   const class2After=(await get('/api/teacher/class-runtime',teacherHeaders)).classes.find(x=>x.classNo===2);
-  assert.equal(class1After.elapsedSeconds,5400,'class 2 changed class 1');
+  assert.equal(class1After.elapsedSeconds,2400,'class 2 changed class 1');
   assert.equal(class2After.elapsedSeconds,300);
-  assert.equal((await get(`/api/timer/${class2.session.sessionId}`)).remainingSeconds,5100);
+  assert.equal((await get(`/api/timer/${class2.session.sessionId}`)).remainingSeconds,2100);
 
   await post('/api/teacher/class-runtime',{action:'open_admission',classNo:3,mode:'makeup'},teacherHeaders);
   const makeup=await post('/api/start',{studentId:'10301',name:'신규삼반'});
@@ -74,13 +68,13 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   assert.notEqual(makeup.session.classSessionId,ready.session.classSessionId);
 
   await post('/api/teacher/reopen',{sessionId:ready.session.sessionId},teacherHeaders);
-  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{dataAnalysis:10,nationalDecision:10,budgetTradeoff:10,international:10,compromise:10,governance:10,reflection:10},teacherNote:'첫 점수'},teacherHeaders);
-  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{dataAnalysis:15,nationalDecision:15,budgetTradeoff:20,international:15,compromise:15,governance:10,reflection:10},teacherNote:'최종 점수'},teacherHeaders);
+  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryUnderstanding:20,policyChoice:20,compromise:20,reflection:20},teacherNote:'첫 점수'},teacherHeaders);
+  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryUnderstanding:25,policyChoice:25,compromise:25,reflection:25},teacherNote:'최종 점수'},teacherHeaders);
   const dashboard=await get('/api/teacher/submissions',teacherHeaders),saved=dashboard.sessions.find(x=>x.sessionId===ready.session.sessionId);
   assert.equal(saved.data.finalDeclaration,'보존 답안');
   assert.equal(saved.reopenCount,1);
   assert.equal(saved.scoreHistory.length,2);
   assert.equal(saved.score.total,100);
   assert.ok(fs.existsSync(path.join(dataDir,'events.jsonl'))&&fs.existsSync(path.join(dataDir,'runtime.json'))&&fs.existsSync(path.join(dataDir,'class-runtime.json')));
-  console.log('PASS legacy compatibility, ready=5400, 45m auto-pause, 90m finish, class isolation, makeup, reopen/history');
+  console.log('PASS 40m timer, class isolation, makeup, reopen/history, four-area scoring');
 }finally{child.kill();await sleep(100);await fsp.rm(dataDir,{recursive:true,force:true});}})().catch(e=>{console.error(e);child.kill();process.exitCode=1});
