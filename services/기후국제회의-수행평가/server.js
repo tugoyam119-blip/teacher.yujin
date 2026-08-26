@@ -95,7 +95,7 @@ function reconstruct(events){
  const sessions=new Map();
  for(const e of events){
   if(!e.sessionId)continue;
-  if(e.type==='start')sessions.set(e.sessionId,{sessionId:e.sessionId,studentId:e.studentId,name:e.name,className:e.className||deriveClass(e.studentId),country:e.country,pauseBaseMs:Number(e.pauseBaseMs||0),timerMode:e.timerMode||'legacy',classNo:Number(e.classNo||0),classSessionId:e.classSessionId||null,startedAt:e.ts,updatedAt:e.ts,submittedAt:null,status:'in_progress',progress:0,data:{},score:null,scoreHistory:[],teacherNote:'',aiGrade:null,timerExempt:false,reopenedAt:null,reopenCount:0,reopenHistory:[]});
+  if(e.type==='start')sessions.set(e.sessionId,{sessionId:e.sessionId,studentId:e.studentId,name:e.name,className:e.className||deriveClass(e.studentId),country:e.country,pauseBaseMs:Number(e.pauseBaseMs||0),timerMode:e.timerMode||'legacy',classNo:Number(e.classNo||0),classSessionId:e.classSessionId||null,startedAt:e.ts,updatedAt:e.ts,submittedAt:null,status:'in_progress',progress:0,data:{},score:null,scoreHistory:[],teacherNote:'',aiGrade:null,timerExempt:!!e.timerExempt,reopenedAt:null,reopenCount:0,reopenHistory:[]});
   const s=sessions.get(e.sessionId);if(!s)continue;
   if(e.type==='save'){s.data={...s.data,...(e.data||{})};s.progress=Math.max(s.progress||0,Number(e.progress||0));s.updatedAt=e.ts;}
   if(e.type==='submit'){s.data={...s.data,...(e.data||{})};s.progress=100;s.status='submitted';s.submittedAt=e.ts;s.updatedAt=e.ts;s.timerExempt=false;}
@@ -146,6 +146,7 @@ async function handle(req,res){
    const gate=await readRuntime();if(!gate.serverOpen){gate.serverOpen=true;gate.timerPaused=false;gate.pauseStartedAt=null;gate.updatedAt=now();await writeRuntime(gate);}
    const b=await bodyJson(req),studentId=String(b.studentId||'').trim(),name=String(b.name||'').trim();
    if(!/^\d{4,6}$/.test(studentId))return sendJson(res,400,{error:'학번은 숫자 4~6자리로 입력하세요.'});
+   if(studentId===TEACHER_STUDENT_ID){const existing=await latestByStudent(studentId);if(existing&&['in_progress','review_reopened'].includes(existing.status))return sendJson(res,200,{resumed:true,session:existing,serverNow:now(),timer:await timerForSession(existing)});const sessionId=newId(),s={sessionId,studentId,name:'교사 시험',className:'교사용',country:'hanbit',pauseBaseMs:0,data:{},progress:0,status:'in_progress',startedAt:now(),timerExempt:true};await appendEvent({type:'start',sessionId,studentId,name:s.name,className:s.className,country:s.country,pauseBaseMs:0,timerExempt:true});return sendJson(res,200,{resumed:false,session:s,serverNow:now(),timer:await timerForSession(s)});}
    if(name.length<2||name.length>20)return sendJson(res,400,{error:'이름을 정확히 입력하세요.'});
    const roster=await readRoster(), rosterEntry=roster.students.find(x=>String(x.studentId)===studentId);
    if(roster.students.length&&!rosterEntry)return sendJson(res,400,{error:'등록된 학생 명단에서 학번을 찾을 수 없습니다. 학번을 확인하거나 교사에게 문의하세요.'});

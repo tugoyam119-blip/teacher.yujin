@@ -62,8 +62,6 @@ function isTeacherEntry(){return $('#studentId')?.value.trim()===TEACHER_STUDENT
 function applyServerGate(open){serverOpen=!!open;const gate=$('#serverGate');if(gate)gate.classList.add('hidden');const start=$('#startBtn');if(start)start.disabled=false;}
 async function syncServerGate(){try{const r=await fetch('/api/server-status',{cache:'no-store'});if(!r.ok)return;const j=await r.json();applyServerGate(!!j.open)}catch{}}
 async function startAssessment(){
- if(isTeacherEntry()){sessionStorage.setItem('climateTeacherKey',TEACHER_STUDENT_ID);sessionStorage.setItem('climateOperateTeacherKey',TEACHER_STUDENT_ID);location.assign('/teacher');return}
- if(!serverOpen){await syncServerGate();if(!serverOpen){alert('담당 교사가 아직 수행평가 서버를 열지 않았습니다. 교사의 안내를 기다리세요.');return}}
  message('');const studentId=$('#studentId').value.trim(),name=$('#studentName').value.trim();
  try{
   const r=await fetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId,name})});const j=await r.json();if(!r.ok)throw new Error(j.error||'시작 오류');
