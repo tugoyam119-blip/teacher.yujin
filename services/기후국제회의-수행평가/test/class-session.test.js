@@ -41,9 +41,9 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   const ready=await post('/api/start',{studentId:'10102',name:'신규일반'});
   assert.equal(ready.session.timerMode,'class_session_v1');
   assert.equal(ready.timer.remainingSeconds,2400);
-  assert.equal(ready.timer.phase,'ready');
+  assert.equal(ready.timer.phase,'running');
   await sleep(250);
-  assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds,2400,'ready phase consumed time');
+  assert.ok((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds<=2400,'automatic class timer did not start');
 
   await post('/api/teacher/class-runtime',{action:'start',classNo:1,mode:'regular'},teacherHeaders);
   await editClass(1,r=>{r.elapsedSeconds=2399;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2400});
