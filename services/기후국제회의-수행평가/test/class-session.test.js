@@ -41,11 +41,12 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   const ready=await post('/api/start',{studentId:'10102',name:'신규일반'});
   assert.equal(ready.session.timerMode,'class_session_v1');
   assert.equal(ready.timer.remainingSeconds,2400);
-  assert.equal(ready.timer.phase,'running');
+  assert.equal(ready.timer.phase,'ready');
   await sleep(250);
-  assert.ok((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds<=2400,'automatic class timer did not start');
+  assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds,2400,'waiting consumed class time');
 
   await post('/api/teacher/class-runtime',{action:'start',classNo:1,mode:'regular'},teacherHeaders);
+  assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).phase,'running','teacher start did not begin the class timer');
   await editClass(1,r=>{r.elapsedSeconds=2399;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2400});
   const finished=await get(`/api/timer/${ready.session.sessionId}`);
   assert.equal(finished.phase,'finished');
@@ -70,11 +71,13 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   await post('/api/teacher/reopen',{sessionId:ready.session.sessionId},teacherHeaders);
   await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryUnderstanding:20,policyChoice:20,compromise:20,reflection:20},teacherNote:'첫 점수'},teacherHeaders);
   await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryUnderstanding:25,policyChoice:25,compromise:25,reflection:25},teacherNote:'최종 점수'},teacherHeaders);
-  const dashboard=await get('/api/teacher/submissions',teacherHeaders),saved=dashboard.sessions.find(x=>x.sessionId===ready.session.sessionId);
+  await post('/api/start',{studentId:'10102',name:'신규일반'});
+  const dashboard=await get('/api/teacher/submissions',teacherHeaders),saved=dashboard.sessions.find(x=>x.sessionId===ready.session.sessionId),presence=dashboard.presence.find(x=>x.studentId==='10102');
   assert.equal(saved.data.finalDeclaration,'보존 답안');
   assert.equal(saved.reopenCount,1);
   assert.equal(saved.scoreHistory.length,2);
   assert.equal(saved.score.total,100);
+  assert.equal(presence.loginCount,2,'reconnect count was not retained');
   assert.ok(fs.existsSync(path.join(dataDir,'events.jsonl'))&&fs.existsSync(path.join(dataDir,'runtime.json'))&&fs.existsSync(path.join(dataDir,'class-runtime.json')));
   console.log('PASS 40m timer, class isolation, makeup, reopen/history, four-area scoring');
 }finally{child.kill();await sleep(100);await fsp.rm(dataDir,{recursive:true,force:true});}})().catch(e=>{console.error(e);child.kill();process.exitCode=1});
