@@ -6,8 +6,11 @@ const BASE = 'https://exchange-crisis-team.tugoyam119.chatgpt.site';
 
 http.createServer((req, res) => {
   let pathname = '/';
+  let teacherEntry = false;
   try {
-    pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+    const url = new URL(req.url, 'http://localhost');
+    pathname = decodeURIComponent(url.pathname);
+    teacherEntry = url.searchParams.get('teacher') === '1';
   } catch {}
 
   if(pathname==='/학생명단_템플릿.csv'){
@@ -16,6 +19,10 @@ http.createServer((req, res) => {
   }
   if(pathname==='/api/roster/validate'&&req.method==='POST'){
     let raw='';req.on('data',c=>{raw+=c;if(raw.length>2_000_000)req.destroy()});req.on('end',()=>{try{const body=JSON.parse(raw||'{}'),report=parseRoster(body.csvText||body.students||[]);res.writeHead(report.students.length?200:400,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify({ok:!!report.students.length,report}))}catch(e){res.writeHead(400,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify({ok:false,error:'명단 요청을 읽지 못했습니다.'}))}});return;
+  }
+  if (pathname === '/' && teacherEntry) {
+    res.writeHead(302, { Location: `${BASE}/teacher` });
+    return res.end();
   }
   if (pathname === '/' || pathname === '/student' || pathname === '/student/') {
     res.writeHead(302, { Location: `${BASE}/student` });
