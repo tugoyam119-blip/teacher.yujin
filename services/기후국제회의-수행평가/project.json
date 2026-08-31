@@ -5,7 +5,7 @@
   "subject": "국제 관계와 국제기구",
   "unit": "5단원 환경과 에너지",
   "type": "server",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "국가 판단, 정책 선택, 상대국 절충, 최종 합의로 구성한 쉬운 4단계 40분 수행평가.",
   "theme": {
     "name": "green",
@@ -123,6 +123,8 @@
     "class-session-v1-timer",
     "independent-class-45-plus-45",
     "privacy-safe-classroom-display",
-    "score-and-reopen-history"
+    "score-and-reopen-history",
+    "exchange-style-teacher-operations",
+    "teacher-live-status-tabs"
   ]
 }

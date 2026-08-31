@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 40분</div>
-    <div class="version">교사용 v3.0.0</div>
+    <div class="version">교사용 v3.1.0</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -25,13 +25,49 @@
 </section>
 
 <section id="dashboard" class="dashboard hidden">
-  <div class="teacher-dashboard-head">
-    <div>
-      <div class="step-title"><span class="step-num">T</span><h2>응시 현황 및 채점</h2></div>
-      <p class="sub">학생 답안과 진행 상황을 확인하고 100점 루브릭으로 채점합니다.</p>
+  <div class="teacher-dashboard-head compact-head"><div><div class="step-title"><span class="step-num">T</span><h2>기후국제회의 교사 관리실</h2></div><p class="sub">수업 운영부터 제출 확인·채점까지 한 화면에서 관리합니다.</p></div></div>
+
+  <section class="exchange-style-ops" aria-label="수업 운영">
+    <div class="ops-intro">
+      <div><span class="eyebrow">수업 중 가장 자주 쓰는 기능</span><h2>반별 수행 운영</h2><p class="sub">반을 선택한 뒤 아래 순서대로 진행하세요. 서버를 열어도 ‘수행 시작’을 누르기 전에는 40분 시간이 흐르지 않습니다.</p></div>
+      <div class="teacher-head-actions"><a class="secondary button-link" href="/operate" target="_blank" rel="noopener">프로젝터용 운영 화면</a><button id="openGuide" class="secondary">처음 운영 가이드</button></div>
     </div>
-    <div class="teacher-head-actions"><a class="secondary button-link" href="/operate" target="_blank" rel="noopener">교실 운영 화면 열기</a><button id="openGuide" class="secondary">처음 운영 가이드 열기</button></div>
-  </div>
+    <div class="class-pick-wrap">
+      <b>운영할 반 선택</b>
+      <div id="opsClassButtons" class="ops-class-buttons"></div>
+      <div class="selected-class-summary"><span>현재 선택</span><strong id="opsSelectedClass">1반</strong><em id="opsClassMeta">대상 확인 중</em></div>
+    </div>
+    <div class="operation-flow">
+      <div class="flow-step">
+        <span class="flow-number">①</span><div><b>전체 학생 서버 열기</b><small>학생 기기 접속 허용</small></div>
+        <div class="flow-actions"><button id="closeAssessmentServer" class="secondary">🔒 서버 닫기</button><button id="openAssessmentServer" class="primary">🔓 서버 열기</button></div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step passive"><span class="flow-number">②</span><div><b>선택 반 입장 열기</b><small>로그인·교사 설명, 시간 정지</small></div><button id="openClassAdmission" class="secondary">입장 열기</button></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-number">③</span><div><b>선택 반 수행 시작</b><small>40분 공통 타이머 시작</small></div><button id="startClassSession" class="primary">수행 시작</button></div>
+    </div>
+    <div class="run-control-row">
+      <div><span id="serverStateBadge" class="badge">확인 중</span><strong id="classSessionState">1반 · 상태 확인 중</strong></div>
+      <div class="flow-actions"><button id="pauseClassSession" class="secondary">쉬는 시간·일시정지</button><button id="resumeClassSession" class="secondary">다시 시작</button><button id="finishClassSession" class="ghost">선택 반 마감</button></div>
+    </div>
+    <div class="status-five">
+      <article><span>미접속</span><b id="liveNever">0</b></article>
+      <article><span>입장완료·대기</span><b id="liveEntered">0</b></article>
+      <article><span>수행 중</span><b id="liveOnline">0</b></article>
+      <article><span>일시정지</span><b id="livePaused">0</b></article>
+      <article><span>제출 완료</span><b id="liveSubmitted">0</b></article>
+    </div>
+    <div class="live-steps-block">
+      <div><h3>실시간 단계 현황</h3><p class="sub">학생들이 어느 단계에 있는지 새로고침할 때 함께 갱신됩니다.</p></div>
+      <div class="live-step-cards">
+        <article><span>1단계</span><b id="stepCount1">0</b><small>국가와 처음 판단</small></article>
+        <article><span>2단계</span><b id="stepCount2">0</b><small>정책 선택</small></article>
+        <article><span>3단계</span><b id="stepCount3">0</b><small>상대국과 절충</small></article>
+        <article><span>4단계</span><b id="stepCount4">0</b><small>최종 합의</small></article>
+      </div>
+    </div>
+  </section>
 
   <section id="teacherGuide" class="teacher-guide hidden">
     <div class="guide-head">
@@ -132,12 +168,6 @@
   </section>
 
   <section class="teacher-ops-grid">
-    <article class="teacher-op-card server-control-card">
-      <div class="op-card-head"><div><span class="eyebrow">학생 접속·수행 제어</span><h3>수행평가 서버</h3></div><span id="serverStateBadge" class="badge">확인 중</span></div>
-      <p><b>수업 설명 전에는 닫아 두고</b>, 설명이 끝난 뒤 서버를 여세요. 서버를 닫으면 학생의 새 접속과 진행이 막히고 <b>진행 중 학생의 실제 남은 시간도 함께 멈춥니다.</b></p>
-      <div class="op-actions"><button id="closeAssessmentServer" class="secondary">🔒 서버 닫기</button><button id="openAssessmentServer" class="primary">🔓 수행평가 서버 열기</button></div>
-      <small class="sub">같은 버튼이 ‘교실 운영 화면’에도 있어 반 컴퓨터에서 설명 직후 바로 열 수 있습니다.</small>
-    </article>
     <article class="teacher-op-card roster-card">
       <div class="op-card-head"><div><span class="eyebrow">추후 등록 가능</span><h3>학생 명단</h3></div><span id="rosterStateBadge" class="badge">명단 미등록</span></div>
       <p>지금은 비워 두어도 됩니다. 나중에 <b>반, 학번, 이름</b> 열이 있는 CSV를 올리면 미시작 학생·반별 필터·반별 균등 국가 배정이 활성화됩니다. 실제 평가에서는 <b>학생들이 시작하기 전에 업로드</b>하는 것을 권장합니다. 실제 평가에서는 <b>학생들이 시작하기 전에 업로드</b>하는 것을 권장합니다.</p>
@@ -160,6 +190,7 @@
     </article>
   </section>
 
+  <div class="student-status-heading"><div><h2>학생별 진행 현황</h2><p class="sub">현재 접속 학생을 먼저 보고, 접속 이력·미접속·제출 학생으로 바로 전환할 수 있습니다.</p></div><div id="studentLiveTabs" class="student-live-tabs"><button data-live-tab="online" class="active">현재 접속 <b id="tabOnline">0</b></button><button data-live-tab="history">접속 이력 <b id="tabHistory">0</b></button><button data-live-tab="never">미접속 <b id="tabNever">0</b></button><button data-live-tab="submitted">제출 <b id="tabSubmitted">0</b></button><button data-live-tab="all">전체 <b id="tabAll">0</b></button></div></div>
   <div class="stats stats-six">
     <div class="stat"><span>응시 대상</span><b id="sTarget">-</b></div>
     <div class="stat"><span>미시작</span><b id="sNotStarted">-</b></div>
