@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 45분</div>
-    <div class="version">교사용 v3.6.3</div>
+    <div class="version">교사용 v3.6.4</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -56,6 +56,10 @@
       <article><span>일시정지</span><b id="livePaused">0</b></article>
       <article><span>제출 완료</span><b id="liveSubmitted">0</b></article>
     </div>
+    <section id="teacherHelpPanel" class="teacher-help-panel hidden" aria-live="polite">
+      <div class="teacher-help-head"><div><h3>🔔 도움 요청 <b id="teacherHelpCount">0</b></h3><p>선택한 반에서 도움이 필요한 학생입니다.</p></div></div>
+      <div id="teacherHelpList" class="teacher-help-list"></div>
+    </section>
     <div class="live-steps-block">
       <div><h3>실시간 단계 현황</h3><p class="sub">학생들이 어느 단계에 있는지 새로고침할 때 함께 갱신됩니다.</p></div>
       <div class="live-step-cards">
@@ -83,7 +87,7 @@
     </div>
 
     <div class="guide-panel" data-guide-panel="before">
-      <h3>수업 시작 전 5분 체크</h3>
+      <h3>수업 시작 전 확인</h3>
       <p class="sub">아래 항목을 확인하면 수업 중 당황할 일이 크게 줄어듭니다. 체크 상태는 이 브라우저에 저장됩니다.</p>
       <label class="check-line"><input type="checkbox" data-preflight="studentUrl"> 학생용 주소가 학생 기기에서 열리는지 확인</label>
       <label class="check-line"><input type="checkbox" data-preflight="teacherUrl"> 교사용 화면에 로그인되는지 확인</label>
@@ -97,10 +101,10 @@
     <div class="guide-panel hidden" data-guide-panel="run">
       <h3>45분 운영 흐름</h3><div class="teacher-reading-tip"><b>v3.0 간편 운영</b><span>교사가 반별 입장을 열고 시작 버튼을 누르면 45분 타이머가 흐릅니다. 학생은 자동 배정된 국가를 확인하고 4단계만 수행합니다. 긴 자료 분석과 자유 예산 배분은 없앴으며, 선택형 문항과 짧은 서술을 결합했습니다. 마지막에는 전체 답안을 확인하고 수정한 뒤 제출합니다.</span></div>
       <div class="timeline">
-        <div><b>0~5분</b><span>학생 로그인·국가 배정·활동 안내. 정답보다 국가 조건과 판단 근거가 중요하다고 설명합니다.</span></div>
-        <div><b>5~15분</b><span>1단계 국가 조건 확인과 처음 판단을 작성합니다.</span></div>
-        <div><b>15~35분</b><span>2단계 정책 선택과 3단계 상대국 절충을 이어서 수행합니다.</span></div>
-        <div><b>35~45분</b><span>4단계 최종 합의를 작성하고 전체 답안을 검토한 뒤 제출합니다.</span></div>
+        <div><b>준비·입장</b><span>학생 로그인·국가 배정·활동 안내. 정답보다 국가 조건과 판단 근거가 중요하다고 설명합니다.</span></div>
+        <div><b>1단계</b><span>국가 조건 확인과 처음 판단을 작성합니다.</span></div>
+        <div><b>2~3단계</b><span>정책 선택과 상대국 절충을 이어서 수행합니다.</span></div>
+        <div><b>4단계·제출</b><span>최종 합의를 작성하고 전체 답안을 검토한 뒤 제출합니다.</span></div>
       </div>
       <div class="notice"><b>교사가 개입해도 되는 범위</b> · 용어 뜻, 버튼 사용법, 어디에서 앞 답안을 보는지, 저장·재접속 방법은 알려줘도 됩니다. “어느 협약이 더 좋은지”, “어느 국가를 골라야 하는지” 같은 정책 선택은 대신 판단해 주지 않습니다.</div>
     </div>
@@ -165,7 +169,7 @@
     </div>
   </section>
 
-  <div class="student-status-heading"><div><h2>학생별 진행 현황</h2><p class="sub">현재 접속 학생을 먼저 보고, 접속 이력·미접속·제출 학생으로 바로 전환할 수 있습니다.</p></div><div id="studentLiveTabs" class="student-live-tabs"><button data-live-tab="online" class="active">현재 접속 <b id="tabOnline">0</b></button><button data-live-tab="history">접속 이력 <b id="tabHistory">0</b></button><button data-live-tab="never">미접속 <b id="tabNever">0</b></button><button data-live-tab="submitted">제출 <b id="tabSubmitted">0</b></button><button data-live-tab="all">전체 <b id="tabAll">0</b></button></div></div>
+  <div class="student-status-heading"><div><h2>학생별 진행 현황</h2><p class="sub">현재 접속 학생을 먼저 보고, 도움 요청·접속 이력·미접속·제출 학생으로 바로 전환할 수 있습니다.</p></div><div id="studentLiveTabs" class="student-live-tabs"><button data-live-tab="online" class="active">현재 접속 <b id="tabOnline">0</b></button><button data-live-tab="help">도움 요청 <b id="tabHelp">0</b></button><button data-live-tab="history">접속 이력 <b id="tabHistory">0</b></button><button data-live-tab="never">미접속 <b id="tabNever">0</b></button><button data-live-tab="submitted">제출 <b id="tabSubmitted">0</b></button><button data-live-tab="all">전체 <b id="tabAll">0</b></button></div></div>
   <div class="stats stats-six">
     <div class="stat"><span>응시 대상</span><b id="sTarget">-</b></div>
     <div class="stat"><span>미시작</span><b id="sNotStarted">-</b></div>

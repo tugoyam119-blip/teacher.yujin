@@ -1,8 +1,8 @@
-const VERSION='3.6.3';
+const VERSION='3.6.4';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
-let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null,waitingForClassStart=false;
+let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null,waitingForClassStart=false,helpState={requested:false,category:'',requestedAt:null};
 let pendingSave=null,saveWorker=null,saveWaiters=[],navigationLocked=false,submitLocked=false;
 const TEACHER_STUDENT_ID='000000';
 
@@ -51,6 +51,13 @@ const budgetPlans={
 const opponentByCountry={hanbit:'saebom',saebom:'hanbit',pureun:'taeyang',taeyang:'pureun'};
 
 function toast(msg='저장되었습니다.'){$('#toast').textContent=msg;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),1700)}
+const helpLabels={understand:'📖 문제 뜻을 이해하기 어려움',country:'🌍 국가 조건을 이해하기 어려움',write:'✍️ 생각을 글로 정리하기 어려움',tech:'⚙️ 화면·저장·입력 문제',other:'🙋 기타 도움 필요'};
+function updateHelpButton(){const btn=$('#helpRequestBtn');if(!btn)return;btn.classList.toggle('requested',!!helpState.requested);btn.textContent=helpState.requested?'🔔 도움 요청됨':'🙋 도움 요청'}
+async function syncHelpStatus(){if(!session)return;try{const r=await fetch(`/api/help/status/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;helpState=await r.json();updateHelpButton()}catch{}}
+function closeHelpMenu(){$('#helpOverlay')?.remove()}
+function openHelpMenu(){closeHelpMenu();const overlay=document.createElement('div');overlay.id='helpOverlay';overlay.className='modal';overlay.innerHTML=`<div class="modal-card help-modal-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="modal-head"><div><span class="eyebrow">교사에게 알림 전송</span><h2 id="helpTitle">🙋 도움 요청</h2></div><button type="button" class="ghost" data-close-help>닫기</button></div>${helpState.requested?`<div class="help-requested-state"><b>선생님께 요청을 보냈습니다.</b><span>${esc(helpLabels[helpState.category]||helpLabels.other)}</span><button type="button" class="secondary" data-cancel-help>요청 취소</button></div>`:`<p class="sub">도움이 필요한 내용을 고르면 교사 관리 화면에 바로 표시됩니다.</p><div class="help-choice-grid">${Object.entries(helpLabels).map(([key,label])=>`<button type="button" class="help-choice" data-help-category="${key}">${label}</button>`).join('')}</div>`}</div>`;document.body.appendChild(overlay);overlay.querySelector('[data-close-help]').onclick=closeHelpMenu;overlay.addEventListener('click',e=>{if(e.target===overlay)closeHelpMenu()});overlay.querySelectorAll('[data-help-category]').forEach(btn=>btn.onclick=()=>sendHelpRequest(btn.dataset.helpCategory));overlay.querySelector('[data-cancel-help]')?.addEventListener('click',cancelHelpRequest)}
+async function sendHelpRequest(category){try{const r=await fetch('/api/help/request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,category})}),j=await r.json();if(!r.ok)throw new Error(j.error||'도움 요청 실패');helpState={requested:true,category,requestedAt:j.requestedAt};closeHelpMenu();updateHelpButton();toast('선생님께 도움 요청을 보냈습니다.')}catch(e){alert(e.message)}}
+async function cancelHelpRequest(){try{const r=await fetch('/api/help/cancel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId})}),j=await r.json();if(!r.ok)throw new Error(j.error||'요청 취소 실패');helpState={requested:false,category:'',requestedAt:null};closeHelpMenu();updateHelpButton();toast('도움 요청을 취소했습니다.')}catch(e){alert(e.message)}}
 function message(msg){const el=$('#inlineMessage');if(!msg){el.classList.add('hidden');return}el.textContent=msg;el.classList.remove('hidden')}
 function answerQuality(text,min=12){
  const s=String(text||'').trim(),compact=s.replace(/\s/g,'');
@@ -84,7 +91,8 @@ async function startAssessment(){
  try{
   const r=await fetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId,name})});const j=await r.json();if(!r.ok)throw new Error(j.error||'시작 오류');
   session=j.session;initState();step=Number.isInteger(state.currentStep)?Math.min(3,Math.max(0,state.currentStep)):0;if(j.resumed&&!state.countryRevealDone&&(Number(session.progress||0)>0||step>0||state.priority1)){state.countryRevealDone=true}
-  $('#login').classList.add('hidden');$('#timer').classList.remove('hidden');$('#glossaryBtn').classList.remove('hidden');$('#countryGuideBtn').classList.remove('hidden');
+  $('#login').classList.add('hidden');$('#timer').classList.remove('hidden');$('#glossaryBtn').classList.remove('hidden');$('#countryGuideBtn').classList.remove('hidden');$('#helpRequestBtn').classList.remove('hidden');
+  await syncHelpStatus();
   applyTimerState(j.timer||{});startTimer();
   if(session.status==='review_reopened'){state.countryRevealDone=true;state.reviewReady=true;$('#decisionReviewBtn').classList.remove('hidden');showFinalReview();toast('교사가 최종 검토 화면을 다시 열었습니다. 필요한 부분을 수정한 뒤 다시 제출하세요.');}
   else if(!state.countryRevealDone){showCountryAssignment()}
@@ -115,12 +123,12 @@ function handleClassStartTransition(){if(!waitingForClassStart||timerPhase!=='ru
 function applyTimerState(t={}){timerExempt=!!t.exempt;timerPhase=String(t.phase||'');if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
 async function syncTimer(){if(!session)return;try{const r=await fetch(`/api/timer/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());handleClassStartTransition();if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}}
 function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining===5*60)toast('5분 남았습니다. 최종 판단과 제출을 확인하세요.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,5000);syncTimer()}
-function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60;el.textContent=timerPaused?`⏸ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;const phaseMessage={ready:'선생님이 수행을 시작하면 시간이 시작됩니다.',paused:'선생님이 수행을 일시정지했습니다. 답안은 보존됩니다.',finished:'45분 수행시간이 종료되었습니다.'};el.title=timerPaused?(phaseMessage[timerPhase]||'수행평가 시간이 일시정지되어 있습니다.'):'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
+function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60,time=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.textContent=timerPaused?`⏸ 남은 시간 ${time}`:`남은 시간 ${time}`;const phaseMessage={ready:'선생님이 수행을 시작하면 시간이 시작됩니다.',paused:'선생님이 수행을 일시정지했습니다. 답안은 보존됩니다.',finished:'45분 수행시간이 종료되었습니다.'};el.title=timerPaused?(phaseMessage[timerPhase]||'수행평가 시간이 일시정지되어 있습니다.'):'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
 async function autoSubmitOnTime(){if(autoSubmitting||timerExempt)return;autoSubmitting=true;collect();state.timeExpired=true;await save(false);await finalSubmit(true)}
 function showAssessment(){$('#finalReview').classList.add('hidden');$('#preStartWait').classList.add('hidden');$('#assessment').classList.remove('hidden')}
 function render(){
  message('');$('#progress').style.width=`${stepProgress[step]}%`;$('#prevBtn').style.visibility=step===0?'hidden':'visible';$('#nextBtn').textContent=step===3?'최종 검토 →':'다음 단계 →';
- const stages=['국가와 처음 판단','핵심 딜레마와 정책 선택','상대국과 절충','판단 변화와 최종 합의'];$('#lessonPill').textContent='45분 수행평가 · 학생 활동 약 30분';$('#lessonHeader').innerHTML=`<span class="phase-badge">STEP ${step+1} / 4</span><b>${stages[step]}</b><span>선택은 간단하게, 이유는 핵심만 작성하세요.</span>`;
+ const stages=['국가와 처음 판단','핵심 딜레마와 정책 선택','상대국과 절충','판단 변화와 최종 합의'];$('#lessonPill').textContent='45분 수행평가';$('#lessonHeader').innerHTML=`<span class="phase-badge">STEP ${step+1} / 4</span><b>${stages[step]}</b><span>선택은 간단하게, 이유는 핵심만 작성하세요.</span>`;
  const funcs=[renderFastCountry,renderFastDilemma,renderFastCompromise,renderFastReflection];$('#stepHost').innerHTML=funcs[step]();bindStep();
  ensureReviewReturnButton();
 }
@@ -209,7 +217,7 @@ function showFinalReview(){collect();reviewEditStep=null;$('#assessment').classL
 async function editFromReview(targetStep){reviewEditStep=targetStep;step=targetStep;state.currentStep=step;await save(false);$('#finalReview').classList.add('hidden');showAssessment();render();window.scrollTo({top:0,behavior:'smooth'})}
 function ensureReviewReturnButton(){let btn=document.getElementById('returnReviewBtn');if(reviewEditStep===null){btn?.remove();return}if(!btn){btn=document.createElement('button');btn.id='returnReviewBtn';btn.className='secondary';btn.textContent='최종 검토로 돌아가기';document.querySelector('#assessment .actions .right')?.prepend(btn)}btn.onclick=async()=>{const err=validate();if(err){message(err);return}collect();await save(false);reviewEditStep=null;showFinalReview();window.scrollTo({top:0,behavior:'smooth'})}}
 
-async function finalSubmit(auto=false){if(submitLocked)return;collect();if(!auto&& !confirm('이 내용으로 최종 제출하시겠습니까? 제출 후에는 학생 화면에서 수정할 수 없습니다.'))return;submitLocked=true;const btn=$('#confirmFinalSubmitBtn');if(btn){btn.disabled=true;btn.textContent='저장 후 제출 중…'}try{if(!auto&&!await save(false))throw new Error('최신 답안을 저장하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 제출하세요.');const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,data:state})});const j=await r.json();if(!r.ok)throw new Error(j.error||'제출 실패');clearInterval(timerHandle);clearInterval(timerSyncHandle);$('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#done').classList.remove('hidden');$('#progress').style.width='100%';$('#timer').classList.add('hidden');$('#doneInfo').innerHTML=`<b>${esc(session.studentId)} ${esc(session.name)}</b> · ${countryLabels[session.country]}<br>${auto?'45분 제한 시간이 종료되어 현재까지 작성한 내용이 자동 제출되었습니다.':'최종 제출이 정상적으로 완료되었습니다.'}`;$('#doneSummary').innerHTML=finalReviewSummaryHtml(false);}catch(e){alert(e.message)}finally{submitLocked=false;if(btn){btn.disabled=false;btn.textContent='이 내용으로 최종 제출 →'}}}
+async function finalSubmit(auto=false){if(submitLocked)return;collect();if(!auto&& !confirm('이 내용으로 최종 제출하시겠습니까? 제출 후에는 학생 화면에서 수정할 수 없습니다.'))return;submitLocked=true;const btn=$('#confirmFinalSubmitBtn');if(btn){btn.disabled=true;btn.textContent='저장 후 제출 중…'}try{if(!auto&&!await save(false))throw new Error('최신 답안을 저장하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 제출하세요.');const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,data:state})});const j=await r.json();if(!r.ok)throw new Error(j.error||'제출 실패');clearInterval(timerHandle);clearInterval(timerSyncHandle);$('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#done').classList.remove('hidden');$('#progress').style.width='100%';$('#timer').classList.add('hidden');$('#helpRequestBtn').classList.add('hidden');$('#doneInfo').innerHTML=`<b>${esc(session.studentId)} ${esc(session.name)}</b> · ${countryLabels[session.country]}<br>${auto?'45분 제한 시간이 종료되어 현재까지 작성한 내용이 자동 제출되었습니다.':'최종 제출이 정상적으로 완료되었습니다.'}`;$('#doneSummary').innerHTML=finalReviewSummaryHtml(false);}catch(e){alert(e.message)}finally{submitLocked=false;if(btn){btn.disabled=false;btn.textContent='이 내용으로 최종 제출 →'}}}
 
 $('#startBtn').addEventListener('click',startAssessment);
 $('#studentId').addEventListener('input',()=>applyServerGate(serverOpen));
@@ -231,7 +239,8 @@ $('#myCountryQuickBtn').addEventListener('click',()=>openCountryHelp('mine'));
 $('#compareCountriesQuickBtn').addEventListener('click',()=>openCountryHelp('all'));
 $('#waitingCountryGuideBtn').addEventListener('click',()=>openCountryHelp('all'));
 document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',()=>closeModal(el.dataset.closeModal)));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('decisionModal');closeModal('glossaryModal');closeModal('countryGuideModal')}});
+$('#helpRequestBtn').onclick=openHelpMenu;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('decisionModal');closeModal('glossaryModal');closeModal('countryGuideModal');closeHelpMenu()}});
 window.addEventListener('beforeunload',e=>{if(saveWorker||pendingSave){e.preventDefault();e.returnValue=''}});
 
 // v2.4.2 · 학생 접속 게이트: 교사가 서버를 열어야 수행 시작/진행 가능

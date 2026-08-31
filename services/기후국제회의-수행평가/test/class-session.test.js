@@ -46,6 +46,14 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   await sleep(250);
   assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds,2700,'waiting consumed class time');
 
+  const help=await post('/api/help/request',{sessionId:ready.session.sessionId,category:'write'});
+  assert.equal(help.requested,true,'student help request was not accepted');
+  assert.equal((await get(`/api/help/status/${ready.session.sessionId}`)).category,'write','help status did not persist');
+  const helpPresence=(await get('/api/teacher/submissions',teacherHeaders)).presence.find(x=>x.studentId==='10102');
+  assert.equal(helpPresence.helpRequest,true,'teacher did not receive student help request');
+  await post('/api/teacher/help/resolve',{studentId:'10102'},teacherHeaders);
+  assert.equal((await get(`/api/help/status/${ready.session.sessionId}`)).requested,false,'resolved help request remained active');
+
   await post('/api/teacher/class-runtime',{action:'start',classNo:1,mode:'regular'},teacherHeaders);
   assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).phase,'running','teacher start did not begin the class timer');
   await editClass(1,r=>{r.elapsedSeconds=2699;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2700});

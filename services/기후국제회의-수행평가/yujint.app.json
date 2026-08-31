@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "3.6.3",
+  "version": "3.6.4",
   "app_id": "international-climate-conference-assessment",
   "name": "기후국제회의 수행평가",
   "healthcheck_path": "/health",
