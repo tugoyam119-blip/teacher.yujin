@@ -1,4 +1,4 @@
-const VERSION='3.6.2';
+const VERSION='3.6.3';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
@@ -52,7 +52,23 @@ const opponentByCountry={hanbit:'saebom',saebom:'hanbit',pureun:'taeyang',taeyan
 
 function toast(msg='저장되었습니다.'){$('#toast').textContent=msg;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),1700)}
 function message(msg){const el=$('#inlineMessage');if(!msg){el.classList.add('hidden');return}el.textContent=msg;el.classList.remove('hidden')}
-function meaningful(text,min=12){const s=String(text||'').trim();if(s.length<min)return false;const compact=s.replace(/\s/g,'');if(!compact)return false;if(/(.)\1{5,}/.test(compact))return false;const punctuation=(compact.match(/[.,!?~ㅋㅎㅠㅜㄷㄱㅡㅗㅏ]/g)||[]).length;if(punctuation/compact.length>.45)return false;const unique=new Set(compact).size;if(compact.length>15&&unique<5)return false;return true}
+function answerQuality(text,min=12){
+ const s=String(text||'').trim(),compact=s.replace(/\s/g,'');
+ if(s.length<min)return{ok:false,message:`${min}자 이상 작성하세요.`};
+ if(!compact)return{ok:false,message:'내용을 직접 작성하세요.'};
+ const jamo=(compact.match(/[ㄱ-ㅎㅏ-ㅣᄀ-ᇿ]/g)||[]).length;
+ if(jamo>=3&&(jamo/compact.length>.2||/[ㄱ-ㅎㅏ-ㅣᄀ-ᇿ]{3,}/.test(compact)))return{ok:false,message:'초성이나 자음·모음만 반복한 답안은 인정되지 않습니다. 완성된 문장으로 작성하세요.'};
+ if(/(.)\1{3,}/u.test(compact))return{ok:false,message:'같은 글자를 반복한 답안은 인정되지 않습니다. 자신의 생각을 문장으로 작성하세요.'};
+ if(/(.{1,5})\1{3,}/u.test(compact))return{ok:false,message:'같은 낱말이나 글자 묶음을 반복한 답안은 인정되지 않습니다.'};
+ const symbols=(compact.match(/[^가-힣a-zA-Z0-9]/g)||[]).length;
+ if(symbols/compact.length>.3)return{ok:false,message:'기호를 반복해 채운 답안은 인정되지 않습니다. 완성된 문장으로 작성하세요.'};
+ const letters=compact.match(/[가-힣a-zA-Z]/g)||[],unique=new Set(letters.map(x=>x.toLowerCase())).size;
+ if(compact.length>=20&&unique<6)return{ok:false,message:'서로 다른 낱말을 사용해 이유를 구체적으로 작성하세요.'};
+ if(letters.length/compact.length<.55)return{ok:false,message:'의미 있는 문장으로 작성하세요. 숫자나 기호만 나열할 수 없습니다.'};
+ return{ok:true,message:''};
+}
+function meaningful(text,min=12){return answerQuality(text,min).ok}
+function answerError(text,min,prompt){const q=answerQuality(text,min);return q.ok?'':`${prompt} ${q.message}`}
 function count(el){const c=el.closest('.field')?.querySelector('.counter');if(!c)return;const len=el.value.length,min=Number(el.dataset.min||0),rec=Number(el.dataset.recommended||0);if(min&&rec){c.classList.toggle('ok',len>=min);c.classList.toggle('great',len>=rec);c.textContent=len>=rec?`${len}자 · 권장 분량 충족`:(len>=min?`${len}자 · 최소 기준 충족 · 권장 ${rec}자`:`${len}자 · 최소 ${min}자 · 권장 ${rec}자`);return}c.textContent=min?`${len}자 / 최소 ${min}자`:`${len}자`}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function writingCounterHtml(text,min=100,rec=300){const len=String(text||'').length,cls=`${len>=min?'ok':''} ${len>=rec?'great':''}`.trim(),label=len>=rec?`${len}자 · 권장 분량 충족`:(len>=min?`${len}자 · 최소 기준 충족 · 권장 ${rec}자`:`${len}자 · 최소 ${min}자 · 권장 ${rec}자`);return `<div class="counter ${cls}">${label}</div>`}
@@ -167,10 +183,10 @@ function budgetSum(){return Object.values(state.budget||{}).reduce((a,b)=>a+Numb
 function budgetSummary(){return Object.entries(state.budget||{}).map(([k,v])=>`${budgets[k]} ${Number(v||0)}억`).join(' · ')}
 function budgetExtremes(){const es=Object.entries(state.budget||{});if(!es.length)return{high:[],low:[]};const max=Math.max(...es.map(x=>x[1])),min=Math.min(...es.map(x=>x[1]));return{high:es.filter(x=>x[1]===max).map(x=>x[0]),low:es.filter(x=>x[1]===min).map(x=>x[0])}}
 function validate(){collect();
- if(step===0){if(!state.priority1)return'가장 중요한 가치를 선택하세요.';if(!meaningful(state.priorityReason,20))return'이유를 20자 이상 작성하세요. 국가 조건 한 가지와 연결하면 됩니다.'}
- if(step===1){if(!state.agreement)return'국제기후협약을 하나 선택하세요.';if(!state.budgetTouched)return'＋ 버튼을 눌러 100억 원을 직접 배분하세요.';if(budgetSum()!==100)return`현재 ${budgetSum()}억 원입니다. 다섯 사업의 합계를 정확히 100억 원으로 맞추세요.`;if(!meaningful(state.agreementReason,30))return'협약과 예산 배분 이유를 30자 이상 작성하세요.'}
- if(step===2){if(!state.opposingCountry)return'협상할 상대국을 선택하세요.';if(!state.compromiseDimension)return'먼저 조정할 부분을 선택하세요.';if(!state.compromiseChoice)return'절충 방식을 하나 선택하세요.';if(!meaningful(state.compromise,30))return'합의 내용을 30자 이상 작성하세요. 양쪽이 무엇을 하고 얻는지 포함하세요.'}
- if(step===3){if(!state.reconsiderChoice)return'처음 판단을 유지했는지 바꾸었는지 선택하세요.';if(!meaningful(state.finalDeclaration,60))return'최종 합의문을 60자 이상 작성하세요.'}
+ if(step===0){if(!state.priority1)return'가장 중요한 가치를 선택하세요.';const e=answerError(state.priorityReason,20,'판단 이유를 다시 확인하세요.');if(e)return e+' 국가 조건 한 가지와 연결하면 됩니다.'}
+ if(step===1){if(!state.agreement)return'국제기후협약을 하나 선택하세요.';if(!state.budgetTouched)return'＋ 버튼을 눌러 100억 원을 직접 배분하세요.';if(budgetSum()!==100)return`현재 ${budgetSum()}억 원입니다. 다섯 사업의 합계를 정확히 100억 원으로 맞추세요.`;const e=answerError(state.agreementReason,30,'협약과 예산 배분 이유를 다시 확인하세요.');if(e)return e}
+ if(step===2){if(!state.opposingCountry)return'협상할 상대국을 선택하세요.';if(!state.compromiseDimension)return'먼저 조정할 부분을 선택하세요.';if(!state.compromiseChoice)return'절충 방식을 하나 선택하세요.';const e=answerError(state.compromise,30,'합의 내용을 다시 확인하세요.');if(e)return e+' 양쪽이 무엇을 하고 얻는지 포함하세요.'}
+ if(step===3){if(!state.reconsiderChoice)return'처음 판단을 유지했는지 바꾸었는지 선택하세요.';const e=answerError(state.finalDeclaration,60,'최종 합의문을 다시 확인하세요.');if(e)return e}
  return'';
 }
 function setSaveStatus(kind,text){const el=$('#saveStatus'),btn=$('#saveBtn');if(el){el.className=`save-status ${kind||''}`.trim();el.textContent=text}if(btn){btn.disabled=kind==='saving'||kind==='queued';btn.textContent=kind==='saving'||kind==='queued'?'저장 중…':'임시 저장'}}

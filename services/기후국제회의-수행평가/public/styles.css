@@ -248,6 +248,26 @@ main{max-width:940px;margin:26px auto 70px;padding:0 18px}.hero,.panel{backgroun
   .topbar-tools,.quick-help-actions{grid-template-columns:1fr}
 }
 
+/* v3.6.3 · 학생 화면 문장 배열과 하단 조작부 가독성 */
+button,.topbar-btn,.quick-help-btn,.primary,.secondary,.ghost{word-break:keep-all;overflow-wrap:normal;line-height:1.35}
+.quick-help-actions{min-width:310px}.quick-help-btn{min-width:148px;padding:10px 15px;height:auto}
+@media(max-width:1100px) and (min-width:601px){
+  .priority-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .priority-choice:last-child{grid-column:1/-1}
+  .assessment-action-tools{width:100%;display:grid!important;grid-template-columns:minmax(0,1fr) auto auto;align-items:center}
+  .quick-help-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr;min-width:0}
+  .quick-help-btn{min-width:0}
+}
+@media(max-width:600px){
+  .panel>.actions{grid-template-columns:1fr 1fr}
+  .panel>.actions>.quick-help-actions{grid-column:1/-1;grid-row:1;min-width:0}
+  .panel>.actions>.save-status{grid-column:1/-1;grid-row:2}
+  .panel>.actions>#prevBtn{grid-column:1;grid-row:3}
+  .panel>.actions>#saveBtn{grid-column:2;grid-row:3}
+  .panel>.actions>#nextBtn{grid-column:1/-1;grid-row:4}
+  .quick-help-btn{min-width:0;padding:11px 10px;font-size:14px;white-space:normal}
+}
+
 /* v3.5.0 · 로그인 스토리와 직접 예산 배분 */
 .story-intro{margin:18px 0;padding:18px 20px;border-radius:17px;background:linear-gradient(135deg,#174f35,#267a52);color:#fff;box-shadow:0 12px 28px rgba(23,79,53,.18)}
 .story-intro>span,.story-bridge>span{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.04em;color:#ffe39a;margin-bottom:5px}
