@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.6.0 · 세션 캐시와 저장 상태 표시",
+  "description": "기후국제회의 수행평가 v3.6.1 · Railway 영구 저장소 적용",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

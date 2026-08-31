@@ -788,6 +788,7 @@ app.post('/api/admin/deploy/:id/sync-infra', needTeacher, async (req, res, next)
     // The classroom service may run with /classroom-hub as its Railway root directory,
     // so sibling service manifests are not guaranteed to exist at runtime.
     if (a.id==='human-rights') localManifest={...localManifest,healthcheck_path:'/health',manage_path:'/teacher',inherit_env:['TEACHER_PIN'],variables:{...(localManifest.variables||{}),DATA_DIR:'/data'},volume_mount_path:'/data'};
+    if (a.slug==='기후국제회의-수행평가') localManifest={...localManifest,healthcheck_path:'/health',manage_path:'/manage',inherit_env:[],variables:{...(localManifest.variables||{}),DATA_DIR:'/data'},volume_mount_path:'/data'};
     const infra = await railwaySyncInfrastructure(a.railway_service_id, a.slug, localManifest, a.railway_volume_id || '');
     const nextA = normalizeActivity({ ...a, target_url: a.railway_domain ? `https://${a.railway_domain}` : a.target_url, railway_volume_id: infra.volumeInfo?.volumeId || a.railway_volume_id || '', manage_url: a.railway_domain ? `https://${a.railway_domain}${localManifest.manage_path || '/?teacher=1'}` : a.manage_url, deploy_status: infra.warning ? 'warning' : a.deploy_status }, a);
     s.activities[i] = nextA; await saveState(s);

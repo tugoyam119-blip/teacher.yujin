@@ -1,0 +1,15 @@
+{
+  "schema": 2,
+  "type": "server",
+  "version": "3.6.1",
+  "app_id": "international-climate-conference-assessment",
+  "name": "기후국제회의 수행평가",
+  "healthcheck_path": "/health",
+  "manage_path": "/manage",
+  "inherit_env": [],
+  "variables": {
+    "DATA_DIR": "/data"
+  },
+  "volume_mount_path": "/data",
+  "description": "학생 명단·답안·타이머·교사 설정을 Railway 영구 볼륨에 보존"
+}

@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.6.0';
+const APP_VERSION = '3.6.1';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -19,7 +19,10 @@ const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.6-luna';
 const TOTAL_SECONDS = 45 * 60;
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'public');
-const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
+// Railway volumes are mounted at /data. Prefer that mount automatically so a
+// missing DATA_DIR variable never sends assessment records to ephemeral disk.
+const DATA_DIR = process.env.DATA_DIR || (fs.existsSync('/data') ? '/data' : path.join(ROOT, 'data'));
+const STORAGE_MODE = path.resolve(DATA_DIR) === '/data' ? 'persistent-volume' : 'local';
 const LOG_FILE = path.join(DATA_DIR, 'events.jsonl');
 const ROSTER_FILE = path.join(DATA_DIR, 'roster.json');
 const RUNTIME_FILE = path.join(DATA_DIR, 'runtime.json');
@@ -169,7 +172,7 @@ async function handle(req,res){
   if(req.method==='GET'&&url.pathname==='/'&&(url.searchParams.get('teacher')==='1'||url.searchParams.get('mode')==='teacher')){res.writeHead(302,{Location:'/teacher','Cache-Control':'no-store'});return res.end()}
   if(req.method==='GET'&&['/operate/','/operate.html','/classroom/','/classroom.html'].includes(url.pathname)){res.writeHead(302,{Location:'/operate','Cache-Control':'no-store'});return res.end()}
   if(req.method==='GET'&&['/teacher/','/teacher.html'].includes(url.pathname)){res.writeHead(302,{Location:'/teacher','Cache-Control':'no-store'});return res.end()}
-  if(req.method==='GET'&&url.pathname==='/health')return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,time:now()});
+  if(req.method==='GET'&&url.pathname==='/health')return sendJson(res,200,{ok:true,projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,storage:STORAGE_MODE,time:now()});
   if(req.method==='GET'&&url.pathname==='/api/project-info')return sendJson(res,200,{projectId:PROJECT_ID,name:PROJECT_NAME,version:APP_VERSION,type:'server',studentPath:'/',teacherPath:'/teacher',operatePath:'/operate',theme:'green',mobileOptimized:true,totalActiveMinutes:45,phaseGate:false,teacherPause:false,serverGate:true,rosterUpload:true,aiGrading:true,teacherApiKeyInput:true});
   if(req.method==='GET'&&url.pathname==='/api/teacher/auth')return teacherOK(req,url)?sendJson(res,200,{ok:true,authenticated:true}):sendJson(res,401,{ok:false,authenticated:false});
   if(req.method==='POST'&&url.pathname==='/api/teacher/auth'){const b=await bodyJson(req);if(!validTeacherKey(b.password))return sendJson(res,401,{ok:false,error:'교사용 비밀번호가 올바르지 않습니다.'});return sendJson(res,200,{ok:true,authenticated:true},{'Set-Cookie':teacherCookie(req)});}
