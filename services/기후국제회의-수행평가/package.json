@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.1.0 · 환율위기형 교사 운영 화면",
+  "description": "기후국제회의 수행평가 v3.1.1 · 교사 관리 링크 바로 연결",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
