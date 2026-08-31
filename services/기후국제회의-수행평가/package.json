@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.4.0 · 교사 화면 공통 HttpOnly 인증 쿠키 적용",
+  "description": "기후국제회의 수행평가 v3.4.0 · 중요한 가치 가독성 및 학생 모바일 화면 최적화",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
