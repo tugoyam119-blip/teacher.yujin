@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.2.2';
+const APP_VERSION = '3.3.0';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -136,7 +136,7 @@ function syntheticAnswer(student,index){
   taeyang:{priority:'energy',agreement:'C',plan:'transition',condition:'석유·가스 수출이 재정과 일자리의 중심이지만 태양광 전환 잠재력도 크다',policy:'단계적 자율 감축과 산업 전환 지원을 결합해야 경제 충격을 줄일 수 있다',trade:'화석연료 감축 일정을 제시하고 국제사회는 태양광 산업과 노동자 전환을 지원한다'}
  }[country];
  const short=level==='basic';
- return{priority1:profile.priority,priority2:'',priorityReason:short?`${profile.condition}. 그래서 우리 국가에 직접 필요한 가치를 우선해야 한다.`:`${profile.condition}. 따라서 단기 비용만 볼 것이 아니라 책임과 실행 가능성을 함께 고려해 이 가치를 우선해야 한다.`,initialPosition:profile.condition,agreement:profile.agreement,budgetPlan:profile.plan,agreementReason:short?`${profile.policy}. 국가 상황에 맞기 때문이다.`:`${profile.policy}. 이 선택은 감축 부담과 경제·피해 조건을 함께 반영하며 예산도 가장 시급한 분야에 집중할 수 있다.`,budgetHighReason:profile.policy,opposingCountry:opponent,oppositionReason:'상대국은 배출 책임·경제 구조·피해 수준이 달라 같은 속도와 비용을 받아들이기 어렵다.',compromiseDimension:'speed',compromiseChoice:'conditional',compromise:short?`${profile.trade}. 서로 조금씩 양보하면 합의할 수 있다.`:`${profile.trade}. 우리 국가는 이행 일정과 점검 결과를 공개하고 상대국도 약속한 지원 또는 감축을 실행해 양측의 부담과 이익을 나눈다.`,reconsiderChoice:index%4===0?'revise':'keep',finalDeclaration:short?`우리 국가는 ${profile.policy}. 상대국과는 ${profile.trade}. 합의 이행 상황을 함께 확인하겠다.`:`협상 결과 우리 국가는 ${profile.policy}. 동시에 ${profile.trade}. 각 국가는 감축·지원 일정을 공개하고 국제기구가 이행을 점검하여 기후위기 대응과 경제적 부담을 함께 조정하겠다.`,assessmentVersion:'45min-v3.2.2',reviewReady:true,synthetic:true};
+ return{priority1:profile.priority,priority2:'',priorityReason:short?`${profile.condition}. 그래서 우리 국가에 직접 필요한 가치를 우선해야 한다.`:`${profile.condition}. 따라서 단기 비용만 볼 것이 아니라 책임과 실행 가능성을 함께 고려해 이 가치를 우선해야 한다.`,initialPosition:profile.condition,agreement:profile.agreement,budgetPlan:profile.plan,agreementReason:short?`${profile.policy}. 국가 상황에 맞기 때문이다.`:`${profile.policy}. 이 선택은 감축 부담과 경제·피해 조건을 함께 반영하며 예산도 가장 시급한 분야에 집중할 수 있다.`,budgetHighReason:profile.policy,opposingCountry:opponent,oppositionReason:'상대국은 배출 책임·경제 구조·피해 수준이 달라 같은 속도와 비용을 받아들이기 어렵다.',compromiseDimension:'speed',compromiseChoice:'conditional',compromise:short?`${profile.trade}. 서로 조금씩 양보하면 합의할 수 있다.`:`${profile.trade}. 우리 국가는 이행 일정과 점검 결과를 공개하고 상대국도 약속한 지원 또는 감축을 실행해 양측의 부담과 이익을 나눈다.`,reconsiderChoice:index%4===0?'revise':'keep',finalDeclaration:short?`우리 국가는 ${profile.policy}. 상대국과는 ${profile.trade}. 합의 이행 상황을 함께 확인하겠다.`:`협상 결과 우리 국가는 ${profile.policy}. 동시에 ${profile.trade}. 각 국가는 감축·지원 일정을 공개하고 국제기구가 이행을 점검하여 기후위기 대응과 경제적 부담을 함께 조정하겠다.`,assessmentVersion:'45min-v3.3.0',reviewReady:true,synthetic:true};
 }
 async function handle(req,res){
  const url=new URL(req.url,`http://${req.headers.host||'localhost'}`);

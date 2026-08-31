@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.2.2",
+  "version": "3.3.0",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.2.2 · 가장 중요한 가치 5개 선택지 카드형 상시 표시",
+  "description": "기후국제회의 수행평가 v3.3.0 · 국가 도움 버튼·상대국 직접 선택·서버 열기 피드백",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
