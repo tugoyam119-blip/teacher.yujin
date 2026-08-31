@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.2.1 · 45분 운영 문구·내부 답안 버전·서버 버전 통일",
+  "description": "기후국제회의 수행평가 v3.2.2 · 가장 중요한 가치 5개 선택지 카드형 상시 표시",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
