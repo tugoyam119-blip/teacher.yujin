@@ -12,7 +12,7 @@
     <div class="topbar-inner">
       <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가</div>
       <div class="lesson-pill" id="lessonPill">수행 활동 · 기준 45분</div>
-      <div class="topbar-tools"><button id="countryGuideBtn" class="topbar-btn country-help hidden">4개국 배경</button><button id="decisionReviewBtn" class="topbar-btn decision-help hidden">나의 결정 전체보기</button><button id="glossaryBtn" class="topbar-btn glossary-help hidden">개념 도움말</button></div><div class="version">학생용 v3.5.0</div>
+      <div class="topbar-tools"><button id="countryGuideBtn" class="topbar-btn country-help hidden">4개국 배경</button><button id="decisionReviewBtn" class="topbar-btn decision-help hidden">나의 결정 전체보기</button><button id="glossaryBtn" class="topbar-btn glossary-help hidden">개념 도움말</button></div><div class="version">학생용 v3.5.1</div>
       <div id="timer" class="timer hidden">45:00</div>
     </div>
     <div class="progress-wrap"><div id="progress" class="progress"></div></div>
@@ -63,7 +63,17 @@
         <div class="roulette-legend" aria-label="룰렛 색상 안내"><span class="legend-hanbit"><i></i>한빛국</span><span class="legend-saebom"><i></i>새봄국</span><span class="legend-pureun"><i></i>푸른섬국</span><span class="legend-taeyang"><i></i>태양국</span></div>
         <button id="spinCountryBtn" class="primary roulette-button">룰렛 돌려 내 국가 확인하기</button>
       </div>
-      <div id="rouletteResult" class="assigned-result hidden"><div class="eyebrow">배정 결과</div><h2><span id="assignedCountryName"></span> 대표로 배정되었습니다.</h2><div id="assignedCountryType" class="assigned-type"></div><p id="assignedCountryStory"></p><div class="assigned-brief"><div><b>우리나라의 장점</b><span id="assignedCountryStrength"></span></div><div><b>가장 큰 걱정</b><span id="assignedCountryWorry"></span></div><div><b>나의 임무</b><span id="assignedCountryMission"></span></div></div><div id="assignedCountryDilemma" class="dilemma"></div><button id="beginAssignedBtn" class="primary">이해했습니다 · 수행 시작하기 →</button></div>
+      <div id="rouletteResult" class="assigned-result hidden"><div class="eyebrow">배정 결과</div><h2><span id="assignedCountryName"></span> 대표로 배정되었습니다.</h2><div id="assignedCountryType" class="assigned-type"></div><p id="assignedCountryStory"></p><div class="assigned-brief"><div><b>우리나라의 장점</b><span id="assignedCountryStrength"></span></div><div><b>가장 큰 걱정</b><span id="assignedCountryWorry"></span></div><div><b>나의 임무</b><span id="assignedCountryMission"></span></div></div><div id="assignedCountryDilemma" class="dilemma"></div><button id="beginAssignedBtn" class="primary">준비 완료 · 대기하기</button></div>
+    </section>
+
+    <section id="preStartWait" class="hero hidden pre-start-wait">
+      <div class="waiting-symbol"><span></span></div>
+      <div class="eyebrow">입장완료 · 수행 시작 전</div>
+      <h1>국가 배정 완료<br>선생님의 수행 시작을 기다리세요.</h1>
+      <div id="waitingCountrySummary" class="waiting-country-summary"></div>
+      <p>배정된 국가와 네 국가의 설명을 다시 살펴볼 수 있습니다. 교사가 선택 반의 수행을 시작하면 이 화면이 자동으로 1단계로 바뀌고, 그때부터 45분이 흐릅니다.</p>
+      <div class="notice soft"><b>지금은 답안을 작성하지 않습니다.</b> · 화면을 닫거나 새로고침해도 국가 확인 상태는 저장됩니다.</div>
+      <button id="waitingCountryGuideBtn" class="secondary">4개국 설명 다시 보기</button>
     </section>
 
     <section id="assessment" class="panel hidden">
