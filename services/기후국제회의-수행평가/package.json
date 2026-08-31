@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.5.0 · 로그인 국가 소개, 스토리 강화, 100억 직접 배분",
+  "description": "기후국제회의 수행평가 v3.5.1 · 국가 배정 준비 저장 및 수행 시작 자동 전환",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
