@@ -19,7 +19,7 @@ fs.writeFileSync(path.join(dataDir, 'roster.json'), JSON.stringify({updatedAt:nu
 const child = spawn(process.execPath, ['server.js'], {cwd:root, env:{...process.env,DATA_DIR:dataDir,PORT:String(port),TEACHER_PASSWORD:'test-pin'}, stdio:['ignore','pipe','pipe']});
 let logs=''; child.stdout.on('data',d=>logs+=d); child.stderr.on('data',d=>logs+=d);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-async function request(method,url,body,headers={}){const r=await fetch(base+url,{method,headers:{...headers,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined});const text=await r.text(),data=(()=>{try{return JSON.parse(text)}catch{return text}})();if(!r.ok){const e=new Error(data.error||`${method} ${url} ${r.status}`);e.status=r.status;e.data=data;throw e;}return data;}
+async function request(method,url,body,headers={}){const r=await fetch(base+url,{method,headers:{...headers,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined});assert.ok(r.headers.get('server-timing')?.includes('app;dur='),'server processing timing header missing');const text=await r.text(),data=(()=>{try{return JSON.parse(text)}catch{return text}})();if(!r.ok){const e=new Error(data.error||`${method} ${url} ${r.status}`);e.status=r.status;e.data=data;throw e;}return data;}
 const get=(url,headers)=>request('GET',url,null,headers),post=(url,body,headers)=>request('POST',url,body,headers);
 async function waitForServer(){for(let i=0;i<50;i++){try{await get('/health');return}catch{await sleep(100)}}throw new Error('server did not start\n'+logs)}
 async function editClass(classNo,mutate){const file=path.join(dataDir,'class-runtime.json'),j=JSON.parse(await fsp.readFile(file,'utf8')),id=j.classes[String(classNo)],rec=j.sessions[id];mutate(rec);j.sessions[id]=rec;await fsp.writeFile(file,JSON.stringify(j,null,2));return rec;}
@@ -47,7 +47,7 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
 
   await post('/api/teacher/class-runtime',{action:'start',classNo:1,mode:'regular'},teacherHeaders);
   assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).phase,'running','teacher start did not begin the class timer');
-  await editClass(1,r=>{r.elapsedSeconds=2399;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2700});
+  await editClass(1,r=>{r.elapsedSeconds=2699;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2700});
   const finished=await get(`/api/timer/${ready.session.sessionId}`);
   assert.equal(finished.phase,'finished');
   assert.equal(finished.remainingSeconds,0);
@@ -61,7 +61,7 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   const class2After=(await get('/api/teacher/class-runtime',teacherHeaders)).classes.find(x=>x.classNo===2);
   assert.equal(class1After.elapsedSeconds,2700,'class 2 changed class 1');
   assert.equal(class2After.elapsedSeconds,300);
-  assert.equal((await get(`/api/timer/${class2.session.sessionId}`)).remainingSeconds,2100);
+  assert.equal((await get(`/api/timer/${class2.session.sessionId}`)).remainingSeconds,2400);
 
   await post('/api/teacher/class-runtime',{action:'open_admission',classNo:3,mode:'makeup'},teacherHeaders);
   const makeup=await post('/api/start',{studentId:'10301',name:'신규삼반'});
@@ -79,5 +79,5 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   assert.equal(saved.score.total,100);
   assert.equal(presence.loginCount,2,'reconnect count was not retained');
   assert.ok(fs.existsSync(path.join(dataDir,'events.jsonl'))&&fs.existsSync(path.join(dataDir,'runtime.json'))&&fs.existsSync(path.join(dataDir,'class-runtime.json')));
-  console.log('PASS 40m timer, class isolation, makeup, reopen/history, four-area scoring');
+  console.log('PASS 45m timer, session cache, timing header, class isolation, makeup, reopen/history, four-area scoring');
 }finally{child.kill();await sleep(100);await fsp.rm(dataDir,{recursive:true,force:true});}})().catch(e=>{console.error(e);child.kill();process.exitCode=1});

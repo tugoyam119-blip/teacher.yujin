@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.5.1",
+  "version": "3.6.0",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.5.1 · 국가 배정 준비 저장 및 수행 시작 자동 전환",
+  "description": "기후국제회의 수행평가 v3.6.0 · 세션 캐시와 저장 상태 표시",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
