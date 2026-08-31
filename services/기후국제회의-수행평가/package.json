@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.2.0 · 교사용 비밀번호 기반 명단 암호화 백업·자동 복원",
+  "description": "기후국제회의 수행평가 v3.2.1 · 45분 운영 문구·내부 답안 버전·서버 버전 통일",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
