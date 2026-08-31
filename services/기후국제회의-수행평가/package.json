@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.1.3 · 1~3반 및 전체반 통합 현황",
+  "description": "기후국제회의 수행평가 v3.1.4 · 교사 운영화면 재인증 제거",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
