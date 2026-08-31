@@ -2,7 +2,7 @@ const VERSION='3.0.0';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
-let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null;
+let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null,waitingForClassStart=false;
 const TEACHER_STUDENT_ID='000000';
 
 const countryData={
@@ -57,7 +57,7 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function writingCounterHtml(text,min=100,rec=300){const len=String(text||'').length,cls=`${len>=min?'ok':''} ${len>=rec?'great':''}`.trim(),label=len>=rec?`${len}자 · 권장 분량 충족`:(len>=min?`${len}자 · 최소 기준 충족 · 권장 ${rec}자`:`${len}자 · 최소 ${min}자 · 권장 ${rec}자`);return `<div class="counter ${cls}">${label}</div>`}
 function coreWritingGuide(items=''){return `<div class="answer-criteria core-writing-guide"><b>문장 작성 안내 · 핵심 서술형</b><span>① <strong>최소 100자</strong> · <strong>권장 300자</strong>입니다. 300자는 권장 분량이며 의무가 아닙니다.</span>${items}<span>같은 문자·기호를 반복해 글자 수만 채운 답안은 인정되지 않습니다.</span></div>`}
 function shortWritingGuide(items=''){return `<div class="answer-criteria short-writing-guide"><b>문장 작성 안내 · 이유/근거</b><span>① <strong>최소 30자</strong> · <strong>권장 100자</strong>입니다. 100자는 권장 분량이며 의무가 아닙니다.</span>${items}<span>‘좋아서’, ‘필요해서’처럼 결론만 쓰지 말고 문항에서 요구한 근거를 포함하세요.</span></div>`}
-function initState(){const defaults={assessmentVersion:'45min-v3.5.0',budgetPlan:'custom',budgetTouched:false,budget:{renewable:0,disaster:0,tech:0,forest:0,transition:0},actors:[],evidenceSources:[],actorAssignments:{}};state={...defaults,...(session?.data||{})};state.budget={...defaults.budget,...(session?.data?.budget||{})};const oldBudgetTotal=Object.values(session?.data?.budget||{}).reduce((a,b)=>a+Number(b||0),0);state.budgetTouched=Boolean(session?.data?.budgetTouched||session?.data?.budgetPlan||oldBudgetTotal===100);state.actors=[...(session?.data?.actors||[])];state.evidenceSources=[...(session?.data?.evidenceSources||[])];state.actorAssignments={...(session?.data?.actorAssignments||{})}}
+function initState(){const defaults={assessmentVersion:'45min-v3.5.1',budgetPlan:'custom',budgetTouched:false,preparationComplete:false,budget:{renewable:0,disaster:0,tech:0,forest:0,transition:0},actors:[],evidenceSources:[],actorAssignments:{}};state={...defaults,...(session?.data||{})};state.budget={...defaults.budget,...(session?.data?.budget||{})};const oldBudgetTotal=Object.values(session?.data?.budget||{}).reduce((a,b)=>a+Number(b||0),0);state.budgetTouched=Boolean(session?.data?.budgetTouched||session?.data?.budgetPlan||oldBudgetTotal===100);state.actors=[...(session?.data?.actors||[])];state.evidenceSources=[...(session?.data?.evidenceSources||[])];state.actorAssignments={...(session?.data?.actorAssignments||{})}}
 
 function isTeacherEntry(){return $('#studentId')?.value.trim()===TEACHER_STUDENT_ID}
 function applyServerGate(open){serverOpen=!!open;const gate=$('#serverGate');if(gate)gate.classList.add('hidden');const start=$('#startBtn');if(start)start.disabled=false;}
@@ -71,6 +71,7 @@ async function startAssessment(){
   applyTimerState(j.timer||{});startTimer();
   if(session.status==='review_reopened'){state.countryRevealDone=true;state.reviewReady=true;$('#decisionReviewBtn').classList.remove('hidden');showFinalReview();toast('교사가 최종 검토 화면을 다시 열었습니다. 필요한 부분을 수정한 뒤 다시 제출하세요.');}
   else if(!state.countryRevealDone){showCountryAssignment()}
+  else if(state.preparationComplete&&timerPhase==='ready'){showPreStartWait()}
   else if(state.reviewReady){$('#decisionReviewBtn').classList.remove('hidden');showFinalReview()}
   else{$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render()}
   if(j.resumed)toast('이전 진행 내용을 불러왔습니다.');
@@ -78,7 +79,7 @@ async function startAssessment(){
 }
 function allCountryOverview(){const intro={hanbit:'책임과 기술력은 크지만 산업과 일자리를 지켜야 합니다.',saebom:'발전이 필요하지만 석탄 사용과 배출도 줄여야 합니다.',pureun:'배출 책임은 작지만 해수면 상승 피해가 매우 큽니다.',taeyang:'석유 산업을 유지하면서 친환경 산업으로 바꿔야 합니다.'};return `<div class="country-overview-grid">${Object.entries(countryData).map(([k,c])=>`<article class="country-overview-card ${state.countryRevealDone&&session?.country===k?'my-country':''}">${state.countryRevealDone&&session?.country===k?'<span class="my-country-badge">내 국가</span>':''}<div class="country-overview-head"><span class="country-symbol">${{hanbit:'🏭',saebom:'🏗️',pureun:'🌊',taeyang:'☀️'}[k]}</span><div><h3>${c.name}</h3><span>${c.type}</span></div></div><p>${intro[k]}</p><div class="country-overview-points"><b>회의에서 해결할 문제</b><span>${c.dilemma}</span></div></article>`).join('')}</div>`}
 function showCountryAssignment(){
- $('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#countryAssign').classList.remove('hidden');$('#decisionReviewBtn').classList.add('hidden');$('#progress').style.width='3%';$('#lessonPill').textContent='국가 배정 · 수행 시작';
+ $('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#preStartWait').classList.add('hidden');$('#countryAssign').classList.remove('hidden');$('#decisionReviewBtn').classList.add('hidden');$('#progress').style.width='3%';$('#lessonPill').textContent='국가 배정 · 수행 준비';
  $('#countryIntroGrid').innerHTML=allCountryOverview();
  if(state.countryRevealDone){showAssignedCountryResult()}else{$('#rouletteResult').classList.add('hidden');$('#spinCountryBtn').classList.remove('hidden')}
 }
@@ -88,15 +89,18 @@ function showAssignedCountryResult(){
 async function spinCountryRoulette(){
  const btn=$('#spinCountryBtn'),wheel=$('#rouletteWheel');if(btn.disabled)return;btn.disabled=true;btn.textContent='국가를 배정하고 있습니다…';
  const idx=['hanbit','saebom','pureun','taeyang'].indexOf(session.country);const target=1440+(315-idx*90);wheel.style.transition='transform 2.8s cubic-bezier(.15,.72,.12,1)';wheel.style.transform=`rotate(${target}deg)`;
- setTimeout(async()=>{state.countryRevealDone=true;await save(false);showAssignedCountryResult();toast(`${countryLabels[session.country]} 대표로 배정되었습니다.`)},2900)
+ setTimeout(async()=>{state.countryRevealDone=true;await savePreparation(false);showAssignedCountryResult();toast(`${countryLabels[session.country]} 대표로 배정되었습니다.`)},2900)
 }
-async function beginAssignedAssessment(){state.countryRevealDone=true;await save(false);$('#countryAssign').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();window.scrollTo({top:0,behavior:'smooth'})}
+async function savePreparation(complete=true){if(!session)return false;state.countryRevealDone=true;if(complete)state.preparationComplete=true;try{const r=await fetch('/api/preparation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,countryRevealDone:true,preparationComplete:!!state.preparationComplete})});if(!r.ok)throw new Error();return true}catch{toast('준비 상태 저장에 실패했습니다. 인터넷 연결을 확인하세요.');return false}}
+function showPreStartWait(){waitingForClassStart=true;$('#countryAssign').classList.add('hidden');$('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#preStartWait').classList.remove('hidden');$('#decisionReviewBtn').classList.add('hidden');$('#progress').style.width='5%';$('#lessonPill').textContent='국가 배정 완료 · 수행 시작 대기';$('#waitingCountrySummary').innerHTML=`<span>${countryLabels[session.country]}</span><small>${countryData[session.country].type}</small>`;window.scrollTo({top:0,behavior:'smooth'})}
+async function beginAssignedAssessment(){state.countryRevealDone=true;state.preparationComplete=true;const saved=await savePreparation(true);if(!saved)return;if(timerPhase==='running'){waitingForClassStart=false;$('#countryAssign').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();window.scrollTo({top:0,behavior:'smooth'});return}showPreStartWait()}
+function handleClassStartTransition(){if(!waitingForClassStart||timerPhase!=='running')return;waitingForClassStart=false;$('#preStartWait').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();toast('수행이 시작되었습니다. 지금부터 45분입니다.');window.scrollTo({top:0,behavior:'smooth'})}
 function applyTimerState(t={}){timerExempt=!!t.exempt;timerPhase=String(t.phase||'');if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
-async function syncTimer(){if(!session)return;try{const r=await fetch(`/api/timer/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}}
+async function syncTimer(){if(!session)return;try{const r=await fetch(`/api/timer/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());handleClassStartTransition();if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}}
 function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining===5*60)toast('5분 남았습니다. 최종 판단과 제출을 확인하세요.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,5000);syncTimer()}
 function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60;el.textContent=timerPaused?`⏸ ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;const phaseMessage={ready:'선생님이 수행을 시작하면 시간이 시작됩니다.',paused:'선생님이 수행을 일시정지했습니다. 답안은 보존됩니다.',finished:'45분 수행시간이 종료되었습니다.'};el.title=timerPaused?(phaseMessage[timerPhase]||'수행평가 시간이 일시정지되어 있습니다.'):'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
 async function autoSubmitOnTime(){if(autoSubmitting||timerExempt)return;autoSubmitting=true;collect();state.timeExpired=true;await save(false);await finalSubmit(true)}
-function showAssessment(){$('#finalReview').classList.add('hidden');$('#assessment').classList.remove('hidden')}
+function showAssessment(){$('#finalReview').classList.add('hidden');$('#preStartWait').classList.add('hidden');$('#assessment').classList.remove('hidden')}
 function render(){
  message('');$('#progress').style.width=`${stepProgress[step]}%`;$('#prevBtn').style.visibility=step===0?'hidden':'visible';$('#nextBtn').textContent=step===3?'최종 검토 →':'다음 단계 →';
  const stages=['국가와 처음 판단','핵심 딜레마와 정책 선택','상대국과 절충','판단 변화와 최종 합의'];$('#lessonPill').textContent='45분 수행평가 · 학생 활동 약 30분';$('#lessonHeader').innerHTML=`<span class="phase-badge">STEP ${step+1} / 4</span><b>${stages[step]}</b><span>선택은 간단하게, 이유는 핵심만 작성하세요.</span>`;
@@ -156,7 +160,7 @@ function collect(){if($('#assessment')?.classList.contains('hidden'))return;cons
  if(step===1){state.agreement=document.querySelector('input[name="agreement"]:checked')?.value||'';state.budgetPlan='custom';state.agreementReason=v('#agreementReason');state.budgetHighReason=state.agreementReason}
  if(step===2){state.opposingCountry=document.querySelector('input[name="opposingCountry"]:checked')?.value||state.opposingCountry||'';state.oppositionReason=countryData[state.opposingCountry]?.dilemma||'';state.compromiseDimension=document.querySelector('input[name="compromiseDimension"]:checked')?.value||'';state.compromiseChoice=document.querySelector('input[name="compromiseChoice"]:checked')?.value||'';state.compromise=v('#compromise')}
  if(step===3){state.reconsiderChoice=document.querySelector('input[name="reconsiderChoice"]:checked')?.value||'';state.finalDeclaration=v('#finalDeclaration')}
- state.assessmentVersion='45min-v3.5.0';
+ state.assessmentVersion='45min-v3.5.1';
 }
 function budgetSum(){return Object.values(state.budget||{}).reduce((a,b)=>a+Number(b||0),0)}
 function budgetSummary(){return Object.entries(state.budget||{}).map(([k,v])=>`${budgets[k]} ${Number(v||0)}억`).join(' · ')}
@@ -206,6 +210,7 @@ function openCountryHelp(mode){if(!session)return;document.getElementById('count
 $('#countryGuideBtn').addEventListener('click',()=>openCountryHelp('all'));
 $('#myCountryQuickBtn').addEventListener('click',()=>openCountryHelp('mine'));
 $('#compareCountriesQuickBtn').addEventListener('click',()=>openCountryHelp('all'));
+$('#waitingCountryGuideBtn').addEventListener('click',()=>openCountryHelp('all'));
 document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',()=>closeModal(el.dataset.closeModal)));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('decisionModal');closeModal('glossaryModal');closeModal('countryGuideModal')}});
 
