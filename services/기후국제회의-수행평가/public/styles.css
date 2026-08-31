@@ -199,3 +199,50 @@ main{max-width:940px;margin:26px auto 70px;padding:0 18px}.hero,.panel{backgroun
 .opponent-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.opponent-choice,.dimension-choice{position:relative;display:flex;flex-direction:column;gap:5px;padding:14px;border:2px solid #d2e2d7;border-radius:15px;background:#fff;cursor:pointer}.opponent-choice input,.dimension-choice input{position:absolute;opacity:0}.opponent-choice strong,.dimension-choice strong{color:#174a31;font-size:16px}.opponent-choice span{font-size:13px;color:#547062;font-weight:800}.opponent-choice small,.dimension-choice small{color:#65776d;line-height:1.45}.opponent-choice:has(input:checked),.opponent-choice.selected{border-color:#287bb8;background:#edf7ff;box-shadow:0 7px 18px rgba(40,123,184,.12)}
 .dimension-choice-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.dimension-choice:has(input:checked),.dimension-choice.selected{border-color:#b77a16;background:#fff7e6;box-shadow:0 7px 18px rgba(183,122,22,.12)}.selected-opponent{border-color:#91b9e8;background:#f2f8ff}
 @media(max-width:900px){.assessment-action-tools{flex-wrap:wrap}.quick-help-actions{width:100%}.quick-help-btn{flex:1}.opponent-choice-grid{grid-template-columns:1fr}.dimension-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.quick-help-actions{display:grid;grid-template-columns:1fr 1fr}.quick-help-btn{padding:0 8px;font-size:13px}.dimension-choice-grid{grid-template-columns:1fr}}
+
+
+/* v3.4.1 · 중요한 가치 가독성 및 학생 휴대폰 화면 최적화 */
+.priority-choice strong,
+.priority-choice small{
+  display:block;
+  width:100%;
+}
+.priority-choice strong{
+  min-height:1.35em;
+  margin:0;
+  font-size:16px;
+  line-height:1.35;
+  letter-spacing:-.015em;
+}
+.priority-choice small{
+  padding-top:7px;
+  border-top:1px solid #e3ece6;
+  font-size:13px;
+  line-height:1.5;
+}
+.priority-choice:has(input:checked) small,
+.priority-choice.selected small{border-top-color:#c7dfd0}
+@media(max-width:600px){
+  html{-webkit-text-size-adjust:100%}
+  body{overflow-wrap:anywhere}
+  button,.topbar-btn,.priority-choice,.opponent-choice,.dimension-choice,.agreement,.actor,.mini-choice{touch-action:manipulation}
+  .topbar-tools{display:grid;grid-template-columns:1fr 1fr}
+  .topbar-btn{width:100%;white-space:normal;line-height:1.25}
+  .priority-choice-grid{grid-template-columns:1fr;gap:9px}
+  .priority-choice,.priority-choice:last-child{
+    grid-column:auto;
+    min-height:0;
+    padding:13px 14px;
+    gap:0;
+  }
+  .priority-choice strong{font-size:16px}
+  .priority-choice small{margin-top:7px;font-size:13px}
+  .opponent-choice,.dimension-choice,.agreement,.actor,.mini-choice{min-height:48px}
+  .assessment-action-tools{align-items:stretch}
+  .quick-help-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .quick-help-btn{min-height:44px;white-space:normal;line-height:1.25}
+  img,svg,canvas{max-width:100%;height:auto}
+}
+@media(max-width:360px){
+  .topbar-tools,.quick-help-actions{grid-template-columns:1fr}
+}
