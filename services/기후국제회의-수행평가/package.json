@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.1.5 · 45분 운영 및 명단 적용 확인",
+  "description": "기후국제회의 수행평가 v3.1.6 · CP949·탭 구분 공통 명단 자동 인식",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

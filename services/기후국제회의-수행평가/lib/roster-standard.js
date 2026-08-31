@@ -12,7 +12,8 @@ function findHeader(headers,aliases){const normalized=headers.map(cleanHeader),c
 function parseCsv(text){
   const rows=[];let row=[],cell='',quoted=false;
   text=String(text??'').replace(/^\uFEFF/,'');
-  for(let i=0;i<text.length;i++){const c=text[i],next=text[i+1];if(c==='"'){if(quoted&&next==='"'){cell+='"';i++}else quoted=!quoted}else if(c===','&&!quoted){row.push(cell);cell=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&next==='\n')i++;row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);row=[];cell=''}else cell+=c}
+  const first=text.split(/\r?\n/,1)[0]||'',delimiter=(first.match(/\t/g)||[]).length>(first.match(/,/g)||[]).length?'\t':',';
+  for(let i=0;i<text.length;i++){const c=text[i],next=text[i+1];if(c==='"'){if(quoted&&next==='"'){cell+='"';i++}else quoted=!quoted}else if(c===delimiter&&!quoted){row.push(cell);cell=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&next==='\n')i++;row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);row=[];cell=''}else cell+=c}
   row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);return rows;
 }
 function normalizeClass(value){const raw=String(value??'').trim();if(!raw)return null;const m=raw.match(/^(?:제\s*)?0*(\d{1,2})\s*(?:반|학급)?$/);if(!m)return null;const n=Number(m[1]);return n>=1&&n<=99?n:null}
