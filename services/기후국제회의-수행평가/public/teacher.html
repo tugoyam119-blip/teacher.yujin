@@ -10,8 +10,8 @@
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
-    <div class="lesson-pill">수행 활동 · 기준 40분</div>
-    <div class="version">교사용 v3.1.4</div>
+    <div class="lesson-pill">수행 활동 · 기준 45분</div>
+    <div class="version">교사용 v3.1.5</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -29,7 +29,7 @@
 
   <section class="exchange-style-ops" aria-label="수업 운영">
     <div class="ops-intro">
-      <div><span class="eyebrow">수업 중 가장 자주 쓰는 기능</span><h2>반별 수행 운영</h2><p class="sub">반을 선택한 뒤 아래 순서대로 진행하세요. 서버를 열어도 ‘수행 시작’을 누르기 전에는 40분 시간이 흐르지 않습니다.</p></div>
+      <div><span class="eyebrow">수업 중 가장 자주 쓰는 기능</span><h2>반별 수행 운영</h2><p class="sub">반을 선택한 뒤 아래 순서대로 진행하세요. 서버를 열어도 ‘수행 시작’을 누르기 전에는 45분 시간이 흐르지 않습니다.</p></div>
       <div class="teacher-head-actions"><a class="secondary button-link" href="/operate">프로젝터용 운영 화면</a><button id="openGuide" class="secondary">처음 운영 가이드</button></div>
     </div>
     <div class="class-pick-wrap">
@@ -40,12 +40,12 @@
     <div class="operation-flow">
       <div class="flow-step">
         <span class="flow-number">①</span><div><b>전체 학생 서버 열기</b><small>학생 기기 접속 허용</small></div>
-        <div class="flow-actions"><button id="closeAssessmentServer" class="secondary">🔒 서버 닫기</button><button id="openAssessmentServer" class="primary">🔓 서버 열기</button></div>
+        <div class="flow-actions"><button id="openAssessmentServer" class="primary">🔓 서버 열기</button><button id="closeAssessmentServer" class="secondary">🔒 서버 닫기</button></div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step passive"><span class="flow-number">②</span><div><b>선택 반 입장 열기</b><small>로그인·교사 설명, 시간 정지</small></div><button id="openClassAdmission" class="secondary">입장 열기</button></div>
       <div class="flow-arrow">→</div>
-      <div class="flow-step"><span class="flow-number">③</span><div><b>선택 반 수행 시작</b><small>40분 공통 타이머 시작</small></div><button id="startClassSession" class="primary">수행 시작</button></div>
+      <div class="flow-step"><span class="flow-number">③</span><div><b>선택 반 수행 시작</b><small>45분 공통 타이머 시작</small></div><button id="startClassSession" class="primary">수행 시작</button></div>
     </div>
     <div class="run-control-row">
       <div><span id="serverStateBadge" class="badge">확인 중</span><strong id="classSessionState">1반 · 상태 확인 중</strong></div>
@@ -77,7 +77,7 @@
 
     <div class="guide-tabs">
       <button class="guide-tab active" data-guide-tab="before">수업 전 준비</button>
-      <button class="guide-tab" data-guide-tab="run">40분 운영</button>
+      <button class="guide-tab" data-guide-tab="run">45분 운영</button>
       <button class="guide-tab" data-guide-tab="country">국가·협약 이해</button>
       <button class="guide-tab" data-guide-tab="faq">학생 질문 대응</button>
       <button class="guide-tab" data-guide-tab="trouble">문제 발생 시</button>
@@ -97,12 +97,12 @@
     </div>
 
     <div class="guide-panel hidden" data-guide-panel="run">
-      <h3>40분 운영 흐름</h3><div class="teacher-reading-tip"><b>v3.0 간편 운영</b><span>교사가 반별 입장을 열고 시작 버튼을 누르면 40분 타이머가 흐릅니다. 학생은 자동 배정된 국가를 확인하고 4단계만 수행합니다. 긴 자료 분석과 자유 예산 배분은 없앴으며, 선택형 문항과 짧은 서술을 결합했습니다. 마지막에는 전체 답안을 확인하고 수정한 뒤 제출합니다.</span></div>
+      <h3>45분 운영 흐름</h3><div class="teacher-reading-tip"><b>v3.0 간편 운영</b><span>교사가 반별 입장을 열고 시작 버튼을 누르면 45분 타이머가 흐릅니다. 학생은 자동 배정된 국가를 확인하고 4단계만 수행합니다. 긴 자료 분석과 자유 예산 배분은 없앴으며, 선택형 문항과 짧은 서술을 결합했습니다. 마지막에는 전체 답안을 확인하고 수정한 뒤 제출합니다.</span></div>
       <div class="timeline">
         <div><b>0~5분</b><span>로그인·4개국 소개·국가 배정. 정답 하나를 찾는 평가가 아니라 근거와 판단 과정을 본다고 안내합니다.</span></div>
-        <div><b>5~40분</b><span>자료 분석 → 우선순위 → 100억 배분 → TRADE-OFF → 협상 전 초기 입장. 빠른 학생은 기다리지 않고 다음 단계로 진행합니다.</span></div>
+        <div><b>5~30분</b><span>자료 분석 → 우선순위 → 100억 배분 → TRADE-OFF → 협상 전 초기 입장. 빠른 학생은 기다리지 않고 다음 단계로 진행합니다.</span></div>
         <div><b>40~80분</b><span>협약 선택 → 상대국 분석 → 절충 → 국제협력 역할 → 최종 합의. 학생마다 속도가 달라도 프로그램은 계속 이어집니다.</span></div>
-        <div><b>30~40분</b><span>전체 답안을 검토하고 필요한 부분을 수정한 뒤 최종 제출합니다.</span></div>
+        <div><b>40~45분</b><span>전체 답안을 검토하고 필요한 부분을 수정한 뒤 최종 제출합니다.</span></div>
       </div>
       <div class="notice"><b>교사가 개입해도 되는 범위</b> · 용어 뜻, 버튼 사용법, 어디에서 앞 답안을 보는지, 저장·재접속 방법은 알려줘도 됩니다. “어느 협약이 더 좋은지”, “어느 국가를 골라야 하는지” 같은 정책 선택은 대신 판단해 주지 않습니다.</div>
     </div>
@@ -146,7 +146,7 @@
         <div><b>학생이 답을 잘못 골라 이전으로 가고 싶어 함</b><span>최종 제출 전에는 ‘최종 검토’에서 수정합니다. 이미 제출했다면 교사용 상세 화면에서 <b>최종 검토 상태로 다시 열기</b>를 눌러 답안을 유지한 채 수정하도록 할 수 있습니다.</span></div>
         <div><b>인터넷이 잠깐 끊김</b><span>연결을 회복한 뒤 임시 저장을 누르게 합니다. 브라우저를 바로 닫기보다 저장 성공 안내를 확인하게 하세요.</span></div>
         <div><b>학생이 너무 빨리 끝냄</b><span>‘나의 결정 전체보기’를 이용해 자료 근거→예산→협약→절충이 서로 일관되는지 재검토하게 합니다.</span></div>
-        <div><b>40분 종료</b><span>시간이 끝나면 현재까지 작성한 내용이 자동 제출됩니다. 교사용 화면에서 제출 상태를 확인하세요.</span></div>
+        <div><b>45분 종료</b><span>시간이 끝나면 현재까지 작성한 내용이 자동 제출됩니다. 교사용 화면에서 제출 상태를 확인하세요.</span></div>
       </div>
       <div class="notice warning"><b>초기화 주의</b> · 초기화는 학생의 현재 응시를 다시 처음부터 하게 만드는 기능입니다. 단순 오타나 답안 수정 요청에는 사용하지 마세요.</div>
     </div>
@@ -172,8 +172,8 @@
       <div class="op-card-head"><div><span class="eyebrow">추후 등록 가능</span><h3>학생 명단</h3></div><span id="rosterStateBadge" class="badge">명단 미등록</span></div>
       <p>지금은 비워 두어도 됩니다. 나중에 <b>반, 학번, 이름</b> 열이 있는 CSV를 올리면 미시작 학생·반별 필터·반별 균등 국가 배정이 활성화됩니다. 실제 평가에서는 <b>학생들이 시작하기 전에 업로드</b>하는 것을 권장합니다. 실제 평가에서는 <b>학생들이 시작하기 전에 업로드</b>하는 것을 권장합니다.</p>
       <input id="rosterFile" type="file" accept=".csv,text/csv" class="file-input">
-      <div class="op-actions"><button id="uploadRoster" class="secondary">명단 미리보기·업로드</button><a href="/학생명단_템플릿.csv" download class="ghost">공통 CSV 템플릿</a><button id="clearRoster" class="ghost">명단 비우기</button></div>
-      <small id="rosterMessage" class="sub"></small>
+      <div class="op-actions"><button id="uploadRoster" class="primary">선택한 명단 확인·적용</button><a href="/학생명단_템플릿.csv" download class="ghost">공통 CSV 템플릿</a><button id="clearRoster" class="ghost">명단 비우기</button></div>
+      <small id="rosterMessage" class="sub roster-apply-message">파일을 선택한 뒤 반드시 「선택한 명단 확인·적용」을 눌러야 등록됩니다.</small>
     </article>
     <article class="teacher-op-card ai-control-card">
       <div class="op-card-head"><div><span class="eyebrow">교사 최종 확정</span><h3>AI 가채점</h3></div><span id="aiStateBadge" class="badge">확인 중</span></div>

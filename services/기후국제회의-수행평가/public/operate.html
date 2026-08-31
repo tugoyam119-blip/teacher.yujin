@@ -24,7 +24,7 @@
       <div class="operate-brand-block">
         <div class="operate-kicker">기후국제회의 수행평가 · 교실 운영</div>
         <h1>국제기후회의 수행평가</h1>
-        <div class="operate-meta"><span>수행 활동 기준 40분</span><span>4단계 간단 수행</span><span id="syncStatus">학생 현황 연결 중</span></div>
+        <div class="operate-meta"><span>수행 활동 기준 45분</span><span>4단계 간단 수행</span><span id="syncStatus">학생 현황 연결 중</span></div>
       </div>
       <div class="operate-time-note"><b>수행평가 서버</b><strong id="operateServerStatus">상태 확인 중</strong><span>설명 직후 이 화면에서 바로 서버를 열 수 있습니다. 닫으면 학생 진행과 실제 시간이 함께 멈춥니다.</span></div>
     </header>
@@ -90,15 +90,15 @@
       <div class="operate-control-grid">
         <div class="control-panel server-controls">
           <h3>① 전체 학생 서버</h3>
-          <div class="button-row"><button id="operateCloseServer" class="operate-btn">🔒 서버 닫기</button><button id="operateOpenServer" class="operate-btn strong">🔓 수행평가 서버 열기</button></div>
+          <div class="button-row"><button id="operateOpenServer" class="operate-btn strong">🔓 수행평가 서버 열기</button><button id="operateCloseServer" class="operate-btn">🔒 서버 닫기</button></div>
           <p>학생이 서비스에 접속할 수 있는 전체 게이트입니다. <b>서버를 열어도 신규 반별 타이머는 시작되지 않습니다.</b></p>
         </div>
         <div class="control-panel class-session-controls">
           <h3>② 선택 반 수행 운영</h3>
           <div class="class-control-selects"><select id="operateClassSelect"><option value="1">1반</option><option value="2">2반</option><option value="3">3반</option></select><select id="operateModeSelect"><option value="regular">정규 수행</option><option value="makeup">결석·보충</option></select></div>
-          <div id="classSessionState" class="class-session-state">입장 닫힘 · 00:00 / 90:00</div>
+          <div id="classSessionState" class="class-session-state">입장 닫힘 · 00:00 / 45:00</div>
           <div class="button-row wrap"><button id="openClassAdmission" class="operate-btn">입장 열기</button><button id="startClassSession" class="operate-btn strong">수행 시작</button><button id="pauseClassSession" class="operate-btn">일시정지</button><button id="resumeClassSession" class="operate-btn strong">재개</button><button id="finishClassSession" class="operate-btn danger">종료</button></div>
-          <p>입장 열기 상태에서는 로그인만 가능하고 시간은 흐르지 않습니다. 시작 버튼을 누르면 40분 타이머가 시작됩니다.</p>
+          <p>입장 열기 상태에서는 로그인만 가능하고 시간은 흐르지 않습니다. 시작 버튼을 누르면 45분 타이머가 시작됩니다.</p>
         </div>
         <div class="control-panel step-controls">
           <h3>화면에 보여줄 단계</h3>

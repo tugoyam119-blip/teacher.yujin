@@ -27,7 +27,7 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
 (async()=>{try{
   await waitForServer();
   const legacy=await get('/api/timer/legacy-1');
-  const legacyExpected=Math.max(0,2400-Math.floor((Date.now()-Date.parse(legacyStartedAt))/1000));
+  const legacyExpected=Math.max(0,2700-Math.floor((Date.now()-Date.parse(legacyStartedAt))/1000));
   assert.ok(Math.abs(legacy.remainingSeconds-legacyExpected)<=1,'legacy remaining time changed');
   assert.equal(legacy.timerMode,undefined);
 
@@ -40,14 +40,14 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   await post('/api/teacher/class-runtime',{action:'open_admission',classNo:1,mode:'regular'},teacherHeaders);
   const ready=await post('/api/start',{studentId:'10102',name:'신규일반'});
   assert.equal(ready.session.timerMode,'class_session_v1');
-  assert.equal(ready.timer.remainingSeconds,2400);
+  assert.equal(ready.timer.remainingSeconds,2700);
   assert.equal(ready.timer.phase,'ready');
   await sleep(250);
-  assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds,2400,'waiting consumed class time');
+  assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).remainingSeconds,2700,'waiting consumed class time');
 
   await post('/api/teacher/class-runtime',{action:'start',classNo:1,mode:'regular'},teacherHeaders);
   assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).phase,'running','teacher start did not begin the class timer');
-  await editClass(1,r=>{r.elapsedSeconds=2399;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2400});
+  await editClass(1,r=>{r.elapsedSeconds=2399;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2700});
   const finished=await get(`/api/timer/${ready.session.sessionId}`);
   assert.equal(finished.phase,'finished');
   assert.equal(finished.remainingSeconds,0);
@@ -59,7 +59,7 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   await editClass(2,r=>{r.elapsedSeconds=300;r.runStartedAt=null;r.phase='paused'});
   const class1After=(await get('/api/teacher/class-runtime',teacherHeaders)).classes.find(x=>x.classNo===1);
   const class2After=(await get('/api/teacher/class-runtime',teacherHeaders)).classes.find(x=>x.classNo===2);
-  assert.equal(class1After.elapsedSeconds,2400,'class 2 changed class 1');
+  assert.equal(class1After.elapsedSeconds,2700,'class 2 changed class 1');
   assert.equal(class2After.elapsedSeconds,300);
   assert.equal((await get(`/api/timer/${class2.session.sessionId}`)).remainingSeconds,2100);
 

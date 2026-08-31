@@ -14,7 +14,7 @@ const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
 const TEACHER_STUDENT_ID = '000000';
 const ENV_OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-5.6-luna';
-const TOTAL_SECONDS = 40 * 60;
+const TOTAL_SECONDS = 45 * 60;
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'public');
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, 'data');
@@ -183,7 +183,7 @@ async function handle(req,res){
    const b=await bodyJson(req),classNo=Number(b.classNo||0),action=String(b.action||''),mode=b.mode==='makeup'?'makeup':'regular';if(classNo<1||classNo>7)return sendJson(res,400,{error:'반은 1~7 중에서 선택하세요.'});const rt=await readRuntime();if(action==='open_admission'&&!rt.serverOpen)return sendJson(res,409,{error:'먼저 전체 학생 서버를 열어 주세요.'});let {cr,rec}=await currentClassRecord(classNo);
    if(action==='open_admission'){if(rec&&rec.mode!==mode&&!['closed','finished'].includes(rec.phase))return sendJson(res,409,{error:`${classNo}반 ${rec.mode==='makeup'?'결석·보충':'정규 수행'} 세션을 먼저 종료해 주세요.`});if(!rec||['closed','finished'].includes(rec.phase)||rec.mode!==mode){rec=classRecord(classNo,mode);cr.sessions[rec.sessionId]=rec;cr.classes[String(classNo)]=rec.sessionId;await writeClassRuntime(cr);}return sendJson(res,200,{ok:true,classRuntime:await classRuntimeView()});}
    if(!rec)return sendJson(res,409,{error:'먼저 선택 반의 수행 입장을 열어 주세요.'});
-   if(action==='start'||action==='resume'){if(!rt.serverOpen)return sendJson(res,409,{error:'전체 학생 서버가 닫혀 있습니다.'});if(rec.phase==='finished')return sendJson(res,409,{error:'이미 40분이 종료된 세션입니다.'});rec.checkpointSeconds=TOTAL_SECONDS;rec.phase='running';rec.runStartedAt=now();rec.updatedAt=now();await writeClassRuntime(cr);}
+   if(action==='start'||action==='resume'){if(!rt.serverOpen)return sendJson(res,409,{error:'전체 학생 서버가 닫혀 있습니다.'});if(rec.phase==='finished')return sendJson(res,409,{error:'이미 45분이 종료된 세션입니다.'});rec.checkpointSeconds=TOTAL_SECONDS;rec.phase='running';rec.runStartedAt=now();rec.updatedAt=now();await writeClassRuntime(cr);}
    else if(action==='pause'){if(rec.phase==='running'){rec.elapsedSeconds=classElapsedSeconds(rec);rec.runStartedAt=null;rec.phase='paused';rec.updatedAt=now();await writeClassRuntime(cr);}}
    else if(action==='finish'){rec.elapsedSeconds=classElapsedSeconds(rec);rec.runStartedAt=null;rec.phase='finished';rec.updatedAt=now();await writeClassRuntime(cr);}
    else return sendJson(res,400,{error:'지원하지 않는 반별 수행 동작입니다.'});
