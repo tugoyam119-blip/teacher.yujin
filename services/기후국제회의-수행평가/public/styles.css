@@ -166,3 +166,14 @@ main{max-width:940px;margin:26px auto 70px;padding:0 18px}.hero,.panel{backgroun
 .teacher-ops-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:20px}.student-status-heading{margin:26px 0 12px}.student-live-tabs{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.student-live-tabs b{margin-left:4px}
 @media(max-width:980px){.operation-flow{grid-template-columns:1fr}.flow-arrow{display:none}.status-five{grid-template-columns:repeat(3,1fr)}.live-step-cards{grid-template-columns:repeat(2,1fr)}.ops-intro,.class-pick-wrap,.run-control-row,.student-status-heading{align-items:flex-start;flex-direction:column}.selected-class-summary{text-align:left}.teacher-ops-grid{grid-template-columns:1fr}.student-live-tabs{justify-content:flex-start}}
 @media(max-width:620px){.exchange-style-ops{padding:14px;border-radius:18px}.status-five{grid-template-columns:repeat(2,1fr)}.live-step-cards{grid-template-columns:1fr}.flow-step{align-items:flex-start}.flow-actions,.flow-actions button{width:100%}.ops-class-buttons button,.student-live-tabs button{padding:9px 11px}.student-live-tabs{overflow-x:auto;flex-wrap:nowrap;width:100%;padding-bottom:4px}.student-live-tabs button{white-space:nowrap}}
+
+/* v3.1.9 · 환율 위기 관리실 기준 재배치 */
+.management-tools-section{margin-top:28px;padding:22px;border:1px solid #d4e5da;border-radius:24px;background:linear-gradient(180deg,#f8fcf9,#eef7f1);box-shadow:0 14px 36px rgba(25,82,53,.07)}
+.management-tools-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:16px}
+.management-tools-heading h2{margin:3px 0 5px;font-size:25px;letter-spacing:-.03em}
+.management-tools-heading p{margin:0}
+.management-tools-note{flex:0 0 auto;padding:7px 11px;border-radius:999px;background:#fff;border:1px solid #d4e5da;color:#547062;font-size:12px;font-weight:900}
+.management-tools-section .teacher-ops-grid{margin-top:0}
+.student-status-heading{margin-top:28px}
+.exchange-style-ops{margin-bottom:0}
+@media(max-width:760px){.management-tools-section{padding:16px}.management-tools-heading{display:block}.management-tools-note{display:inline-flex;margin-top:10px}}

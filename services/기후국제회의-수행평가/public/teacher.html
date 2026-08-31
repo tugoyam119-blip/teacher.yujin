@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 45분</div>
-    <div class="version">교사용 v3.1.8</div>
+    <div class="version">교사용 v3.1.9</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -167,29 +167,6 @@
     </div>
   </section>
 
-  <section class="teacher-ops-grid">
-    <article class="teacher-op-card roster-card">
-      <div class="op-card-head"><div><span class="eyebrow">추후 등록 가능</span><h3>학생 명단</h3></div><span id="rosterStateBadge" class="badge">명단 미등록</span></div>
-      <p>지금은 비워 두어도 됩니다. 나중에 <b>반, 학번, 이름</b> 열이 있는 CSV를 올리면 미시작 학생·반별 필터·반별 균등 국가 배정이 활성화됩니다. 실제 평가에서는 <b>학생들이 시작하기 전에 업로드</b>하는 것을 권장합니다. 실제 평가에서는 <b>학생들이 시작하기 전에 업로드</b>하는 것을 권장합니다.</p>
-      <input id="rosterFile" type="file" accept=".csv,text/csv" class="file-input">
-      <div class="op-actions"><button id="uploadRoster" class="primary">선택한 명단 확인·적용</button><a href="/학생명단_템플릿.csv" download class="ghost">공통 CSV 템플릿</a><button id="clearRoster" class="ghost">명단 비우기</button></div>
-      <small id="rosterMessage" class="sub roster-apply-message">파일을 선택한 뒤 반드시 「선택한 명단 확인·적용」을 눌러야 등록됩니다.</small>
-    </article>
-    <article class="teacher-op-card ai-control-card">
-      <div class="op-card-head"><div><span class="eyebrow">교사 최종 확정</span><h3>AI 가채점</h3></div><span id="aiStateBadge" class="badge">확인 중</span></div>
-      <p>AI는 정답을 정하지 않고 <b>근거·일관성·상대국 분석·절충</b>을 기준으로 1점 단위 추천점수와 근거문장을 제시합니다.</p>
-      <div class="field api-key-field">
-        <label for="openAiApiKey">OPENAI_API_KEY</label>
-        <input id="openAiApiKey" type="password" autocomplete="new-password" spellcheck="false" placeholder="sk-... API 키 붙여넣기">
-        <small>키는 서버에만 저장되며 저장 후 전체 값은 다시 표시되지 않습니다. 학생 화면·CSV·브라우저 주소에는 노출하지 않습니다.</small>
-      </div>
-      <div class="op-actions api-key-actions"><button id="saveOpenAiKey" class="primary">API 키 저장</button><button id="testOpenAiKey" class="secondary">연결 확인</button><button id="clearOpenAiKey" class="ghost">저장 키 삭제</button></div>
-      <small id="apiKeyMessage" class="sub"></small>
-      <hr class="soft-divider">
-      <div class="op-actions"><button id="createSyntheticSubmissions" class="secondary">명단 기반 예상 답안 만들기</button><button id="clearSyntheticSubmissions" class="ghost">모의 답안 삭제</button></div><small id="syntheticMessage" class="sub">등록된 명단을 기준으로 수준이 다양한 예상 답안을 실제 제출 상태로 만듭니다.</small><div class="op-actions" style="margin-top:10px"><button id="bulkAiGrade" class="secondary">미가채점 제출자 일괄 가채점</button><span id="bulkAiProgress" class="sub"></span></div>
-    </article>
-  </section>
-
   <div class="student-status-heading"><div><h2>학생별 진행 현황</h2><p class="sub">현재 접속 학생을 먼저 보고, 접속 이력·미접속·제출 학생으로 바로 전환할 수 있습니다.</p></div><div id="studentLiveTabs" class="student-live-tabs"><button data-live-tab="online" class="active">현재 접속 <b id="tabOnline">0</b></button><button data-live-tab="history">접속 이력 <b id="tabHistory">0</b></button><button data-live-tab="never">미접속 <b id="tabNever">0</b></button><button data-live-tab="submitted">제출 <b id="tabSubmitted">0</b></button><button data-live-tab="all">전체 <b id="tabAll">0</b></button></div></div>
   <div class="stats stats-six">
     <div class="stat"><span>응시 대상</span><b id="sTarget">-</b></div>
@@ -207,6 +184,31 @@
     <button id="exportCsv" class="primary">한글 CSV 내려받기</button>
   </div>
   <div class="table-wrap"><table class="data-table"><thead><tr><th>반</th><th>학번</th><th>이름</th><th>국가</th><th>상태</th><th>진행률</th><th>AI</th><th>최종 점수</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+  <section class="management-tools-section" aria-label="명단과 가채점 도구">
+    <div class="management-tools-heading"><div><span class="eyebrow">수업 전 준비·수업 후 채점</span><h2>명단·예상 답안·AI 가채점</h2><p class="sub">수업 운영 중에는 위쪽 현황만 사용하고, 명단 등록과 가채점이 필요할 때 이 영역을 사용하세요.</p></div><span class="management-tools-note">운영 화면과 분리</span></div>
+    <div class="teacher-ops-grid">
+    <article class="teacher-op-card roster-card">
+      <div class="op-card-head"><div><span class="eyebrow">① 대상 학생 준비</span><h3>학생 명단</h3></div><span id="rosterStateBadge" class="badge">명단 미등록</span></div>
+      <p>지금은 비워 두어도 됩니다. 나중에 <b>반, 학번, 이름</b> 열이 있는 CSV를 올리면 미시작 학생·반별 필터·반별 균등 국가 배정이 활성화됩니다. 실제 평가에서는 <b>학생들이 시작하기 전에 한 번만 등록</b>하면 서버에 계속 유지됩니다.</p>
+      <input id="rosterFile" type="file" accept=".csv,text/csv" class="file-input">
+      <div class="op-actions"><button id="uploadRoster" class="primary">선택한 명단 확인·적용</button><a href="/학생명단_템플릿.csv" download class="ghost">공통 CSV 템플릿</a><button id="clearRoster" class="ghost">명단 비우기</button></div>
+      <small id="rosterMessage" class="sub roster-apply-message">파일을 선택한 뒤 반드시 「선택한 명단 확인·적용」을 눌러야 등록됩니다.</small>
+    </article>
+    <article class="teacher-op-card ai-control-card">
+      <div class="op-card-head"><div><span class="eyebrow">② 예상 답안 생성·가채점</span><h3>AI 가채점</h3></div><span id="aiStateBadge" class="badge">확인 중</span></div>
+      <p>AI는 정답을 정하지 않고 <b>근거·일관성·상대국 분석·절충</b>을 기준으로 1점 단위 추천점수와 근거문장을 제시합니다.</p>
+      <div class="field api-key-field">
+        <label for="openAiApiKey">OPENAI_API_KEY</label>
+        <input id="openAiApiKey" type="password" autocomplete="new-password" spellcheck="false" placeholder="sk-... API 키 붙여넣기">
+        <small>키는 서버에만 저장되며 저장 후 전체 값은 다시 표시되지 않습니다. 학생 화면·CSV·브라우저 주소에는 노출하지 않습니다.</small>
+      </div>
+      <div class="op-actions api-key-actions"><button id="saveOpenAiKey" class="primary">API 키 저장</button><button id="testOpenAiKey" class="secondary">연결 확인</button><button id="clearOpenAiKey" class="ghost">저장 키 삭제</button></div>
+      <small id="apiKeyMessage" class="sub"></small>
+      <hr class="soft-divider">
+      <div class="op-actions"><button id="createSyntheticSubmissions" class="secondary">명단 기반 예상 답안 만들기</button><button id="clearSyntheticSubmissions" class="ghost">모의 답안 삭제</button></div><small id="syntheticMessage" class="sub">등록된 명단을 기준으로 수준이 다양한 예상 답안을 실제 제출 상태로 만듭니다.</small><div class="op-actions" style="margin-top:10px"><button id="bulkAiGrade" class="secondary">미가채점 제출자 일괄 가채점</button><span id="bulkAiProgress" class="sub"></span></div>
+    </article>
+    </div>
+  </section>
   <section id="detail" class="panel detail hidden"></section>
 </section>
 <script src="/teacher.js"></script>
