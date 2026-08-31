@@ -246,3 +246,13 @@ main{max-width:940px;margin:26px auto 70px;padding:0 18px}.hero,.panel{backgroun
 @media(max-width:360px){
   .topbar-tools,.quick-help-actions{grid-template-columns:1fr}
 }
+
+/* v3.5.0 · 로그인 스토리와 직접 예산 배분 */
+.story-intro{margin:18px 0;padding:18px 20px;border-radius:17px;background:linear-gradient(135deg,#174f35,#267a52);color:#fff;box-shadow:0 12px 28px rgba(23,79,53,.18)}
+.story-intro>span,.story-bridge>span{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.04em;color:#ffe39a;margin-bottom:5px}
+.story-intro h2{margin:2px 0 8px;font-size:22px}.story-intro p{margin:0!important;color:#eef9f2!important;line-height:1.7!important}
+.login-country-preview{margin:22px 0;padding-top:20px;border-top:1px solid var(--line)}.login-country-preview>h2{margin:5px 0}.login-country-preview>p{margin:4px 0 12px!important}
+.story-bridge{margin:0 0 18px;padding:17px;border-radius:15px;background:#fff6dc;border:1px solid #e8cf83}.story-bridge>span{color:#7d5900}.story-bridge h3{margin:2px 0 7px;color:#5d4300;font-size:18px;line-height:1.45}.story-bridge p{margin:0;color:#5c5643;font-size:14px;line-height:1.65}
+.budget-story-note{margin:9px 0 12px;padding:10px 12px;border-radius:11px;background:#edf7f1;color:#365a45;font-size:13px}
+.direct-budget-list{display:grid;gap:9px}.direct-budget-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 13px;border:1px solid var(--line);border-radius:13px;background:#f7faf8}.direct-budget-row b,.direct-budget-row small{display:block}.direct-budget-row b{color:#174d33;font-size:14px}.direct-budget-row small{margin-top:3px;color:var(--muted);font-size:12px;line-height:1.4}.direct-budget-row .stepper{min-width:174px}
+@media(max-width:600px){.story-intro{padding:15px;border-radius:14px}.story-intro h2{font-size:19px}.login-country-preview{margin-top:18px}.story-bridge{padding:13px}.story-bridge h3{font-size:16px}.direct-budget-row{grid-template-columns:1fr;gap:8px;padding:11px}.direct-budget-row .stepper{min-width:0;width:100%}.budget-allocation .budget-total{top:150px}}
