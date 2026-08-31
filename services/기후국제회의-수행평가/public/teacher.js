@@ -27,7 +27,7 @@ function selectedRuntime(){return (classRuntime.classes||[]).find(x=>Number(x.cl
 function progressStep(progress){const p=Number(progress||0);if(p>=75)return 4;if(p>=50)return 3;if(p>=25)return 2;return 1}
 function renderOperationalCockpit(){
  const classes=[...new Set([...Array.from({length:3},(_,i)=>i+1),...(roster.students||[]).map(r=>Number(String(r.className||deriveClass(r.studentId)).replace(/\D/g,''))).filter(n=>n>=1&&n<=3)])].sort((a,b)=>a-b);
- $('#opsClassButtons').innerHTML=classes.map(n=>`<button class="${n===selectedOpsClass?'active':''}" data-ops-class="${n}">${n}반</button>`).join('')+`<button data-ops-class="all">전체반</button>`;
+ $('#opsClassButtons').innerHTML=classes.map(n=>`<button class="${n===selectedOpsClass?'active':''}" data-ops-class="${n}">${n}반</button>`).join('');
  document.querySelectorAll('[data-ops-class]').forEach(btn=>btn.onclick=()=>{if(btn.dataset.opsClass==='all'){$('#classFilter').value='all';document.querySelectorAll('[data-ops-class]').forEach(x=>x.classList.toggle('active',x===btn));renderRows();return}selectedOpsClass=Number(btn.dataset.opsClass);const label=`${selectedOpsClass}반`;if([...$('#classFilter').options].some(o=>o.value===label))$('#classFilter').value=label;document.querySelectorAll('[data-ops-class]').forEach(x=>x.classList.toggle('active',x===btn));renderOperationalCockpit();renderRows()});
  const cls=`${selectedOpsClass}반`,rec=selectedRuntime(),labels={closed:'입장 닫힘',ready:'입장완료·대기',running:'수행 중',paused:'교사 일시정지',auto_paused:'일시정지',finished:'수행 종료'};
  const classRoster=(roster.students||[]).filter(r=>(r.className||deriveClass(r.studentId))===cls),classPresence=presence.filter(x=>x.className===cls),classSessions=sessions.filter(s=>(s.className||deriveClass(s.studentId))===cls);
