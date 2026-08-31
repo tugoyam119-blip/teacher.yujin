@@ -34,7 +34,7 @@
     "deploy_type": "static",
     "description": "통합사회2 1단원 교사용 설명 자료",
     "update_mode": "chatgpt",
-    "deploy_status": "warning",
+    "deploy_status": "ready",
     "version_label": "v12",
     "railway_domain": "",
     "last_commit_sha": "b2fcd1ac09541f91cd01d3dc8946c81abf0af5b1",
@@ -291,7 +291,7 @@
     "name": "기후국제회의 수행평가",
     "slug": "기후국제회의-수행평가",
     "subject": "공통",
-    "version": 315,
+    "version": 364,
     "audience": "teacher",
     "histories": [
       {
@@ -362,7 +362,7 @@
     "description": "",
     "update_mode": "chatgpt",
     "deploy_status": "ready",
-    "version_label": "v3.1.5",
+    "version_label": "v3.6.4",
     "railway_domain": "yt-production-66c8.up.railway.app",
     "last_commit_sha": "73f72282a7219fabd7ae1d7ec0bcf67f8814dce8",
     "railway_volume_id": "",
@@ -376,7 +376,7 @@
     "name": "환율 비상! 국제경제 대응팀",
     "slug": "환율-비상-국제경제-대응팀",
     "subject": "국제 관계와 국제 기구",
-    "version": 111,
+    "version": 280,
     "audience": "teacher",
     "histories": [
       {
@@ -431,7 +431,7 @@
     "description": "",
     "update_mode": "chatgpt",
     "deploy_status": "ready",
-    "version_label": "v1.1.1",
+    "version_label": "v2.8",
     "railway_domain": "yt-production-2571.up.railway.app",
     "last_commit_sha": "804df9b4ba1f701678585cc217221dc65ce0effc",
     "railway_volume_id": "",

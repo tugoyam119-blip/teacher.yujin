@@ -34,7 +34,7 @@ http.createServer((req, res) => {
   }
   if (pathname === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-    return res.end('{"ok":true}');
+    return res.end('{"ok":true,"version":"v2.8","mode":"site-launcher"}');
   }
   res.writeHead(302, { Location: `${BASE}/student` });
   res.end();

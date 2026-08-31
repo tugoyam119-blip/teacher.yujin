@@ -83,7 +83,7 @@ test('핵심 진입 경로를 pathname 기준으로 반복 판정한다', async 
 test('/health를 유지한다', async () => {
   const response = await request('/health?cache=1');
   assert.equal(response.status, 200);
-  assert.deepEqual(JSON.parse(response.body), { ok: true });
+  assert.deepEqual(JSON.parse(response.body), { ok: true, version: 'v2.8', mode: 'site-launcher' });
 });
 
 test('학생명단 CSV와 검증 API를 유지한다', async () => {
