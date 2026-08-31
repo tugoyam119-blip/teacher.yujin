@@ -36,8 +36,9 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
     {studentId:'10201',name:'신규이반',className:'2반'},
     {studentId:'10301',name:'신규삼반',className:'3반'}
   ]},teacherHeaders);
-  await post('/api/teacher/server',{action:'open'},teacherHeaders);
-  await post('/api/teacher/class-runtime',{action:'open_admission',classNo:1,mode:'regular'},teacherHeaders);
+  const unifiedOpen=await post('/api/teacher/server',{action:'open_with_admission',classNos:[1],mode:'regular'},teacherHeaders);
+  assert.equal(unifiedOpen.open,true,'unified server/admission did not open server');
+  assert.equal(unifiedOpen.classRuntime.classes.find(x=>x.classNo===1)?.phase,'ready','unified server/admission did not open class admission');
   const ready=await post('/api/start',{studentId:'10102',name:'신규일반'});
   assert.equal(ready.session.timerMode,'class_session_v1');
   assert.equal(ready.timer.remainingSeconds,2700);

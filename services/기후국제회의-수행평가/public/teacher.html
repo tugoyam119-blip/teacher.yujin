@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 45분</div>
-    <div class="version">교사용 v3.6.1</div>
+    <div class="version">교사용 v3.6.2</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -39,13 +39,11 @@
     </div>
     <div class="operation-flow">
       <div class="flow-step">
-        <span class="flow-number">①</span><div><b>전체 학생 서버 열기</b><small>학생 기기 접속 허용</small></div>
-        <div class="flow-actions"><button id="openAssessmentServer" class="primary">🔓 서버 열기</button><button id="closeAssessmentServer" class="secondary">🔒 서버 닫기</button></div>
+        <span class="flow-number">①</span><div><b>선택 반 서버·입장 열기</b><small>학생 로그인·국가 확인 허용, 시간 정지</small></div>
+        <div class="flow-actions"><button id="openAssessmentServer" class="primary">🔓 서버·입장 열기</button><button id="closeAssessmentServer" class="secondary">🔒 서버 닫기</button></div>
       </div>
       <div class="flow-arrow">→</div>
-      <div class="flow-step passive"><span class="flow-number">②</span><div><b>선택 반 입장 열기</b><small>로그인·교사 설명, 시간 정지</small></div><button id="openClassAdmission" class="secondary">입장 열기</button></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step"><span class="flow-number">③</span><div><b>선택 반 수행 시작</b><small>45분 공통 타이머 시작</small></div><button id="startClassSession" class="primary">수행 시작</button></div>
+      <div class="flow-step"><span class="flow-number">②</span><div><b>선택 반 수행 시작</b><small>45분 공통 타이머 시작</small></div><button id="startClassSession" class="primary">수행 시작</button></div>
     </div>
     <div class="run-control-row">
       <div><span id="serverStateBadge" class="badge">확인 중</span><strong id="classSessionState">1반 · 상태 확인 중</strong></div>
@@ -92,7 +90,7 @@
       <label class="check-line"><input type="checkbox" data-preflight="timer"> 학생 실제 수행시간 일괄 정지·재개 버튼이 작동하는지 확인</label>
       <label class="check-line"><input type="checkbox" data-preflight="network"> 학교 와이파이에서 새로고침 후에도 접속되는지 확인</label>
       <label class="check-line"><input type="checkbox" data-preflight="policy"> 학생에게 “정답 찾기보다 자료 근거와 선택 과정이 중요하다”고 안내할 준비</label>
-      <div class="notice soft"><b>권장</b> · 교사용 관리 화면은 수업 시작 전에 별도 탭으로 열어 두세요. 수업 설명이 끝나면 <b>수행평가 서버 열기</b>를 누르세요. 쉬는시간이나 수업 중단 때는 서버를 닫으면 학생 진행과 실제 수행시간이 함께 멈춥니다. 교실 앞 모니터에는 ‘교실 운영 화면’을 띄우면 개인정보 없이 전체 진행 상황을 볼 수 있습니다.</div>
+      <div class="notice soft"><b>권장</b> · 교사용 관리 화면은 수업 시작 전에 별도 탭으로 열어 두세요. 반을 고른 뒤 <b>서버·입장 열기</b>를 누르면 학생이 로그인해 국가를 확인하고 대기할 수 있습니다. 설명이 끝난 뒤 <b>수행 시작</b>을 누르면 45분이 흐릅니다. 쉬는시간이나 수업 중단 때는 서버를 닫으면 학생 진행과 실제 수행시간이 함께 멈춥니다.</div>
       <details class="guide-detail"><summary>학생에게 처음 보여줄 안내 문구</summary><div class="teacher-script">오늘 수행평가는 정답 하나를 찾는 시험이 아닙니다. 여러분은 가상의 국가 대표가 되어 자료를 보고 국가의 우선순위를 정하고, 예산을 배분한 뒤 다른 국가와 협상합니다. 무엇을 선택했는지보다 왜 그렇게 선택했는지를 자료와 국가 상황에 연결해서 설명하는 것이 중요합니다. 전체 활동은 45분 한 차시로 진행하며, 학생은 자신의 속도에 맞춰 네 단계를 이어서 수행합니다. 시작 후에는 네 가상국가의 배경을 먼저 확인하고 룰렛으로 대표 국가를 배정받습니다. 앞 단계 선택은 ‘나의 결정 전체보기’에서 다시 확인할 수 있습니다.</div><button class="copy-script secondary" data-copy-target="introScript">안내문 복사</button><textarea id="introScript" class="hidden">오늘 수행평가는 정답 하나를 찾는 시험이 아닙니다. 여러분은 가상의 국가 대표가 되어 자료를 보고 국가의 우선순위를 정하고, 예산을 배분한 뒤 다른 국가와 협상합니다. 무엇을 선택했는지보다 왜 그렇게 선택했는지를 자료와 국가 상황에 연결해서 설명하는 것이 중요합니다. 전체 활동은 45분 한 차시로 진행하며, 학생은 자신의 속도에 맞춰 네 단계를 이어서 수행합니다. 시작 후에는 네 가상국가의 배경을 먼저 확인하고 룰렛으로 대표 국가를 배정받습니다. 앞 단계 선택은 ‘나의 결정 전체보기’에서 다시 확인할 수 있습니다.</textarea></details>
     </div>
 

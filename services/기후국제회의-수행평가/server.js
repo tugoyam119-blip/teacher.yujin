@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.6.1';
+const APP_VERSION = '3.6.2';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -213,6 +213,15 @@ async function handle(req,res){
   if(req.method==='GET'&&url.pathname==='/api/teacher/server'){const rt=await readRuntime();return sendJson(res,200,{open:!!rt.serverOpen,paused:!!rt.timerPaused,updatedAt:rt.updatedAt});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/server'){
    const b=await bodyJson(req),action=String(b.action||'');let rt=await readRuntime();
+   if(action==='open_with_admission'){
+    const classNos=[...new Set((Array.isArray(b.classNos)?b.classNos:[b.classNo]).map(Number).filter(n=>n>=1&&n<=3))];
+    if(!classNos.length)return sendJson(res,400,{error:'서버와 입장을 열 반을 선택하세요.'});
+    const mode=b.mode==='makeup'?'makeup':'regular',cr=await readClassRuntime();
+    for(const classNo of classNos){const id=cr.classes[String(classNo)],rec=id?cr.sessions[id]:null;if(rec&&rec.mode!==mode&&!['closed','finished'].includes(rec.phase))return sendJson(res,409,{error:`${classNo}반 ${rec.mode==='makeup'?'결석·보충':'정규 수행'} 세션을 먼저 종료해 주세요.`});}
+    if(!rt.serverOpen){if(rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;}rt.serverOpen=true;await writeRuntime(rt);}
+    for(const classNo of classNos){const id=cr.classes[String(classNo)],existing=id?cr.sessions[id]:null;if(!existing||['closed','finished'].includes(existing.phase)||existing.mode!==mode){const rec=classRecord(classNo,mode);cr.sessions[rec.sessionId]=rec;cr.classes[String(classNo)]=rec.sessionId;}}
+    await writeClassRuntime(cr);return sendJson(res,200,{ok:true,open:true,paused:false,updatedAt:rt.updatedAt,classRuntime:await classRuntimeView()});
+   }
    if(action==='close'&&rt.serverOpen){if(!rt.timerPaused){rt.timerPaused=true;rt.pauseStartedAt=now();}rt.serverOpen=false;await writeRuntime(rt);const cr=await readClassRuntime();let changed=false;for(const id of Object.values(cr.classes)){const rec=cr.sessions[id];if(rec?.phase==='running'){rec.elapsedSeconds=classElapsedSeconds(rec);rec.runStartedAt=null;rec.phase='paused';rec.updatedAt=now();changed=true;}}if(changed)await writeClassRuntime(cr);}
    else if(action==='open'&&!rt.serverOpen){if(rt.timerPaused){const p=Date.parse(rt.pauseStartedAt||'');if(Number.isFinite(p))rt.totalPausedMs=Number(rt.totalPausedMs||0)+Math.max(0,Date.now()-p);rt.timerPaused=false;rt.pauseStartedAt=null;}rt.serverOpen=true;await writeRuntime(rt);}
    return sendJson(res,200,{ok:true,open:!!rt.serverOpen,paused:!!rt.timerPaused,updatedAt:rt.updatedAt});
