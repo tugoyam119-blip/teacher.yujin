@@ -95,7 +95,7 @@ function reconstruct(events){
  const sessions=new Map();
  for(const e of events){
   if(!e.sessionId)continue;
-  if(e.type==='start')sessions.set(e.sessionId,{sessionId:e.sessionId,studentId:e.studentId,name:e.name,className:e.className||deriveClass(e.studentId),country:e.country,pauseBaseMs:Number(e.pauseBaseMs||0),timerMode:e.timerMode||'legacy',classNo:Number(e.classNo||0),classSessionId:e.classSessionId||null,startedAt:e.ts,updatedAt:e.ts,submittedAt:null,status:'in_progress',progress:0,data:{},score:null,scoreHistory:[],teacherNote:'',aiGrade:null,timerExempt:!!e.timerExempt,reopenedAt:null,reopenCount:0,reopenHistory:[]});
+  if(e.type==='start')sessions.set(e.sessionId,{sessionId:e.sessionId,studentId:e.studentId,name:e.name,className:e.className||deriveClass(e.studentId),country:e.country,pauseBaseMs:Number(e.pauseBaseMs||0),timerMode:e.timerMode||'legacy',classNo:Number(e.classNo||0),classSessionId:e.classSessionId||null,startedAt:e.ts,updatedAt:e.ts,submittedAt:null,status:'in_progress',progress:0,data:{},score:null,scoreHistory:[],teacherNote:'',aiGrade:null,synthetic:!!e.synthetic,timerExempt:!!e.timerExempt,reopenedAt:null,reopenCount:0,reopenHistory:[]});
   const s=sessions.get(e.sessionId);if(!s)continue;
   if(e.type==='save'){s.data={...s.data,...(e.data||{})};s.progress=Math.max(s.progress||0,Number(e.progress||0));s.updatedAt=e.ts;}
   if(e.type==='submit'){s.data={...s.data,...(e.data||{})};s.progress=100;s.status='submitted';s.submittedAt=e.ts;s.updatedAt=e.ts;s.timerExempt=false;}
@@ -126,6 +126,18 @@ async function runAIGrade(s){const cfg=await openAIConfig();if(!cfg.apiKey)throw
 
 async function serveStatic(req,res,url){let pathname=decodeURIComponent(url.pathname);if(pathname==='/')pathname='/index.html';if(pathname==='/teacher')pathname='/teacher.html';if(pathname==='/operate'||pathname==='/classroom')pathname='/operate.html';const safe=path.normalize(pathname).replace(/^(\.\.[/\\])+/,'');const file=path.join(PUBLIC,safe);if(!file.startsWith(PUBLIC))return sendText(res,403,'Forbidden');try{const stat=await fsp.stat(file);if(!stat.isFile())throw new Error();const data=await fsp.readFile(file);res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Content-Length':data.length,'Cache-Control':'no-store'});res.end(data)}catch{sendText(res,404,'Not found')}}
 
+
+function syntheticAnswer(student,index){
+ const country=student.country||fallbackCountry(student.studentId,student.className),opponent={hanbit:'saebom',saebom:'hanbit',pureun:'taeyang',taeyang:'pureun'}[country],level=index%5===0?'basic':index%3===0?'strong':'standard';
+ const profile={
+  hanbit:{priority:'responsibility',agreement:'B',plan:'transition',condition:'과거 배출 책임과 친환경 기술 역량이 크지만 제조업 일자리도 지켜야 한다',policy:'차등책임안을 선택해 선진국이 더 많이 감축하고 기술·재정을 지원해야 한다',trade:'산업 전환 속도를 단계적으로 조정하고 노동자 재교육을 함께 지원한다'},
+  saebom:{priority:'growth',agreement:'B',plan:'balanced',condition:'과거 배출 책임은 작지만 석탄 의존과 현재 배출이 빠르게 늘고 있다',policy:'차등책임안을 바탕으로 성장 기회를 보장받되 지원을 받아 석탄 사용을 줄여야 한다',trade:'선진국의 기술 지원을 조건으로 신규 석탄발전을 줄이고 재생에너지를 확대한다'},
+  pureun:{priority:'damage',agreement:'A',plan:'damage',condition:'배출 책임은 매우 작지만 해수면 상승과 태풍 피해가 가장 크고 대응 재정이 부족하다',policy:'모든 국가의 빠른 감축과 피해국 기후재정 지원이 함께 필요하다',trade:'피해 복구 기금을 우선 확보하고 지원받은 재생에너지 설비의 운영 결과를 공개한다'},
+  taeyang:{priority:'energy',agreement:'C',plan:'transition',condition:'석유·가스 수출이 재정과 일자리의 중심이지만 태양광 전환 잠재력도 크다',policy:'단계적 자율 감축과 산업 전환 지원을 결합해야 경제 충격을 줄일 수 있다',trade:'화석연료 감축 일정을 제시하고 국제사회는 태양광 산업과 노동자 전환을 지원한다'}
+ }[country];
+ const short=level==='basic';
+ return{priority1:profile.priority,priority2:'',priorityReason:short?`${profile.condition}. 그래서 우리 국가에 직접 필요한 가치를 우선해야 한다.`:`${profile.condition}. 따라서 단기 비용만 볼 것이 아니라 책임과 실행 가능성을 함께 고려해 이 가치를 우선해야 한다.`,initialPosition:profile.condition,agreement:profile.agreement,budgetPlan:profile.plan,agreementReason:short?`${profile.policy}. 국가 상황에 맞기 때문이다.`:`${profile.policy}. 이 선택은 감축 부담과 경제·피해 조건을 함께 반영하며 예산도 가장 시급한 분야에 집중할 수 있다.`,budgetHighReason:profile.policy,opposingCountry:opponent,oppositionReason:'상대국은 배출 책임·경제 구조·피해 수준이 달라 같은 속도와 비용을 받아들이기 어렵다.',compromiseDimension:'speed',compromiseChoice:'conditional',compromise:short?`${profile.trade}. 서로 조금씩 양보하면 합의할 수 있다.`:`${profile.trade}. 우리 국가는 이행 일정과 점검 결과를 공개하고 상대국도 약속한 지원 또는 감축을 실행해 양측의 부담과 이익을 나눈다.`,reconsiderChoice:index%4===0?'revise':'keep',finalDeclaration:short?`우리 국가는 ${profile.policy}. 상대국과는 ${profile.trade}. 합의 이행 상황을 함께 확인하겠다.`:`협상 결과 우리 국가는 ${profile.policy}. 동시에 ${profile.trade}. 각 국가는 감축·지원 일정을 공개하고 국제기구가 이행을 점검하여 기후위기 대응과 경제적 부담을 함께 조정하겠다.`,assessmentVersion:'45min-v3.1.8',reviewReady:true,synthetic:true};
+}
 async function handle(req,res){
  const url=new URL(req.url,`http://${req.headers.host||'localhost'}`);
  try{
@@ -197,6 +209,12 @@ async function handle(req,res){
    const b=await bodyJson(req),parsed=parseRoster(typeof b.csvText==='string'?b.csvText:(b.students||[]));if(!parsed.students.length)return sendJson(res,400,{error:parsed.errors[0]?.message||'인식할 수 있는 학생이 없습니다.',report:parsed});const clean=toClimateRows(parsed.students);if(b.preview)return sendJson(res,200,{ok:true,preview:true,count:clean.length,students:clean,report:parsed});const roster=await writeRoster(assignBalancedCountries(clean));return sendJson(res,200,{ok:true,count:roster.students.length,roster,report:parsed});
   }
   if(req.method==='DELETE'&&url.pathname==='/api/teacher/roster'){await writeRoster([]);return sendJson(res,200,{ok:true});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/synthetic-submissions'){
+   const roster=await readRoster();if(!roster.students.length)return sendJson(res,400,{error:'먼저 학생 명단을 등록하세요.'});const current=reconstruct(await readEvents()),activeById=new Map(current.map(s=>[String(s.studentId),s]));let created=0,skipped=0;
+   for(let i=0;i<roster.students.length;i++){const student=roster.students[i],existing=activeById.get(String(student.studentId));if(existing){skipped++;continue}const sessionId=newId(),data=syntheticAnswer(student,i);await appendEvent({type:'start',sessionId,studentId:String(student.studentId),name:student.name,className:student.className,country:student.country,timerExempt:true,synthetic:true});await appendEvent({type:'submit',sessionId,data});created++;}
+   return sendJson(res,200,{ok:true,created,skipped,total:roster.students.length});
+  }
+  if(req.method==='DELETE'&&url.pathname==='/api/teacher/synthetic-submissions'){const synthetic=reconstruct(await readEvents()).filter(s=>s.synthetic);for(const s of synthetic)await appendEvent({type:'reset',sessionId:s.sessionId});return sendJson(res,200,{ok:true,removed:synthetic.length});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/reopen'){const b=await bodyJson(req),s=reconstruct(await readEvents()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 학생만 최종 검토 상태로 다시 열 수 있습니다.'});await appendEvent({type:'reopen',sessionId:s.sessionId});return sendJson(res,200,{ok:true});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/reset'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'reset',sessionId:b.sessionId});return sendJson(res,200,{ok:true});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/ai-grade'){const b=await bodyJson(req),s=reconstruct(await readEvents()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 답안만 AI 가채점할 수 있습니다.'});try{const aiGrade=await runAIGrade(s);await appendEvent({type:'ai_grade',sessionId:s.sessionId,aiGrade});return sendJson(res,200,{ok:true,aiGrade});}catch(e){return sendJson(res,503,{error:e.message});}}

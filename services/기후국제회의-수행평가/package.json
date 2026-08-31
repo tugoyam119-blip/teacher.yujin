@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.1.7",
+  "version": "3.1.8",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.1.7 · 프로젝터 화면의 교사 관리화면 복귀 버튼 추가",
+  "description": "기후국제회의 수행평가 v3.1.8 · 명단 기반 모의 제출 및 AI 가채점 점검",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
