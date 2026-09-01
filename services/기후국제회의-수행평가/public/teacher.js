@@ -41,7 +41,7 @@ function renderOperationalCockpit(){
  $('#opsClassButtons').innerHTML=classes.map(n=>`<button class="${!opsOverviewAll&&n===selectedOpsClass?'active':''}" data-ops-class="${n}">${n}반</button>`).join('')+`<button class="${opsOverviewAll?'active':''}" data-ops-class="all">전체반</button>`;
  document.querySelectorAll('[data-ops-class]').forEach(btn=>btn.onclick=()=>{if(btn.dataset.opsClass==='all'){opsOverviewAll=true;$('#classFilter').value='all';renderOperationalCockpit();renderRows();return}opsOverviewAll=false;selectedOpsClass=Number(btn.dataset.opsClass);const label=`${selectedOpsClass}반`;if([...$('#classFilter').options].some(o=>o.value===label))$('#classFilter').value=label;renderOperationalCockpit();renderRows()});
  const cls=`${selectedOpsClass}반`,rec=selectedRuntime(),labels={closed:'입장 닫힘',ready:'입장완료·대기',running:'수행 중',paused:'교사 일시정지',auto_paused:'일시정지',finished:'수행 종료'};
- const effectiveRoster=activeRosterStudents(),effectivePresence=mockRosterMode?[]:presence,effectiveSessions=mockRosterMode?[]:sessions;
+ const effectiveRoster=activeRosterStudents(),effectivePresence=mockRosterMode?mockRosterStudents.map(r=>({...r,online:false,everEntered:false,submitted:false,helpRequest:false})):presence,effectiveSessions=mockRosterMode?[]:sessions;
  const classRoster=opsOverviewAll?effectiveRoster:effectiveRoster.filter(r=>(r.className||deriveClass(r.studentId))===cls);
  const classPresence=opsOverviewAll?effectivePresence:effectivePresence.filter(x=>x.className===cls);
  const classSessions=opsOverviewAll?effectiveSessions:effectiveSessions.filter(s=>(s.className||deriveClass(s.studentId))===cls);

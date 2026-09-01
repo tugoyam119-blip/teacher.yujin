@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.7.0",
+  "version": "3.7.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.7.0 · 안전한 모의 명단 확인과 구조화된 AI 가채점",
+  "description": "기후국제회의 수행평가 v3.7.1 · 모의 명단 현황 동기화와 구조화된 AI 가채점",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
