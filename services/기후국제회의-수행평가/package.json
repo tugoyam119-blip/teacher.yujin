@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.6.5",
+  "version": "3.6.6",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.6.5 · 교사용 시범 기록 학생 통계 분리",
+  "description": "기후국제회의 수행평가 v3.6.6 · 학생 답안과 가채점 결과 엑셀 내보내기",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

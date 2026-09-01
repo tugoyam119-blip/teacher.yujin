@@ -95,6 +95,12 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   assert.equal(saved.scoreHistory.length,2);
   assert.equal(saved.score.total,100);
   assert.equal(presence.loginCount,2,'reconnect count was not retained');
+  const xlsxResponse=await fetch(base+'/api/teacher/export.xlsx',{headers:teacherHeaders}),xlsx=Buffer.from(await xlsxResponse.arrayBuffer());
+  assert.equal(xlsxResponse.status,200,'xlsx export failed');
+  assert.equal(xlsx.subarray(0,4).toString('hex'),'504b0304','xlsx export is not a ZIP workbook');
+  assert.ok(xlsx.includes(Buffer.from('xl/worksheets/sheet1.xml')),'xlsx worksheet is missing');
+  assert.ok(xlsx.includes(Buffer.from('신규일반')),'xlsx does not include student results');
+  assert.ok(xlsx.includes(Buffer.from('교사_최종총점')),'xlsx does not include grading columns');
   assert.ok(fs.existsSync(path.join(dataDir,'events.jsonl'))&&fs.existsSync(path.join(dataDir,'runtime.json'))&&fs.existsSync(path.join(dataDir,'class-runtime.json')));
-  console.log('PASS 45m timer, session cache, timing header, class isolation, makeup, reopen/history, four-area scoring');
+  console.log('PASS 45m timer, session cache, timing header, class isolation, makeup, reopen/history, four-area scoring, xlsx export');
 }finally{child.kill();await sleep(100);await fsp.rm(dataDir,{recursive:true,force:true});}})().catch(e=>{console.error(e);child.kill();process.exitCode=1});
