@@ -1,4 +1,4 @@
-const VERSION='3.8.2';
+const VERSION='3.8.3';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
