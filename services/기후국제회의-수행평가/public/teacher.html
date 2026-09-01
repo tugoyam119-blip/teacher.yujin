@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 45분</div>
-    <div class="version">교사용 v3.7.2</div>
+    <div class="version">교사용 v3.8.0</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -184,17 +184,19 @@
     <select id="statusFilter"><option value="all">전체 상태</option><option value="not_started">미시작</option><option value="submitted">제출 완료</option><option value="in_progress">진행·수정 중</option><option value="ai_review">AI 확인 권장</option></select>
     <button id="refresh" class="secondary">새로고침</button>
     <button id="exportXlsx" class="primary">가채점 결과 엑셀 내려받기</button>
-    <button id="exportCsv" class="secondary">CSV 내려받기</button>
+    <button id="exportCsv" class="secondary hidden" aria-hidden="true">CSV 내려받기</button>
   </div>
   <div class="table-wrap"><table class="data-table"><thead><tr><th>반</th><th>학번</th><th>이름</th><th>국가</th><th>상태</th><th>진행률</th><th>AI</th><th>최종 점수</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
   <section class="management-tools-section" aria-label="명단과 가채점 도구">
-    <div class="management-tools-heading"><div><span class="eyebrow">수업 전 확인·수업 후 채점</span><h2>명단 확인·AI 가채점</h2><p class="sub">등록된 명단을 확인하거나 가채점이 필요할 때 이 영역을 사용하세요.</p></div><span class="management-tools-note">운영 화면과 분리</span></div>
+    <details open class="management-records"><summary><b>명단·결과·시험 기록 관리</b></summary>
+    <div class="management-tools-heading"><div><span class="eyebrow">환율비상과 같은 관리 방식</span><h2>명단·결과·시험 기록 관리</h2><p class="sub">자주 쓰지 않는 관리 기능은 이곳에 모아 두었습니다.</p></div><span class="management-tools-note">접기 가능</span></div>
     <div class="teacher-ops-grid">
     <article class="teacher-op-card roster-card">
-      <div class="op-card-head"><div><span class="eyebrow">① 등록 상태 확인</span><h3>학생 명단</h3></div><span id="rosterStateBadge" class="badge">명단 확인 중</span></div>
-      <p>학생 명단은 이미 서버에 등록되어 있으므로 다시 올릴 필요가 없습니다. 등록 인원과 반별 현황은 위쪽 학생별 진행 현황에 자동 반영됩니다.</p>
+      <div class="op-card-head"><div><span class="eyebrow">명단·결과</span><h3>학생 명단과 엑셀</h3></div><span id="rosterStateBadge" class="badge">명단 확인 중</span></div>
+      <p>현재 명단은 그대로 유지됩니다. 명단이 바뀔 때만 CSV를 다시 올리세요.</p>
       <input id="rosterFile" type="file" accept=".csv,text/csv" class="file-input hidden" aria-hidden="true">
       <div class="op-actions hidden" aria-hidden="true"><button id="uploadRoster" class="primary">선택한 명단 확인·적용</button><a href="/학생명단_템플릿.csv" download class="ghost">공통 CSV 템플릿</a><button id="clearRoster" class="ghost">명단 비우기</button></div>
+      <div class="op-actions" style="margin-top:10px"><button id="chooseRoster" class="primary">학생 명단 CSV 업로드</button><button id="exportSelectedClass" class="secondary">선택 반 가채점 결과 Excel 내려받기</button></div>
       <div class="op-actions" style="margin-top:10px"><button id="previewMockRoster" class="secondary">모의 명단으로 화면 확인</button><button id="exitMockRoster" class="ghost hidden">실제 명단 화면으로 돌아가기</button></div>
       <small id="mockRosterNotice" class="notice soft hidden">모의 명단 확인 중입니다. 실제 서버 명단과 학생 답안은 변경되지 않습니다.</small>
       <small id="rosterMessage" class="sub roster-apply-message">서버에 등록된 명단을 확인하고 있습니다.</small>
@@ -213,6 +215,8 @@
       <div class="op-actions"><button id="createSyntheticSubmissions" class="secondary">가채점 시험용 모의 제출 만들기</button><button id="clearSyntheticSubmissions" class="ghost">시험용 모의 제출 삭제</button></div><small id="syntheticMessage" class="sub">이 기능은 AI 가채점 시험을 위해 모의 제출 기록을 만듭니다. 위의 모의 명단 화면 확인과 달리 서버에 시험용 기록이 생성되지만 실제 학생 답안은 건드리지 않습니다.</small><div class="op-actions" style="margin-top:10px"><button id="bulkAiGrade" class="secondary">미가채점 제출자 일괄 가채점</button><span id="bulkAiProgress" class="sub"></span></div>
     </article>
     </div>
+    <article class="teacher-op-card" style="margin-top:16px;border-color:#efcaca;background:#fff8f8"><div class="op-card-head"><div><span class="eyebrow" style="color:#a33">시험 운영 기록 초기화</span><h3>답안·접속 기록만 초기화</h3></div><div class="op-actions"><button id="resetSelectedClass" class="ghost">선택 반 기록 초기화</button><button id="resetAllRecords" class="danger-btn">전체 기록 초기화</button></div></div><p class="sub">학생 명단은 유지하고 응시 답안·접속·가채점·교사 점수만 삭제합니다.</p></article>
+    </details>
   </section>
   <section id="detail" class="panel detail hidden"></section>
 </section>

@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.7.2';
+const APP_VERSION = '3.8.0';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -152,11 +152,11 @@ function csvEscape(v){const s=v==null?'':String(v);return /[",\n]/.test(s)?'"'+s
 function koStatus(s){return s==='submitted'?'제출 완료':s==='review_reopened'?'수정 재개':'진행 중'}
 function progressToStepServer(p){p=Number(p||0);if(p>=100)return 4;if(p>=75)return 3;if(p>=50)return 2;if(p>=25)return 1;return 0;}
 
-async function teacherExportData(){
+async function teacherExportData(className=''){
  const sessions=(await readStudentSessions()).sort((a,b)=>String(a.studentId).localeCompare(String(b.studentId),'ko')),roster=await readRoster(),sessionById=new Map(sessions.map(s=>[String(s.studentId),s])),rosterStudents=roster.students.filter(s=>String(s.studentId)!==TEACHER_STUDENT_ID),base=rosterStudents.length?rosterStudents:sessions.map(s=>({studentId:s.studentId,name:s.name,className:s.className,country:s.country}));
  const headers=['반','학번','이름','국가','상태','진행률','시작시각','제출시각','선택자료','자료근거','1순위','2순위','우선순위이유','예산_재생에너지지원','예산_기후재난지원','예산_친환경기술','예산_산림보호','예산_산업전환','예산_최우선이유','70억_우선감액','70억_감액이유','협상전_1차입장','선택협약','협약선택이유','불리한협약','불리한이유','반대국가','반대이유','절충조정요소','절충안','협력주체','협력주체역할배정','협력이유','재판단','최종합의문','AI_가채점총점','AI_신뢰도','AI_종합판단','AI_잘한점','AI_보완할점','AI_교사용피드백','AI_교사확인사항','AI_국가이해점수','AI_국가이해근거','AI_정책선택점수','AI_정책선택근거','AI_절충안점수','AI_절충안근거','AI_성찰최종합의점수','AI_성찰최종합의근거','교사_국가이해점수','교사_정책선택점수','교사_절충안점수','교사_성찰최종합의점수','교사_최종총점','교사메모'];
  const rows=base.map(r=>{const s=sessionById.get(String(r.studentId)),d=s?.data||{},b=d.budget||{},sc=s?.score||{},ai=s?.aiGrade||{},aa=ai.areas||{};return[r.className||deriveClass(r.studentId),String(r.studentId),r.name,countryLabels[s?.country||r.country]||'',s?koStatus(s.status):'미시작',s?.progress??0,s?.startedAt||'',s?.submittedAt||'',(d.evidenceSources||[]).map(x=>evidenceLabels[x]||x).join(' | '),d.evidenceReason||'',priorityLabels[d.priority1]||'',priorityLabels[d.priority2]||'',d.priorityReason||'',b.renewable??'',b.disaster??'',b.tech??'',b.forest??'',b.transition??'',d.budgetHighReason||'',budgets[d.budgetCut]||'',d.budgetCutReason||'',d.initialPosition||'',agreementLabels[d.agreement]||'',d.agreementReason||'',agreementLabels[d.unfavorableAgreement]||'',d.unfavorableReason||'',countryLabels[d.opposingCountry]||'',d.oppositionReason||'',compromiseLabels[d.compromiseDimension]||d.compromiseDimension||'',d.compromise||'',(d.actors||[]).map(x=>actorLabels[x]||x).join(' | '),(d.actors||[]).map(k=>`${actorLabels[k]||k}: ${actorRoleLabels[d.actorAssignments?.[k]]||''}`).join(' | '),d.actorReason||'',d.reconsiderChoice==='revise'?'입장 수정':d.reconsiderChoice?'입장 유지':'',d.finalDeclaration||'',ai.total??'',ai.confidence==='high'?'높음':ai.confidence==='medium'?'보통':ai.confidence==='low'?'낮음':'',ai.overall||'',ai.strength||'',ai.improvement||'',ai.feedback||'',(ai.reviewFlags||[]).join(' | '),aa.countryUnderstanding?.score??'',aa.countryUnderstanding?.reason||'',aa.policyChoice?.score??'',aa.policyChoice?.reason||'',aa.compromise?.score??'',aa.compromise?.reason||'',aa.reflection?.score??'',aa.reflection?.reason||'',sc.countryUnderstanding??'',sc.policyChoice??'',sc.compromise??'',sc.reflection??'',sc.total??'',s?.teacherNote||''];});
- return {headers,rows};
+ return {headers,rows:className?rows.filter(r=>String(r[0])===String(className)):rows};
 }
 function xmlEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
 function colName(n){let s='';for(n++;n>0;n=Math.floor((n-1)/26))s=String.fromCharCode(65+(n-1)%26)+s;return s}
@@ -288,13 +288,14 @@ async function handle(req,res){
   if(req.method==='DELETE'&&url.pathname==='/api/teacher/synthetic-submissions'){const synthetic=(await readSessions()).filter(s=>s.synthetic);for(const s of synthetic)await appendEvent({type:'reset',sessionId:s.sessionId});return sendJson(res,200,{ok:true,removed:synthetic.length});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/reopen'){const b=await bodyJson(req),s=(await readSessions()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 학생만 최종 검토 상태로 다시 열 수 있습니다.'});await appendEvent({type:'reopen',sessionId:s.sessionId});return sendJson(res,200,{ok:true});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/reset'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'reset',sessionId:b.sessionId});return sendJson(res,200,{ok:true});}
+  if(req.method==='POST'&&url.pathname==='/api/teacher/reset-records'){const b=await bodyJson(req);if(!b.all&&!b.className)return sendJson(res,400,{error:'초기화할 반을 선택하세요.'});const targets=(await readStudentSessions()).filter(s=>b.all||(s.className||deriveClass(s.studentId))===String(b.className));for(const s of targets)await appendEvent({type:'reset',sessionId:s.sessionId,reason:b.all?'teacher-reset-all':'teacher-reset-class'});return sendJson(res,200,{ok:true,resetCount:targets.length});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/ai-grade'){const b=await bodyJson(req),s=(await readSessions()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 답안만 AI 가채점할 수 있습니다.'});try{const aiGrade=await runAIGrade(s);await appendEvent({type:'ai_grade',sessionId:s.sessionId,aiGrade});return sendJson(res,200,{ok:true,aiGrade});}catch(e){return sendJson(res,503,{error:e.message});}}
   if(req.method==='POST'&&url.pathname==='/api/teacher/score'){
    const b=await bodyJson(req),fields=Object.keys(scoreMax),clean={};if(!b.sessionId||!b.score)return sendJson(res,400,{error:'채점 정보가 부족합니다.'});
    for(const f of fields){const v=Number(b.score[f]),max=scoreMax[f];if(!Number.isInteger(v)||v<0||v>max)return sendJson(res,400,{error:`${scoreLabels[f]} 점수는 0~${max}점 사이의 정수로 입력하세요.`});clean[f]=v;}clean.total=fields.reduce((a,f)=>a+clean[f],0);await appendEvent({type:'score',sessionId:b.sessionId,score:clean,teacherNote:String(b.teacherNote||'').slice(0,1000)});return sendJson(res,200,{ok:true,score:clean});
   }
   if(req.method==='GET'&&url.pathname==='/api/teacher/export.xlsx'){
-   const {headers,rows}=await teacherExportData(),xlsx=buildXlsx(headers,rows);res.writeHead(200,{'Content-Type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','Content-Length':xlsx.length,'Cache-Control':'no-store','Content-Disposition':'attachment; filename="climate_assessment_results_graded.xlsx"'});return res.end(xlsx);
+   const {headers,rows}=await teacherExportData(url.searchParams.get('className')||''),xlsx=buildXlsx(headers,rows);res.writeHead(200,{'Content-Type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','Content-Length':xlsx.length,'Cache-Control':'no-store','Content-Disposition':'attachment; filename="climate_assessment_results_graded.xlsx"'});return res.end(xlsx);
   }
   if(req.method==='GET'&&url.pathname==='/api/teacher/export.csv'){
    const {headers,rows}=await teacherExportData(),csv='\uFEFF'+[headers,...rows].map(r=>r.map(csvEscape).join(',')).join('\n');return sendText(res,200,csv,'text/csv; charset=utf-8',{'Content-Disposition':'attachment; filename="climate_assessment_results_ko.csv"'});
