@@ -13,7 +13,11 @@ const teacherHeaders = {'x-teacher-key':'test-pin'};
 const legacyStartedAt = new Date(Date.now() - 600_000).toISOString();
 
 fs.writeFileSync(path.join(dataDir, 'runtime.json'), JSON.stringify({serverOpen:true,timerPaused:false,pauseStartedAt:null,totalPausedMs:0,updatedAt:null}, null, 2));
-fs.writeFileSync(path.join(dataDir, 'events.jsonl'), JSON.stringify({type:'start',sessionId:'legacy-1',studentId:'10101',name:'기존학생',className:'1반',country:'hanbit',pauseBaseMs:0,ts:legacyStartedAt})+'\n');
+fs.writeFileSync(path.join(dataDir, 'events.jsonl'), [
+  {type:'start',sessionId:'legacy-1',studentId:'10101',name:'기존학생',className:'1반',country:'hanbit',pauseBaseMs:0,ts:legacyStartedAt},
+  {type:'start',sessionId:'teacher-demo-1',studentId:'000000',name:'교사용 시범',className:'',country:'hanbit',timerExempt:true,ts:legacyStartedAt},
+  {type:'submit',sessionId:'teacher-demo-1',data:{finalDeclaration:'교사용 시범 답안'},ts:new Date().toISOString()}
+].map(x=>JSON.stringify(x)).join('\n')+'\n');
 fs.writeFileSync(path.join(dataDir, 'roster.json'), JSON.stringify({updatedAt:null,students:[]}, null, 2));
 
 const child = spawn(process.execPath, ['server.js'], {cwd:root, env:{...process.env,DATA_DIR:dataDir,PORT:String(port),TEACHER_PASSWORD:'test-pin'}, stdio:['ignore','pipe','pipe']});
@@ -26,6 +30,10 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
 
 (async()=>{try{
   await waitForServer();
+  const initialDashboard=await get('/api/teacher/submissions',teacherHeaders);
+  assert.equal(initialDashboard.sessions.some(x=>x.studentId==='000000'),false,'teacher demo leaked into student dashboard');
+  assert.ok(fs.existsSync(path.join(dataDir,'.teacher-demo-cleanup-v1')),'teacher demo cleanup marker was not created');
+  assert.ok((await fsp.readFile(path.join(dataDir,'events.jsonl'),'utf8')).includes('teacher-demo-cleanup-v1'),'current teacher demo record was not reset');
   const legacy=await get('/api/timer/legacy-1');
   const legacyExpected=Math.max(0,2700-Math.floor((Date.now()-Date.parse(legacyStartedAt))/1000));
   assert.ok(Math.abs(legacy.remainingSeconds-legacyExpected)<=1,'legacy remaining time changed');

@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.6.4",
+  "version": "3.6.5",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.6.4 · 학생 도움 요청과 실시간 남은 시간 표시",
+  "description": "기후국제회의 수행평가 v3.6.5 · 교사용 시범 기록 학생 통계 분리",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
