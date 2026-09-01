@@ -86,8 +86,8 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   assert.notEqual(makeup.session.classSessionId,ready.session.classSessionId);
 
   await post('/api/teacher/reopen',{sessionId:ready.session.sessionId},teacherHeaders);
-  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryUnderstanding:20,policyChoice:20,compromise:20,reflection:20},teacherNote:'첫 점수'},teacherHeaders);
-  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryUnderstanding:25,policyChoice:25,compromise:25,reflection:25},teacherNote:'최종 점수'},teacherHeaders);
+  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryAnalysis:12,fundAllocation:16,policyAgreement:16,conflictAnalysis:12,compromise:8,cooperationRoles:8,completion:3,timeCompliance:4},teacherNote:'첫 점수'},teacherHeaders);
+  await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryAnalysis:15,fundAllocation:20,policyAgreement:20,conflictAnalysis:15,compromise:10,cooperationRoles:10,completion:4,timeCompliance:6},teacherNote:'최종 점수'},teacherHeaders);
   await post('/api/start',{studentId:'10102',name:'신규일반'});
   const dashboard=await get('/api/teacher/submissions',teacherHeaders),saved=dashboard.sessions.find(x=>x.sessionId===ready.session.sessionId),presence=dashboard.presence.find(x=>x.studentId==='10102');
   assert.equal(saved.data.finalDeclaration,'보존 답안');
