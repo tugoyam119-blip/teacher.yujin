@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 45분</div>
-    <div class="version">교사용 v3.7.1</div>
+    <div class="version">교사용 v3.7.2</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -188,16 +188,16 @@
   </div>
   <div class="table-wrap"><table class="data-table"><thead><tr><th>반</th><th>학번</th><th>이름</th><th>국가</th><th>상태</th><th>진행률</th><th>AI</th><th>최종 점수</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
   <section class="management-tools-section" aria-label="명단과 가채점 도구">
-    <div class="management-tools-heading"><div><span class="eyebrow">수업 전 준비·수업 후 채점</span><h2>명단 확인·AI 가채점</h2><p class="sub">수업 운영 중에는 위쪽 현황만 사용하고, 명단 등록과 가채점이 필요할 때 이 영역을 사용하세요.</p></div><span class="management-tools-note">운영 화면과 분리</span></div>
+    <div class="management-tools-heading"><div><span class="eyebrow">수업 전 확인·수업 후 채점</span><h2>명단 확인·AI 가채점</h2><p class="sub">등록된 명단을 확인하거나 가채점이 필요할 때 이 영역을 사용하세요.</p></div><span class="management-tools-note">운영 화면과 분리</span></div>
     <div class="teacher-ops-grid">
     <article class="teacher-op-card roster-card">
-      <div class="op-card-head"><div><span class="eyebrow">① 대상 학생 준비</span><h3>학생 명단</h3></div><span id="rosterStateBadge" class="badge">명단 미등록</span></div>
-      <p>지금은 비워 두어도 됩니다. 나중에 <b>반, 학번, 이름</b> 열이 있는 CSV를 올리면 미시작 학생·반별 필터·반별 균등 국가 배정이 활성화됩니다. 실제 평가에서는 <b>학생들이 시작하기 전에 한 번만 등록</b>하세요. 교사 브라우저에 암호화 복구본이 저장되어 재배포 뒤에도 자동 복원됩니다.</p>
-      <input id="rosterFile" type="file" accept=".csv,text/csv" class="file-input">
-      <div class="op-actions"><button id="uploadRoster" class="primary">선택한 명단 확인·적용</button><a href="/학생명단_템플릿.csv" download class="ghost">공통 CSV 템플릿</a><button id="clearRoster" class="ghost">명단 비우기</button></div>
+      <div class="op-card-head"><div><span class="eyebrow">① 등록 상태 확인</span><h3>학생 명단</h3></div><span id="rosterStateBadge" class="badge">명단 확인 중</span></div>
+      <p>학생 명단은 이미 서버에 등록되어 있으므로 다시 올릴 필요가 없습니다. 등록 인원과 반별 현황은 위쪽 학생별 진행 현황에 자동 반영됩니다.</p>
+      <input id="rosterFile" type="file" accept=".csv,text/csv" class="file-input hidden" aria-hidden="true">
+      <div class="op-actions hidden" aria-hidden="true"><button id="uploadRoster" class="primary">선택한 명단 확인·적용</button><a href="/학생명단_템플릿.csv" download class="ghost">공통 CSV 템플릿</a><button id="clearRoster" class="ghost">명단 비우기</button></div>
       <div class="op-actions" style="margin-top:10px"><button id="previewMockRoster" class="secondary">모의 명단으로 화면 확인</button><button id="exitMockRoster" class="ghost hidden">실제 명단 화면으로 돌아가기</button></div>
       <small id="mockRosterNotice" class="notice soft hidden">모의 명단 확인 중입니다. 실제 서버 명단과 학생 답안은 변경되지 않습니다.</small>
-      <small id="rosterMessage" class="sub roster-apply-message">파일을 선택한 뒤 반드시 「선택한 명단 확인·적용」을 눌러야 등록됩니다.</small>
+      <small id="rosterMessage" class="sub roster-apply-message">서버에 등록된 명단을 확인하고 있습니다.</small>
     </article>
     <article class="teacher-op-card ai-control-card">
       <div class="op-card-head"><div><span class="eyebrow">② 예상 답안 생성·가채점</span><h3>AI 가채점</h3></div><span id="aiStateBadge" class="badge">확인 중</span></div>
