@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.8.0';
+const APP_VERSION = '3.8.1';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';

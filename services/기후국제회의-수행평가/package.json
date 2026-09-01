@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.8.0",
+  "version": "3.8.1",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.8.0 · 환율비상형 명단·결과·시험 기록 관리",
+  "description": "기후국제회의 수행평가 v3.8.1 · AI 추천점수 자동 입력과 교사 조정",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
