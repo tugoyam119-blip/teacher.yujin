@@ -1,8 +1,8 @@
 {
   "name": "hr-city-v12-0-global-server-class-session-yujint",
-  "version": "12.0.0",
+  "version": "12.1.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v12.0 - 전체 학생 서버 1회 열기·반별 수행 원클릭 시작·학생 미리보기 버튼 상단 통합",
+  "description": "인권도시 정책결정 수행평가 v12.1 - 기후위기형 가채점·모의 제출·반별 Excel·기록 초기화",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
