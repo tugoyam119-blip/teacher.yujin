@@ -1,4 +1,4 @@
-const VERSION='3.9.0';
+const VERSION='3.9.1';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
@@ -122,7 +122,7 @@ async function beginAssignedAssessment(){state.countryRevealDone=true;state.prep
 function handleClassStartTransition(){if(!waitingForClassStart||timerPhase!=='running')return;waitingForClassStart=false;$('#preStartWait').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();toast('수행이 시작되었습니다. 지금부터 45분입니다.');window.scrollTo({top:0,behavior:'smooth'})}
 function applyTimerState(t={}){timerExempt=!!t.exempt;timerPhase=String(t.phase||'');if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
 async function syncTimer(){if(!session)return;try{const r=await fetch(`/api/timer/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());handleClassStartTransition();if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}}
-function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining===5*60)toast('5분 남았습니다. 최종 판단과 제출을 확인하세요.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,5000);syncTimer()}
+function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining===5*60)toast('5분 남았습니다. 최종 판단과 제출을 확인하세요.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,1000);syncTimer()}
 function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60,time=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.textContent=timerPaused?`⏸ 남은 시간 ${time}`:`남은 시간 ${time}`;const phaseMessage={ready:'선생님이 수행을 시작하면 시간이 시작됩니다.',paused:'선생님이 수행을 일시정지했습니다. 답안은 보존됩니다.',finished:'45분 수행시간이 종료되었습니다.'};el.title=timerPaused?(phaseMessage[timerPhase]||'수행평가 시간이 일시정지되어 있습니다.'):'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
 async function autoSubmitOnTime(){if(autoSubmitting||timerExempt)return;autoSubmitting=true;collect();state.timeExpired=true;await save(false);await finalSubmit(true)}
 function showAssessment(){$('#finalReview').classList.add('hidden');$('#preStartWait').classList.add('hidden');$('#assessment').classList.remove('hidden')}
