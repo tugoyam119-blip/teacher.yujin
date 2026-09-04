@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>통합사회2 1단원 교과서 수업도우미 ver12.1</title>
+<title>통합사회2 1단원 교과서 수업도우미 ver12.2</title>
 <style>
 :root{
  --bg:#f6f7fa;--paper:#fff;--ink:#263141;--muted:#738092;--line:#e1e6ed;
@@ -1369,7 +1369,7 @@ body.notes-mode .textbook-view{display:none!important}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.1</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
+<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.2</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
 <section class="progress-panel"><div class="progress-inner sticker-progress-inner"><div class="sticker-progress-top"><div class="progress-title sticker-progress-title">반별 진도 스티커</div><div class="class-tabs" id="class-tabs"><button class="class-tab class-color-1 active" data-class="1" type="button">1반</button><button class="class-tab class-color-2" data-class="2" type="button">2반</button><button class="class-tab class-color-3" data-class="3" type="button">3반</button><button class="class-tab class-color-4" data-class="4" type="button">4반</button><button class="class-tab class-color-5" data-class="5" type="button">5반</button><button class="class-tab class-color-6" data-class="6" type="button">6반</button><button class="class-tab class-color-7" data-class="7" type="button">7반</button></div></div><div class="sticker-progress-bottom"><div class="sticker-status" id="sticker-status">1반 · 진도 스티커 없음</div><div class="sticker-actions"><button class="sticker-action lesson-adjust" id="lesson-minus" title="차시 1 감소" type="button">−</button><div class="lesson-badge" id="lesson-badge">0차시</div><button class="sticker-action lesson-adjust" id="lesson-plus" title="차시 1 증가" type="button">+1</button><button class="sticker-action sticker-place" id="place-sticker" title="진도 표시 모드를 켜고 원하는 제목을 직접 선택" type="button">📌 진도 위치 선택</button><button class="sticker-action sticker-goto" id="goto-sticker" type="button">↗ 진도로 이동</button><button class="sticker-action sticker-clear" id="clear-sticker" title="선택한 반의 진도 스티커와 차시를 모두 초기화" type="button">진도 지우기</button><button class="sticker-action sticker-undo" hidden="" id="undo-clear-sticker" type="button">↶ 되돌리기</button></div></div><div class="sticker-hint">‘진도 위치 선택’을 누른 뒤 원하는 제목의 ‘여기에 붙이기’를 직접 누르면 정확한 위치에 스티커가 붙습니다.</div></div></section><div class="progress-select-banner" hidden="" id="progress-select-banner"><div class="progress-select-text">진도 위치 선택 중 · 원하는 제목의 ‘📌 여기에 붙이기’를 누르세요.</div><button class="cancel-progress-select" id="cancel-progress-select" type="button">취소</button></div>
 <section class="textbook-view" id="textbook-view" aria-label="교과서 수업 화면">
   <div class="textbook-toolbar">
@@ -1676,6 +1676,23 @@ body.notes-mode .textbook-view{display:none!important}
 <div><b><button class="term" data-info='{"hanja": "社會權", "chars": "社會(사회) + 權(권세 권)", "meaning": "국민이 국가에 인간다운 생활의 보장을 적극적으로 요구할 수 있는 권리.", "tip": "자유권 ‘간섭하지 마세요’ ↔ 사회권 ‘적극적으로 도와주세요’로 비교하면 쉽습니다."}' data-term="사회권" type="button">사회권</button></b><span>국가에 인간다운 생활의 보장을 요구할 권리</span><small>교육받을 권리, 근로의 권리, 인간다운 생활을 할 권리 등</small></div>
 <div><b><button class="term" data-info='{"hanja": "請求權", "chars": "請(청할 청) + 求(구할 구) + 權(권세 권)", "meaning": "기본권이 침해되었을 때 국가에 권리의 구제를 요구할 수 있는 권리.", "tip": "재판 청구권·국가 배상 청구권 등이 예입니다."}' data-term="청구권" type="button">청구권</button></b><span>기본권이 침해되었을 때 국가에 구제를 요구할 권리</span><small>청원권, 재판 청구권, 국가 배상 청구권 등</small></div>
 </div>
+<section class="quick-summary">
+<div class="quick-summary-title"><span>보충</span> 기본권을 ‘국가에 무엇을 요구하는가’로 이해하기</div>
+<div class="table-wrap">
+<table class="summary-table">
+<thead><tr><th>구분</th><th>학생에게 던질 질문</th><th>국가의 역할</th><th>헌법의 대표 조문·사례</th></tr></thead>
+<tbody>
+<tr><td><b>인간의 존엄과 행복추구권</b></td><td>모든 기본권은 무엇을 위해 존재할까?</td><td>개인의 인격과 행복 추구를 존중하고 기본적 인권을 확인·보장</td><td>제10조 · 인간의 존엄과 가치, 행복추구권</td></tr>
+<tr><td><b>평등권</b></td><td>합리적인 이유 없이 다르게 대우받았는가?</td><td>자의적인 차별을 하지 않고 실질적인 평등을 실현</td><td>제11조 · 법 앞의 평등, 성별·종교·사회적 신분에 따른 차별 금지</td></tr>
+<tr><td><b>자유권</b></td><td>국가가 나의 선택과 행동에 부당하게 간섭했는가?</td><td>불필요한 간섭을 삼가고 자유의 영역을 보장</td><td>제12조 신체의 자유, 제14조 거주·이전, 제20조 종교, 제21조 언론·출판·집회·결사</td></tr>
+<tr><td><b>참정권</b></td><td>국가의 의사 결정에 참여할 기회가 보장되었는가?</td><td>공정한 선거와 공직 참여의 기회를 마련</td><td>제24조 선거권, 제25조 공무담임권</td></tr>
+<tr><td><b>사회권</b></td><td>인간다운 생활을 위해 국가의 적극적인 지원이 필요한가?</td><td>교육·근로·사회보장·환경 등 인간다운 생활의 조건을 조성</td><td>제31조 교육, 제32조 근로, 제34조 인간다운 생활, 제35조 환경</td></tr>
+<tr><td><b>청구권</b></td><td>침해된 권리를 국가기관에 구제해 달라고 요구하는가?</td><td>청원·재판·배상 등 실효적인 구제 절차를 제공</td><td>제26조 청원, 제27조 재판, 제28조 형사보상, 제29조 국가배상</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<div class="inline-callout inline-caution"><span>구분</span><mark class="important-highlight">자유권은 국가의 간섭을 줄이는 것만이 아니라 자유를 실제로 행사할 수 있도록 보호할 의무도 포함할 수 있고, 사회권도 국가가 원하는 결과를 즉시 모두 보장한다는 뜻은 아니다. 핵심은 헌법이 각 권리의 성격에 맞는 국가의 의무를 요구한다는 점이다.</mark></div>
 <p>헌법 제37조 제1항은 헌법에 열거되지 않은 권리도 경시해서는 안 된다고 규정한다.
 사회 변화에 따라 새롭게 중요해진 권리도 헌법적 보호의 대상이 될 수 있다는 의미이다.</p>
 <div class="example-box">
@@ -1714,19 +1731,33 @@ body.notes-mode .textbook-view{display:none!important}
 <p>감염병이 크게 확산되어 일정 기간 다중 이용 시설의 영업 시간을 제한한다면 <b>직업 활동의 자유</b>가 제한될 수 있다. 그러나 이런 제한도 단순한 편의를 이유로 할 수 있는 것이 아니라 <b>법률에 근거하고, 필요한 범위 안에서, 본질적 내용을 침해하지 않도록</b> 이루어져야 한다.</p>
 </div>
 <h3 class="major-heading progress-anchor" data-progress-label="4) 인권 보장을 위한 헌법상 제도" data-progress-page="3" id="progress-anchor-3-4">4) 인권 보장을 위한 헌법상 제도<span aria-hidden="true" class="heading-stickers"></span><button class="progress-target-btn" data-anchor="progress-anchor-3-4" title="이 위치에 진도 스티커 붙이기" type="button">📌 여기에 붙이기</button></h3>
+<div class="flow-row"><span>국민이 권력의 근원이 됨</span><span>법으로 권력을 제한함</span><span>기관끼리 권력을 나누고 견제함</span><span>선거와 정당으로 국민 의사를 반영함</span><span>침해된 권리를 재판과 헌법재판으로 구제함</span></div>
+<p>헌법상 제도적 장치는 기본권이 침해된 뒤에만 작동하는 것이 아니다. <b>국민 주권·법치주의·권력 분립</b>은 권력 남용을 미리 막는 예방 장치이고, <b>선거·복수 정당제</b>는 국민의 다양한 의사를 국가 운영에 반영하는 참여 장치이며, <b>재판·위헌 법률 심판·헌법 소원</b>은 이미 발생한 침해를 바로잡는 구제 장치이다.</p>
+<div class="inline-callout inline-key"><span>수업 핵심</span><mark class="critical-highlight">헌법은 기본권을 글로 선언하는 데 그치지 않고, 국가 권력이 헌법을 지키도록 만드는 기관·절차·견제 장치를 함께 둔다.</mark></div>
 <h4 class="concept-heading progress-anchor" data-progress-label="① 국민 주권 과 법치주의" data-progress-page="3" id="progress-anchor-3-5">① <button class="term" data-info='{"hanja": "國民主權", "chars": "國(나라 국) + 民(백성 민) + 主(주인 주) + 權(권세 권)", "meaning": "국가의 주인은 국민이며 모든 국가 권력은 국민에게서 나온다는 원리.", "tip": "‘나라의 최종 주인은 국민’."}' data-term="국민 주권" type="button">국민 주권</button>과 <button class="term" data-info='{"hanja": "法治主義", "chars": "法(법 법) + 治(다스릴 치) + 主(주인 주) + 義(옳을 의)", "meaning": "국가 권력도 법에 근거하여 행사되어야 하며 자의적·독단적으로 국민을 지배해서는 안 된다는 통치 원리.", "tip": "국민만 법을 지키는 것이 아니라 국가 권력도 법의 통제를 받는다는 점이 핵심입니다."}' data-term="법치주의" type="button">법치주의</button><span aria-hidden="true" class="heading-stickers"></span><button class="progress-target-btn" data-anchor="progress-anchor-3-5" title="이 위치에 진도 스티커 붙이기" type="button">📌 여기에 붙이기</button></h4>
 <p><button class="term" data-info='{"hanja": "國民主權", "chars": "國(나라 국) + 民(백성 민) + 主(주인 주) + 權(권세 권)", "meaning": "국가의 주인은 국민이며 모든 국가 권력은 국민에게서 나온다는 원리.", "tip": "‘나라의 최종 주인은 국민’."}' data-term="국민 주권" type="button">국민 주권</button>은 국가의 주권이 국민에게 있고 모든 국가 권력이 국민에게서 나온다는 원리이다.
 <button class="term" data-info='{"hanja": "法治主義", "chars": "法(법 법) + 治(다스릴 치) + 主(주인 주) + 義(옳을 의)", "meaning": "국가 권력도 법에 근거하여 행사되어야 하며 자의적·독단적으로 국민을 지배해서는 안 된다는 통치 원리.", "tip": "국민만 법을 지키는 것이 아니라 국가 권력도 법의 통제를 받는다는 점이 핵심입니다."}' data-term="법치주의" type="button">법치주의</button>는 국가 권력도 법률에 근거하여 행사되어야 하며 자의적·독단적으로 국민의 권리를 침해해서는 안 된다는 원리이다.</p>
 <h4 class="concept-heading progress-anchor" data-progress-label="② 권력 분립 과 견제·균형" data-progress-page="3" id="progress-anchor-3-6">② <button class="term" data-info='{"hanja": "權力分立", "chars": "權力(권력) + 分(나눌 분) + 立(설 립)", "meaning": "국가 권력을 여러 기관에 나누고 서로 견제와 균형을 이루게 하는 원리.", "tip": "입법=국회, 행정=정부, 사법=법원. 목적은 권력 남용 방지입니다."}' data-term="권력 분립" type="button">권력 분립</button>과 견제·균형<span aria-hidden="true" class="heading-stickers"></span><button class="progress-target-btn" data-anchor="progress-anchor-3-6" title="이 위치에 진도 스티커 붙이기" type="button">📌 여기에 붙이기</button></h4>
 <p>국가 권력이 한 사람이나 한 기관에 집중되면 남용될 가능성이 커진다.
 우리 헌법은 입법권을 국회, 행정권을 정부, 사법권을 법원에 나누어 맡기고 서로 견제하도록 한다.</p>
+<p>입법부는 사회의 공통 규칙인 법률을 만들고 예산을 심의·확정한다. 행정부는 법률을 집행하고 구체적인 정책을 수행한다. 사법부는 독립하여 재판을 통해 법을 적용하고 분쟁을 해결한다. 여기에 헌법재판소는 법률의 위헌 여부, 탄핵, 정당 해산, 국가기관 사이의 권한 다툼 등을 심판하여 헌법 질서를 지킨다.</p>
 <div class="check-grid">
-<div><b>국회 → 정부</b><span>국정 감사·조사</span></div>
-<div><b>대통령 → 국회</b><span>법률안 재의 요구</span></div>
-<div><b>국회 ↔ 사법부</b><span>대법원장·대법관 임명 동의</span></div>
-<div><b>법원 → 헌법재판소</b><span>위헌 법률 심판 제청</span></div>
-<div><b>대법원 → 행정부</b><span>명령·규칙의 위헌·위법 여부 심사</span></div>
+<div><b>국회 → 정부</b><span>예산안 심의·확정, 국정 감사·조사, 탄핵 소추, 국무총리·대법원장 등 주요 공직자 임명 동의</span></div>
+<div><b>대통령·정부 → 국회</b><span>법률안 제출, 임시회 소집 요구, 국회가 의결한 법률안에 대한 재의 요구</span></div>
+<div><b>법원 → 입법부</b><span>재판에 적용할 법률이 위헌이라고 판단될 때 헌법재판소에 위헌 법률 심판 제청</span></div>
+<div><b>헌법재판소 → 입법·행정</b><span>위헌 법률 심판, 탄핵 심판, 정당 해산 심판, 권한쟁의 심판, 헌법 소원 심판</span></div>
+<div><b>대법원 → 행정부</b><span>명령·규칙·처분의 위헌·위법 여부가 재판의 전제가 된 경우 최종 심사</span></div>
+<div><b>국회·대통령 → 사법부</b><span>대법원장은 국회의 동의를 얻어 대통령이 임명하고, 대법관도 국회의 동의를 거쳐 대통령이 임명</span></div>
 </div>
+<section class="quick-summary">
+<div class="quick-summary-title"><span>보충</span> 우리나라 권력분립에서 꼭 구분할 점</div>
+<div class="table-wrap"><table class="summary-table"><thead><tr><th>핵심 질문</th><th>정리</th></tr></thead><tbody>
+<tr><td>왜 권력을 나누는가?</td><td>업무를 편리하게 나누기 위해서만이 아니라, 권력이 한곳에 집중되어 국민의 기본권을 침해하는 것을 막기 위해서이다.</td></tr>
+<tr><td>기관들은 완전히 분리되는가?</td><td>아니다. 서로 독립적으로 역할을 수행하면서도 인사·입법·예산·감사·재판을 통해 견제와 균형을 이룬다.</td></tr>
+<tr><td>법원과 헌법재판소는 같은가?</td><td>법원은 구체적인 분쟁의 재판을 담당하고, 헌법재판소는 위헌 법률·탄핵·정당 해산·권한쟁의·헌법 소원 등 헌법적 분쟁을 담당한다.</td></tr>
+<tr><td>사법부 독립은 왜 필요한가?</td><td>법관이 다른 국가기관이나 여론의 부당한 압력에 흔들리지 않고 헌법과 법률, 양심에 따라 재판해야 기본권을 공정하게 보호할 수 있기 때문이다.</td></tr>
+</tbody></table></div>
+</section>
 <div class="inline-callout inline-key"><span>핵심</span><mark class="important-highlight"><button class="term" data-info='{"hanja": "權力分立", "chars": "權力(권력) + 分(나눌 분) + 立(설 립)", "meaning": "국가 권력을 여러 기관에 나누고 서로 견제와 균형을 이루게 하는 원리.", "tip": "입법=국회, 행정=정부, 사법=법원. 목적은 권력 남용 방지입니다."}' data-term="권력 분립" type="button">권력 분립</button>의 목적은 기관을 서로 완전히 떼어 놓는 것이 아니라 서로 견제하게 하여 권력 남용을 막는 것이다.</mark></div>
 <h4 class="concept-heading progress-anchor" data-progress-label="③ 민주적 선거 제도와 복수 정당제" data-progress-page="3" id="progress-anchor-3-7">③ 민주적 선거 제도와 복수 정당제<span aria-hidden="true" class="heading-stickers"></span><button class="progress-target-btn" data-anchor="progress-anchor-3-7" title="이 위치에 진도 스티커 붙이기" type="button">📌 여기에 붙이기</button></h4>
 <p>민주적 선거 제도는 주권자인 국민이 국가를 운영할 대표자를 선출하여 자신의 의사와 이익을 정치에 반영하는 제도이다.
@@ -1761,6 +1792,7 @@ body.notes-mode .textbook-view{display:none!important}
 <div class="example-box-title">구제 제도 예시</div>
 <p>재판 과정에서 적용될 법률 자체가 헌법에 어긋난다고 의심되는 경우에는 <b>위헌 법률 심판</b>과 연결되고, 국가기관의 공권력 행사 때문에 자신의 기본권이 침해되었다고 보는 경우에는 일정한 요건 아래 <b>헌법 소원</b>을 생각할 수 있다.</p>
 </div>
+<div class="inline-callout inline-note"><span>공식 근거</span>대한민국헌법 제10조~제37조(기본권), 제40조·제54조·제61조·제65조(국회), 제53조·제66조(대통령과 행정부), 제101조·제103조·제107조(법원), 제111조(헌법재판소)를 바탕으로 정리하였다.</div>
 </div>
 <div class="page-nav">
 <button class="page-prev" data-go="2" type="button">← 이전</button>
@@ -2207,6 +2239,12 @@ const bookTopics=[
 ];
 const topicStarts=[3,7,13,17,21,25];
 const topicShort=['1 인권','2 현대 인권','3 헌법','4 시민 참여','5 국내 문제','6 세계 문제'];
+const bookPageDetails={
+  13:{title:'기본권의 의미와 종류',summary:'기본권을 이름만 외우기보다 국가에 무엇을 요구하는 권리인지 구분합니다.',points:['인간의 존엄과 가치와 행복추구권은 모든 기본권의 출발점이다.','자유권은 부당한 간섭을 막고, 사회권은 인간다운 생활 조건의 마련을 요구한다.','평등권은 합리적 이유 없는 차별을 금지하고, 참정권은 정치 참여를, 청구권은 침해된 권리의 구제를 보장한다.'],concepts:['기본권','자유권','평등권','참정권','사회권','청구권']},
+  14:{title:'인권 보장을 위한 헌법상 제도',summary:'헌법은 기본권 선언과 함께 국가 권력을 통제하고 권리를 실제로 구제하는 제도를 둡니다.',points:['국민 주권·법치주의·권력 분립은 권력 남용을 예방하는 장치이다.','민주적 선거와 복수 정당제는 다양한 국민 의사를 국가 운영에 반영한다.','재판·위헌 법률 심판·헌법 소원은 침해된 기본권을 구제한다.'],concepts:['국민 주권','법치주의','권력 분립','복수 정당제','위헌 법률 심판','헌법 소원']},
+  15:{title:'우리나라의 권력분립 제도',summary:'국회·정부·법원·헌법재판소가 권한을 나누고 서로 견제하여 기본권 침해를 막습니다.',points:['국회는 예산·국정감사·탄핵소추·임명동의 등으로 행정부와 사법부를 견제한다.','대통령과 정부는 법률안 제출과 법률안 재의 요구 등을 통해 국회와 관계를 맺는다.','법원과 헌법재판소는 위헌·위법 심사와 헌법재판으로 입법·행정 권력을 통제한다.'],concepts:['권력 분립','사법부 독립','위헌 법률 심판','헌법재판소']},
+  16:{title:'헌법의 인권 보장 역할 적용하기',summary:'기본권 침해 사례에서 관련 기본권과 적절한 구제 방법을 연결해 봅니다.',points:['어떤 기본권이 제한되었는지 먼저 찾는다.','제한에 법률상 근거와 정당한 목적이 있는지 살핀다.','재판·헌법 소원·국가인권위원회 진정 등 적절한 구제 수단을 구분한다.'],concepts:['기본권','공권력','헌법 소원','국가 인권 위원회']}
+};
 const fallbackConcepts={
   '기본권':'헌법이 국민에게 보장하는 기본적인 권리입니다.',
   '주거권':'쾌적하고 안정적인 주거 환경에서 인간다운 생활을 할 권리입니다.',
@@ -2215,6 +2253,7 @@ const fallbackConcepts={
   '문화권':'공동체의 문화생활에 참여하고 문화를 향유할 권리입니다.',
   '권력 분립':'국가 권력을 나누고 서로 견제하게 하여 국민의 기본권을 보호하는 원리입니다.',
   '헌법재판소':'헌법 질서를 지키고 기본권 침해 여부 등을 심판하는 헌법기관입니다.',
+  '사법부 독립':'법관이 다른 국가기관의 부당한 간섭 없이 헌법과 법률, 양심에 따라 재판하도록 보장하는 원리입니다.',
   '주민 참여':'지역의 의사 결정과 문제 해결 과정에 주민이 직접 참여하는 활동입니다.',
   '근로 계약':'근로자가 사용자에게 노동을 제공하고 사용자가 임금을 지급하기로 약속하는 계약입니다.',
   '세계 기아 지수':'영양 결핍과 아동의 성장·사망 관련 지표를 종합해 기아 수준을 나타낸 지수입니다.',
@@ -2247,21 +2286,21 @@ function openBookConcept(term){
 }
 function renderBookPage(page,scroll=true){
   page=Math.max(1,Math.min(30,Number(page)||1));bookPage=page;
-  const topic=topicForBookPage(page),printed=printedBookPage(page);
+  const topic=topicForBookPage(page),detail=bookPageDetails[page],printed=printedBookPage(page);
   textbookImage.src='textbook-pages/page-'+paddedBookPage(page)+'.webp?v=12.1';
   textbookImage.alt='미래엔 통합사회2 교사용 교과서 '+(printed?printed+'쪽':'PDF '+page+'쪽');
   bookPageInput.value=page;
   document.getElementById('book-prev').disabled=page===1;
   document.getElementById('book-next').disabled=page===30;
-  document.getElementById('book-topic-title').textContent=topic.title;
+  document.getElementById('book-topic-title').textContent=detail?.title||topic.title;
   document.getElementById('book-page-label').textContent=(printed?'교과서 '+printed+'쪽 · ':'')+'PDF '+page+'쪽';
-  document.getElementById('lesson-title').textContent=topic.title;
-  document.getElementById('lesson-summary').textContent=topic.summary;
+  document.getElementById('lesson-title').textContent=detail?.title||topic.title;
+  document.getElementById('lesson-summary').textContent=detail?.summary||topic.summary;
   const points=document.getElementById('lesson-points');points.replaceChildren();
-  const sourcePoints=[...document.querySelectorAll('#page-'+topic.note+' .today-summary-list li')].slice(0,3);
-  sourcePoints.forEach(source=>{const li=document.createElement('li');li.textContent=source.textContent.trim();points.appendChild(li);});
+  const pointTexts=detail?.points||[...document.querySelectorAll('#page-'+topic.note+' .today-summary-list li')].slice(0,3).map(source=>source.textContent.trim());
+  pointTexts.forEach(value=>{const li=document.createElement('li');li.textContent=value;points.appendChild(li);});
   const concepts=document.getElementById('page-concepts');concepts.replaceChildren();
-  topic.concepts.forEach(term=>{const b=document.createElement('button');b.type='button';b.className='page-concept';b.textContent=term;b.addEventListener('click',()=>openBookConcept(term));concepts.appendChild(b);});
+  (detail?.concepts||topic.concepts).forEach(term=>{const b=document.createElement('button');b.type='button';b.className='page-concept';b.textContent=term;b.addEventListener('click',()=>openBookConcept(term));concepts.appendChild(b);});
   try{localStorage.setItem(BOOK_PAGE_KEY,String(page));}catch(e){}
   if(page<30){const preload=new Image();preload.src='textbook-pages/page-'+paddedBookPage(page+1)+'.webp?v=12.1';}
   if(scroll)window.scrollTo({top:0,behavior:'auto'});
