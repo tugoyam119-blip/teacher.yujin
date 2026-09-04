@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>통합사회2 1단원 교과서 수업도우미 ver12.4</title>
+<title>통합사회2 1단원 교과서 수업도우미 ver12.5</title>
 <style>
 :root{
  --bg:#f6f7fa;--paper:#fff;--ink:#263141;--muted:#738092;--line:#e1e6ed;
@@ -1368,13 +1368,14 @@ body.notes-mode .textbook-view{display:none!important}
 .deep-guide-title{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:#304862;font-size:18px;font-weight:950}.deep-guide-title span{padding:4px 8px;border-radius:999px;background:#dfeeff;color:#28629b;font-size:11px}
 .deep-guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.deep-guide-card{padding:13px;border:1px solid #e1e7ef;border-radius:11px;background:#fff}.deep-guide-card b{display:block;margin-bottom:7px;color:#3b506a;font-size:13px}.deep-guide-card p{margin:0!important;color:#586779!important;font-size:12.5px!important;line-height:1.75!important}
 .law-guide{margin:22px 0;padding:18px;border:1px solid #d9dfc9;border-left:6px solid #7d9855;border-radius:14px;background:#fbfcf6}.law-guide-title{display:flex;align-items:center;gap:8px;margin-bottom:5px;color:#42582f;font-size:18px;font-weight:950}.law-guide-title span{padding:4px 8px;border-radius:999px;background:#e8f0da;color:#536d31;font-size:11px}.law-guide-intro{margin:0 0 12px!important;color:#69745d!important;font-size:12px!important}.law-list{display:grid;gap:8px}.law-item{padding:11px 12px;border:1px solid #e1e6d7;border-radius:10px;background:#fff}.law-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.law-item-name{color:#3d5330;font-size:13px;font-weight:950}.law-item-link{flex:none;color:#27608d;font-size:10.5px;font-weight:900;text-decoration:none}.law-item-link:hover{text-decoration:underline}.law-item-summary{margin:5px 0 0!important;color:#596552!important;font-size:12px!important;line-height:1.65!important}.law-guide-note{margin:10px 0 0!important;color:#7b6b3d!important;font-size:10.5px!important;line-height:1.6!important}
+.law-term{appearance:none;border:0;border-bottom:1px dashed #6f8b49;background:#eef5e4;color:#456026;padding:3px 6px;border-radius:5px;font:inherit;font-size:13px;font-weight:950;cursor:pointer;text-align:left}.law-term:hover,.law-term:focus{background:#dfeccd;color:#304b16;outline:none}.concept-card.law-card{border-top-color:#78964e}.concept-card.law-card .card-title{color:#486126}.concept-card.law-card .card-meaning{white-space:pre-line;max-height:44vh;overflow:auto;line-height:1.7}.card-source{display:block;margin-top:8px;padding:7px 8px;border-radius:7px;background:#edf3f8;color:#2e648e;font-size:10px;font-weight:900;text-align:center;text-decoration:none}.card-source:hover{text-decoration:underline}
 @media(max-width:900px){.deep-guide-grid{grid-template-columns:1fr}.law-item-top{display:block}.law-item-link{display:inline-block;margin-top:5px}}
 @media(max-width:1150px){.textbook-stage{grid-template-columns:minmax(0,1fr) 300px}.concept-popover{position:fixed;right:14px;bottom:14px;top:auto;width:min(320px,calc(100vw - 28px))}.concept-popover[hidden]{display:none}.textbook-toolbar{grid-template-columns:1fr auto}.book-topic{grid-column:1/-1;grid-row:2}.book-actions{justify-self:end}.textbook-paper img{max-height:none}}
 @media(max-width:680px){.topbar{display:flex;flex-wrap:wrap}.brand{flex:1 1 100%}.view-switch{margin-left:0;width:100%}.view-switch button{flex:1}.textbook-toolbar{position:relative;top:auto;grid-template-columns:1fr}.book-nav,.book-actions{justify-content:center}.book-actions{justify-self:stretch}.book-actions button{flex:1}.textbook-stage{grid-template-columns:1fr}.lesson-side{position:relative;top:auto}.textbook-paper{padding:5px}.textbook-paper img{width:100%}}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.4</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
+<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.5</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
 <section class="progress-panel"><div class="progress-inner sticker-progress-inner"><div class="sticker-progress-top"><div class="progress-title sticker-progress-title">반별 진도 스티커</div><div class="class-tabs" id="class-tabs"><button class="class-tab class-color-1 active" data-class="1" type="button">1반</button><button class="class-tab class-color-2" data-class="2" type="button">2반</button><button class="class-tab class-color-3" data-class="3" type="button">3반</button><button class="class-tab class-color-4" data-class="4" type="button">4반</button><button class="class-tab class-color-5" data-class="5" type="button">5반</button><button class="class-tab class-color-6" data-class="6" type="button">6반</button><button class="class-tab class-color-7" data-class="7" type="button">7반</button></div></div><div class="sticker-progress-bottom"><div class="sticker-status" id="sticker-status">1반 · 진도 스티커 없음</div><div class="sticker-actions"><button class="sticker-action lesson-adjust" id="lesson-minus" title="차시 1 감소" type="button">−</button><div class="lesson-badge" id="lesson-badge">0차시</div><button class="sticker-action lesson-adjust" id="lesson-plus" title="차시 1 증가" type="button">+1</button><button class="sticker-action sticker-place" id="place-sticker" title="진도 표시 모드를 켜고 원하는 제목을 직접 선택" type="button">📌 진도 위치 선택</button><button class="sticker-action sticker-goto" id="goto-sticker" type="button">↗ 진도로 이동</button><button class="sticker-action sticker-clear" id="clear-sticker" title="선택한 반의 진도 스티커와 차시를 모두 초기화" type="button">진도 지우기</button><button class="sticker-action sticker-undo" hidden="" id="undo-clear-sticker" type="button">↶ 되돌리기</button></div></div><div class="sticker-hint">‘진도 위치 선택’을 누른 뒤 원하는 제목의 ‘여기에 붙이기’를 직접 누르면 정확한 위치에 스티커가 붙습니다.</div></div></section><div class="progress-select-banner" hidden="" id="progress-select-banner"><div class="progress-select-text">진도 위치 선택 중 · 원하는 제목의 ‘📌 여기에 붙이기’를 누르세요.</div><button class="cancel-progress-select" id="cancel-progress-select" type="button">취소</button></div>
 <section class="textbook-view" id="textbook-view" aria-label="교과서 수업 화면">
   <div class="textbook-toolbar">
@@ -2376,6 +2377,33 @@ const unitSupplementGuides={
   }
 };
 
+const lawOriginals={
+  '대한민국헌법 제10조':`제10조 모든 국민은 인간으로서의 존엄과 가치를 가지며, 행복을 추구할 권리를 가진다. 국가는 개인이 가지는 불가침의 기본적 인권을 확인하고 이를 보장할 의무를 진다.`,
+  '대한민국헌법 제11조':`제11조 ① 모든 국민은 법 앞에 평등하다. 누구든지 성별·종교 또는 사회적 신분에 의하여 정치적·경제적·사회적·문화적 생활의 모든 영역에 있어서 차별을 받지 아니한다.`,
+  '대한민국헌법 제6조 제1항':`제6조 ① 헌법에 의하여 체결·공포된 조약과 일반적으로 승인된 국제법규는 국내법과 같은 효력을 가진다.`,
+  '주거기본법 제2조·제3조':`제2조 국민은 관계 법령 및 조례로 정하는 바에 따라 물리적·사회적 위험으로부터 벗어나 쾌적하고 안정적인 주거환경에서 인간다운 주거생활을 할 권리를 갖는다.\n\n제3조 국가 및 지방자치단체는 제2조의 주거권을 보장하기 위하여 다음 각 호의 기본원칙에 따라 주거정책을 수립·시행하여야 한다.`,
+  '재난 및 안전관리 기본법 제4조':`제4조 ① 국가와 지방자치단체는 재난이나 그 밖의 각종 사고로부터 국민의 생명·신체 및 재산을 보호할 책무를 지고, 재난이나 그 밖의 각종 사고를 예방하고 피해를 줄이기 위하여 노력하여야 하며, 발생한 피해를 신속히 대응·복구하기 위한 계획을 수립·시행하여야 한다.`,
+  '대한민국헌법 제35조':`제35조 ① 모든 국민은 건강하고 쾌적한 환경에서 생활할 권리를 가지며, 국가와 국민은 환경보전을 위하여 노력하여야 한다.\n② 환경권의 내용과 행사에 관하여는 법률로 정한다.\n③ 국가는 주택개발정책등을 통하여 모든 국민이 쾌적한 주거생활을 할 수 있도록 노력하여야 한다.`,
+  '문화기본법 제4조':`제4조 모든 국민은 성별, 종교, 인종, 세대, 지역, 사회적 신분, 경제적 지위나 신체적 조건 등에 관계없이 문화 표현과 활동에서 차별을 받지 아니하고 자유롭게 문화를 창조하고 문화 활동에 참여하며 문화를 향유할 권리를 가진다.`,
+  '대한민국헌법 제10조·제37조':`제10조 모든 국민은 인간으로서의 존엄과 가치를 가지며, 행복을 추구할 권리를 가진다. 국가는 개인이 가지는 불가침의 기본적 인권을 확인하고 이를 보장할 의무를 진다.\n\n제37조 ① 국민의 자유와 권리는 헌법에 열거되지 아니한 이유로 경시되지 아니한다.\n② 국민의 모든 자유와 권리는 국가안전보장·질서유지 또는 공공복리를 위하여 필요한 경우에 한하여 법률로써 제한할 수 있으며, 제한하는 경우에도 자유와 권리의 본질적인 내용을 침해할 수 없다.`,
+  '대한민국헌법 제40조·제66조·제101조':`제40조 입법권은 국회에 속한다.\n\n제66조 ④ 행정권은 대통령을 수반으로 하는 정부에 속한다.\n\n제101조 ① 사법권은 법관으로 구성된 법원에 속한다.`,
+  '헌법재판소법 제41조·제68조':`제41조 ① 법률이 헌법에 위반되는지 여부가 재판의 전제가 된 경우에는 당해 사건을 담당하는 법원은 직권 또는 당사자의 신청에 의한 결정으로 헌법재판소에 위헌 여부의 심판을 제청한다.\n\n제68조 ① 공권력의 행사 또는 불행사로 인하여 헌법상 보장된 기본권을 침해받은 자는 법원의 재판을 제외하고는 헌법재판소에 헌법소원심판을 청구할 수 있다. 다만, 다른 법률에 구제절차가 있는 경우에는 그 절차를 모두 거친 후에 청구할 수 있다.`,
+  '국가인권위원회법 제30조':`제30조 ① 다음 각 호의 어느 하나에 해당하는 경우에 인권침해나 차별행위를 당한 사람 또는 그 사실을 알고 있는 사람이나 단체는 위원회에 그 내용을 진정할 수 있다.\n1. 국가기관, 지방자치단체, 각급 학교 등의 업무 수행과 관련하여 대한민국헌법 제10조부터 제22조까지의 규정에서 보장된 인권을 침해당하거나 차별행위를 당한 경우\n2. 법인, 단체 또는 사인으로부터 차별행위를 당한 경우\n※ 수업에 필요한 부분을 발췌·축약 표시함.`,
+  '대한민국헌법 제21조·제24조':`제21조 ① 모든 국민은 언론·출판의 자유와 집회·결사의 자유를 가진다.\n② 언론·출판에 대한 허가나 검열과 집회·결사에 대한 허가는 인정되지 아니한다.\n\n제24조 모든 국민은 법률이 정하는 바에 의하여 선거권을 가진다.`,
+  '청원법 제5조·제6조':`제5조 국민은 청원기관에 피해의 구제, 공무원의 위법·부당한 행위에 대한 시정이나 징계의 요구, 법률·명령·조례·규칙 등의 제정·개정 또는 폐지, 공공의 제도 또는 시설의 운영 등에 관하여 청원할 수 있다.\n\n제6조 청원은 청원인의 성명과 주소를 적고 서명한 문서로 하여야 한다.\n※ 각 호와 세부 문구 중 수업에 필요한 부분을 발췌함.`,
+  '주민투표법':`제1조 이 법은 지방자치단체의 주요결정사항에 관한 주민의 직접참여를 보장하기 위하여 주민투표의 대상·발의자·발의요건·투표절차 등에 관한 사항을 규정함으로써 지방자치행정의 민주성과 책임성을 제고하고 주민복리를 증진함을 목적으로 한다.`,
+  '주민조례발안에 관한 법률':`제1조 이 법은 주민의 직접참여를 보장하고 지방자치행정의 민주성과 책임성을 제고하기 위하여 주민이 지방의회에 조례를 제정하거나 개정 또는 폐지할 것을 청구할 수 있도록 함으로써 주민의 자치입법권을 강화하는 것을 목적으로 한다.`,
+  '주민소환에 관한 법률':`제1조 이 법은 지방자치법 제25조에 따른 주민소환의 투표 청구권자·청구요건·절차 및 효력 등에 관하여 규정함으로써 지방자치에 관한 주민의 직접참여를 확대하고 지방행정의 민주성과 책임성을 제고함을 목적으로 한다.`,
+  '행정절차법 제38조·제39조':`제38조 행정청은 공청회를 개최하려는 경우에는 공청회 개최 14일 전까지 제목, 일시 및 장소, 주요 내용, 발표자에 관한 사항 등을 당사자등에게 통지하고 관보·공보·인터넷 홈페이지 또는 일간신문 등에 공고하는 등의 방법으로 널리 알려야 한다.\n\n제39조 ① 공청회의 주재자는 공청회를 공정하게 진행하여야 하며, 공청회의 원활한 진행을 위하여 발표 내용을 제한할 수 있고, 질서유지를 위하여 발언중지 및 퇴장명령 등 행정안전부령으로 정하는 필요한 조치를 할 수 있다.\n※ 열거 사항 일부를 발췌함.`,
+  '대한민국헌법 제11조·제32조·제34조':`제11조 ① 모든 국민은 법 앞에 평등하다. 누구든지 성별·종교 또는 사회적 신분에 의하여 정치적·경제적·사회적·문화적 생활의 모든 영역에 있어서 차별을 받지 아니한다.\n\n제32조 ① 모든 국민은 근로의 권리를 가진다. 국가는 사회적·경제적 방법으로 근로자의 고용의 증진과 적정임금의 보장에 노력하여야 하며, 법률이 정하는 바에 의하여 최저임금제를 시행하여야 한다.\n\n제34조 ① 모든 국민은 인간다운 생활을 할 권리를 가진다.`,
+  '국가인권위원회법 제2조 제3호·제30조':`제2조 제3호 “평등권 침해의 차별행위”란 합리적인 이유 없이 성별, 종교, 장애, 나이, 사회적 신분, 출신지역, 출신국가, 용모 등 신체조건, 혼인 여부, 임신 또는 출산, 가족형태 또는 가족상황, 인종, 피부색, 사상 또는 정치적 의견, 형의 효력이 실효된 전과, 성적 지향, 학력, 병력 등을 이유로 고용·재화와 용역·교육 등의 영역에서 특정한 사람을 우대·배제·구별하거나 불리하게 대우하는 행위를 말한다.\n\n제30조 ① 인권침해나 차별행위를 당한 사람 또는 그 사실을 알고 있는 사람이나 단체는 위원회에 그 내용을 진정할 수 있다.\n※ 열거 사항과 세부 문구 중 수업에 필요한 부분을 발췌·축약 표시함.`,
+  '근로기준법 제17조·제43조·제64조·제69조·제70조':`제17조 ① 사용자는 근로계약을 체결할 때에 근로자에게 임금, 소정근로시간, 휴일, 연차 유급휴가 등의 사항을 명시하여야 한다.\n\n제43조 ① 임금은 통화로 직접 근로자에게 그 전액을 지급하여야 한다.\n② 임금은 매월 1회 이상 일정한 날짜를 정하여 지급하여야 한다.\n\n제64조 ① 15세 미만인 사람은 근로자로 사용하지 못한다. 다만, 대통령령으로 정하는 기준에 따라 고용노동부장관이 발급한 취직인허증을 지닌 사람은 근로자로 사용할 수 있다.\n\n제69조 15세 이상 18세 미만인 사람의 근로시간은 1일에 7시간, 1주에 35시간을 초과하지 못한다. 다만, 당사자 사이의 합의에 따라 1일에 1시간, 1주에 5시간을 한도로 연장할 수 있다.\n\n제70조 ② 사용자는 18세 미만자를 오후 10시부터 오전 6시까지의 시간 및 휴일에 근로시키지 못한다. 다만, 해당 근로자의 동의가 있고 고용노동부장관의 인가를 받으면 그러하지 아니하다.\n※ 일부 단서와 세부 항목을 발췌함.`,
+  '최저임금법 제6조':`제6조 ① 사용자는 최저임금의 적용을 받는 근로자에게 최저임금액 이상의 임금을 지급하여야 한다.\n② 사용자는 이 법에 따른 최저임금을 이유로 종전의 임금수준을 낮추어서는 아니 된다.`,
+  '난민법 제1조·제2조':`제1조 이 법은 난민의 지위에 관한 1951년 협약 및 난민의 지위에 관한 1967년 의정서 등에 따라 난민의 지위와 처우 등에 관한 사항을 정함을 목적으로 한다.\n\n제2조 제1호 “난민”이란 인종, 종교, 국적, 특정 사회집단의 구성원인 신분 또는 정치적 견해를 이유로 박해를 받을 수 있다고 인정할 충분한 근거가 있는 공포로 인하여 국적국의 보호를 받을 수 없거나 보호받기를 원하지 아니하는 외국인 등을 말한다.\n※ 정의의 세부 문구 중 수업에 필요한 부분을 발췌함.`,
+  '국제개발협력기본법 제3조':`제3조 ① 국제개발협력은 개발도상국의 빈곤감소, 여성·아동·장애인·청소년 등 인권취약계층의 인권향상, 성평등 실현, 지속가능한 발전 및 인도주의를 실현하고 협력대상국과의 경제협력관계를 증진하며 국제사회의 평화와 번영을 추구하는 것을 기본정신으로 한다.`,
+  '해외긴급구호에 관한 법률 제3조':`제3조 해외긴급구호는 재난발생국의 재난구호에 관한 법령 및 제도와 재난발생국 정부의 긴급구호에 관한 요청을 존중하여 실시하여야 한다.\n※ 관련 조문의 수업용 발췌문. 원문 전체는 국가법령정보센터에서 확인할 수 있다.`
+};
+
 function lawSearchUrl(name){return 'https://www.law.go.kr/법령/'+encodeURIComponent(name);}
 function addUnitSupplementGuides(){
   Object.entries(unitSupplementGuides).forEach(([page,data])=>{
@@ -2387,9 +2415,9 @@ function addUnitSupplementGuides(){
     data.cards.forEach(([title,body])=>{const card=document.createElement('div');card.className='deep-guide-card';const b=document.createElement('b');b.textContent=title;const p=document.createElement('p');p.textContent=body;card.append(b,p);grid.appendChild(card);});deep.appendChild(grid);
     const law=document.createElement('section');law.className='law-guide';
     const lawTitle=document.createElement('div');lawTitle.className='law-guide-title';lawTitle.innerHTML='<span>법령 연결</span> 교과서 개념과 함께 보는 현행 법령';law.appendChild(lawTitle);
-    const intro=document.createElement('p');intro.className='law-guide-intro';intro.textContent='조문 전체를 외우기보다 이 법령이 어떤 권리와 국가의 의무를 구체화하는지에 초점을 맞춥니다.';law.appendChild(intro);
+    const intro=document.createElement('p');intro.className='law-guide-intro';intro.textContent='법령명을 누르면 관련 조문 원문이 개념어처럼 오른쪽에 나타납니다. 조문 전체를 외우기보다 어떤 권리와 국가의 의무를 구체화하는지에 초점을 맞춥니다.';law.appendChild(intro);
     const list=document.createElement('div');list.className='law-list';
-    data.laws.forEach(([name,summary,lawName])=>{const item=document.createElement('div');item.className='law-item';const top=document.createElement('div');top.className='law-item-top';const title=document.createElement('div');title.className='law-item-name';title.textContent=name;const link=document.createElement('a');link.className='law-item-link';link.href=lawSearchUrl(lawName);link.target='_blank';link.rel='noopener noreferrer';link.textContent='국가법령정보센터에서 원문 보기 ↗';top.append(title,link);const p=document.createElement('p');p.className='law-item-summary';p.textContent=summary;item.append(top,p);list.appendChild(item);});law.appendChild(list);
+    data.laws.forEach(([name,summary,lawName])=>{const item=document.createElement('div');item.className='law-item';const top=document.createElement('div');top.className='law-item-top';const title=document.createElement('button');title.type='button';title.className='term law-term';title.dataset.term=name;title.dataset.info=JSON.stringify({hanja:'관련 조문 원문 · 수업 관련 부분 발췌',chars:'',meaning:lawOriginals[name]||'이 조문의 원문은 아래 국가법령정보센터 링크에서 확인할 수 있습니다.',tip:summary,source:lawSearchUrl(lawName),kind:'law'});title.textContent=name+' · 원문 보기';const link=document.createElement('a');link.className='law-item-link';link.href=lawSearchUrl(lawName);link.target='_blank';link.rel='noopener noreferrer';link.textContent='전체 법령 ↗';top.append(title,link);const p=document.createElement('p');p.className='law-item-summary';p.textContent=summary;item.append(top,p);list.appendChild(item);});law.appendChild(list);
     const note=document.createElement('p');note.className='law-guide-note';note.textContent='※ 조문은 수업용으로 뜻을 풀어 요약했습니다. 실제 사건의 결론은 구체적 사실관계와 최신 법령·판례에 따라 달라질 수 있습니다.';law.appendChild(note);
     nav.before(deep,law);
   });
@@ -2491,7 +2519,7 @@ function conceptItem(btn){
 }
 function mkCard(item,pinned){
   const card=document.createElement('div');
-  card.className='concept-card'+(pinned?' pinned':'');
+  card.className='concept-card'+(pinned?' pinned':'')+(item.info.kind==='law'?' law-card':'');
 
   const head=document.createElement('div');
   head.className='card-head';
@@ -2558,6 +2586,16 @@ function mkCard(item,pinned){
   tip.className='card-tip';
   tip.textContent='수업 설명 팁 · '+(item.info.tip||'');
   card.appendChild(tip);
+
+  if(item.info.source){
+    const source=document.createElement('a');
+    source.className='card-source';
+    source.href=item.info.source;
+    source.target='_blank';
+    source.rel='noopener noreferrer';
+    source.textContent='국가법령정보센터 전체 원문 보기 ↗';
+    card.appendChild(source);
+  }
 
   return card;
 }
