@@ -89,7 +89,8 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryAnalysis:12,fundAllocation:16,policyAgreement:16,conflictAnalysis:12,compromise:8,cooperationRoles:8,completion:3,timeCompliance:4},teacherNote:'첫 점수'},teacherHeaders);
   await post('/api/teacher/score',{sessionId:ready.session.sessionId,score:{countryAnalysis:15,fundAllocation:20,policyAgreement:20,conflictAnalysis:15,compromise:10,cooperationRoles:10,completion:4,timeCompliance:6},teacherNote:'최종 점수'},teacherHeaders);
   await post('/api/start',{studentId:'10102',name:'신규일반'});
-  const dashboard=await get('/api/teacher/submissions',teacherHeaders),saved=dashboard.sessions.find(x=>x.sessionId===ready.session.sessionId),presence=dashboard.presence.find(x=>x.studentId==='10102');
+  const dashboard=await get('/api/teacher/submissions',teacherHeaders),summary=dashboard.sessions.find(x=>x.sessionId===ready.session.sessionId),detail=(await get(`/api/teacher/submission-detail?sessionId=${encodeURIComponent(ready.session.sessionId)}`,teacherHeaders)).session,saved=detail,presence=dashboard.presence.find(x=>x.studentId==='10102');
+  assert.equal(summary.data,undefined,'dashboard list exposed the full answer payload');
   assert.equal(saved.data.finalDeclaration,'보존 답안');
   assert.equal(saved.reopenCount,1);
   assert.equal(saved.scoreHistory.length,2);
