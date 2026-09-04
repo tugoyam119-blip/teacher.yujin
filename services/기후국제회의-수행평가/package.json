@@ -1,8 +1,8 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.9.1",
+  "version": "3.9.2",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.9.1 · 공식 8요소 A/B/C 채점표 검증",
+  "description": "기후국제회의 수행평가 v3.9.2 · 탭 복귀 즉시 수행 시작 동기화",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

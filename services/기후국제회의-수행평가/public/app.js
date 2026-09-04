@@ -1,8 +1,8 @@
-const VERSION='3.9.1';
+const VERSION='3.9.2';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
-let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null, autoSubmitting=false, saveTimer=null, reviewEditStep=null,waitingForClassStart=false,helpState={requested:false,category:'',requestedAt:null};
+let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, timerSyncHandle=null, timerPaused=true, timerPhase='',timerExempt=false, serverOpen=false, serverGateHandle=null,serverGateBusy=false,timerSyncBusy=false, autoSubmitting=false, saveTimer=null, reviewEditStep=null,waitingForClassStart=false,helpState={requested:false,category:'',requestedAt:null};
 let pendingSave=null,saveWorker=null,saveWaiters=[],navigationLocked=false,submitLocked=false;
 const TEACHER_STUDENT_ID='000000';
 
@@ -85,7 +85,7 @@ function initState(){const defaults={assessmentVersion:'45min-v3.6.0',budgetPlan
 
 function isTeacherEntry(){return $('#studentId')?.value.trim()===TEACHER_STUDENT_ID}
 function applyServerGate(open){serverOpen=!!open;const gate=$('#serverGate');if(gate)gate.classList.add('hidden');const start=$('#startBtn');if(start)start.disabled=false;}
-async function syncServerGate(){try{const r=await fetch('/api/server-status',{cache:'no-store'});if(!r.ok)return;const j=await r.json();applyServerGate(!!j.open)}catch{}}
+async function syncServerGate(){if(serverGateBusy)return;serverGateBusy=true;try{const r=await fetch(`/api/server-status?sync=${Date.now()}`,{cache:'no-store'});if(!r.ok)return;const j=await r.json();applyServerGate(!!j.open)}catch{}finally{serverGateBusy=false}}
 async function startAssessment(){
  message('');const studentId=$('#studentId').value.trim(),name=$('#studentName').value.trim();
  try{
@@ -121,7 +121,8 @@ function showPreStartWait(){waitingForClassStart=true;$('#countryAssign').classL
 async function beginAssignedAssessment(){state.countryRevealDone=true;state.preparationComplete=true;const saved=await savePreparation(true);if(!saved)return;if(timerPhase==='running'){waitingForClassStart=false;$('#countryAssign').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();window.scrollTo({top:0,behavior:'smooth'});return}showPreStartWait()}
 function handleClassStartTransition(){if(!waitingForClassStart||timerPhase!=='running')return;waitingForClassStart=false;$('#preStartWait').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();toast('수행이 시작되었습니다. 지금부터 45분입니다.');window.scrollTo({top:0,behavior:'smooth'})}
 function applyTimerState(t={}){timerExempt=!!t.exempt;timerPhase=String(t.phase||'');if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer()}
-async function syncTimer(){if(!session)return;try{const r=await fetch(`/api/timer/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());handleClassStartTransition();if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}}
+async function syncTimer(){if(!session||timerSyncBusy)return;timerSyncBusy=true;try{const r=await fetch(`/api/timer/${session.sessionId}?sync=${Date.now()}`,{cache:'no-store'});if(!r.ok)return;applyTimerState(await r.json());handleClassStartTransition();if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}finally{timerSyncBusy=false}}
+function syncStudentOnResume(){if(document.visibilityState!=='visible')return;if(session)syncTimer();else syncServerGate()}
 function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining===5*60)toast('5분 남았습니다. 최종 판단과 제출을 확인하세요.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,1000);syncTimer()}
 function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60,time=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.textContent=timerPaused?`⏸ 남은 시간 ${time}`:`남은 시간 ${time}`;const phaseMessage={ready:'선생님이 수행을 시작하면 시간이 시작됩니다.',paused:'선생님이 수행을 일시정지했습니다. 답안은 보존됩니다.',finished:'45분 수행시간이 종료되었습니다.'};el.title=timerPaused?(phaseMessage[timerPhase]||'수행평가 시간이 일시정지되어 있습니다.'):'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
 async function autoSubmitOnTime(){if(autoSubmitting||timerExempt)return;autoSubmitting=true;collect();state.timeExpired=true;await save(false);await finalSubmit(true)}
@@ -242,6 +243,10 @@ document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener(
 $('#helpRequestBtn').onclick=openHelpMenu;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('decisionModal');closeModal('glossaryModal');closeModal('countryGuideModal');closeHelpMenu()}});
 window.addEventListener('beforeunload',e=>{if(saveWorker||pendingSave){e.preventDefault();e.returnValue=''}});
+document.addEventListener('visibilitychange',syncStudentOnResume);
+window.addEventListener('focus',syncStudentOnResume);
+window.addEventListener('pageshow',syncStudentOnResume);
+window.addEventListener('online',syncStudentOnResume);
 
 // v2.4.2 · 학생 접속 게이트: 교사가 서버를 열어야 수행 시작/진행 가능
 syncServerGate();clearInterval(serverGateHandle);serverGateHandle=setInterval(syncServerGate,3000);

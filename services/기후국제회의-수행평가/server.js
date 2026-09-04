@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.9.1';
+const APP_VERSION = '3.9.2';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -312,4 +312,8 @@ function measuredHandle(req,res){
 }
 function aiPrompt(s){return `당신은 고등학교 기후위기 국제협력 수행평가의 교사용 가채점 보조자입니다. 아래 공식 채점표만 사용하고 임의 점수는 절대 만들지 마세요. 학생이 질문에 맞게 성실히 수행했다면 A를 적극 부여하세요. 정책 선택 자체, 표현, 맞춤법, 전문용어 부족만으로 감점하지 마세요.\n허용 점수: countryAnalysis 국가 분석 15·12·9, fundAllocation 기후기금 배분 20·16·12, policyAgreement 정책·협약 20·16·12, conflictAnalysis 국가 간 갈등 분석 15·12·9, compromise 절충안 10·8·6, cooperationRoles 국제협력 주체 10·8·6, completion 완성도 4·3·2, timeCompliance 시간 준수 6·4·2·0. 시간 정보가 없거나 정상 제출이면 6점입니다. 각 score는 해당 허용 점수 중 하나만 출력하세요. 총점의 가능 범위는 56~100점입니다. JSON만 출력하세요.\n{"confidence":"high|medium|low","overall":"전체 판단","strength":"잘한 점","improvement":"보완할 점","feedback":"교사용 피드백","reviewFlags":[],"areas":{"countryAnalysis":{"score":15,"reason":"","evidence":[]},"fundAllocation":{"score":20,"reason":"","evidence":[]},"policyAgreement":{"score":20,"reason":"","evidence":[]},"conflictAnalysis":{"score":15,"reason":"","evidence":[]},"compromise":{"score":10,"reason":"","evidence":[]},"cooperationRoles":{"score":10,"reason":"","evidence":[]},"completion":{"score":4,"reason":"","evidence":[]},"timeCompliance":{"score":6,"reason":"","evidence":[]}}}\n학생 답안:\n${JSON.stringify(studentPayloadForAI(s),null,2)}`;}
 
-readSessions().then(removeCurrentTeacherDemoRecords).then(()=>http.createServer(measuredHandle).listen(PORT,()=>console.log(`${PROJECT_NAME} v${APP_VERSION} running on http://localhost:${PORT}`))).catch(e=>{console.error('세션 캐시 초기화 실패',e);process.exitCode=1});
+const server=http.createServer(measuredHandle);
+server.listen(PORT,'0.0.0.0',()=>{
+ console.log(`${PROJECT_NAME} v${APP_VERSION} running on http://0.0.0.0:${PORT}`);
+ setImmediate(()=>readSessions().then(removeCurrentTeacherDemoRecords).catch(e=>console.error('세션 캐시 초기화 실패',e)));
+});

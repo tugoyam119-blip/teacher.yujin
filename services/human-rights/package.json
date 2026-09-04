@@ -1,8 +1,8 @@
 {
   "name": "hr-city-v12-0-global-server-class-session-yujint",
-  "version": "12.3.0",
+  "version": "12.4.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v12.3 - 수행 시작 1초 자동 전환·교사 버튼 안정화",
+  "description": "인권도시 정책결정 수행평가 v12.4 - 탭 복귀 즉시 수행 시작 동기화",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
