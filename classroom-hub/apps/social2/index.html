@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>통합사회2 1단원 교과서 수업도우미 ver12.2</title>
+<title>통합사회2 1단원 교과서 수업도우미 ver12.3</title>
 <style>
 :root{
  --bg:#f6f7fa;--paper:#fff;--ink:#263141;--muted:#738092;--line:#e1e6ed;
@@ -1369,7 +1369,7 @@ body.notes-mode .textbook-view{display:none!important}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.2</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
+<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.3</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
 <section class="progress-panel"><div class="progress-inner sticker-progress-inner"><div class="sticker-progress-top"><div class="progress-title sticker-progress-title">반별 진도 스티커</div><div class="class-tabs" id="class-tabs"><button class="class-tab class-color-1 active" data-class="1" type="button">1반</button><button class="class-tab class-color-2" data-class="2" type="button">2반</button><button class="class-tab class-color-3" data-class="3" type="button">3반</button><button class="class-tab class-color-4" data-class="4" type="button">4반</button><button class="class-tab class-color-5" data-class="5" type="button">5반</button><button class="class-tab class-color-6" data-class="6" type="button">6반</button><button class="class-tab class-color-7" data-class="7" type="button">7반</button></div></div><div class="sticker-progress-bottom"><div class="sticker-status" id="sticker-status">1반 · 진도 스티커 없음</div><div class="sticker-actions"><button class="sticker-action lesson-adjust" id="lesson-minus" title="차시 1 감소" type="button">−</button><div class="lesson-badge" id="lesson-badge">0차시</div><button class="sticker-action lesson-adjust" id="lesson-plus" title="차시 1 증가" type="button">+1</button><button class="sticker-action sticker-place" id="place-sticker" title="진도 표시 모드를 켜고 원하는 제목을 직접 선택" type="button">📌 진도 위치 선택</button><button class="sticker-action sticker-goto" id="goto-sticker" type="button">↗ 진도로 이동</button><button class="sticker-action sticker-clear" id="clear-sticker" title="선택한 반의 진도 스티커와 차시를 모두 초기화" type="button">진도 지우기</button><button class="sticker-action sticker-undo" hidden="" id="undo-clear-sticker" type="button">↶ 되돌리기</button></div></div><div class="sticker-hint">‘진도 위치 선택’을 누른 뒤 원하는 제목의 ‘여기에 붙이기’를 직접 누르면 정확한 위치에 스티커가 붙습니다.</div></div></section><div class="progress-select-banner" hidden="" id="progress-select-banner"><div class="progress-select-text">진도 위치 선택 중 · 원하는 제목의 ‘📌 여기에 붙이기’를 누르세요.</div><button class="cancel-progress-select" id="cancel-progress-select" type="button">취소</button></div>
 <section class="textbook-view" id="textbook-view" aria-label="교과서 수업 화면">
   <div class="textbook-toolbar">
@@ -2240,10 +2240,10 @@ const bookTopics=[
 const topicStarts=[3,7,13,17,21,25];
 const topicShort=['1 인권','2 현대 인권','3 헌법','4 시민 참여','5 국내 문제','6 세계 문제'];
 const bookPageDetails={
-  13:{title:'기본권의 의미와 종류',summary:'기본권을 이름만 외우기보다 국가에 무엇을 요구하는 권리인지 구분합니다.',points:['인간의 존엄과 가치와 행복추구권은 모든 기본권의 출발점이다.','자유권은 부당한 간섭을 막고, 사회권은 인간다운 생활 조건의 마련을 요구한다.','평등권은 합리적 이유 없는 차별을 금지하고, 참정권은 정치 참여를, 청구권은 침해된 권리의 구제를 보장한다.'],concepts:['기본권','자유권','평등권','참정권','사회권','청구권']},
-  14:{title:'인권 보장을 위한 헌법상 제도',summary:'헌법은 기본권 선언과 함께 국가 권력을 통제하고 권리를 실제로 구제하는 제도를 둡니다.',points:['국민 주권·법치주의·권력 분립은 권력 남용을 예방하는 장치이다.','민주적 선거와 복수 정당제는 다양한 국민 의사를 국가 운영에 반영한다.','재판·위헌 법률 심판·헌법 소원은 침해된 기본권을 구제한다.'],concepts:['국민 주권','법치주의','권력 분립','복수 정당제','위헌 법률 심판','헌법 소원']},
-  15:{title:'우리나라의 권력분립 제도',summary:'국회·정부·법원·헌법재판소가 권한을 나누고 서로 견제하여 기본권 침해를 막습니다.',points:['국회는 예산·국정감사·탄핵소추·임명동의 등으로 행정부와 사법부를 견제한다.','대통령과 정부는 법률안 제출과 법률안 재의 요구 등을 통해 국회와 관계를 맺는다.','법원과 헌법재판소는 위헌·위법 심사와 헌법재판으로 입법·행정 권력을 통제한다.'],concepts:['권력 분립','사법부 독립','위헌 법률 심판','헌법재판소']},
-  16:{title:'헌법의 인권 보장 역할 적용하기',summary:'기본권 침해 사례에서 관련 기본권과 적절한 구제 방법을 연결해 봅니다.',points:['어떤 기본권이 제한되었는지 먼저 찾는다.','제한에 법률상 근거와 정당한 목적이 있는지 살핀다.','재판·헌법 소원·국가인권위원회 진정 등 적절한 구제 수단을 구분한다.'],concepts:['기본권','공권력','헌법 소원','국가 인권 위원회']}
+  13:{title:'기본권의 의미와 종류',summary:'기본권을 이름만 외우기보다 국가에 무엇을 요구하는 권리인지 구분합니다.',points:['인간의 존엄과 가치와 행복추구권은 모든 기본권의 출발점이다.','자유권은 부당한 간섭을 막고, 사회권은 인간다운 생활 조건의 마련을 요구한다.','평등권은 합리적 이유 없는 차별을 금지하고, 참정권은 정치 참여를, 청구권은 침해된 권리의 구제를 보장한다.'],concepts:['기본권','인간의 존엄과 가치','행복추구권','평등권','자유권','신체의 자유','참정권','선거권','공무담임권','사회권','교육권','근로권','인간다운 생활권','청구권','청원권','재판청구권','국가배상청구권']},
+  14:{title:'인권 보장을 위한 헌법상 제도',summary:'헌법은 기본권 선언과 함께 국가 권력을 통제하고 권리를 실제로 구제하는 제도를 둡니다.',points:['국민 주권·법치주의·권력 분립은 권력 남용을 예방하는 장치이다.','민주적 선거와 복수 정당제는 다양한 국민 의사를 국가 운영에 반영한다.','재판·위헌 법률 심판·헌법 소원은 침해된 기본권을 구제한다.'],concepts:['국민 주권','법치주의','권력 분립','견제와 균형','민주적 선거 제도','복수 정당제','기본권 구제','위헌 법률 심판','헌법 소원','국가 인권 위원회']},
+  15:{title:'우리나라의 권력분립 제도',summary:'국회·정부·법원·헌법재판소가 권한을 나누고 서로 견제하여 기본권 침해를 막습니다.',points:['국회는 예산·국정감사·탄핵소추·임명동의 등으로 행정부와 사법부를 견제한다.','대통령과 정부는 법률안 제출과 법률안 재의 요구 등을 통해 국회와 관계를 맺는다.','법원과 헌법재판소는 위헌·위법 심사와 헌법재판으로 입법·행정 권력을 통제한다.'],concepts:['권력 분립','입법권','행정권','사법권','견제와 균형','국정감사','탄핵 소추','임명 동의권','법률안 재의 요구권','사법부 독립','명령·규칙 심사권','위헌 법률 심판','헌법재판소','권한쟁의 심판']},
+  16:{title:'헌법의 인권 보장 역할 적용하기',summary:'기본권 침해 사례에서 관련 기본권과 적절한 구제 방법을 연결해 봅니다.',points:['어떤 기본권이 제한되었는지 먼저 찾는다.','제한에 법률상 근거와 정당한 목적이 있는지 살핀다.','재판·헌법 소원·국가인권위원회 진정 등 적절한 구제 수단을 구분한다.'],concepts:['기본권','공권력','기본권 제한','법률 유보','과잉 금지 원칙','본질적 내용 침해 금지','재판청구권','헌법 소원','국가 인권 위원회']}
 };
 const fallbackConcepts={
   '기본권':'헌법이 국민에게 보장하는 기본적인 권리입니다.',
@@ -2254,6 +2254,33 @@ const fallbackConcepts={
   '권력 분립':'국가 권력을 나누고 서로 견제하게 하여 국민의 기본권을 보호하는 원리입니다.',
   '헌법재판소':'헌법 질서를 지키고 기본권 침해 여부 등을 심판하는 헌법기관입니다.',
   '사법부 독립':'법관이 다른 국가기관의 부당한 간섭 없이 헌법과 법률, 양심에 따라 재판하도록 보장하는 원리입니다.',
+  '인간의 존엄과 가치':'모든 인간이 그 자체로 소중한 존재로 존중받아야 한다는 헌법의 핵심 원리입니다.|모든 기본권의 출발점으로 설명하면 좋습니다.',
+  '행복추구권':'개인이 자신의 삶을 자율적으로 설계하고 행복을 추구할 수 있는 권리입니다.|원하는 것을 모두 보장받는 권리가 아니라 자유로운 삶의 선택을 보장하는 권리입니다.',
+  '신체의 자유':'법률과 적법한 절차에 따르지 않고 체포·구속·압수·수색·심문 등을 당하지 않을 자유입니다.|영장주의와 적법절차를 함께 연결해 설명하세요.',
+  '선거권':'국민이 선거를 통해 대표자를 선택하고 국가 의사 형성에 참여할 권리입니다.|참정권의 대표적인 예입니다.',
+  '공무담임권':'국민이 법률이 정한 바에 따라 선거에 출마하거나 공무원이 되어 공무를 담당할 권리입니다.|선거권은 뽑는 권리, 공무담임권은 공직을 맡을 기회로 비교하세요.',
+  '교육권':'능력에 따라 균등하게 교육받을 권리이며 국가는 교육 기회를 보장할 의무를 집니다.|사회권의 사례로 의무교육과 연결할 수 있습니다.',
+  '근로권':'일할 기회와 적정한 근로 조건의 보장을 국가에 요구할 수 있는 권리입니다.|직업을 반드시 배정받는다는 뜻은 아닙니다.',
+  '인간다운 생활권':'모든 국민이 인간다운 생활을 할 수 있도록 국가의 사회보장과 복지를 요구하는 권리입니다.|사회권의 바탕이 되는 헌법 제34조와 연결하세요.',
+  '청원권':'국민이 국가기관에 자신의 의견이나 요구를 문서로 제출할 수 있는 권리입니다.|요구를 제출하고 답변을 받을 권리이지 요구가 반드시 받아들여지는 권리는 아닙니다.',
+  '재판청구권':'독립된 법원에서 법률에 따른 공정한 재판을 받을 수 있는 권리입니다.|권리가 침해되었을 때 사법적 구제를 받을 통로입니다.',
+  '국가배상청구권':'공무원의 위법한 직무행위로 손해를 입은 국민이 국가나 공공단체에 배상을 요구할 권리입니다.|적법한 공권력 행사에 대한 보상인 형사보상과 구별하세요.',
+  '견제와 균형':'나뉜 국가기관들이 서로의 권한 남용을 통제하면서 어느 한쪽에 권력이 집중되지 않게 하는 원리입니다.|권력 분립의 방법은 분할, 목적은 기본권 보호입니다.',
+  '민주적 선거 제도':'국민이 자유롭고 공정한 선거를 통해 대표자를 선출하고 정치적 책임을 묻는 제도입니다.|국민 주권을 실제 국가 운영에 반영하는 참여 장치입니다.',
+  '기본권 구제':'침해된 기본권을 재판·헌법소원·진정 등의 절차를 통해 회복하거나 보호받는 것입니다.|예방 장치와 사후 구제 장치를 구별해 보게 하세요.',
+  '입법권':'국가의 기본 규범인 법률을 제정·개정·폐지하는 권한으로 국회에 속합니다.|국회=입법부라는 연결부터 확인하세요.',
+  '행정권':'법률을 집행하고 국가 정책을 수립·실행하는 권한으로 대통령을 수반으로 하는 정부에 속합니다.|정부가 법 위에서 행동하는 권한은 아닙니다.',
+  '사법권':'구체적인 법적 분쟁에 법을 적용하여 판단하고 재판하는 권한으로 법원에 속합니다.|사법부 독립이 필요한 이유와 연결하세요.',
+  '국정감사':'국회가 정기적으로 국정 전반을 조사·점검하여 정부의 업무를 통제하는 제도입니다.|특정 사안을 조사하는 국정조사와 구별하세요.',
+  '탄핵 소추':'고위 공직자가 직무 중 헌법이나 법률을 위반했을 때 국회가 파면 심판을 요구하는 것입니다.|국회는 소추하고 헌법재판소가 심판합니다.',
+  '임명 동의권':'대통령이 일부 고위 공직자를 임명할 때 국회의 동의를 받도록 한 견제 장치입니다.|대법원장·대법관 등의 임명 과정과 연결하세요.',
+  '법률안 재의 요구권':'대통령이 국회를 통과한 법률안에 이의가 있을 때 국회에 다시 의결해 달라고 요구할 수 있는 권한입니다.|흔히 거부권이라 부르지만 국회의 재의결 가능성은 남습니다.',
+  '명령·규칙 심사권':'재판의 전제가 된 명령·규칙·처분이 헌법이나 법률에 어긋나는지 법원이 심사하는 권한입니다.|법률의 위헌 여부를 다루는 위헌 법률 심판과 구별하세요.',
+  '권한쟁의 심판':'국가기관 또는 지방자치단체 사이에 권한의 유무나 범위를 둘러싼 다툼을 헌법재판소가 해결하는 심판입니다.|권력기관 사이의 경계를 지키는 헌법재판입니다.',
+  '기본권 제한':'국가 안전 보장·질서 유지·공공복리를 위해 필요한 경우 법률로 기본권의 행사를 일정하게 제한하는 것입니다.|기본권은 제한될 수 있지만 마음대로 제한할 수는 없습니다.',
+  '법률 유보':'기본권을 제한하려면 국민의 대표기관인 국회가 만든 법률에 근거해야 한다는 원칙입니다.|행정기관의 자의적인 제한을 막는 첫 번째 기준입니다.',
+  '과잉 금지 원칙':'기본권 제한이 목적에 적합하고 필요 최소한이어야 하며 얻는 공익과 침해되는 사익이 균형을 이루어야 한다는 원칙입니다.|목적의 정당성·수단의 적합성·침해의 최소성·법익의 균형성을 차례로 확인하세요.',
+  '본질적 내용 침해 금지':'기본권을 제한하더라도 그 권리의 핵심 자체를 없애거나 유명무실하게 만들 수 없다는 원칙입니다.|헌법 제37조 제2항의 마지막 안전장치입니다.',
   '주민 참여':'지역의 의사 결정과 문제 해결 과정에 주민이 직접 참여하는 활동입니다.',
   '근로 계약':'근로자가 사용자에게 노동을 제공하고 사용자가 임금을 지급하기로 약속하는 계약입니다.',
   '세계 기아 지수':'영양 결핍과 아동의 성장·사망 관련 지표를 종합해 기아 수준을 나타낸 지수입니다.',
@@ -2277,6 +2304,7 @@ function setViewMode(mode,save=true){
 function openBookConcept(term){
   const source=[...document.querySelectorAll('.term')].find(b=>b.dataset.term===term);
   let info={hanja:'',chars:'',meaning:fallbackConcepts[term]||term+'의 의미를 교과서 본문과 연결해 설명합니다.',tip:'교과서의 사례를 먼저 찾은 뒤 이 개념이 어떻게 적용되는지 학생에게 질문해 보세요.'};
+  if(!source&&fallbackConcepts[term]?.includes('|')){const [meaning,tip]=fallbackConcepts[term].split('|');info={hanja:'',chars:'',meaning,tip};}
   if(source){try{info=JSON.parse(source.dataset.info);}catch(e){}}
   document.getElementById('concept-popover-title').textContent=term;
   document.getElementById('concept-popover-hanja').textContent=[info.hanja,info.chars].filter(Boolean).join(' · ');
