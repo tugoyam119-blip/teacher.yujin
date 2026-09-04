@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no">
-<meta name="application-name" content="45칸 학습 보드게임 v53">
-<meta name="description" content="유진T 클래스룸 업로드용 45칸 학습 보드게임 v53">
+<meta name="application-name" content="45칸 학습 보드게임 v56">
+<meta name="description" content="유진T 클래스룸 업로드용 반응형 45칸 학습 보드게임 v56">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title id="pageTitle">45칸 학습 보드게임 v53</title>
+<title id="pageTitle">45칸 학습 보드게임 v56</title>
 <style>
   :root{
     --bg:#f5f7fb; --card:#fff; --line:#dbe2ee; --text:#1f2937; --muted:#667085;
@@ -46,7 +46,39 @@
   .rank-table{width:100%;border-collapse:collapse}.rank-table th,.rank-table td{padding:9px;border-bottom:1px solid var(--line);text-align:center}.rank-table th{background:#f8fafc}.winner-banner{font-size:25px;font-weight:900;padding:15px;text-align:center;background:#ecfdf3;border-radius:14px;margin-bottom:14px}
   .victory-wheel{background:conic-gradient(from -60deg,#dbeafe 0deg 120deg,#dcfce7 120deg 240deg,#fef3c7 240deg 360deg)!important;box-shadow:0 12px 30px rgba(79,70,229,.24),0 0 0 3px #6366f1!important}.victory-wheel::after{content:'🏆'!important;border-color:#6366f1!important}.victory-result{min-height:54px;font-size:23px;font-weight:950;color:#4338ca;margin-top:4px}.winner-row{background:#ecfdf5!important;outline:2px solid #22c55e}.criterion-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:950;margin:6px 0}
   .notice{font-size:12px;color:#667085;margin-top:6px}.badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#eef2f7;font-size:12px;font-weight:800;margin:2px}
-  @media(max-width:1000px){.game-layout{grid-template-columns:1fr}.grid2,.grid3{grid-template-columns:1fr}.side{order:-1}.board{grid-template-rows:repeat(9,58px)}.app{padding:10px}}
+  @media(max-width:1300px){
+    .game-layout{grid-template-columns:1fr}
+    .side{order:-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .side .status-card{margin:0;min-width:0}
+    .side .status-card:nth-child(2){grid-column:span 2}
+    .side .status-card:last-child{grid-column:span 2}
+    .board-wrap{overflow:hidden;padding:12px;display:flex;justify-content:center;align-items:flex-start}
+    .board{flex:0 0 auto;transform-origin:top center}
+  }
+  @media(max-width:900px){
+    .grid2,.grid3{grid-template-columns:1fr}
+    .side{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .side .status-card:nth-child(2),.side .status-card:last-child{grid-column:span 1}
+    .topbar{align-items:flex-start}.topbar h1{font-size:20px}
+    .app{padding:10px}.panel{padding:13px}
+    .question-overlay,.modal-overlay,.move-overlay{padding:10px}
+    .question-modal,.modal,.move-summary{padding:18px;border-radius:18px;max-height:calc(100dvh - 20px);overflow:auto}
+  }
+  @media(max-width:620px){
+    .side{grid-template-columns:1fr}
+    .topbar{display:block}.top-actions{margin-top:10px}
+    .tabs{gap:6px}.tab{padding:9px 11px}
+    .board-wrap{padding:8px}
+    .status-card{padding:11px}.turn-name{font-size:22px}.timer-big{font-size:25px}
+    .question-modal h2{font-size:23px}.countdown{font-size:34px}
+    .answer-line{flex-direction:column}.answer-line button{width:100%}
+    .choice-actions button{min-width:100%}
+  }
+  @media(max-height:760px) and (min-width:901px){
+    .app{padding-top:8px}.topbar,.tabs{margin-bottom:8px}
+    .side .status-card{padding:10px}.side{gap:8px}
+    .log{height:108px}.turn-name{font-size:22px}.timer-big{font-size:24px}
+  }
 
   .fx-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:120}
   .confetti,.sparkle{position:absolute;pointer-events:none;will-change:transform,opacity}
@@ -227,7 +259,7 @@ a.secondary{display:inline-flex;align-items:center;justify-content:center;border
 <script>
 (() => {
 'use strict';
-const APP_VERSION='v55';
+const APP_VERSION='v56';
 const APP_NAME='45칸 학습 보드게임';
 const AUTO_NOTICE_EXTRA_MS=3000;
 const autoNoticeMs=base=>base+AUTO_NOTICE_EXTRA_MS;
@@ -639,6 +671,18 @@ function boardCoord(pathIndex){
  if(pathIndex<=37)return {row:1,col:38-pathIndex};
  return {row:pathIndex-36,col:1};
 }
+let boardFitFrame=0;
+function fitBoardToViewport(){
+ const wrap=document.querySelector('.board-wrap'),board=$('#board');if(!wrap||!board)return;
+ board.style.zoom='1';
+ const naturalWidth=Math.max(board.scrollWidth,1075),available=Math.max(320,wrap.clientWidth-16);
+ const scale=window.innerWidth<=1300?Math.max(.32,Math.min(1,available/naturalWidth)):1;
+ board.style.zoom=String(scale);
+ wrap.dataset.boardScale=Math.round(scale*100);
+}
+function scheduleBoardFit(){cancelAnimationFrame(boardFitFrame);boardFitFrame=requestAnimationFrame(fitBoardToViewport)}
+window.addEventListener('resize',scheduleBoardFit,{passive:true});
+window.addEventListener('orientationchange',scheduleBoardFit,{passive:true});
 function getStackMembers(teamIdx,tokenIdx){
  const t=G?.teams?.[teamIdx],tok=t?.tokens?.[tokenIdx];if(!tok)return [];
  if(tok.stackId==null)return [tokenIdx];
@@ -653,6 +697,7 @@ function combineStacks(teamIdx,tokenIdx,otherIdxs){const t=G.teams[teamIdx];cons
 function offerStackChoice(teamIdx,tokenIdx){return new Promise(resolve=>{if(!G||G.ended)return resolve(false);const t=G.teams[teamIdx],leader=getStackLeader(teamIdx,tokenIdx),tok=t.tokens[leader];if(!tok||tok.finished||tok.progress<=0)return resolve(false);const current=new Set(getStackMembers(teamIdx,leader));const others=getMovableLeaders(teamIdx).filter(i=>!current.has(i)&&t.tokens[i].progress===tok.progress);if(!others.length)return resolve(false);const here=[...current,...others.flatMap(i=>getStackMembers(teamIdx,i))].sort((a,b)=>a-b);showModal(`<div class="chance-title">🧸 우리 팀 말을 업을까요?</div><div class="chance-desc"><b>${escapeHtml(t.name)}</b>의 말 ${here.map(i=>i+1).join(', ')}번이 같은 칸에 만났습니다.<br><br><b>업기</b>를 선택하면 앞으로 주사위·정답 보너스·찬스 이동 시 한 묶음으로 함께 움직입니다.</div><div class="modal-actions"><button class="secondary" id="stackNo">따로 이동</button><button class="primary" id="stackYes">같이 업기</button></div>`);$('#stackNo').onclick=()=>{closeModal();resolve(false)};$('#stackYes').onclick=()=>{closeModal();combineStacks(teamIdx,leader,others);resolve(true)}})}
 function renderBoard(){const b=$('#board');b.innerHTML='';const center=document.createElement('div');center.className='board-center';const ct=G?.teams?.[G.current];const diceText=G?.diceParts?.length?G.diceParts.map(x=>diceChars[x-1]).join(' '):'⚀';const canRoll=!!G&&G.phase==='roll'&&!G.paused&&!G.ended&&ct&&!ct.tokens.every(x=>x.finished);center.innerHTML=`<div class="board-hub"><div class="hub-kicker">DICE BOARD GAME</div><div class="hub-team">${G?`${escapeHtml(ct?.name||'-')} 차례`:`🎲 학습 보드게임 ${APP_VERSION}`}</div><div class="center-dice" id="centerDiceFace">${diceText}</div><button class="center-roll-btn" id="centerRollBtn" ${canRoll?'':'disabled'}>${G?'🎲 주사위 굴리기':'게임 시작 후 주사위를 굴려주세요'}</button><div class="hub-rule">${G?`<b>이번 판 · ${escapeHtml(G.rule.name)}</b>${escapeHtml(ruleDisplayDesc(G.rule,G.baseQuestionTime))}`:'<b>45칸 · 반시계방향</b>게임을 시작하면 이번 판 규칙이 무작위로 정해집니다.'}</div><div class="hub-mode">${G?`문제: ${G.questionMode==='ordered'?'입력 순서대로':'무작위 · 한 바퀴 중복 없음'}`:'주사위 → 문제 → 이동/찬스'}</div></div>`;b.appendChild(center);const centerRoll=center.querySelector('#centerRollBtn');if(centerRoll)centerRoll.onclick=()=>$('#rollBtn')?.click();const cells=[];for(let pathIndex=0;pathIndex<BOARD_SPACES;pathIndex++){const c=document.createElement('div');c.className='cell';const pos=boardCoord(pathIndex);c.style.gridRow=pos.row;c.style.gridColumn=pos.col;const special=G?.specials[pathIndex];if(pathIndex===0)c.classList.add('start');if(pathIndex===ISLAND_POS)c.classList.add('island');else if(special)c.classList.add(special.type);let title=pathIndex===0?'START / GOAL':pathIndex===ISLAND_POS?'🏝️ 무인도':String(pathIndex);let evt='';if(pathIndex===0)evt='🏁 출발 · 귀환';else if(pathIndex===ISLAND_POS)evt='<div class="island-art"><span class="island-sos">SOS</span></div><div class="island-caption">탈출 미션</div>';else if(special?.type==='forward')evt=`⬆ +${special.n}`;else if(special?.type==='backward')evt=`⬇ -${special.n}`;else if(special?.type==='chance')evt='🎁 찬스';if(pathIndex===ISLAND_POS)c.innerHTML=`<div class="island-shell"><div><div class="cell-num">${title}</div><div class="cell-event">${evt}</div></div><div class="tokens"></div></div>`;else c.innerHTML=`<div><div class="cell-num">${title}</div><div class="cell-event">${evt}</div></div><div class="tokens"></div>`;cells[pathIndex]=c;b.appendChild(c)}
  if(G){G.teams.forEach((t,ti)=>t.tokens.forEach((tok,ki)=>{if(!tok.finished&&!isStackLeader(ti,ki))return;const members=tok.finished?[ki]:getStackMembers(ti,ki);const c=cells[tok.finished?0:tok.pos];const z=document.createElement('div');const capturedNow=!!G.captureHighlight?.some(h=>h.team===ti&&h.members.some(m=>members.includes(m))),currentNow=ti===G.current&&!tok.finished&&members.includes(getStackLeader(G.current,G.selectedToken));z.className='token'+(tok.finished?' finished':'')+(members.length>1?' stacked':'')+(capturedNow?' capture-target':'')+(currentNow?' current-turn':'');if(currentNow)c.classList.add('current-space');z.style.setProperty('--tokenColor',t.color);z.title=`${t.name} 말 ${members.map(i=>i+1).join('+')} ${t.symbol}${tok.finished?' (귀환 완료)':tok.islandTrapped?' (무인도에 갇힘)':''}`;z.innerHTML=`<span class="shape">${t.symbol}</span><span class="badge">${members[0]+1}</span>${members.length>1?`<span class="stack-badge">${members.map(i=>i+1).join('+')}</span>`:''}${tok.finished?'<span class="done">✓</span>':''}`;c.querySelector('.tokens').appendChild(z)}))}
+ scheduleBoardFit();
 }
 function renderTurn(){if(!G)return;updateSoundToggleUI();const t=G.teams[G.current];$('#turnName').textContent=`${t.symbol} ${t.name}`;$('#turnName').style.color=t.color;const buffs=[];if(t.skip)buffs.push(`쉬기 ${t.skip}회`);if(t.doubleDiceNext)buffs.push('다음 주사위 2개');if(t.diceBonusNext)buffs.push(`다음 주사위 +${t.diceBonusNext}`);if(t.diceFloorNext)buffs.push(`다음 주사위 최소 ${t.diceFloorNext}`);if(t.dicePenaltyNext)buffs.push(`다음 주사위 -${t.dicePenaltyNext}`);if(t.diceCeilNext)buffs.push(`다음 주사위 최대 ${t.diceCeilNext}`);if(t.questionTimeDeltaNext)buffs.push(`다음 문제 ${t.questionTimeDeltaNext>0?'+':''}${t.questionTimeDeltaNext}초`);if(t.blockBonus)buffs.push('다음 정답 보너스 봉인');if(t.blockChance)buffs.push('다음 정답 찬스 봉인');if(t.shieldPenalty)buffs.push('오답 페널티 방어');if(t.shieldBack)buffs.push('뒤로 이동 방어');if(t.doubleBonus)buffs.push('다음 정답 보너스×2');$('#turnBuffs').textContent=buffs.length?buffs.join(' · '):'특수 효과 없음';const box=$('#tokenPicks');box.innerHTML='';if(G.phase==='island')box.innerHTML='<span class="notice">🏝️ 무인도 탈출 미션 진행 중</span>';getMovableLeaders(G.current).forEach(i=>{const tok=t.tokens[i],members=getStackMembers(G.current,i);const btn=document.createElement('button');btn.className='token-pick'+(getStackLeader(G.current,G.selectedToken)===i?' active':'');btn.disabled=G.phase!=='roll';btn.textContent=`${t.symbol} 말 ${members.map(k=>k+1).join('+')}${members.length>1?' (업기)':''}`;btn.onclick=()=>{G.selectedToken=i;renderTurn()};box.appendChild(btn)});const rollDisabled=G.phase!=='roll'||G.paused||G.ended||t.tokens.every(x=>x.finished);$('#rollBtn').disabled=rollDisabled;const cr=$('#centerRollBtn');if(cr)cr.disabled=rollDisabled;$('#gameRuleText').innerHTML=`<b>${G.rule.name}</b><div class="notice">${ruleDisplayDesc(G.rule,G.baseQuestionTime)}</div>`;const inv=$('#teamInventory');if(inv)inv.innerHTML=t.items.length?t.items.map(x=>`<span class="inventory-item">${escapeHtml(x.icon)} ${escapeHtml(x.name)}</span>`).join(''):'<span class="notice">보유한 아이템이 없습니다.</span>';const use=$('#useItemBtn');if(use)use.disabled=G.phase!=='roll'||!t.items.length}
 function renderStats(){if(!G)return;const box=$('#teamStats');box.innerHTML='';G.teams.forEach(t=>{const fin=t.tokens.filter(x=>x.finished).length;const d=document.createElement('div');d.className='stat-row';d.innerHTML=`<span style="font-weight:900;color:${t.color}">${escapeHtml(t.symbol)} ${escapeHtml(t.name)}</span><span>⭕ ${t.correct} · ❌ ${t.wrong} · 🎁 ${t.chances} · 🏁 ${fin}/${t.tokens.length}</span>`;box.appendChild(d)})}
