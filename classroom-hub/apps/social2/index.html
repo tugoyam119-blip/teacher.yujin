@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>통합사회2 1단원 교과서 수업도우미 ver12.3</title>
+<title>통합사회2 1단원 교과서 수업도우미 ver12.4</title>
 <style>
 :root{
  --bg:#f6f7fa;--paper:#fff;--ink:#263141;--muted:#738092;--line:#e1e6ed;
@@ -1364,12 +1364,17 @@ body.notes-mode .textbook-view{display:none!important}
 .textbook-stage{display:grid;grid-template-columns:minmax(0,1fr) 330px 300px;gap:14px;align-items:start}.textbook-paper{min-height:70vh;display:flex;align-items:flex-start;justify-content:center;padding:12px;border:1px solid #dfe4eb;border-radius:16px;background:#e9edf2;box-shadow:var(--shadow)}
 .textbook-paper img{display:block;width:auto;max-width:100%;height:auto;max-height:calc(100vh - 205px);object-fit:contain;background:#fff;box-shadow:0 4px 18px rgba(33,43,57,.16)}.textbook-paper.zoomed img{width:100%;max-height:none}
 .lesson-side{position:sticky;top:calc(var(--progress-panel-height,105px) + 66px);display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - var(--progress-panel-height,105px) - 80px);overflow:auto}.lesson-card{padding:14px;border:1px solid #dce2ea;border-radius:14px;background:#fff;box-shadow:0 6px 18px rgba(42,52,70,.06)}.lesson-card h2{margin:0 0 6px;font-size:16px;line-height:1.4;color:#344963}.lesson-card p{margin:0;font-size:12px;line-height:1.65;color:#667487}.lesson-card h3{margin:0 0 8px;font-size:12px;color:#526176}.lesson-points{margin:10px 0 0;padding-left:20px}.lesson-points li{margin:7px 0;color:#3f4f64;font-size:12.5px;line-height:1.6}.page-concepts{display:flex;flex-wrap:wrap;gap:6px}.page-concept{border:1px solid #efb5ce;border-radius:999px;background:#fff5f9;color:#a72f66;padding:5px 8px;font-size:10.5px;font-weight:900}.page-concept:hover{background:#ffe7f1}.book-hint{font-size:10px!important;color:#8b95a3!important;margin-top:9px!important}.concept-popover{position:sticky;top:calc(var(--progress-panel-height,105px) + 66px);z-index:50;width:100%;min-height:210px;padding:15px;border:1px solid #cfd9e6;border-top:5px solid var(--pink);border-radius:14px;background:#fff;box-shadow:0 10px 28px rgba(31,43,59,.12)}.concept-popover[hidden]{display:block;visibility:hidden}.concept-popover-head{display:flex;align-items:start;gap:8px}.concept-popover h3{flex:1;margin:0;color:#a72f66;font-size:19px}.concept-popover-close{border:0;background:#eef1f5;border-radius:7px;width:29px;height:29px;font-weight:900}.concept-popover-hanja{margin-top:4px;color:#b24a78;font-size:11px;font-weight:900}.concept-popover-meaning{margin-top:9px;color:#344153;font-size:13px;line-height:1.65}.concept-popover-tip{margin-top:8px;padding:8px;border-radius:8px;background:var(--yellowSoft);color:#6e5317;font-size:11px;line-height:1.55}
+.deep-guide{margin:22px 0;padding:18px;border:1px solid #d8e2ee;border-radius:16px;background:linear-gradient(145deg,#fbfdff,#f7f9fc);box-shadow:0 7px 20px rgba(43,57,76,.06)}
+.deep-guide-title{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:#304862;font-size:18px;font-weight:950}.deep-guide-title span{padding:4px 8px;border-radius:999px;background:#dfeeff;color:#28629b;font-size:11px}
+.deep-guide-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.deep-guide-card{padding:13px;border:1px solid #e1e7ef;border-radius:11px;background:#fff}.deep-guide-card b{display:block;margin-bottom:7px;color:#3b506a;font-size:13px}.deep-guide-card p{margin:0!important;color:#586779!important;font-size:12.5px!important;line-height:1.75!important}
+.law-guide{margin:22px 0;padding:18px;border:1px solid #d9dfc9;border-left:6px solid #7d9855;border-radius:14px;background:#fbfcf6}.law-guide-title{display:flex;align-items:center;gap:8px;margin-bottom:5px;color:#42582f;font-size:18px;font-weight:950}.law-guide-title span{padding:4px 8px;border-radius:999px;background:#e8f0da;color:#536d31;font-size:11px}.law-guide-intro{margin:0 0 12px!important;color:#69745d!important;font-size:12px!important}.law-list{display:grid;gap:8px}.law-item{padding:11px 12px;border:1px solid #e1e6d7;border-radius:10px;background:#fff}.law-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.law-item-name{color:#3d5330;font-size:13px;font-weight:950}.law-item-link{flex:none;color:#27608d;font-size:10.5px;font-weight:900;text-decoration:none}.law-item-link:hover{text-decoration:underline}.law-item-summary{margin:5px 0 0!important;color:#596552!important;font-size:12px!important;line-height:1.65!important}.law-guide-note{margin:10px 0 0!important;color:#7b6b3d!important;font-size:10.5px!important;line-height:1.6!important}
+@media(max-width:900px){.deep-guide-grid{grid-template-columns:1fr}.law-item-top{display:block}.law-item-link{display:inline-block;margin-top:5px}}
 @media(max-width:1150px){.textbook-stage{grid-template-columns:minmax(0,1fr) 300px}.concept-popover{position:fixed;right:14px;bottom:14px;top:auto;width:min(320px,calc(100vw - 28px))}.concept-popover[hidden]{display:none}.textbook-toolbar{grid-template-columns:1fr auto}.book-topic{grid-column:1/-1;grid-row:2}.book-actions{justify-self:end}.textbook-paper img{max-height:none}}
 @media(max-width:680px){.topbar{display:flex;flex-wrap:wrap}.brand{flex:1 1 100%}.view-switch{margin-left:0;width:100%}.view-switch button{flex:1}.textbook-toolbar{position:relative;top:auto;grid-template-columns:1fr}.book-nav,.book-actions{justify-content:center}.book-actions{justify-self:stretch}.book-actions button{flex:1}.textbook-stage{grid-template-columns:1fr}.lesson-side{position:relative;top:auto}.textbook-paper{padding:5px}.textbook-paper img{width:100%}}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.3</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
+<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.4</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
 <section class="progress-panel"><div class="progress-inner sticker-progress-inner"><div class="sticker-progress-top"><div class="progress-title sticker-progress-title">반별 진도 스티커</div><div class="class-tabs" id="class-tabs"><button class="class-tab class-color-1 active" data-class="1" type="button">1반</button><button class="class-tab class-color-2" data-class="2" type="button">2반</button><button class="class-tab class-color-3" data-class="3" type="button">3반</button><button class="class-tab class-color-4" data-class="4" type="button">4반</button><button class="class-tab class-color-5" data-class="5" type="button">5반</button><button class="class-tab class-color-6" data-class="6" type="button">6반</button><button class="class-tab class-color-7" data-class="7" type="button">7반</button></div></div><div class="sticker-progress-bottom"><div class="sticker-status" id="sticker-status">1반 · 진도 스티커 없음</div><div class="sticker-actions"><button class="sticker-action lesson-adjust" id="lesson-minus" title="차시 1 감소" type="button">−</button><div class="lesson-badge" id="lesson-badge">0차시</div><button class="sticker-action lesson-adjust" id="lesson-plus" title="차시 1 증가" type="button">+1</button><button class="sticker-action sticker-place" id="place-sticker" title="진도 표시 모드를 켜고 원하는 제목을 직접 선택" type="button">📌 진도 위치 선택</button><button class="sticker-action sticker-goto" id="goto-sticker" type="button">↗ 진도로 이동</button><button class="sticker-action sticker-clear" id="clear-sticker" title="선택한 반의 진도 스티커와 차시를 모두 초기화" type="button">진도 지우기</button><button class="sticker-action sticker-undo" hidden="" id="undo-clear-sticker" type="button">↶ 되돌리기</button></div></div><div class="sticker-hint">‘진도 위치 선택’을 누른 뒤 원하는 제목의 ‘여기에 붙이기’를 직접 누르면 정확한 위치에 스티커가 붙습니다.</div></div></section><div class="progress-select-banner" hidden="" id="progress-select-banner"><div class="progress-select-text">진도 위치 선택 중 · 원하는 제목의 ‘📌 여기에 붙이기’를 누르세요.</div><button class="cancel-progress-select" id="cancel-progress-select" type="button">취소</button></div>
 <section class="textbook-view" id="textbook-view" aria-label="교과서 수업 화면">
   <div class="textbook-toolbar">
@@ -2287,6 +2292,109 @@ const fallbackConcepts={
   '성 격차 지수':'경제·교육·건강·정치 영역에서 성별 격차가 어느 정도인지 보여 주는 지수입니다.',
   '국제 연대':'국경을 넘어 공동 문제를 해결하기 위해 국가와 시민이 함께 협력하는 것입니다.'
 };
+
+/* 소단원별 구체적 설명과 현행 법령 연결 */
+const unitSupplementGuides={
+  1:{
+    cards:[
+      ['핵심을 한 문장으로','인권은 국가가 선물처럼 주는 혜택이 아니라 모든 사람이 인간이라는 이유만으로 가지는 권리이다. 국가는 이를 존중할 뿐 아니라 침해를 막고 실제로 누릴 수 있는 조건도 마련해야 한다.'],
+      ['변화 과정을 읽는 방법','시민 혁명은 자유와 평등을, 보통 선거 확대는 참정권을, 산업화 이후의 사회 문제는 사회권을, 세계 대전의 참상은 국제적 인권 보장을 발전시켰다. 새 권리가 앞선 권리를 없앤 것이 아니라 보완하며 범위를 넓혔다.'],
+      ['사례에 적용하기','어떤 사람이 배제되었는지, 인간다운 삶에 어떤 손상이 생겼는지, 국가가 간섭을 멈춰야 하는지 또는 적극적으로 보호해야 하는지를 차례로 묻는다.']
+    ],
+    laws:[
+      ['대한민국헌법 제10조','인간의 존엄과 가치, 행복추구권을 보장하고 국가가 기본적 인권을 확인하고 보장할 의무가 있음을 밝힌다.','대한민국헌법'],
+      ['대한민국헌법 제11조','모든 국민의 법 앞의 평등과 합리적 이유 없는 차별 금지의 헌법적 근거이다.','대한민국헌법'],
+      ['대한민국헌법 제6조 제1항','헌법에 따라 체결·공포된 조약과 일반적으로 승인된 국제법규가 국내법과 같은 효력을 가짐을 규정한다. 국제 인권 규범과 국내 인권 보장의 연결점이다.','대한민국헌법']
+    ]
+  },
+  2:{
+    cards:[
+      ['현대 인권이 확장되는 이유','도시화·정보화·기후 위기처럼 과거에 예상하기 어려웠던 위험이 생기면 존엄한 삶을 지키기 위한 권리의 구체적인 내용도 발전한다. 다만 새로운 요구가 곧바로 독립된 헌법상 기본권으로 확정되는 것은 아니다.'],
+      ['권리끼리 충돌할 때','안전권과 이동의 자유, 잊힐 권리와 표현의 자유처럼 두 권리가 충돌할 수 있다. 어느 한쪽을 무조건 없애기보다 목적, 피해의 크기, 덜 제한적인 대안, 공익과 사익의 균형을 살펴야 한다.'],
+      ['생활 사례로 구분하기','주거권은 집의 소유가 아니라 인간다운 주거 조건, 안전권은 모든 위험의 제거가 아니라 합리적인 예방과 대응, 문화권은 단순 관람뿐 아니라 문화 참여와 정체성 존중까지 포함한다.']
+    ],
+    laws:[
+      ['주거기본법 제2조·제3조','국민의 주거권과 국가·지방자치단체의 주거정책 기본 원칙을 제시한다.','주거기본법'],
+      ['재난 및 안전관리 기본법 제4조','국가와 지방자치단체가 재난으로부터 국민의 생명·신체·재산을 보호할 책무가 있음을 규정한다.','재난 및 안전관리 기본법'],
+      ['대한민국헌법 제35조','건강하고 쾌적한 환경에서 생활할 권리와 국가·국민의 환경 보전 의무를 규정한다.','대한민국헌법'],
+      ['문화기본법 제4조','문화 표현과 활동에서 차별받지 않고 자유롭게 문화를 창조하고 참여하며 향유할 권리를 밝힌다.','문화기본법']
+    ]
+  },
+  3:{
+    cards:[
+      ['헌법이 최고법이라는 뜻','헌법은 국가기관을 만들고 권한의 범위를 정하는 동시에 국가 권력이 넘지 말아야 할 기본권의 경계를 세운다. 헌법에 어긋나는 법률이나 공권력 행사는 통제 대상이 된다.'],
+      ['기본권 제한 판단 순서','① 제한된 기본권을 찾고 ② 법률상 근거가 있는지 ③ 국가안전보장·질서유지·공공복리라는 목적과 관련되는지 ④ 필요한 범위를 넘지 않는지 ⑤ 권리의 본질을 없애지 않는지 확인한다.'],
+      ['구제 기관 선택하기','사인 사이의 분쟁은 법원 재판, 법률 자체의 위헌성은 위헌법률심판, 공권력에 의한 기본권 침해는 요건에 따라 헌법소원, 인권침해·차별은 국가인권위원회 진정을 검토한다. 각 절차의 대상과 효과는 서로 다르다.']
+    ],
+    laws:[
+      ['대한민국헌법 제10조·제37조','국가의 기본권 보장 의무, 열거되지 않은 권리의 보호, 기본권 제한의 목적·형식·한계를 함께 규정한다.','대한민국헌법'],
+      ['대한민국헌법 제40조·제66조·제101조','입법권은 국회, 행정권은 대통령을 수반으로 하는 정부, 사법권은 법원에 속한다는 권력분립의 기본 구조를 정한다.','대한민국헌법'],
+      ['헌법재판소법 제41조·제68조','위헌법률심판 제청과 헌법소원심판 청구의 법률상 근거와 기본 절차를 규정한다.','헌법재판소법'],
+      ['국가인권위원회법 제30조','국가기관 등의 업무와 관련된 인권침해 및 법인·단체·사인에 의한 차별행위에 대해 진정할 수 있는 범위를 정한다.','국가인권위원회법']
+    ]
+  },
+  4:{
+    cards:[
+      ['시민 참여가 필요한 이유','대의 민주주의에서는 대표자가 결정을 맡지만 선거 사이에도 시민의 의견과 감시가 계속되어야 한다. 참여는 정책의 현실성과 정당성을 높이고 권력의 책임성을 강화한다.'],
+      ['참여 방법 고르기','정보 제공이 필요하면 민원·청원, 공개 토론이 필요하면 공청회, 지역의 직접 결정은 주민투표, 조례 제안은 주민조례발안, 선출직 책임은 주민소환처럼 목적과 법적 효과에 맞는 방법을 선택한다.'],
+      ['시민불복종의 엄격한 조건','시민불복종은 단순한 법 위반이나 개인적 불만이 아니다. 중대한 부정의를 바로잡으려는 공익성, 공개성, 비폭력성, 최후수단성, 처벌 감수 등이 요구되며 민주적 법질서 전체를 부정해서는 안 된다.']
+    ],
+    laws:[
+      ['대한민국헌법 제21조·제24조','표현·집회·결사의 자유와 선거권은 시민이 의견을 형성하고 정치에 참여하는 기본권의 핵심 근거이다.','대한민국헌법'],
+      ['청원법 제5조·제6조','국민이 공공기관에 청원을 제출할 수 있는 사항과 청원 방법의 기본 틀을 규정한다.','청원법'],
+      ['주민투표법','지방자치단체의 주요 결정 사항을 주민투표에 부치는 대상과 청구·투표 절차를 규정한다.','주민투표법'],
+      ['주민조례발안에 관한 법률','주민이 지방의회에 조례의 제정·개정·폐지를 청구하는 요건과 절차를 규정한다.','주민조례발안에 관한 법률'],
+      ['주민소환에 관한 법률','주민이 지방자치단체장이나 지방의회의원에 대해 소환투표를 청구하는 요건과 절차를 규정한다.','주민소환에 관한 법률'],
+      ['행정절차법 제38조·제39조','행정청이 공청회를 개최하고 국민이 의견을 제시할 수 있도록 하는 절차를 규정한다.','행정절차법']
+    ]
+  },
+  5:{
+    cards:[
+      ['소수자는 숫자만으로 정하지 않는다','사회적 소수자는 반드시 인구가 적은 집단을 뜻하지 않는다. 신체·문화·사회적 특성 때문에 지속적으로 불리한 대우를 받고 정치·경제·사회적 영향력이 약한지가 중요하다.'],
+      ['차별 판단의 핵심','서로 다르게 대우했다는 사실만으로 모두 차별은 아니다. 비교할 집단이 비슷한 상황인지, 다른 대우에 합리적 이유가 있는지, 특정 집단에 과도한 불이익을 주는지 살핀다. 형식적으로 같은 기준도 장애인 편의 미제공처럼 실질적 불평등을 만들 수 있다.'],
+      ['청소년도 근로자이다','청소년이 임금을 목적으로 사용자의 지휘·감독 아래 일하면 근로기준법의 보호를 받는다. 근로계약서, 최저임금, 임금 지급, 근로시간과 야간·휴일근로 제한을 각각 확인해야 한다.']
+    ],
+    laws:[
+      ['대한민국헌법 제11조·제32조·제34조','평등권, 근로의 권리, 인간다운 생활과 사회적 약자 보호에 관한 국가의 책임을 규정한다.','대한민국헌법'],
+      ['국가인권위원회법 제2조 제3호·제30조','평등권 침해의 차별행위가 되는 사유와 영역, 인권위 진정 대상을 구체적으로 정한다.','국가인권위원회법'],
+      ['근로기준법 제17조·제43조·제64조·제69조·제70조','근로조건의 서면 명시, 임금 지급, 최저 취업 연령, 연소자의 근로시간과 야간·휴일근로 제한을 규정한다.','근로기준법'],
+      ['최저임금법 제6조','사용자가 근로자에게 최저임금액 이상의 임금을 지급해야 한다는 의무를 규정한다.','최저임금법']
+    ]
+  },
+  6:{
+    cards:[
+      ['세계 인권 문제의 구조','빈곤·난민·성차별·아동 노동은 개인의 선택만으로 설명하기 어렵다. 분쟁, 식민 지배의 유산, 불공정한 경제 구조, 취약한 제도, 기후 재난이 서로 결합하므로 개인 지원과 제도 개선이 함께 필요하다.'],
+      ['국가와 국제사회의 역할','각 국가는 자국 내 인권 보장의 일차적 책임을 지며 국제사회는 조약, 국제기구, 개발협력, 긴급구호, 시민단체 활동을 통해 이를 지원하고 감시한다. 지원 과정에서도 당사자의 참여와 존엄을 존중해야 한다.'],
+      ['자료를 비판적으로 읽기','인권 지수는 복잡한 현실을 비교하기 쉽게 만들지만 지표 선정과 자료의 한계가 있다. 순위만 보지 말고 어떤 항목을 측정했는지, 누가 자료를 만들었는지, 빠진 집단은 없는지 확인한다.']
+    ],
+    laws:[
+      ['대한민국헌법 제6조 제1항','헌법에 따라 체결·공포된 조약과 일반적으로 승인된 국제법규의 국내적 효력을 인정한다.','대한민국헌법'],
+      ['난민법 제1조·제2조','난민의 지위와 처우에 관한 기본 사항 및 난민의 정의를 규정하여 국제적 보호의 국내 절차를 마련한다.','난민법'],
+      ['국제개발협력기본법 제3조','개발도상국의 빈곤 감소, 여성·아동·장애인·청소년의 인권 향상 등 국제개발협력의 기본 정신과 목표를 제시한다.','국제개발협력기본법'],
+      ['해외긴급구호에 관한 법률 제3조','대규모 해외 재난이 발생한 경우 생명 구조와 재난 복구를 지원하는 긴급구호의 기본 원칙을 규정한다.','해외긴급구호에 관한 법률']
+    ]
+  }
+};
+
+function lawSearchUrl(name){return 'https://www.law.go.kr/법령/'+encodeURIComponent(name);}
+function addUnitSupplementGuides(){
+  Object.entries(unitSupplementGuides).forEach(([page,data])=>{
+    const nav=document.querySelector('#page-'+page+' .page-nav');
+    if(!nav)return;
+    const deep=document.createElement('section');deep.className='deep-guide';
+    const deepTitle=document.createElement('div');deepTitle.className='deep-guide-title';deepTitle.innerHTML='<span>보충 설명</span> 개념을 더 구체적으로 이해하기';deep.appendChild(deepTitle);
+    const grid=document.createElement('div');grid.className='deep-guide-grid';
+    data.cards.forEach(([title,body])=>{const card=document.createElement('div');card.className='deep-guide-card';const b=document.createElement('b');b.textContent=title;const p=document.createElement('p');p.textContent=body;card.append(b,p);grid.appendChild(card);});deep.appendChild(grid);
+    const law=document.createElement('section');law.className='law-guide';
+    const lawTitle=document.createElement('div');lawTitle.className='law-guide-title';lawTitle.innerHTML='<span>법령 연결</span> 교과서 개념과 함께 보는 현행 법령';law.appendChild(lawTitle);
+    const intro=document.createElement('p');intro.className='law-guide-intro';intro.textContent='조문 전체를 외우기보다 이 법령이 어떤 권리와 국가의 의무를 구체화하는지에 초점을 맞춥니다.';law.appendChild(intro);
+    const list=document.createElement('div');list.className='law-list';
+    data.laws.forEach(([name,summary,lawName])=>{const item=document.createElement('div');item.className='law-item';const top=document.createElement('div');top.className='law-item-top';const title=document.createElement('div');title.className='law-item-name';title.textContent=name;const link=document.createElement('a');link.className='law-item-link';link.href=lawSearchUrl(lawName);link.target='_blank';link.rel='noopener noreferrer';link.textContent='국가법령정보센터에서 원문 보기 ↗';top.append(title,link);const p=document.createElement('p');p.className='law-item-summary';p.textContent=summary;item.append(top,p);list.appendChild(item);});law.appendChild(list);
+    const note=document.createElement('p');note.className='law-guide-note';note.textContent='※ 조문은 수업용으로 뜻을 풀어 요약했습니다. 실제 사건의 결론은 구체적 사실관계와 최신 법령·판례에 따라 달라질 수 있습니다.';law.appendChild(note);
+    nav.before(deep,law);
+  });
+}
+addUnitSupplementGuides();
 
 function topicForBookPage(page){return bookTopics.find(t=>page>=t.from&&page<=t.to)||bookTopics[0];}
 function paddedBookPage(page){return String(page).padStart(2,'0');}
