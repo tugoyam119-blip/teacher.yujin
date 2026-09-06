@@ -52,6 +52,7 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
     <p>프로그램은 바로 열고, 새 버전은 아래에 파일만 넣어 적용하세요. 백업·GitHub 반영·Railway 재배포·복구 기록은 뒤에서 자동으로 처리합니다.</p>
     <div class="main-actions">
       <button class="btnx secondary" id="newProgramBtn">＋ 새 프로그램 등록</button>
+      <button class="btnx secondary" id="announcementBtn">📅 학년별 일정 공지</button>
       <button class="btnx ghost" id="globalToolsBtn">관리 도구</button>
     </div>
   </section>
@@ -104,9 +105,23 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
       <div class="field-simple"><label>아이콘</label><input id="setIcon"></div>
       <div class="field-simple"><label>정렬</label><input id="setOrder" type="number"></div>
       <div class="field-simple full"><label>설명</label><textarea id="setDesc" rows="3"></textarea></div>
+      <div class="field-simple"><label>학년도 (선택)</label><input id="setSchoolYear" placeholder="예: 2026학년도"></div>
+      <div class="field-simple"><label>예상 진행 기간 (선택)</label><input id="setSchedulePeriod" placeholder="예: 9월 3주차 또는 9월 14일~18일"></div>
       <div class="field-simple"><label>공개 상태</label><select id="setPublished"><option value="true">공개</option><option value="false">숨김</option></select></div>
     </div>
     <div class="modal-actions" style="justify-content:flex-end;margin-top:14px"><button class="btnx primary">저장</button></div>
+  </form>
+</div></div>
+
+<!-- 학년별 수행평가 공지 -->
+<div class="modal-bg" id="announcementModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2>학년별 수행평가 일정 공지</h2><p>내용이 있는 학년만 학생 화면에 표시됩니다.</p></div><button class="btnx ghost small" data-close="announcementModal">닫기</button></div>
+  <form id="announcementForm">
+    <div class="field-simple"><label>공지 제목</label><input id="announcementTitle" value="학년별 수행평가 일정 안내"></div>
+    <div class="field-simple"><label>1학년</label><textarea id="announcementGrade1" rows="3" placeholder="일정이 정해지면 입력하세요."></textarea></div>
+    <div class="field-simple"><label>2학년</label><textarea id="announcementGrade2" rows="3" placeholder="일정이 정해지면 입력하세요."></textarea></div>
+    <div class="field-simple"><label>3학년</label><textarea id="announcementGrade3" rows="3" placeholder="일정이 정해지면 입력하세요."></textarea></div>
+    <div class="modal-actions" style="justify-content:flex-end;margin-top:14px"><button class="btnx primary">공지 저장</button></div>
   </form>
 </div></div>
 
@@ -175,7 +190,7 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 </div></div>
 
 <script>
-let acts=[],system={},historyData={core_histories:[],activities:[]};
+let acts=[],system={},announcements={title:'학년별 수행평가 일정 안내',grades:[]},historyData={core_histories:[],activities:[]};
 const PIN_KEY='yujint_teacher_pins_v1';
 function loadPins(){try{const x=JSON.parse(localStorage.getItem(PIN_KEY)||'[]');return new Set(Array.isArray(x)?x.map(String):[])}catch{return new Set()}}
 let pinnedIds=loadPins();
@@ -196,7 +211,7 @@ async function load(){
     api('/api/admin/system'),
     api('/api/admin/chatgpt/history').catch(()=>({core_histories:[],activities:[]}))
   ]);
-  acts=a.activities||[];system=s||{};historyData=h||{core_histories:[],activities:[]};
+  acts=a.activities||[];announcements=a.announcements||{title:'학년별 수행평가 일정 안내',grades:[]};system=s||{};historyData=h||{core_histories:[],activities:[]};
   const validIds=new Set(acts.map(x=>String(x.id)));const beforePins=pinnedIds.size;pinnedIds=new Set([...pinnedIds].filter(id=>validIds.has(String(id))));if(pinnedIds.size!==beforePins)savePins();
   renderPrograms();renderTargets();renderSystem();
 }
@@ -217,7 +232,7 @@ function renderPrograms(){
     const safe=latestSafe(a),pinned=pinnedIds.has(String(a.id));
     return `<article class="program-card ${pinned?'pinned':''}">
       <div class="program-title"><div class="program-icon">${esc(a.icon)}</div><div class="program-info"><h3>${esc(a.name)}</h3><div class="meta">${esc(a.subject)} · ${esc(a.kind)} · ${esc(ver(a))}</div></div><button class="pin-btn ${pinned?'active':''}" onclick="togglePin('${esc(a.id)}')" aria-pressed="${pinned?'true':'false'}" title="${pinned?'고정 해제':'위에 고정'}">${pinned?'★ 고정됨':'☆ 고정'}</button></div>
-      <div class="desc">${esc(a.description||'')}</div>
+      <div class="desc">${esc(a.description||'')}${(a.school_year||a.schedule_period)?`<div style="margin-top:7px;font-weight:800;color:#3f5878">📅 ${esc([a.school_year,a.schedule_period].filter(Boolean).join(' · '))}</div>`:''}</div>
       <div class="statusline"><span>${a.published?'공개':'숨김'} · ${a.deploy_type==='server'?'서버형':a.deploy_type==='static'?'내부 웹앱':'외부 링크'}</span><span class="status ${deployClass(a)}">${esc(deployText(a))}</span></div>
       <div class="card-actions">
         <a class="btnx primary small" href="/open/${encodeURIComponent(a.slug)}" target="_blank">열기</a>
@@ -246,7 +261,7 @@ window.openManage=id=>{
 window.checkAct=async id=>{try{const j=await api('/api/admin/check/'+encodeURIComponent(id));alert(j.ok?`연결 정상 · HTTP ${j.status}`:`연결 확인 실패\\n${j.detail||j.status||''}`)}catch(e){alert(e.message)}}
 window.provisionAct=async id=>{const a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}' 서버를 처음 만들고 연결할까요?`))return;try{await api('/api/admin/deploy/'+encodeURIComponent(id)+'/provision',{method:'POST'});alert('서버 연결을 요청했습니다.');closeModal('manageModal');await load()}catch(e){alert(e.message)}}
 window.syncInfraAct=async id=>{const a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}' 서버 설정을 동기화할까요?`))return;try{const j=await api('/api/admin/deploy/'+encodeURIComponent(id)+'/sync-infra',{method:'POST'});alert(j.infrastructure?.warning?'동기화 완료 · 확인 필요\\n'+j.infrastructure.warning:'서버 설정 동기화 완료');await load()}catch(e){alert(e.message)}}
-window.settingsAct=id=>{const a=acts.find(x=>x.id===id);if(!a)return;$('#setId').value=id;$('#setName').value=a.name;$('#setSubject').value=a.subject;$('#setKind').value=a.kind;$('#setAudience').value=a.audience;$('#setIcon').value=a.icon;$('#setOrder').value=a.sort_order;$('#setDesc').value=a.description||'';$('#setPublished').value=String(a.published);closeModal('manageModal');openModal('settingsModal')}
+window.settingsAct=id=>{const a=acts.find(x=>x.id===id);if(!a)return;$('#setId').value=id;$('#setName').value=a.name;$('#setSubject').value=a.subject;$('#setKind').value=a.kind;$('#setAudience').value=a.audience;$('#setIcon').value=a.icon;$('#setOrder').value=a.sort_order;$('#setDesc').value=a.description||'';$('#setSchoolYear').value=a.school_year||'';$('#setSchedulePeriod').value=a.schedule_period||'';$('#setPublished').value=String(a.published);closeModal('manageModal');openModal('settingsModal')}
 window.historyAct=id=>{const a=acts.find(x=>x.id===id);if(!a)return;$('#historyName').textContent=a.name+' 버전 기록';const h=[...(a.histories||[])].reverse();$('#historyList').innerHTML=h.length?h.map(x=>{const safe=x.id&&x.restore_commit_sha;return `<div class="tool-row"><div><b>${esc(x.action||'기록')} · ${esc('v'+(x.version||''))}</b><p>${esc(new Date(x.at).toLocaleString('ko-KR'))} · ${esc((x.commit_sha||'').slice(0,10))}${x.note?' · '+esc(x.note):''}</p></div>${safe?`<button class="btnx danger small" onclick="restoreHistory('${esc(id)}','${esc(x.id)}')">이 작업 직전으로 복구</button>`:'<span class="hint">과거 기록 · 읽기 전용</span>'}</div>`}).join(''):'<div class="empty">버전 기록이 없습니다.</div>';closeModal('manageModal');openModal('historyModal')}
 window.restoreHistory=async(id,hid)=>{if(!confirm('이 작업 직전의 실제 파일로 복구할까요?'))return;try{await api('/api/admin/chatgpt/app-rollback/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('복구와 재배포를 요청했습니다.');closeModal('historyModal');await load()}catch(e){alert(e.message)}}
 function renderSystem(){
@@ -261,7 +276,9 @@ $('#safePatchForm').onsubmit=async e=>{
   catch(err){r.className='result bad';r.innerHTML=`<b>적용하지 않았습니다.</b><br>${esc(err.message)}`}
   finally{b.disabled=false}
 }
-$('#settingsForm').onsubmit=async e=>{e.preventDefault();const id=$('#setId').value;const body={name:$('#setName').value,subject:$('#setSubject').value,kind:$('#setKind').value,audience:$('#setAudience').value,icon:$('#setIcon').value,sort_order:Number($('#setOrder').value),description:$('#setDesc').value,published:$('#setPublished').value==='true'};try{await api('/api/admin/activities/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});closeModal('settingsModal');await load()}catch(e){alert(e.message)}}
+$('#settingsForm').onsubmit=async e=>{e.preventDefault();const id=$('#setId').value;const body={name:$('#setName').value,subject:$('#setSubject').value,kind:$('#setKind').value,audience:$('#setAudience').value,icon:$('#setIcon').value,sort_order:Number($('#setOrder').value),description:$('#setDesc').value,school_year:$('#setSchoolYear').value,schedule_period:$('#setSchedulePeriod').value,published:$('#setPublished').value==='true'};try{await api('/api/admin/activities/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});closeModal('settingsModal');await load()}catch(e){alert(e.message)}}
+$('#announcementBtn').onclick=()=>{const byGrade=g=>announcements.grades?.find(x=>String(x.grade)===String(g))?.content||'';$('#announcementTitle').value=announcements.title||'학년별 수행평가 일정 안내';$('#announcementGrade1').value=byGrade(1);$('#announcementGrade2').value=byGrade(2);$('#announcementGrade3').value=byGrade(3);openModal('announcementModal')}
+$('#announcementForm').onsubmit=async e=>{e.preventDefault();const body={title:$('#announcementTitle').value,grades:[1,2,3].map(grade=>({grade:String(grade),content:$('#announcementGrade'+grade).value}))};try{const j=await api('/api/admin/announcements',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});announcements=j.announcements||body;closeModal('announcementModal');alert('학생 화면 공지를 저장했습니다.')}catch(err){alert(err.message)}}
 $('#newForm').onsubmit=async e=>{e.preventDefault();const b=$('#newSubmit');b.disabled=true;try{const j=await api('/api/admin/deploy/new',{method:'POST',body:new FormData(e.target)});alert(j.result?.railway?.warning?'등록 완료 · 일부 연결 확인 필요':'새 프로그램 등록 완료');closeModal('newModal');e.target.reset();await load()}catch(err){alert(err.message)}finally{b.disabled=false}}
 $('#externalForm').onsubmit=async e=>{e.preventDefault();const b=Object.fromEntries(new FormData(e.target).entries());b.published=true;try{await api('/api/admin/activities/external',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});closeModal('externalModal');e.target.reset();await load()}catch(err){alert(err.message)}}
 $('#newProgramBtn').onclick=()=>{document.querySelector('#newForm').reset();$('#nSlug').dataset.touched='';openModal('newModal')}

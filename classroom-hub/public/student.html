@@ -1,1 +1,42 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no"><title>유진T 클래스룸 · 학생</title><link rel="stylesheet" href="/assets/app.css"></head><body><div class="shell"><header class="topbar"><div class="brand"><div class="brandmark">YT</div><div><h1>유진T 클래스룸</h1><p>학생 활동</p></div></div></header><section class="hero"><div class="eyebrow">STUDENT</div><h2>오늘의 활동을 선택하세요</h2><p>선생님이 공개한 학습활동만 표시됩니다. 수행평가는 선생님의 안내에 따라 시작하세요.</p></section><div id="cards" class="student-grid"></div><div class="footer">유진T 클래스룸</div></div><script>const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));fetch('/api/public/activities').then(r=>r.json()).then(j=>{document.querySelector('#cards').innerHTML=(j.activities||[]).map(a=>`<a class="card student-card" href="${esc(a.stable_url)}"><div class="icon">${esc(a.icon)}</div><div><h3>${esc(a.name)}</h3><p>${esc(a.subject)} · ${esc(a.kind)}</p></div></a>`).join('')||'<div class="notice">현재 공개된 학생 활동이 없습니다.</div>';});</script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <title>유진T 클래스룸 · 학생</title>
+  <link rel="stylesheet" href="/assets/app.css">
+  <link rel="stylesheet" href="/assets/student.css">
+</head>
+<body>
+<div class="shell">
+  <header class="topbar"><div class="brand"><div class="brandmark">YT</div><div><h1>유진T 클래스룸</h1><p>학생 활동</p></div></div></header>
+  <section class="hero"><div class="eyebrow">STUDENT</div><h2>오늘의 활동을 선택하세요</h2><p>선생님이 공개한 학습활동만 표시됩니다. 수행평가는 선생님의 안내에 따라 시작하세요.</p></section>
+  <section id="scheduleSection" class="schedule-section" hidden>
+    <div class="student-section-head"><div><span class="section-kicker">NOTICE</span><h2 id="scheduleTitle">학년별 수행평가 일정 안내</h2></div><p>자신의 학년 일정을 확인하세요.</p></div>
+    <div id="scheduleNotices" class="grade-notice-grid"></div>
+  </section>
+  <section>
+    <div class="student-section-head"><div><span class="section-kicker">ACTIVITIES</span><h2>수행평가 및 학습활동</h2></div></div>
+    <div id="cards" class="student-grid"></div>
+  </section>
+  <div class="footer">유진T 클래스룸</div>
+</div>
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+fetch('/api/public/activities').then(r=>{if(!r.ok)throw Error('불러오기 실패');return r.json()}).then(j=>{
+  const n=j.announcements||{},rows=(n.grades||[]).filter(x=>String(x.content||'').trim());
+  if(rows.length){
+    document.querySelector('#scheduleSection').hidden=false;
+    document.querySelector('#scheduleTitle').textContent=n.title||'학년별 수행평가 일정 안내';
+    document.querySelector('#scheduleNotices').innerHTML=rows.map(x=>`<article class="grade-notice"><div class="grade-badge">${esc(x.grade)}학년</div><p>${esc(x.content).replace(/\n/g,'<br>')}</p></article>`).join('');
+  }
+  document.querySelector('#cards').innerHTML=(j.activities||[]).map(a=>{
+    const schedule=[a.school_year,a.schedule_period].filter(Boolean).join(' · ');
+    return `<a class="card student-card" href="${esc(a.stable_url)}"><div class="icon">${esc(a.icon)}</div><div class="student-card-body"><h3>${esc(a.name)}</h3><p>${esc(a.subject)} · ${esc(a.kind)}</p>${schedule?`<div class="activity-schedule"><span>일정</span>${esc(schedule)}</div>`:''}</div><span class="student-card-arrow" aria-hidden="true">→</span></a>`;
+  }).join('')||'<div class="notice">현재 공개된 학생 활동이 없습니다.</div>';
+}).catch(()=>{document.querySelector('#cards').innerHTML='<div class="notice warn">활동 정보를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.</div>'});
+</script>
+</body>
+</html>

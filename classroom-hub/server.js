@@ -81,6 +81,8 @@ function normalizeActivity(x = {}, existing = {}) {
     subject: text(x.subject ?? existing.subject ?? '공통', 80),
     audience: ['teacher', 'student', 'both'].includes(x.audience) ? x.audience : (existing.audience || 'both'),
     description: text(x.description ?? existing.description, 500),
+    school_year: text(x.school_year ?? existing.school_year, 20),
+    schedule_period: text(x.schedule_period ?? existing.schedule_period, 120),
     icon: text(x.icon ?? existing.icon ?? '🔗', 8),
     published: x.published === undefined ? !!existing.published : bool(x.published),
     sort_order: Number.isFinite(Number(x.sort_order)) ? Number(x.sort_order) : Number(existing.sort_order || 100),
@@ -103,8 +105,20 @@ function normalizeActivity(x = {}, existing = {}) {
   };
 }
 
+function normalizeAnnouncements(input = {}) {
+  const source = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
+  return {
+    title: text(source.title || '학년별 수행평가 일정 안내', 80),
+    updated_at: text(source.updated_at, 40),
+    grades: ['1', '2', '3'].map(grade => ({
+      grade,
+      content: text(source.grades?.find?.(x => String(x?.grade) === grade)?.content, 1000)
+    }))
+  };
+}
+
 function blankState() {
-  return { schema_version: 3, activities: defaultRegistry().map(x => normalizeActivity(x, x)), created_at: iso(), updated_at: iso() };
+  return { schema_version: 4, activities: defaultRegistry().map(x => normalizeActivity(x, x)), announcements: normalizeAnnouncements(), created_at: iso(), updated_at: iso() };
 }
 
 async function initStore() {
@@ -642,7 +656,7 @@ function detectPatchTarget(info, activities, forcedId = '') {
 }
 
 function publicActivity(a) {
-  return { id: a.id, name: a.name, slug: a.slug, kind: a.kind, subject: a.subject, audience: a.audience, description: a.description, icon: a.icon, stable_url: stableUrl(a), deploy_status: a.deploy_status };
+  return { id: a.id, name: a.name, slug: a.slug, kind: a.kind, subject: a.subject, audience: a.audience, description: a.description, icon: a.icon, school_year: a.school_year || '', schedule_period: a.schedule_period || '', stable_url: stableUrl(a), deploy_status: a.deploy_status };
 }
 
 // static assets and embedded apps
@@ -652,7 +666,7 @@ app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHe
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
 app.get('/student', (req, res) => res.sendFile(path.join(PUBLIC, 'student.html')));
-app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.4.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
+app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.5.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
 
 app.post('/api/auth/login', (req, res) => {
   if (String(req.body.pin || '') !== TEACHER_PIN) return res.status(401).json({ error: '교사 PIN이 올바르지 않습니다.' });
@@ -663,7 +677,7 @@ app.post('/api/auth/logout', (req, res) => { res.setHeader('Set-Cookie', session
 app.get('/api/auth/me', (req, res) => res.json({ teacher: isTeacher(req) }));
 
 app.get('/api/public/activities', async (req, res, next) => {
-  try { const s = await getState(); res.json({ activities: s.activities.filter(a => a.published && (a.audience === 'student' || a.audience === 'both')).sort((a,b)=>a.sort_order-b.sort_order).map(publicActivity) }); } catch (e) { next(e); }
+  try { const s = await getState(); res.json({ activities: s.activities.filter(a => a.published && (a.audience === 'student' || a.audience === 'both')).sort((a,b)=>a.sort_order-b.sort_order).map(publicActivity), announcements: normalizeAnnouncements(s.announcements) }); } catch (e) { next(e); }
 });
 
 app.get('/go/:slug', async (req, res, next) => {
@@ -689,7 +703,17 @@ app.get('/api/admin/system', needTeacher, async (req, res) => {
   });
 });
 
-app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) { const ds=String(st.status).toLowerCase(); /* Railway는 새 배포가 생기면 이전 deployment를 REMOVED로 표시할 수 있다. 오래된 deployment id 때문에 프로그램 자체가 제거된 것처럼 보이지 않도록 REMOVED는 무시한다. */ if (ds !== 'removed') a.deploy_status = ds; } } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), updated_at: s.updated_at }); } catch(e){next(e);} });
+app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) { const ds=String(st.status).toLowerCase(); /* Railway는 새 배포가 생기면 이전 deployment를 REMOVED로 표시할 수 있다. 오래된 deployment id 때문에 프로그램 자체가 제거된 것처럼 보이지 않도록 REMOVED는 무시한다. */ if (ds !== 'removed') a.deploy_status = ds; } } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), announcements: normalizeAnnouncements(s.announcements), updated_at: s.updated_at }); } catch(e){next(e);} });
+
+app.put('/api/admin/announcements', needTeacher, async (req, res, next) => {
+  try {
+    const s = await getState();
+    s.schema_version = Math.max(4, Number(s.schema_version || 0));
+    s.announcements = normalizeAnnouncements({ ...req.body, updated_at: iso() });
+    await saveState(s);
+    res.json({ ok: true, announcements: s.announcements });
+  } catch (e) { next(e); }
+});
 
 app.post('/api/admin/activities/external', needTeacher, async (req, res, next) => {
   try {
@@ -1326,4 +1350,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || '서버 오류가 발생했습니다.' });
 });
 
-initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v3 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });
+initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v4.5 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });
