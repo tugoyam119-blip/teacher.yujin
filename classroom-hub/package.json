@@ -1,8 +1,8 @@
 {
   "name": "yujint-classroom-v4",
-  "version": "4.7.1",
+  "version": "4.8.0",
   "private": true,
-  "description": "유진T 클래스룸 v4.7 - 반응형 수행평가 일정 선택",
+  "description": "유진T 클래스룸 v4.8 - 수행평가 실시일·시간 공지",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
