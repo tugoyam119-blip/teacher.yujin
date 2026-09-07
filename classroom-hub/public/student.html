@@ -26,12 +26,14 @@
 <script>
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const formatDate=(date,weekday)=>{const p=String(date||'').split('-');return p.length===3?`${Number(p[1])}월 ${Number(p[2])}일(${esc(weekday)})`:''};
+const groupSchedules=rows=>Object.values(rows.reduce((groups,row)=>{const key=row.activity_id||`${row.assessment_name}|${row.subject_name}`;(groups[key]||(groups[key]={assessment_name:row.assessment_name,subject_name:row.subject_name,rows:[]})).rows.push(row);return groups},{}));
+const renderScheduleGroups=rows=>groupSchedules(rows).map(group=>`<article class="schedule-group"><div class="schedule-group-head"><div><strong>${esc(group.assessment_name)}</strong><small>${esc(group.subject_name)}</small></div><span>${group.rows.length}개 학급</span></div><div class="schedule-table"><div class="schedule-table-head"><span>학급</span><span>담당 교사</span><span>차시</span><span>실시일</span><span>시간</span></div>${group.rows.map(x=>`<div class="schedule-class-row"><b>${esc(x.grade)}-${esc(x.class_no)}</b><span>${esc(x.teacher_name)} 선생님</span><span>${esc(x.session)}차시</span><span>${formatDate(x.date,x.weekday)} · ${esc(x.period)}교시</span><span>${esc(x.time_range)}</span></div>`).join('')}</div></article>`).join('');
 fetch('/api/public/activities').then(r=>{if(!r.ok)throw Error('불러오기 실패');return r.json()}).then(j=>{
   const n=j.announcements||{},schedules=n.schedules||[],legacyRows=(n.grades||[]).filter(x=>String(x.content||'').trim());
   if(schedules.length||legacyRows.length){
     document.querySelector('#scheduleSection').hidden=false;
     document.querySelector('#scheduleTitle').textContent=n.title||'학년별 수행평가 일정 안내';
-    document.querySelector('#scheduleNotices').innerHTML=schedules.length?schedules.map(x=>`<article class="schedule-row"><div class="schedule-name"><strong>${esc(x.assessment_name)}</strong><small>${esc(x.subject_name)}</small><span>${esc(x.session)}차시</span><em>${esc(x.teacher_name)} 선생님</em></div><div class="schedule-when"><b>${formatDate(x.date,x.weekday)}</b><span>${esc(x.time_range)}</span></div><div class="schedule-place"><span>${esc(x.grade)}학년</span><span>${esc(x.class_no)}반</span><span>${esc(x.weekday)}요일</span><span>${esc(x.period)}교시</span></div></article>`).join(''):legacyRows.map(x=>`<article class="grade-notice"><div class="grade-badge">${esc(x.grade)}학년</div><p>${esc(x.content).replace(/\n/g,'<br>')}</p></article>`).join('');
+    document.querySelector('#scheduleNotices').innerHTML=schedules.length?renderScheduleGroups(schedules):legacyRows.map(x=>`<article class="grade-notice"><div class="grade-badge">${esc(x.grade)}학년</div><p>${esc(x.content).replace(/\n/g,'<br>')}</p></article>`).join('');
   }
   document.querySelector('#cards').innerHTML=(j.activities||[]).map(a=>{
     const schedule=[a.school_year,a.schedule_period].filter(Boolean).join(' · ');
