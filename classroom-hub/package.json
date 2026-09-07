@@ -1,6 +1,6 @@
 {
   "name": "yujint-classroom-v4",
-  "version": "4.7.0",
+  "version": "4.7.1",
   "private": true,
   "description": "유진T 클래스룸 v4.7 - 반응형 수행평가 일정 선택",
   "scripts": {
