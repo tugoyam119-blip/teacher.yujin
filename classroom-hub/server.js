@@ -215,9 +215,11 @@ async function ensureClimateConferenceSchedules() {
   const rows = [
     { teacher_name: '김형자', date: '2026-09-22', time_range: '10:50~11:40', class_no: 1, weekday: '화', period: 3 },
     { teacher_name: '박인영', date: '2026-09-23', time_range: '10:50~11:40', class_no: 3, weekday: '수', period: 3 },
-    { teacher_name: '박인영', date: '2026-09-24', time_range: '14:50~15:40', class_no: 2, weekday: '목', period: 6 }
+    { teacher_name: '박인영', date: '2026-10-01', time_range: '14:50~15:40', class_no: 2, weekday: '목', period: 6 }
   ];
   let changed = false;
+  const postponed = announcements.schedules.find(x => x.activity_id === activity.id && x.date === '2026-09-24' && x.grade === 3 && x.class_no === 2);
+  if (postponed) { postponed.date = '2026-10-01'; changed = true; }
   for (const row of rows) {
     const exists = announcements.schedules.find(x => x.activity_id === activity.id && x.date === row.date && x.grade === 3 && x.class_no === row.class_no);
     if (exists) { if (exists.subject_name !== '국제 관계와 국제 기구') { exists.subject_name = '국제 관계와 국제 기구'; changed = true; } continue; }
@@ -702,7 +704,7 @@ app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHe
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
 app.get('/student', (req, res) => res.sendFile(path.join(PUBLIC, 'student.html')));
-app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.8.3', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
+app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.8.4', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
 
 app.post('/api/auth/login', (req, res) => {
   if (String(req.body.pin || '') !== TEACHER_PIN) return res.status(401).json({ error: '교사 PIN이 올바르지 않습니다.' });
@@ -1386,4 +1388,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || '서버 오류가 발생했습니다.' });
 });
 
-initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v4.8.3 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });
+initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v4.8.4 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });
