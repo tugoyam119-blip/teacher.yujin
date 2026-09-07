@@ -149,7 +149,7 @@
     "name": "인권도시 정책결정 수행평가",
     "slug": "human-rights",
     "subject": "통합사회2",
-    "version": 125,
+    "version": 126,
     "audience": "teacher",
     "histories": [
       {
@@ -241,14 +241,16 @@
     "manage_url": "https://yt-human-rights-production.up.railway.app/manage",
     "sort_order": 40,
     "target_url": "https://yt-human-rights-production.up.railway.app",
-    "updated_at": "2026-09-04T05:20:09.045Z",
+    "updated_at": "2026-09-07T04:56:54.327Z",
     "deploy_type": "server",
     "description": "새봄시 지하철 엘리베이터 우선 설치 정책결정 수행평가",
+    "school_year": "",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "version_label": "v12.4",
+    "version_label": "v12.5",
     "railway_domain": "yt-human-rights-production.up.railway.app",
     "last_commit_sha": "3bbfbab5773af6841f4a885e7fe261b55164d967",
+    "schedule_period": "",
     "railway_volume_id": "fc365fe1-c2b9-4a2f-96e5-136ed109f3d7",
     "last_deployment_id": "a185b862-93d3-43e4-9bdd-f1dfc64bb30a",
     "railway_service_id": "9a8f46db-efd3-43da-9911-2e7a24fef0f5"
@@ -298,28 +300,13 @@
   },
   {
     "id": "65f76e71-29bb-49dc-9447-4e057f30da83",
+    "icon": "🔗",
+    "kind": "수행평가",
     "name": "기후국제회의 수행평가",
     "slug": "기후국제회의-수행평가",
-    "kind": "수행평가",
     "subject": "공통",
-    "audience": "teacher",
-    "description": "",
-    "icon": "🔗",
-    "published": true,
-    "sort_order": 100,
-    "deploy_type": "server",
-    "repo_path": "services/기후국제회의-수행평가",
-    "target_url": "https://yt-production-66c8.up.railway.app",
-    "manage_url": "https://yt-production-66c8.up.railway.app/manage",
-    "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9",
-    "railway_domain": "yt-production-66c8.up.railway.app",
-    "railway_volume_id": "df544c61-ff97-4c01-8c5d-eba02bc0e475",
     "version": 393,
-    "version_label": "v3.9.2",
-    "update_mode": "chatgpt",
-    "deploy_status": "deploying",
-    "last_commit_sha": "4126bf3791b9b30727d88330ab09aa2e2e172465",
-    "last_deployment_id": "0edb40c7-22b8-41ae-802a-3d7e20a24011",
+    "audience": "teacher",
     "histories": [
       {
         "at": "2026-08-23T10:22:14.240Z",
@@ -389,15 +376,30 @@
         "commit_sha": "7f640c8f10ed0cdb8c27e91339ec56f46ca7f229"
       },
       {
-        "version": 393,
-        "action": "auto-patch",
-        "commit_sha": "4126bf3791b9b30727d88330ab09aa2e2e172465",
         "at": "2026-09-04T05:20:56.137Z",
-        "note": "자동 연결: 교사가 직접 대상 선택"
+        "note": "자동 연결: 교사가 직접 대상 선택",
+        "action": "auto-patch",
+        "version": 393,
+        "commit_sha": "4126bf3791b9b30727d88330ab09aa2e2e172465"
       }
     ],
+    "published": true,
+    "repo_path": "services/기후국제회의-수행평가",
     "created_at": "2026-08-23T10:00:15.387Z",
-    "updated_at": "2026-09-04T05:20:56.137Z"
+    "manage_url": "https://yt-production-66c8.up.railway.app/manage",
+    "sort_order": 100,
+    "target_url": "https://yt-production-66c8.up.railway.app",
+    "updated_at": "2026-09-04T05:20:56.137Z",
+    "deploy_type": "server",
+    "description": "",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "version_label": "v3.9.2",
+    "railway_domain": "yt-production-66c8.up.railway.app",
+    "last_commit_sha": "9d8567f9846cf0ce43f6cc68c8d440ed71d29186",
+    "railway_volume_id": "df544c61-ff97-4c01-8c5d-eba02bc0e475",
+    "last_deployment_id": "0edb40c7-22b8-41ae-802a-3d7e20a24011",
+    "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9"
   },
   {
     "id": "335893b2-c0c1-40bd-b96e-ac07babc6d55",
@@ -467,5 +469,43 @@
     "railway_volume_id": "",
     "last_deployment_id": "b8c1cdbe-fa03-45a6-a746-6da6ef2fed81",
     "railway_service_id": "e583f37b-f207-4f49-8f40-ced8cc350171"
+  },
+  {
+    "id": "69a393fd-e553-4f31-a4ff-30c3bb5a61c3",
+    "name": "통합사회2 3단원 수업자료",
+    "slug": "통합사회2-3단원-수업자료",
+    "kind": "수업자료",
+    "subject": "통합사회2",
+    "audience": "teacher",
+    "description": "",
+    "school_year": "",
+    "schedule_period": "",
+    "icon": "🔗",
+    "published": true,
+    "sort_order": 100,
+    "deploy_type": "static",
+    "repo_path": "classroom-hub/apps/통합사회2-3단원-수업자료",
+    "target_url": "/apps/통합사회2-3단원-수업자료/",
+    "manage_url": "",
+    "railway_service_id": "",
+    "railway_domain": "",
+    "railway_volume_id": "",
+    "version": 1,
+    "version_label": "v1",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "last_commit_sha": "b27417e8b8cc5c7071000d62452cf8b9b7ac6302",
+    "last_deployment_id": "12ca6a87-931b-4cb8-8386-c268ddc96e1b",
+    "histories": [
+      {
+        "version": 1,
+        "action": "create",
+        "commit_sha": "b27417e8b8cc5c7071000d62452cf8b9b7ac6302",
+        "at": "2026-09-07T11:28:35.552Z",
+        "note": ""
+      }
+    ],
+    "created_at": "2026-09-07T11:28:35.552Z",
+    "updated_at": "2026-09-07T11:28:35.552Z"
   }
 ]
