@@ -109,7 +109,9 @@ function normalizeAnnouncements(input = {}) {
   const source = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
   const schedules = Array.isArray(source.schedules) ? source.schedules.slice(0, 100).map(row => ({
     id: text(row?.id || crypto.randomUUID(), 100),
+    activity_id: text(row?.activity_id, 100),
     assessment_name: text(row?.assessment_name, 120),
+    subject_name: text(row?.subject_name, 80),
     teacher_name: text(row?.teacher_name, 80),
     session: Math.min(20, Math.max(1, Number(row?.session || 1))),
     grade: Math.min(3, Math.max(1, Number(row?.grade || 1))),
@@ -677,7 +679,7 @@ app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHe
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
 app.get('/student', (req, res) => res.sendFile(path.join(PUBLIC, 'student.html')));
-app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.6.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
+app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.7.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
 
 app.post('/api/auth/login', (req, res) => {
   if (String(req.body.pin || '') !== TEACHER_PIN) return res.status(401).json({ error: '교사 PIN이 올바르지 않습니다.' });
@@ -1361,4 +1363,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || '서버 오류가 발생했습니다.' });
 });
 
-initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v4.6 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });
+initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v4.7 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });

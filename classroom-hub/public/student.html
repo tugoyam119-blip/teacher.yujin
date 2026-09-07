@@ -30,7 +30,7 @@ fetch('/api/public/activities').then(r=>{if(!r.ok)throw Error('불러오기 실�
   if(schedules.length||legacyRows.length){
     document.querySelector('#scheduleSection').hidden=false;
     document.querySelector('#scheduleTitle').textContent=n.title||'학년별 수행평가 일정 안내';
-    document.querySelector('#scheduleNotices').innerHTML=schedules.length?schedules.map(x=>`<article class="schedule-row"><div class="schedule-name"><strong>${esc(x.assessment_name)}</strong><span>${esc(x.session)}차시</span><em>${esc(x.teacher_name)} 선생님</em></div><div class="schedule-place"><span>${esc(x.grade)}학년</span><span>${esc(x.class_no)}반</span><span>${esc(x.weekday)}요일</span><span>${esc(x.period)}교시</span></div></article>`).join(''):legacyRows.map(x=>`<article class="grade-notice"><div class="grade-badge">${esc(x.grade)}학년</div><p>${esc(x.content).replace(/\n/g,'<br>')}</p></article>`).join('');
+    document.querySelector('#scheduleNotices').innerHTML=schedules.length?schedules.map(x=>`<article class="schedule-row"><div class="schedule-name"><strong>${esc(x.assessment_name)}</strong><small>${esc(x.subject_name)}</small><span>${esc(x.session)}차시</span><em>${esc(x.teacher_name)} 선생님</em></div><div class="schedule-place"><span>${esc(x.grade)}학년</span><span>${esc(x.class_no)}반</span><span>${esc(x.weekday)}요일</span><span>${esc(x.period)}교시</span></div></article>`).join(''):legacyRows.map(x=>`<article class="grade-notice"><div class="grade-badge">${esc(x.grade)}학년</div><p>${esc(x.content).replace(/\n/g,'<br>')}</p></article>`).join('');
   }
   document.querySelector('#cards').innerHTML=(j.activities||[]).map(a=>{
     const schedule=[a.school_year,a.schedule_period].filter(Boolean).join(' · ');

@@ -33,9 +33,10 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 .program-info{flex:1;min-width:0}
 .pin-btn{margin-left:auto;flex:0 0 auto;border:1px solid #d8e0eb;background:#fff;color:#65748a;border-radius:9px;padding:6px 9px;font-size:11px;font-weight:850;cursor:pointer;white-space:nowrap}
 .pin-btn:hover{background:#f7f9fc}.pin-btn.active{border-color:#e2bd61;background:#fff7d6;color:#865d05}
-.schedule-editor{display:flex;flex-direction:column;gap:10px;margin-top:12px}.schedule-edit-row{display:grid;grid-template-columns:minmax(160px,2fr) minmax(120px,1.2fr) repeat(5,minmax(76px,1fr)) auto;gap:8px;align-items:end;border:1px solid #e0e7f0;border-radius:12px;padding:11px;background:#f8fafc}.schedule-edit-row .field-simple{margin:0}.schedule-edit-row .remove-schedule{height:42px}.schedule-empty{padding:16px;text-align:center;border:1px dashed #ccd8e7;border-radius:12px;color:#718096;background:#fafcff;font-size:13px}
+.schedule-modal{width:min(1080px,96vw);overflow-x:hidden}.schedule-editor{display:flex;flex-direction:column;gap:12px;margin-top:12px}.schedule-edit-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:end;border:1px solid #dbe5f0;border-radius:14px;padding:14px;background:#f8fafc}.schedule-edit-row .field-simple{margin:0;min-width:0}.schedule-edit-row .subject-field,.schedule-edit-row .assessment-field,.schedule-edit-row .teacher-field{grid-column:span 2}.schedule-edit-row .remove-schedule{height:42px;width:100%}.schedule-edit-row input[readonly]{background:#eef3f8;color:#516178}.schedule-empty{padding:16px;text-align:center;border:1px dashed #ccd8e7;border-radius:12px;color:#718096;background:#fafcff;font-size:13px}
 @media(max-width:760px){.simple-shell{padding:10px}.simple-top{align-items:flex-start;flex-direction:column}.patch-row{grid-template-columns:1fr}.program-grid{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.full{grid-column:auto}.system-box{grid-template-columns:1fr}.hero-simple{padding:18px}.card-actions .btnx{flex:1 1 45%}.pin-btn{padding:6px 8px}}
-@media(max-width:900px){.schedule-edit-row{grid-template-columns:1fr 1fr}.schedule-edit-row .schedule-name{grid-column:1/-1}.schedule-edit-row .remove-schedule{grid-column:1/-1}}
+@media(max-width:900px){.schedule-modal{width:min(720px,96vw)}.schedule-edit-row{grid-template-columns:1fr 1fr}.schedule-edit-row .subject-field,.schedule-edit-row .assessment-field,.schedule-edit-row .teacher-field{grid-column:auto}.schedule-edit-row .assessment-field{grid-column:1/-1}}
+@media(max-width:560px){.schedule-edit-row{grid-template-columns:1fr}.schedule-edit-row .subject-field,.schedule-edit-row .assessment-field,.schedule-edit-row .teacher-field{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -116,7 +117,7 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 </div></div>
 
 <!-- 학년별 수행평가 공지 -->
-<div class="modal-bg" id="announcementModal"><div class="modalx">
+<div class="modal-bg" id="announcementModal"><div class="modalx schedule-modal">
   <div class="section-head-simple"><div><h2>수행평가 일정 공지</h2><p>수행평가별 담당 선생님·차시·학년·반·요일·교시를 지정하세요.</p></div><button class="btnx ghost small" data-close="announcementModal">닫기</button></div>
   <form id="announcementForm">
     <div class="field-simple"><label>공지 제목</label><input id="announcementTitle" value="학년별 수행평가 일정 안내"></div>
@@ -278,11 +279,13 @@ $('#safePatchForm').onsubmit=async e=>{
 }
 $('#settingsForm').onsubmit=async e=>{e.preventDefault();const id=$('#setId').value;const body={name:$('#setName').value,subject:$('#setSubject').value,kind:$('#setKind').value,audience:$('#setAudience').value,icon:$('#setIcon').value,sort_order:Number($('#setOrder').value),description:$('#setDesc').value,school_year:$('#setSchoolYear').value,schedule_period:$('#setSchedulePeriod').value,published:$('#setPublished').value==='true'};try{await api('/api/admin/activities/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});closeModal('settingsModal');await load()}catch(e){alert(e.message)}}
 const optionTags=(max,suffix,value)=>Array.from({length:max},(_,i)=>`<option value="${i+1}" ${Number(value)===i+1?'selected':''}>${i+1}${suffix}</option>`).join('');
-function blankSchedule(){return{id:'',assessment_name:'',teacher_name:'',session:1,grade:1,class_no:1,weekday:'월',period:1}}
+function blankSchedule(){return{id:'',activity_id:'',assessment_name:'',subject_name:'',teacher_name:'',session:1,grade:1,class_no:1,weekday:'월',period:1}}
+function assessmentOptions(row){const assessments=acts.filter(a=>String(a.kind||'').includes('수행평가'));const matched=assessments.find(a=>String(a.id)===String(row.activity_id))||assessments.find(a=>a.name===row.assessment_name);if(matched){row.activity_id=matched.id;row.assessment_name=matched.name;row.subject_name=matched.subject}const selected=matched?.id||'';return '<option value="">수행평가 선택</option>'+assessments.map(a=>`<option value="${esc(a.id)}" ${String(selected)===String(a.id)?'selected':''}>${esc(a.name)}</option>`).join('')}
 function renderScheduleEditor(){
   $('#scheduleEditor').innerHTML=scheduleDraft.length?scheduleDraft.map((row,i)=>`<div class="schedule-edit-row" data-index="${i}">
-    <div class="field-simple schedule-name"><label>수행평가 이름</label><input data-field="assessment_name" value="${esc(row.assessment_name||'')}" placeholder="수행평가 이름" required></div>
-    <div class="field-simple"><label>담당 선생님</label><input data-field="teacher_name" value="${esc(row.teacher_name||'')}" placeholder="예: 김유진" required></div>
+    <div class="field-simple subject-field"><label>과목 이름</label><input data-field="subject_name" value="${esc(row.subject_name||'')}" placeholder="수행평가를 선택하세요" readonly></div>
+    <div class="field-simple assessment-field"><label>수행평가 이름</label><select data-field="activity_id" required onchange="selectAssessment(${i},this.value)">${assessmentOptions(row)}</select></div>
+    <div class="field-simple teacher-field"><label>담당 선생님</label><input data-field="teacher_name" value="${esc(row.teacher_name||'')}" placeholder="예: 김유진" required></div>
     <div class="field-simple"><label>차시</label><select data-field="session">${optionTags(20,'차시',row.session)}</select></div>
     <div class="field-simple"><label>학년</label><select data-field="grade">${optionTags(3,'학년',row.grade)}</select></div>
     <div class="field-simple"><label>반</label><select data-field="class_no">${optionTags(20,'반',row.class_no)}</select></div>
@@ -292,6 +295,7 @@ function renderScheduleEditor(){
   </div>`).join(''):'<div class="schedule-empty">등록된 일정이 없습니다. 아래의 ‘일정 추가’를 눌러 시작하세요.</div>';
 }
 function collectScheduleDraft(){document.querySelectorAll('.schedule-edit-row').forEach((el,i)=>{const row=scheduleDraft[i]||blankSchedule();el.querySelectorAll('[data-field]').forEach(input=>row[input.dataset.field]=['session','grade','class_no','period'].includes(input.dataset.field)?Number(input.value):input.value.replace(/요일$/,'').trim());scheduleDraft[i]=row})}
+window.selectAssessment=(i,id)=>{collectScheduleDraft();const a=acts.find(x=>String(x.id)===String(id));scheduleDraft[i].activity_id=id;scheduleDraft[i].assessment_name=a?.name||'';scheduleDraft[i].subject_name=a?.subject||'';renderScheduleEditor()}
 window.removeSchedule=i=>{collectScheduleDraft();scheduleDraft.splice(i,1);renderScheduleEditor()}
 $('#addScheduleBtn').onclick=()=>{collectScheduleDraft();scheduleDraft.push(blankSchedule());renderScheduleEditor()}
 $('#announcementBtn').onclick=()=>{$('#announcementTitle').value=announcements.title||'학년별 수행평가 일정 안내';scheduleDraft=(announcements.schedules||[]).map(x=>({...x}));renderScheduleEditor();openModal('announcementModal')}
