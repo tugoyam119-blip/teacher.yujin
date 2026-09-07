@@ -1,8 +1,8 @@
 {
   "name": "hr-city-v12-0-global-server-class-session-yujint",
-  "version": "12.5.5",
+  "version": "12.5.6",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v12.5.5 - 새 정보 영향 선택을 1~2개로 제한하고 기존 무기록 학생 테스트 및 일정 기능 유지",
+  "description": "인권도시 정책결정 수행평가 v12.5.6 - 자기평가서에서 제출 답안 다시보기 추가, 새 정보 영향 1~2개 제한 및 기존 무기록 테스트 유지",
   "main": "server.js",
   "scripts": {
     "start": "node bootstrap-v12.5.js"
