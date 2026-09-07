@@ -1,6 +1,6 @@
 {
   "name": "yujint-classroom-v4",
-  "version": "4.8.2",
+  "version": "4.8.3",
   "private": true,
   "description": "유진T 클래스룸 v4.8 - 수행평가 실시일·시간 공지",
   "scripts": {
