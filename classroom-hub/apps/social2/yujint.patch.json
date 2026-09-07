@@ -3,8 +3,8 @@
   "target_id": "social2-unit1",
   "slug": "social2",
   "name": "통합사회2 교사용 설명 페이지",
-  "version": "3.3",
-  "version_label": "교과서 확대·화면 폭 자동 조절 v3.3",
+  "version": "3.4",
+  "version_label": "교과서 확대·반응형 오류 수정 v3.4",
   "partial": true,
   "repo_path": "classroom-hub/apps/social2"
 }
