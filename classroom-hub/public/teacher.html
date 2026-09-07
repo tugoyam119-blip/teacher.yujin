@@ -33,7 +33,9 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 .program-info{flex:1;min-width:0}
 .pin-btn{margin-left:auto;flex:0 0 auto;border:1px solid #d8e0eb;background:#fff;color:#65748a;border-radius:9px;padding:6px 9px;font-size:11px;font-weight:850;cursor:pointer;white-space:nowrap}
 .pin-btn:hover{background:#f7f9fc}.pin-btn.active{border-color:#e2bd61;background:#fff7d6;color:#865d05}
+.schedule-editor{display:flex;flex-direction:column;gap:10px;margin-top:12px}.schedule-edit-row{display:grid;grid-template-columns:minmax(160px,2fr) minmax(120px,1.2fr) repeat(5,minmax(76px,1fr)) auto;gap:8px;align-items:end;border:1px solid #e0e7f0;border-radius:12px;padding:11px;background:#f8fafc}.schedule-edit-row .field-simple{margin:0}.schedule-edit-row .remove-schedule{height:42px}.schedule-empty{padding:16px;text-align:center;border:1px dashed #ccd8e7;border-radius:12px;color:#718096;background:#fafcff;font-size:13px}
 @media(max-width:760px){.simple-shell{padding:10px}.simple-top{align-items:flex-start;flex-direction:column}.patch-row{grid-template-columns:1fr}.program-grid{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr}.full{grid-column:auto}.system-box{grid-template-columns:1fr}.hero-simple{padding:18px}.card-actions .btnx{flex:1 1 45%}.pin-btn{padding:6px 8px}}
+@media(max-width:900px){.schedule-edit-row{grid-template-columns:1fr 1fr}.schedule-edit-row .schedule-name{grid-column:1/-1}.schedule-edit-row .remove-schedule{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -115,13 +117,11 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 
 <!-- 학년별 수행평가 공지 -->
 <div class="modal-bg" id="announcementModal"><div class="modalx">
-  <div class="section-head-simple"><div><h2>학년별 수행평가 일정 공지</h2><p>내용이 있는 학년만 학생 화면에 표시됩니다.</p></div><button class="btnx ghost small" data-close="announcementModal">닫기</button></div>
+  <div class="section-head-simple"><div><h2>수행평가 일정 공지</h2><p>수행평가별 담당 선생님·차시·학년·반·요일·교시를 지정하세요.</p></div><button class="btnx ghost small" data-close="announcementModal">닫기</button></div>
   <form id="announcementForm">
     <div class="field-simple"><label>공지 제목</label><input id="announcementTitle" value="학년별 수행평가 일정 안내"></div>
-    <div class="field-simple"><label>1학년</label><textarea id="announcementGrade1" rows="3" placeholder="일정이 정해지면 입력하세요."></textarea></div>
-    <div class="field-simple"><label>2학년</label><textarea id="announcementGrade2" rows="3" placeholder="일정이 정해지면 입력하세요."></textarea></div>
-    <div class="field-simple"><label>3학년</label><textarea id="announcementGrade3" rows="3" placeholder="일정이 정해지면 입력하세요."></textarea></div>
-    <div class="modal-actions" style="justify-content:flex-end;margin-top:14px"><button class="btnx primary">공지 저장</button></div>
+    <div id="scheduleEditor" class="schedule-editor"></div>
+    <div class="modal-actions" style="justify-content:space-between;margin-top:14px"><button type="button" class="btnx secondary" id="addScheduleBtn">＋ 일정 추가</button><button class="btnx primary">공지 저장</button></div>
   </form>
 </div></div>
 
@@ -190,7 +190,7 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 </div></div>
 
 <script>
-let acts=[],system={},announcements={title:'학년별 수행평가 일정 안내',grades:[]},historyData={core_histories:[],activities:[]};
+let acts=[],system={},announcements={title:'학년별 수행평가 일정 안내',schedules:[],grades:[]},scheduleDraft=[],historyData={core_histories:[],activities:[]};
 const PIN_KEY='yujint_teacher_pins_v1';
 function loadPins(){try{const x=JSON.parse(localStorage.getItem(PIN_KEY)||'[]');return new Set(Array.isArray(x)?x.map(String):[])}catch{return new Set()}}
 let pinnedIds=loadPins();
@@ -211,7 +211,7 @@ async function load(){
     api('/api/admin/system'),
     api('/api/admin/chatgpt/history').catch(()=>({core_histories:[],activities:[]}))
   ]);
-  acts=a.activities||[];announcements=a.announcements||{title:'학년별 수행평가 일정 안내',grades:[]};system=s||{};historyData=h||{core_histories:[],activities:[]};
+  acts=a.activities||[];announcements=a.announcements||{title:'학년별 수행평가 일정 안내',schedules:[],grades:[]};system=s||{};historyData=h||{core_histories:[],activities:[]};
   const validIds=new Set(acts.map(x=>String(x.id)));const beforePins=pinnedIds.size;pinnedIds=new Set([...pinnedIds].filter(id=>validIds.has(String(id))));if(pinnedIds.size!==beforePins)savePins();
   renderPrograms();renderTargets();renderSystem();
 }
@@ -277,8 +277,25 @@ $('#safePatchForm').onsubmit=async e=>{
   finally{b.disabled=false}
 }
 $('#settingsForm').onsubmit=async e=>{e.preventDefault();const id=$('#setId').value;const body={name:$('#setName').value,subject:$('#setSubject').value,kind:$('#setKind').value,audience:$('#setAudience').value,icon:$('#setIcon').value,sort_order:Number($('#setOrder').value),description:$('#setDesc').value,school_year:$('#setSchoolYear').value,schedule_period:$('#setSchedulePeriod').value,published:$('#setPublished').value==='true'};try{await api('/api/admin/activities/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});closeModal('settingsModal');await load()}catch(e){alert(e.message)}}
-$('#announcementBtn').onclick=()=>{const byGrade=g=>announcements.grades?.find(x=>String(x.grade)===String(g))?.content||'';$('#announcementTitle').value=announcements.title||'학년별 수행평가 일정 안내';$('#announcementGrade1').value=byGrade(1);$('#announcementGrade2').value=byGrade(2);$('#announcementGrade3').value=byGrade(3);openModal('announcementModal')}
-$('#announcementForm').onsubmit=async e=>{e.preventDefault();const body={title:$('#announcementTitle').value,grades:[1,2,3].map(grade=>({grade:String(grade),content:$('#announcementGrade'+grade).value}))};try{const j=await api('/api/admin/announcements',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});announcements=j.announcements||body;closeModal('announcementModal');alert('학생 화면 공지를 저장했습니다.')}catch(err){alert(err.message)}}
+const optionTags=(max,suffix,value)=>Array.from({length:max},(_,i)=>`<option value="${i+1}" ${Number(value)===i+1?'selected':''}>${i+1}${suffix}</option>`).join('');
+function blankSchedule(){return{id:'',assessment_name:'',teacher_name:'',session:1,grade:1,class_no:1,weekday:'월',period:1}}
+function renderScheduleEditor(){
+  $('#scheduleEditor').innerHTML=scheduleDraft.length?scheduleDraft.map((row,i)=>`<div class="schedule-edit-row" data-index="${i}">
+    <div class="field-simple schedule-name"><label>수행평가 이름</label><input data-field="assessment_name" value="${esc(row.assessment_name||'')}" placeholder="수행평가 이름" required></div>
+    <div class="field-simple"><label>담당 선생님</label><input data-field="teacher_name" value="${esc(row.teacher_name||'')}" placeholder="예: 김유진" required></div>
+    <div class="field-simple"><label>차시</label><select data-field="session">${optionTags(20,'차시',row.session)}</select></div>
+    <div class="field-simple"><label>학년</label><select data-field="grade">${optionTags(3,'학년',row.grade)}</select></div>
+    <div class="field-simple"><label>반</label><select data-field="class_no">${optionTags(20,'반',row.class_no)}</select></div>
+    <div class="field-simple"><label>요일</label><select data-field="weekday">${['월','화','수','목','금'].map(x=>`<option ${row.weekday===x?'selected':''}>${x}요일</option>`).join('')}</select></div>
+    <div class="field-simple"><label>교시</label><select data-field="period">${optionTags(10,'교시',row.period)}</select></div>
+    <button type="button" class="btnx danger small remove-schedule" onclick="removeSchedule(${i})">삭제</button>
+  </div>`).join(''):'<div class="schedule-empty">등록된 일정이 없습니다. 아래의 ‘일정 추가’를 눌러 시작하세요.</div>';
+}
+function collectScheduleDraft(){document.querySelectorAll('.schedule-edit-row').forEach((el,i)=>{const row=scheduleDraft[i]||blankSchedule();el.querySelectorAll('[data-field]').forEach(input=>row[input.dataset.field]=['session','grade','class_no','period'].includes(input.dataset.field)?Number(input.value):input.value.replace(/요일$/,'').trim());scheduleDraft[i]=row})}
+window.removeSchedule=i=>{collectScheduleDraft();scheduleDraft.splice(i,1);renderScheduleEditor()}
+$('#addScheduleBtn').onclick=()=>{collectScheduleDraft();scheduleDraft.push(blankSchedule());renderScheduleEditor()}
+$('#announcementBtn').onclick=()=>{$('#announcementTitle').value=announcements.title||'학년별 수행평가 일정 안내';scheduleDraft=(announcements.schedules||[]).map(x=>({...x}));renderScheduleEditor();openModal('announcementModal')}
+$('#announcementForm').onsubmit=async e=>{e.preventDefault();collectScheduleDraft();const body={title:$('#announcementTitle').value,schedules:scheduleDraft,grades:announcements.grades||[]};try{const j=await api('/api/admin/announcements',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});announcements=j.announcements||body;closeModal('announcementModal');alert('학생 화면 일정을 저장했습니다.')}catch(err){alert(err.message)}}
 $('#newForm').onsubmit=async e=>{e.preventDefault();const b=$('#newSubmit');b.disabled=true;try{const j=await api('/api/admin/deploy/new',{method:'POST',body:new FormData(e.target)});alert(j.result?.railway?.warning?'등록 완료 · 일부 연결 확인 필요':'새 프로그램 등록 완료');closeModal('newModal');e.target.reset();await load()}catch(err){alert(err.message)}finally{b.disabled=false}}
 $('#externalForm').onsubmit=async e=>{e.preventDefault();const b=Object.fromEntries(new FormData(e.target).entries());b.published=true;try{await api('/api/admin/activities/external',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});closeModal('externalModal');e.target.reset();await load()}catch(err){alert(err.message)}}
 $('#newProgramBtn').onclick=()=>{document.querySelector('#newForm').reset();$('#nSlug').dataset.touched='';openModal('newModal')}

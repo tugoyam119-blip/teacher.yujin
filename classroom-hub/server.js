@@ -107,9 +107,20 @@ function normalizeActivity(x = {}, existing = {}) {
 
 function normalizeAnnouncements(input = {}) {
   const source = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
+  const schedules = Array.isArray(source.schedules) ? source.schedules.slice(0, 100).map(row => ({
+    id: text(row?.id || crypto.randomUUID(), 100),
+    assessment_name: text(row?.assessment_name, 120),
+    teacher_name: text(row?.teacher_name, 80),
+    session: Math.min(20, Math.max(1, Number(row?.session || 1))),
+    grade: Math.min(3, Math.max(1, Number(row?.grade || 1))),
+    class_no: Math.min(20, Math.max(1, Number(row?.class_no || 1))),
+    weekday: ['월', '화', '수', '목', '금'].includes(row?.weekday) ? row.weekday : '월',
+    period: Math.min(10, Math.max(1, Number(row?.period || 1)))
+  })).filter(row => row.assessment_name && row.teacher_name) : [];
   return {
     title: text(source.title || '학년별 수행평가 일정 안내', 80),
     updated_at: text(source.updated_at, 40),
+    schedules,
     grades: ['1', '2', '3'].map(grade => ({
       grade,
       content: text(source.grades?.find?.(x => String(x?.grade) === grade)?.content, 1000)
@@ -666,7 +677,7 @@ app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHe
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
 app.get('/student', (req, res) => res.sendFile(path.join(PUBLIC, 'student.html')));
-app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.5.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
+app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.6.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
 
 app.post('/api/auth/login', (req, res) => {
   if (String(req.body.pin || '') !== TEACHER_PIN) return res.status(401).json({ error: '교사 PIN이 올바르지 않습니다.' });
@@ -1350,4 +1361,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || '서버 오류가 발생했습니다.' });
 });
 
-initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v4.5 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });
+initStore().then(() => app.listen(PORT, '0.0.0.0', () => console.log(`유진T 클래스룸 v4.6 : http://localhost:${PORT}`))).catch(e => { console.error(e); process.exit(1); });

@@ -15,7 +15,7 @@
   <section class="hero"><div class="eyebrow">STUDENT</div><h2>오늘의 활동을 선택하세요</h2><p>선생님이 공개한 학습활동만 표시됩니다. 수행평가는 선생님의 안내에 따라 시작하세요.</p></section>
   <section id="scheduleSection" class="schedule-section" hidden>
     <div class="student-section-head"><div><span class="section-kicker">NOTICE</span><h2 id="scheduleTitle">학년별 수행평가 일정 안내</h2></div><p>자신의 학년 일정을 확인하세요.</p></div>
-    <div id="scheduleNotices" class="grade-notice-grid"></div>
+    <div id="scheduleNotices" class="schedule-list"></div>
   </section>
   <section>
     <div class="student-section-head"><div><span class="section-kicker">ACTIVITIES</span><h2>수행평가 및 학습활동</h2></div></div>
@@ -26,11 +26,11 @@
 <script>
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 fetch('/api/public/activities').then(r=>{if(!r.ok)throw Error('불러오기 실패');return r.json()}).then(j=>{
-  const n=j.announcements||{},rows=(n.grades||[]).filter(x=>String(x.content||'').trim());
-  if(rows.length){
+  const n=j.announcements||{},schedules=n.schedules||[],legacyRows=(n.grades||[]).filter(x=>String(x.content||'').trim());
+  if(schedules.length||legacyRows.length){
     document.querySelector('#scheduleSection').hidden=false;
     document.querySelector('#scheduleTitle').textContent=n.title||'학년별 수행평가 일정 안내';
-    document.querySelector('#scheduleNotices').innerHTML=rows.map(x=>`<article class="grade-notice"><div class="grade-badge">${esc(x.grade)}학년</div><p>${esc(x.content).replace(/\n/g,'<br>')}</p></article>`).join('');
+    document.querySelector('#scheduleNotices').innerHTML=schedules.length?schedules.map(x=>`<article class="schedule-row"><div class="schedule-name"><strong>${esc(x.assessment_name)}</strong><span>${esc(x.session)}차시</span><em>${esc(x.teacher_name)} 선생님</em></div><div class="schedule-place"><span>${esc(x.grade)}학년</span><span>${esc(x.class_no)}반</span><span>${esc(x.weekday)}요일</span><span>${esc(x.period)}교시</span></div></article>`).join(''):legacyRows.map(x=>`<article class="grade-notice"><div class="grade-badge">${esc(x.grade)}학년</div><p>${esc(x.content).replace(/\n/g,'<br>')}</p></article>`).join('');
   }
   document.querySelector('#cards').innerHTML=(j.activities||[]).map(a=>{
     const schedule=[a.school_year,a.schedule_period].filter(Boolean).join(' · ');
