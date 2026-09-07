@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no">
-<meta name="application-name" content="45칸 학습 보드게임 v59">
-<meta name="description" content="유진T 클래스룸 업로드용 반응형 45칸 학습 보드게임 v59">
+<meta name="application-name" content="45칸 학습 보드게임 v60">
+<meta name="description" content="유진T 클래스룸 업로드용 반응형 45칸 학습 보드게임 v60">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title id="pageTitle">45칸 학습 보드게임 v59</title>
+<title id="pageTitle">45칸 학습 보드게임 v60</title>
 <style>
   :root{
     --bg:#f5f7fb; --card:#fff; --line:#dbe2ee; --text:#1f2937; --muted:#667085;
@@ -260,7 +260,7 @@ a.secondary{display:inline-flex;align-items:center;justify-content:center;border
 <script>
 (() => {
 'use strict';
-const APP_VERSION='v59';
+const APP_VERSION='v60';
 const APP_NAME='45칸 학습 보드게임';
 const AUTO_NOTICE_EXTRA_MS=3000;
 const autoNoticeMs=base=>base+AUTO_NOTICE_EXTRA_MS;
@@ -716,7 +716,7 @@ function beginCurrentTeamTurn(){if(!G||G.ended)return;const trapped=getIslandTra
 function ensureSelectable(){const leaders=getMovableLeaders(G.current);G.selectedToken=leaders.length?leaders[0]:0}
 
 const FUN_GUIDE=[
- {icon:'⚔️',title:'팀 대결',body:'먼저 <b>대결할 두 팀을 발표</b>하고, 두 팀이 같은 문제를 읽고 상의할 공통 시간을 제공합니다. 이후 팀별로 답을 확정하며, 둘 다 정답이면 더 빨리 답한 팀이 승리합니다.'},
+ {icon:'⚔️',title:'팀 대결',body:'먼저 <b>대결할 두 팀을 발표</b>하고, 두 팀이 같은 문제를 읽고 상의할 공통 시간을 제공합니다. 이후 팀별로 답을 확정하며, 둘 다 정답이면 더 빨리 답한 팀이 승리하지만 <b>아이템은 정답을 맞힌 두 팀 모두</b> 받습니다.'},
  {icon:'🎮',title:'미니게임',body:'게임 중 무작위로 짧은 미니게임이 등장합니다. 성공하면 추가 이동이나 아이템을 받고, <b>실패해도 뒤로 가지 않습니다.</b>'},
  {icon:'🎒',title:'아이템',body:'아이템 이벤트에서는 먼저 <b>문제를 맞혀야</b> 아이템을 얻습니다. 대결·미니게임에서도 획득할 수 있으며, 자기 차례에 주사위를 굴리기 전에 1개를 사용할 수 있습니다.'}
 ];
@@ -761,9 +761,10 @@ async function runDuelEvent(){
  const accepted=String(q.a).split('|').map(normalizeAnswer),okA=accepted.includes(normalizeAnswer(a.answer)),okB=accepted.includes(normalizeAnswer(b.answer));
  let winner=null;if(okA&&!okB)winner=current;else if(okB&&!okA)winner=opp;else if(okA&&okB)winner=a.elapsed<=b.elapsed?current:opp;
  if(okA)G.teams[current].correct++;else G.teams[current].wrong++;if(okB)G.teams[opp].correct++;else G.teams[opp].wrong++;
- const gotItem=winner!==null?giveRandomItem(winner):false;
- addLog(`⚔️ 대결: ${G.teams[current].name} ${okA?'정답':'오답'} / ${G.teams[opp].name} ${okB?'정답':'오답'}${winner!==null?` → ${G.teams[winner].name} 승리`:' → 무승부'}`);renderStats();
- showModal(`<div class="event-banner"><div class="event-icon">⚔️</div><h2>${winner!==null?`${escapeHtml(G.teams[winner].name)} 승리!`:'무승부!'}</h2><p>${escapeHtml(G.teams[current].name)} ${okA?'⭕ 정답':'❌ 오답'}${a.timedOut?' (시간 종료)':''} · ${escapeHtml(G.teams[opp].name)} ${okB?'⭕ 정답':'❌ 오답'}${b.timedOut?' (시간 종료)':''}<br>정답: <b>${escapeHtml(String(q.a).split('|')[0])}</b>${winner!==null?`<br>${gotItem?'🎁 승리 팀이 아이템을 획득했습니다.':'아이템 가방이 가득 차 추가 아이템은 지급되지 않았습니다.'}`:''}</p>${questionExplanationHtml(q)}<button class="primary" id="duelResultOk">현재 팀 이동 계속</button></div>`);
+ const correctTeams=[];if(okA)correctTeams.push(current);if(okB)correctTeams.push(opp);const itemRewards=correctTeams.map(teamIdx=>({teamIdx,got:giveRandomItem(teamIdx)}));
+ const rewardHtml=itemRewards.length?`<div style="margin-top:10px;padding:10px;border-radius:12px;background:#fffbeb"><b>🎁 정답 팀 아이템 보상</b><br>${itemRewards.map(r=>`${escapeHtml(G.teams[r.teamIdx].name)}: ${r.got?'아이템 획득':'가방이 가득 차 지급되지 않음'}`).join('<br>')}</div>`:'<div style="margin-top:10px;color:#64748b">두 팀 모두 오답으로 아이템 보상은 없습니다.</div>';
+ addLog(`⚔️ 대결: ${G.teams[current].name} ${okA?'정답·아이템 보상':'오답'} / ${G.teams[opp].name} ${okB?'정답·아이템 보상':'오답'}${winner!==null?` → ${G.teams[winner].name} 승리`:' → 무승부'}`);renderStats();
+ showModal(`<div class="event-banner"><div class="event-icon">⚔️</div><h2>${winner!==null?`${escapeHtml(G.teams[winner].name)} 승리!`:'무승부!'}</h2><p>${escapeHtml(G.teams[current].name)} ${okA?'⭕ 정답':'❌ 오답'}${a.timedOut?' (시간 종료)':''} · ${escapeHtml(G.teams[opp].name)} ${okB?'⭕ 정답':'❌ 오답'}${b.timedOut?' (시간 종료)':''}<br>정답: <b>${escapeHtml(String(q.a).split('|')[0])}</b>${okA&&okB?'<br><b style="color:#166534">두 팀 모두 정답이므로 두 팀 모두 아이템 보상을 받습니다.</b>':''}</p>${rewardHtml}${questionExplanationHtml(q)}<button class="primary" id="duelResultOk">현재 팀 이동 계속</button></div>`);
  $('#duelResultOk').onclick=async()=>{closeModal();await finishEventMove('대결 후 이동',0)}
 }
 
