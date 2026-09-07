@@ -14,17 +14,17 @@
 .grade-badge { display: inline-flex; border-radius: 999px; padding: 5px 9px; background: #eaf1ff; color: #2856a8; font-size: 12px; font-weight: 900; margin-bottom: 9px; }
 .grade-notice p { font-size: 13px; line-height: 1.7; color: #44546a; margin: 0; }
 .schedule-list { display: flex; flex-direction: column; gap: 9px; }
-.schedule-row { display: grid; grid-template-columns: minmax(190px, 1.35fr) minmax(150px, .8fr) minmax(320px, 1.6fr); gap: 14px; align-items: center; background: #fff; border: 1px solid #d8e3f2; border-radius: 15px; padding: 14px 16px; box-shadow: 0 4px 16px rgba(31,55,90,.04); }
-.schedule-name { display: flex; align-items: center; gap: 8px; min-width: 0; flex-wrap: wrap; }
-.schedule-name strong { color: #243a58; font-size: 14px; }
-.schedule-name small { color: #2856a8; font-size: 11px; font-weight: 800; }
-.schedule-name em { color: #64748b; font-size: 11px; font-style: normal; white-space: nowrap; }
-.schedule-when { display: flex; flex-direction: column; gap: 4px; padding-left: 13px; border-left: 3px solid #d8e6f8; }
-.schedule-when b { color: #243a58; font-size: 13px; }
-.schedule-when span { color: #64748b; font-size: 11px; font-weight: 750; }
-.schedule-name > span { flex: none; border-radius: 999px; padding: 4px 7px; background: #eaf1ff; color: #2856a8; font-size: 10px; font-weight: 900; }
-.schedule-place { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.schedule-place span { text-align: center; border-radius: 9px; background: #f4f7fb; color: #43536a; padding: 8px 6px; font-size: 12px; font-weight: 850; }
+.schedule-group { overflow: hidden; background: #fff; border: 1px solid #d8e3f2; border-radius: 16px; box-shadow: 0 4px 16px rgba(31,55,90,.04); }
+.schedule-group-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; background: #f8fbff; border-bottom: 1px solid #e4ebf5; }
+.schedule-group-head > div { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+.schedule-group-head strong { color: #243a58; font-size: 15px; }
+.schedule-group-head small { color: #2856a8; font-size: 11px; font-weight: 800; }
+.schedule-group-head > span { flex: none; border-radius: 999px; padding: 5px 9px; background: #eaf1ff; color: #2856a8; font-size: 10px; font-weight: 900; }
+.schedule-table { padding: 5px 16px 9px; }
+.schedule-table-head,.schedule-class-row { display: grid; grid-template-columns: .55fr 1fr .55fr 1.25fr 1fr; gap: 10px; align-items: center; }
+.schedule-table-head { padding: 8px 0 6px; color: #8a97a8; font-size: 10px; font-weight: 850; }
+.schedule-class-row { min-height: 42px; padding: 8px 0; border-top: 1px solid #edf1f6; color: #526176; font-size: 12px; }
+.schedule-class-row b { color: #243a58; font-size: 13px; }
 .student-card { min-height: 96px; }
 .student-card-body { min-width: 0; flex: 1; }
 .student-card-arrow { color: #8b99aa; font-weight: 900; }
@@ -32,7 +32,10 @@
 .activity-schedule span { border-radius: 999px; background: #eaf8f0; color: #14804a; padding: 4px 7px; font-size: 10px; }
 @media (max-width: 720px) {
   .grade-notice-grid { grid-template-columns: 1fr; }
-  .schedule-row { grid-template-columns: 1fr; gap: 10px; }
-  .schedule-place { grid-template-columns: repeat(2, 1fr); }
+  .schedule-table { padding: 5px 12px 9px; }
+  .schedule-table-head { display: none; }
+  .schedule-class-row { grid-template-columns: .55fr 1fr .7fr; gap: 6px 9px; padding: 10px 0; }
+  .schedule-class-row span:nth-child(4),.schedule-class-row span:nth-child(5) { grid-column: span 1; font-size: 11px; }
+  .schedule-class-row span:nth-child(4) { grid-column: 1 / 3; }
   .student-section-head { align-items: flex-start; flex-direction: column; }
 }
