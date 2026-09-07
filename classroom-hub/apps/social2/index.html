@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>통합사회2 1단원 교과서 수업도우미 ver12.5</title>
+<title>통합사회2 1단원 교과서 수업도우미 ver12.6</title>
 <style>
 :root{
  --bg:#f6f7fa;--paper:#fff;--ink:#263141;--muted:#738092;--line:#e1e6ed;
@@ -1352,7 +1352,10 @@ input,select,textarea{font-size:max(16px,1em);}
 }
 
 /* ver12 - 교과서 원본 중심 수업 화면 */
-.topbar{grid-template-columns:auto minmax(0,1fr) auto}
+.topbar{grid-template-columns:auto auto minmax(0,1fr) auto}
+.unit-switch{display:flex;gap:4px;padding:3px;border-radius:10px;background:#eef1f5}
+.unit-switch a{padding:6px 9px;border-radius:7px;color:#5b687a;font-size:10.5px;font-weight:900;text-decoration:none}
+.unit-switch a.active{background:#fff;color:#315e97;box-shadow:0 2px 7px rgba(40,52,70,.12)}
 .view-switch{display:flex;gap:6px;margin-left:auto}
 .view-switch button{height:34px;padding:0 12px;border:1px solid #d8dee7;border-radius:9px;background:#fff;color:#526176;font-size:11px;font-weight:900}
 .view-switch button.active{background:#334c6d;color:#fff;border-color:#334c6d}
@@ -1371,11 +1374,11 @@ body.notes-mode .textbook-view{display:none!important}
 .law-term{appearance:none;border:0;border-bottom:1px dashed #6f8b49;background:#eef5e4;color:#456026;padding:3px 6px;border-radius:5px;font:inherit;font-size:13px;font-weight:950;cursor:pointer;text-align:left}.law-term:hover,.law-term:focus{background:#dfeccd;color:#304b16;outline:none}.concept-card.law-card{border-top-color:#78964e}.concept-card.law-card .card-title{color:#486126}.concept-card.law-card .card-meaning{white-space:pre-line;max-height:44vh;overflow:auto;line-height:1.7}.card-source{display:block;margin-top:8px;padding:7px 8px;border-radius:7px;background:#edf3f8;color:#2e648e;font-size:10px;font-weight:900;text-align:center;text-decoration:none}.card-source:hover{text-decoration:underline}
 @media(max-width:900px){.deep-guide-grid{grid-template-columns:1fr}.law-item-top{display:block}.law-item-link{display:inline-block;margin-top:5px}}
 @media(max-width:1150px){.textbook-stage{grid-template-columns:minmax(0,1fr) 300px}.concept-popover{position:fixed;right:14px;bottom:14px;top:auto;width:min(320px,calc(100vw - 28px))}.concept-popover[hidden]{display:none}.textbook-toolbar{grid-template-columns:1fr auto}.book-topic{grid-column:1/-1;grid-row:2}.book-actions{justify-self:end}.textbook-paper img{max-height:none}}
-@media(max-width:680px){.topbar{display:flex;flex-wrap:wrap}.brand{flex:1 1 100%}.view-switch{margin-left:0;width:100%}.view-switch button{flex:1}.textbook-toolbar{position:relative;top:auto;grid-template-columns:1fr}.book-nav,.book-actions{justify-content:center}.book-actions{justify-self:stretch}.book-actions button{flex:1}.textbook-stage{grid-template-columns:1fr}.lesson-side{position:relative;top:auto}.textbook-paper{padding:5px}.textbook-paper img{width:100%}}
+@media(max-width:680px){.topbar{display:flex;flex-wrap:wrap}.brand{flex:1 1 100%}.unit-switch{order:1}.search{order:2;flex:1}.view-switch{order:3;margin-left:0;width:100%}.view-switch button{flex:1}.textbook-toolbar{position:relative;top:auto;grid-template-columns:1fr}.book-nav,.book-actions{justify-content:center}.book-actions{justify-self:stretch}.book-actions button{flex:1}.textbook-stage{grid-template-columns:1fr}.lesson-side{position:relative;top:auto}.textbook-paper{padding:5px}.textbook-paper img{width:100%}}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.5</div><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
+<header class="topbar"><div class="brand">통합사회2 1단원 · 교과서 수업도우미 ver12.6</div><nav class="unit-switch" aria-label="단원 선택"><a class="active" href="./">1단원</a><a href="unit3.html">3단원</a></nav><input class="search" id="search" placeholder="부연 설명에서 검색"/><div class="view-switch" role="tablist" aria-label="수업 화면 선택"><button class="active" id="show-textbook" type="button">📖 교과서 화면</button><button id="show-notes" type="button">💡 부연 설명</button></div></header>
 <section class="progress-panel"><div class="progress-inner sticker-progress-inner"><div class="sticker-progress-top"><div class="progress-title sticker-progress-title">반별 진도 스티커</div><div class="class-tabs" id="class-tabs"><button class="class-tab class-color-1 active" data-class="1" type="button">1반</button><button class="class-tab class-color-2" data-class="2" type="button">2반</button><button class="class-tab class-color-3" data-class="3" type="button">3반</button><button class="class-tab class-color-4" data-class="4" type="button">4반</button><button class="class-tab class-color-5" data-class="5" type="button">5반</button><button class="class-tab class-color-6" data-class="6" type="button">6반</button><button class="class-tab class-color-7" data-class="7" type="button">7반</button></div></div><div class="sticker-progress-bottom"><div class="sticker-status" id="sticker-status">1반 · 진도 스티커 없음</div><div class="sticker-actions"><button class="sticker-action lesson-adjust" id="lesson-minus" title="차시 1 감소" type="button">−</button><div class="lesson-badge" id="lesson-badge">0차시</div><button class="sticker-action lesson-adjust" id="lesson-plus" title="차시 1 증가" type="button">+1</button><button class="sticker-action sticker-place" id="place-sticker" title="진도 표시 모드를 켜고 원하는 제목을 직접 선택" type="button">📌 진도 위치 선택</button><button class="sticker-action sticker-goto" id="goto-sticker" type="button">↗ 진도로 이동</button><button class="sticker-action sticker-clear" id="clear-sticker" title="선택한 반의 진도 스티커와 차시를 모두 초기화" type="button">진도 지우기</button><button class="sticker-action sticker-undo" hidden="" id="undo-clear-sticker" type="button">↶ 되돌리기</button></div></div><div class="sticker-hint">‘진도 위치 선택’을 누른 뒤 원하는 제목의 ‘여기에 붙이기’를 직접 누르면 정확한 위치에 스티커가 붙습니다.</div></div></section><div class="progress-select-banner" hidden="" id="progress-select-banner"><div class="progress-select-text">진도 위치 선택 중 · 원하는 제목의 ‘📌 여기에 붙이기’를 누르세요.</div><button class="cancel-progress-select" id="cancel-progress-select" type="button">취소</button></div>
 <section class="textbook-view" id="textbook-view" aria-label="교과서 수업 화면">
   <div class="textbook-toolbar">
