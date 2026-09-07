@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no">
-<meta name="application-name" content="45칸 학습 보드게임 v60">
-<meta name="description" content="유진T 클래스룸 업로드용 반응형 45칸 학습 보드게임 v60">
+<meta name="application-name" content="45칸 학습 보드게임 v61">
+<meta name="description" content="유진T 클래스룸 업로드용 반응형 45칸 학습 보드게임 v61">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title id="pageTitle">45칸 학습 보드게임 v60</title>
+<title id="pageTitle">45칸 학습 보드게임 v61</title>
 <style>
   :root{
     --bg:#f5f7fb; --card:#fff; --line:#dbe2ee; --text:#1f2937; --muted:#667085;
@@ -261,7 +261,7 @@ a.secondary{display:inline-flex;align-items:center;justify-content:center;border
 <script>
 (() => {
 'use strict';
-const APP_VERSION='v60';
+const APP_VERSION='v61';
 const APP_NAME='45칸 학습 보드게임';
 const AUTO_NOTICE_EXTRA_MS=3000;
 const autoNoticeMs=base=>base+AUTO_NOTICE_EXTRA_MS;
@@ -297,7 +297,7 @@ function unlockAudio(){
  }catch(e){}
 }
 document.addEventListener('pointerdown',unlockAudio,{passive:true});
-function ensureAudioOutput(){if(!audioCtx||audioMaster)return;audioMaster=audioCtx.createGain();audioLimiter=audioCtx.createDynamicsCompressor();audioMaster.gain.value=1.65;audioLimiter.threshold.value=-16;audioLimiter.knee.value=18;audioLimiter.ratio.value=10;audioLimiter.attack.value=.003;audioLimiter.release.value=.22;audioMaster.connect(audioLimiter);audioLimiter.connect(audioCtx.destination)}
+function ensureAudioOutput(){if(!audioCtx||audioMaster)return;audioMaster=audioCtx.createGain();audioLimiter=audioCtx.createDynamicsCompressor();audioMaster.gain.value=4.95;audioLimiter.threshold.value=-12;audioLimiter.knee.value=12;audioLimiter.ratio.value=8;audioLimiter.attack.value=.002;audioLimiter.release.value=.16;audioMaster.connect(audioLimiter);audioLimiter.connect(audioCtx.destination)}
 const SFX_VOLUME_MULTIPLIER=6;
 function tone(freq,dur=.12,type='sine',vol=.03,when=0){
  if(!sfxEnabled) return;
@@ -315,9 +315,9 @@ function tone(freq,dur=.12,type='sine',vol=.03,when=0){
  o.connect(g);g.connect(audioMaster||audioCtx.destination);
  o.start(now); o.stop(now+dur+0.02);
 }
-function bgmTone(freq,start,dur=.22,vol=.028,type='triangle'){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running')return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,start);g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(vol,start+.018);g.gain.exponentialRampToValueAtTime(.0001,start+dur);o.connect(g);g.connect(audioMaster||audioCtx.destination);o.start(start);o.stop(start+dur+.03)}
-function scheduleBgmPhrase(){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running'||!G?.running||G?.ended)return;const now=audioCtx.currentTime;if(bgmNextTime<now+.12)bgmNextTime=now+.12;const beat=.34,melody=[659.25,783.99,1046.5,783.99,587.33,783.99,987.77,783.99,659.25,880,1046.5,880,523.25,698.46,880,698.46],bass=[261.63,196,220,174.61];for(let i=0;i<16;i++){const at=bgmNextTime+i*beat;bgmTone(melody[i],at,.22,.028,'triangle');if(i%4===0)bgmTone(bass[i/4],at,.58,.022,'sine');if(i%4===2)bgmTone(melody[i]*2,at,.09,.009,'sine')}bgmNextTime+=beat*16}
-function startBgm(){if(!bgmEnabled||bgmTimer||!G?.running||G?.ended)return;scheduleBgmPhrase();bgmTimer=setInterval(scheduleBgmPhrase,2400);updateSoundToggleUI()}
+function bgmTone(freq,start,dur=.15,vol=.026,type='triangle'){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running')return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,start);g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(vol,start+.012);g.gain.exponentialRampToValueAtTime(.0001,start+dur);o.connect(g);g.connect(audioMaster||audioCtx.destination);o.start(start);o.stop(start+dur+.025)}
+function scheduleBgmPhrase(){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running'||!G?.running||G?.ended)return;const now=audioCtx.currentTime;if(bgmNextTime<now+.1)bgmNextTime=now+.1;const beat=.20,melody=[784,988,1175,1318,1175,988,880,988,1047,1318,1568,1318,1175,1047,988,1175],bass=[196,220,262,247];for(let i=0;i<16;i++){const at=bgmNextTime+i*beat;bgmTone(melody[i],at,i%4===3?.19:.125,.026,'triangle');if(i%4===0){bgmTone(bass[i/4],at,.34,.025,'square');bgmTone(98,at,.07,.032,'sine')}if(i%4===2)bgmTone(740,at,.045,.013,'square');if(i%2===1)bgmTone(melody[i]*2,at+.1,.045,.009,'sine')}bgmNextTime+=beat*16}
+function startBgm(){if(!bgmEnabled||bgmTimer||!G?.running||G?.ended)return;scheduleBgmPhrase();bgmTimer=setInterval(scheduleBgmPhrase,1400);updateSoundToggleUI()}
 function stopBgm(){clearInterval(bgmTimer);bgmTimer=null;bgmNextTime=0;updateSoundToggleUI()}
 function playSfx(name){
  const v=rnd(0,2);
