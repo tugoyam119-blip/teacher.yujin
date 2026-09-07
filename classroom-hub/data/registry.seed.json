@@ -1,7 +1,7 @@
 [
   {
     "id": "social2-unit1",
-    "name": "통합사회2 1단원 교사설명용",
+    "name": "통합사회2 1,3단원 교사설명용",
     "slug": "social2",
     "kind": "수업자료",
     "subject": "통합사회2",
@@ -25,7 +25,7 @@
     "version_label": "v3.1",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "e0e4560bbfdff8db74f84e3f907dc619d1b74760",
+    "last_commit_sha": "ad133f0729c66648b966c7d400df249022110358",
     "last_deployment_id": "90648d26-74b8-4b1c-b29b-f558a831bb0f",
     "histories": [
       {
@@ -54,19 +54,19 @@
         "restore_commit_sha": "a792dcb3692b6747967916055c759c727eefbb0a"
       },
       {
-        "version": 31,
-        "action": "safe-patch",
-        "commit_sha": "e0e4560bbfdff8db74f84e3f907dc619d1b74760",
         "at": "2026-09-07T12:16:16.240Z",
-        "note": "안전 패치 · 자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 파일명과 고정 주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
         "id": "ffe0fd72-0005-43f6-bc6b-15afc38e0bc1",
-        "restore_commit_sha": "80f46bb311e0f4a98a08332a4ec42ee9600b9b91",
+        "note": "안전 패치 · 자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 파일명과 고정 주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
+        "action": "safe-patch",
+        "version": 31,
+        "commit_sha": "e0e4560bbfdff8db74f84e3f907dc619d1b74760",
+        "safe_restore": true,
         "applied_commit_sha": "e0e4560bbfdff8db74f84e3f907dc619d1b74760",
-        "safe_restore": true
+        "restore_commit_sha": "80f46bb311e0f4a98a08332a4ec42ee9600b9b91"
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-09-07T12:16:16.240Z"
+    "updated_at": "2026-09-07T12:28:48.191Z"
   },
   {
     "id": "international-relations",
