@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
-const APP_VERSION = 'v12.5.4';
+const APP_VERSION = 'v12.5.5';
 
 function patchFile(relPath, replacements) {
   const file = path.join(ROOT, relPath);
@@ -27,6 +27,10 @@ patchFile('public/teacher.html', [
 patchFile('public/landing.html', [
   [/v12\.5\.\d+/g, APP_VERSION],
   [/<p class="schedule-note">※ 수행평가는 선생님의 안내에 따라 시작하세요\. 당일 일정은 자동으로 강조됩니다\.<\/p>/g, '']
+]);
+patchFile('public/student_3.js', [
+  [/이 정보는 내 정책의 무엇을 바꾸나요\?<\/h2><p class="muted">1개 이상 선택하세요\.<\/p>/g, '이 정보는 내 정책의 무엇을 바꾸나요?</h2><p class="muted">1~2개 선택하세요.</p>'],
+  [/else if\(state\.newImpacts\.length<3\)state\.newImpacts\.push\(id\)/g, "else if(state.newImpacts.length<2)state.newImpacts.push(id);else return alert('최대 2개까지 선택할 수 있습니다.')"]
 ]);
 
 require('./server.js');
