@@ -1,8 +1,8 @@
 {
   "name": "hr-city-v12-0-global-server-class-session-yujint",
-  "version": "12.5.3",
+  "version": "12.5.4",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v12.5.3 - 학생 첫 화면 일정표 하단 안내 문구 제거 및 기존 기능 유지",
+  "description": "인권도시 정책결정 수행평가 v12.5.4 - 학생 화면 테스트를 매번 STEP 0에서 시작하는 완전 무기록 미리보기로 변경",
   "main": "server.js",
   "scripts": {
     "start": "node bootstrap-v12.5.js"
