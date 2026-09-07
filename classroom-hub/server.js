@@ -681,7 +681,7 @@ app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHe
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
 app.get('/student', (req, res) => res.sendFile(path.join(PUBLIC, 'student.html')));
-app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.8.0', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
+app.get('/health', (req, res) => res.json({ ok: true, name: '유진T 클래스룸', version: '4.8.1', chatgpt_patch_receiver: true, chatgpt_patch_format: 1, storage: pg ? 'postgres' : 'json', github: githubConfigured(), railway: railwayConfigured(), time: iso() }));
 
 app.post('/api/auth/login', (req, res) => {
   if (String(req.body.pin || '') !== TEACHER_PIN) return res.status(401).json({ error: '교사 PIN이 올바르지 않습니다.' });
