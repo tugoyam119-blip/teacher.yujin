@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no">
-<meta name="application-name" content="45칸 학습 보드게임 v62">
-<meta name="description" content="유진T 클래스룸 업로드용 반응형 45칸 학습 보드게임 v62">
+<meta name="application-name" content="45칸 학습 보드게임 v63">
+<meta name="description" content="유진T 클래스룸 업로드용 반응형 45칸 학습 보드게임 v63">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title id="pageTitle">45칸 학습 보드게임 v62</title>
+<title id="pageTitle">45칸 학습 보드게임 v63</title>
 <style>
   :root{
     --bg:#f5f7fb; --card:#fff; --line:#dbe2ee; --text:#1f2937; --muted:#667085;
@@ -261,7 +261,7 @@ a.secondary{display:inline-flex;align-items:center;justify-content:center;border
 <script>
 (() => {
 'use strict';
-const APP_VERSION='v62';
+const APP_VERSION='v63';
 const APP_NAME='45칸 학습 보드게임';
 const AUTO_NOTICE_EXTRA_MS=3000;
 const autoNoticeMs=base=>base+AUTO_NOTICE_EXTRA_MS;
@@ -288,6 +288,7 @@ let audioCtx=null,audioMaster=null,audioLimiter=null;
 let sfxEnabled=JSON.parse(localStorage.getItem('eduBoardSfxEnabled') ?? 'true');
 let bgmEnabled=JSON.parse(localStorage.getItem('eduBoardBgmEnabled') ?? 'true');
 let bgmTimer=null,bgmNextTime=0;
+const bgmNodes=new Set();
 function unlockAudio(){
  try{
   if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
@@ -297,7 +298,7 @@ function unlockAudio(){
  }catch(e){}
 }
 document.addEventListener('pointerdown',unlockAudio,{passive:true});
-function ensureAudioOutput(){if(!audioCtx||audioMaster)return;audioMaster=audioCtx.createGain();audioLimiter=audioCtx.createDynamicsCompressor();audioMaster.gain.value=4.95;audioLimiter.threshold.value=-12;audioLimiter.knee.value=12;audioLimiter.ratio.value=8;audioLimiter.attack.value=.002;audioLimiter.release.value=.16;audioMaster.connect(audioLimiter);audioLimiter.connect(audioCtx.destination)}
+function ensureAudioOutput(){if(!audioCtx||audioMaster)return;audioMaster=audioCtx.createGain();audioLimiter=audioCtx.createDynamicsCompressor();audioMaster.gain.value=2.6;audioLimiter.threshold.value=-18;audioLimiter.knee.value=6;audioLimiter.ratio.value=20;audioLimiter.attack.value=.001;audioLimiter.release.value=.12;audioMaster.connect(audioLimiter);audioLimiter.connect(audioCtx.destination)}
 const SFX_VOLUME_MULTIPLIER=6;
 function tone(freq,dur=.12,type='sine',vol=.03,when=0){
  if(!sfxEnabled) return;
@@ -306,19 +307,21 @@ function tone(freq,dur=.12,type='sine',vol=.03,when=0){
  const now=audioCtx.currentTime+when;
  const o=audioCtx.createOscillator();
  const g=audioCtx.createGain();
+ const filter=audioCtx.createBiquadFilter();
+ filter.type='lowpass';filter.frequency.setValueAtTime(1800,now);filter.Q.value=.45;
  o.type=type;
  o.frequency.setValueAtTime(freq,now);
  const finalVol=Math.min(.5,Math.max(.001,vol*SFX_VOLUME_MULTIPLIER));
  g.gain.setValueAtTime(0.0001,now);
  g.gain.exponentialRampToValueAtTime(finalVol,now+0.01);
  g.gain.exponentialRampToValueAtTime(0.0001,now+dur);
- o.connect(g);g.connect(audioMaster||audioCtx.destination);
+ o.connect(filter);filter.connect(g);g.connect(audioMaster||audioCtx.destination);
  o.start(now); o.stop(now+dur+0.02);
 }
-function bgmTone(freq,start,dur=.17,vol=.026,type='sine'){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running')return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,start);g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(vol,start+.022);g.gain.exponentialRampToValueAtTime(.0001,start+dur);o.connect(g);g.connect(audioMaster||audioCtx.destination);o.start(start);o.stop(start+dur+.03)}
-function scheduleBgmPhrase(){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running'||!G?.running||G?.ended)return;const now=audioCtx.currentTime;if(bgmNextTime<now+.1)bgmNextTime=now+.1;const beat=.20,melody=[523,659,784,880,784,659,587,659,698,880,988,880,784,698,659,784],bass=[196,220,262,247];for(let i=0;i<16;i++){const at=bgmNextTime+i*beat;bgmTone(melody[i],at,i%4===3?.21:.15,.027,'sine');if(i%4===0){bgmTone(bass[i/4],at,.36,.022,'triangle');bgmTone(98,at,.075,.027,'sine')}if(i%4===2)bgmTone(370,at,.06,.008,'triangle');if(i%2===1)bgmTone(melody[i]*1.5,at+.1,.055,.005,'sine')}bgmNextTime+=beat*16}
-function startBgm(){if(!bgmEnabled||bgmTimer||!G?.running||G?.ended)return;scheduleBgmPhrase();bgmTimer=setInterval(scheduleBgmPhrase,1400);updateSoundToggleUI()}
-function stopBgm(){clearInterval(bgmTimer);bgmTimer=null;bgmNextTime=0;updateSoundToggleUI()}
+function bgmTone(freq,start,dur=.17,vol=.026,type='sine'){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running')return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,start);g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(vol,start+.022);g.gain.exponentialRampToValueAtTime(.0001,start+dur);o.connect(g);g.connect(audioMaster||audioCtx.destination);bgmNodes.add(o);o.onended=()=>bgmNodes.delete(o);o.start(start);o.stop(start+dur+.03)}
+function scheduleBgmPhrase(){if(!bgmEnabled||!audioCtx||audioCtx.state!=='running'||!G?.running||G?.ended)return;const now=audioCtx.currentTime;if(bgmNextTime>now+.8)return;if(bgmNextTime<now+.1)bgmNextTime=now+.1;const beat=.20,melody=[523,659,784,880,784,659,587,659,698,880,988,880,784,698,659,784],bass=[196,220,262,247];for(let i=0;i<16;i++){const at=bgmNextTime+i*beat;bgmTone(melody[i],at,i%4===3?.21:.15,.022,'sine');if(i%4===0){bgmTone(bass[i/4],at,.36,.018,'triangle');bgmTone(98,at,.075,.021,'sine')}if(i%4===2)bgmTone(370,at,.06,.006,'triangle');if(i%2===1)bgmTone(melody[i]*1.5,at+.1,.055,.0035,'sine')}bgmNextTime+=beat*16}
+function startBgm(){if(!bgmEnabled||bgmTimer||!G?.running||G?.ended)return;scheduleBgmPhrase();bgmTimer=setInterval(scheduleBgmPhrase,500);updateSoundToggleUI()}
+function stopBgm(){clearInterval(bgmTimer);bgmTimer=null;bgmNextTime=0;bgmNodes.forEach(o=>{try{o.stop()}catch(e){}});bgmNodes.clear();updateSoundToggleUI()}
 function playSfx(name){
  const v=rnd(0,2);
  switch(name){
