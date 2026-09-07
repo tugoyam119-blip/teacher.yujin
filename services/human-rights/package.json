@@ -1,11 +1,11 @@
 {
   "name": "hr-city-v12-0-global-server-class-session-yujint",
-  "version": "12.4.0",
+  "version": "12.5.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v12.4 - 탭 복귀 즉시 수행 시작 동기화",
+  "description": "인권도시 정책결정 수행평가 v12.5 - 반별 수행평가 일정 공지·당일 강조 및 기존 동기화 기능 유지",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node bootstrap-v12.5.js"
   },
   "engines": {
     "node": ">=20"
