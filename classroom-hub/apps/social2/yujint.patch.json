@@ -3,8 +3,8 @@
   "target_id": "social2-unit1",
   "slug": "social2",
   "name": "통합사회2 교사용 설명 페이지",
-  "version": "3.5",
-  "version_label": "수업 카드 세로 여백 최적화 v3.5",
+  "version": "3.6",
+  "version_label": "교과서 원문 교체 v3.6",
   "partial": true,
   "repo_path": "classroom-hub/apps/social2"
 }
