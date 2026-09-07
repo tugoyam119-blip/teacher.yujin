@@ -4,7 +4,7 @@
   "private": true,
   "description": "유진T 클래스룸 v4.8 - 수행평가 실시일·시간 공지",
   "scripts": {
-    "start": "node server.js",
+    "start": "node version-sync.js",
     "dev": "node server.js",
     "check": "node --check server.js"
   },
