@@ -85,6 +85,8 @@ function normalizeActivity(x = {}, existing = {}) {
     schedule_period: text(x.schedule_period ?? existing.schedule_period, 120),
     icon: text(x.icon ?? existing.icon ?? '🔗', 8),
     published: x.published === undefined ? !!existing.published : bool(x.published),
+    archived: x.archived === undefined ? !!existing.archived : bool(x.archived),
+    published_before_archive: x.published_before_archive === undefined ? !!existing.published_before_archive : bool(x.published_before_archive),
     sort_order: Number.isFinite(Number(x.sort_order)) ? Number(x.sort_order) : Number(existing.sort_order || 100),
     deploy_type: deployType,
     repo_path: text(x.repo_path ?? existing.repo_path ?? (deployType === 'static' ? `classroom-hub/apps/${slug}` : `services/${slug}`), 300),
@@ -500,7 +502,9 @@ function normalizeArchiveEntries(file, mode) {
     add(n, data);
   }
   if (mode === 'static') {
-    if (!files['index.html']) {
+    const patchManifest = files['yujint.patch.json'] ? parse(files['yujint.patch.json'].toString('utf8'), {}) : {};
+    const partialPatch = patchManifest.partial === true;
+    if (!partialPatch && !files['index.html']) {
       const htmls = Object.keys(files).filter(x => /\.html?$/i.test(x) && !x.includes('/'));
       if (htmls.length === 1) { files['index.html'] = files[htmls[0]]; if (htmls[0] !== 'index.html') delete files[htmls[0]]; }
       else throw new Error('정적 프로그램 ZIP의 최상위에 index.html이 필요합니다.');
@@ -520,9 +524,9 @@ function repoFileMap(prefix, uploadedFiles) {
   return out;
 }
 
-async function writeLocalStatic(slug, uploadedFiles) {
+async function writeLocalStatic(slug, uploadedFiles, partial = false) {
   const dest = path.join(APPS, slug);
-  await fsp.rm(dest, { recursive: true, force: true });
+  if (!partial) await fsp.rm(dest, { recursive: true, force: true });
   for (const [rel, buf] of Object.entries(uploadedFiles)) {
     const target = path.join(dest, rel);
     const resolved = path.resolve(target), base = path.resolve(dest) + path.sep;
@@ -542,13 +546,17 @@ async function deployUpload({ existing, fields, file }) {
   if (!slug) throw new Error('프로그램 주소 이름이 필요합니다.');
   const uploaded = normalizeArchiveEntries(file, mode);
   const appManifest = mode === 'server' ? parseAppManifest(uploaded) : {};
+  const patchManifest = mode === 'static' && uploaded['yujint.patch.json']
+    ? parse(uploaded['yujint.patch.json'].toString('utf8'), {}) || {}
+    : {};
+  const partialPatch = !!existing && mode === 'static' && patchManifest.partial === true;
   if (mode === 'static' && uploaded['index.html']) uploaded['index.html'] = ensureIpadHtml(uploaded['index.html']);
   const prefix = mode === 'static' ? `classroom-hub/apps/${slug}` : `services/${slug}`;
-  if (mode === 'static') await writeLocalStatic(slug, uploaded);
+  if (mode === 'static') await writeLocalStatic(slug, uploaded, partialPatch);
   const files = repoFileMap(prefix, uploaded);
   let commitSha = '', githubNote = '';
   if (githubConfigured()) {
-    commitSha = await commitFiles({ files, replacePrefix: prefix, message: `유진T 클래스룸: ${existing ? '패치' : '추가'} ${fields.name || existing?.name || slug}` });
+    commitSha = await commitFiles({ files, replacePrefix: partialPatch ? '' : prefix, message: `유진T 클래스룸: ${existing ? '패치' : '추가'} ${fields.name || existing?.name || slug}` });
   } else {
     githubNote = 'GitHub 미연결: 현재 실행 환경에만 반영됨';
     if (mode === 'server') throw new Error('서버형 프로그램 자동 배포는 GitHub 연결이 필요합니다.');
@@ -566,7 +574,7 @@ async function deployUpload({ existing, fields, file }) {
   } else if (RAILWAY_HUB_SERVICE_ID && railwayConfigured() && commitSha) {
     try { railway = await railwayDeployExisting(RAILWAY_HUB_SERVICE_ID, commitSha); } catch (e) { railway = { warning: e.message }; }
   }
-  return { slug, prefix, commitSha, githubNote, railway, appManifest };
+  return { slug, prefix, commitSha, githubNote, railway, appManifest, partialPatch };
 }
 
 
@@ -715,13 +723,13 @@ app.post('/api/auth/logout', (req, res) => { res.setHeader('Set-Cookie', session
 app.get('/api/auth/me', (req, res) => res.json({ teacher: isTeacher(req) }));
 
 app.get('/api/public/activities', async (req, res, next) => {
-  try { const s = await getState(); res.json({ activities: s.activities.filter(a => a.published && (a.audience === 'student' || a.audience === 'both')).sort((a,b)=>a.sort_order-b.sort_order).map(publicActivity), announcements: normalizeAnnouncements(s.announcements) }); } catch (e) { next(e); }
+  try { const s = await getState(); res.json({ activities: s.activities.filter(a => !a.archived && a.published && (a.audience === 'student' || a.audience === 'both')).sort((a,b)=>a.sort_order-b.sort_order).map(publicActivity), announcements: normalizeAnnouncements(s.announcements) }); } catch (e) { next(e); }
 });
 
 app.get('/go/:slug', async (req, res, next) => {
   try {
     const s = await getState(); const a = s.activities.find(x => x.slug === req.params.slug);
-    if (!a || !a.published) return res.status(404).send('활동을 찾을 수 없습니다.');
+    if (!a || a.archived || !a.published) return res.status(404).send('활동을 찾을 수 없습니다.');
     if (a.audience === 'teacher' && !isTeacher(req)) return res.status(403).send('교사 전용 활동입니다.');
     const target = a.target_url || (a.deploy_type==='server' && a.railway_domain ? `https://${a.railway_domain}` : '');
     if (!target) return res.status(503).send('아직 배포 주소가 준비되지 않았습니다.');
@@ -906,6 +914,26 @@ app.put('/api/admin/activities/:id', needTeacher, async (req, res, next) => {
     const s = await getState(); const i = s.activities.findIndex(a => a.id === req.params.id); if (i < 0) return res.status(404).json({ error: '활동을 찾지 못했습니다.' });
     const old = s.activities[i]; const a = normalizeActivity(req.body, old); a.slug = old.slug; a.repo_path = old.repo_path; a.deploy_type = old.deploy_type; a.histories = old.histories || [];
     s.activities[i] = a; await saveState(s); try { await syncRegistryToGithub(s, `유진T 클래스룸: 설정 변경 ${a.name}`); } catch(e) { a.deploy_status='warning'; await saveState(s); } res.json({ ok: true, activity: a });
+  } catch(e){next(e);}
+});
+
+app.post('/api/admin/activities/:id/archive', needTeacher, async (req, res, next) => {
+  try {
+    const s = await getState(); const i = s.activities.findIndex(a => a.id === req.params.id); if (i < 0) return res.status(404).json({ error: '프로그램을 찾지 못했습니다.' });
+    const old = s.activities[i]; const a = normalizeActivity({ ...old, archived: true, published_before_archive: old.published, published: false }, old);
+    s.activities[i] = a; await saveState(s);
+    try { await syncRegistryToGithub(s, `유진T 클래스룸: 프로그램 보관 ${a.name}`); } catch(e) { a.deploy_status='warning'; await saveState(s); }
+    res.json({ ok: true, activity: a });
+  } catch(e){next(e);}
+});
+
+app.post('/api/admin/activities/:id/restore', needTeacher, async (req, res, next) => {
+  try {
+    const s = await getState(); const i = s.activities.findIndex(a => a.id === req.params.id); if (i < 0) return res.status(404).json({ error: '프로그램을 찾지 못했습니다.' });
+    const old = s.activities[i]; const a = normalizeActivity({ ...old, archived: false, published: old.published_before_archive, published_before_archive: false }, old);
+    s.activities[i] = a; await saveState(s);
+    try { await syncRegistryToGithub(s, `유진T 클래스룸: 프로그램 복원 ${a.name}`); } catch(e) { a.deploy_status='warning'; await saveState(s); }
+    res.json({ ok: true, activity: a });
   } catch(e){next(e);}
 });
 

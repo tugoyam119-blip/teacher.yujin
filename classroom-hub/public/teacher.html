@@ -84,7 +84,7 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
   <section class="program-section">
     <div class="section-head-simple">
       <div><h2>내 프로그램</h2><p>☆을 눌러 자주 쓰는 프로그램을 위에 고정할 수 있습니다.</p></div>
-      <div class="searchline"><input id="programSearch" placeholder="프로그램 찾기"></div>
+      <div class="searchline"><input id="programSearch" placeholder="프로그램 찾기"><button class="btnx ghost small" id="archiveBtn">보관함 <span id="archiveCount">0</span></button></div>
     </div>
     <div id="programGrid" class="program-grid"></div>
   </section>
@@ -94,6 +94,12 @@ details.advanced{margin-top:10px;border-top:1px solid #edf1f6;padding-top:9px}de
 <div class="modal-bg" id="manageModal"><div class="modalx">
   <div class="section-head-simple"><div><h2 id="manageName">프로그램 관리</h2><p id="manageMeta"></p></div><button class="btnx ghost small" data-close="manageModal">닫기</button></div>
   <div class="tool-list" id="manageTools"></div>
+</div></div>
+
+<!-- 프로그램 보관함 -->
+<div class="modal-bg" id="archiveModal"><div class="modalx">
+  <div class="section-head-simple"><div><h2>프로그램 보관함</h2><p>보관한 프로그램은 학생 화면에서 숨겨지며 언제든 복원할 수 있습니다.</p></div><button class="btnx ghost small" data-close="archiveModal">닫기</button></div>
+  <div class="tool-list" id="archiveList"></div>
 </div></div>
 
 <!-- 설정 -->
@@ -223,7 +229,7 @@ function renderTargets(){
 }
 function renderPrograms(){
   const q=$('#programSearch').value.trim().toLowerCase();
-  const rows=acts.filter(a=>!q||[a.name,a.subject,a.kind].join(' ').toLowerCase().includes(q)).sort((a,b)=>{
+  const rows=acts.filter(a=>!a.archived&&(!q||[a.name,a.subject,a.kind].join(' ').toLowerCase().includes(q))).sort((a,b)=>{
     const pinDiff=Number(pinnedIds.has(String(b.id)))-Number(pinnedIds.has(String(a.id)));
     if(pinDiff)return pinDiff;
     const orderDiff=Number(a.sort_order||100)-Number(b.sort_order||100);
@@ -243,6 +249,7 @@ function renderPrograms(){
       ${safe?`<div class="undo-row"><span>문제가 생겼다면 바로 이전 상태로</span><button class="btnx danger small" onclick="undoLatest('${esc(a.id)}','${esc(safe.id)}')">마지막 업데이트 취소</button></div>`:''}
     </article>`;
   }).join(''):'<div class="empty">조건에 맞는 프로그램이 없습니다.</div>';
+  $('#archiveCount').textContent=acts.filter(a=>a.archived).length;
 }
 window.togglePin=id=>{id=String(id);if(pinnedIds.has(id))pinnedIds.delete(id);else pinnedIds.add(id);savePins();renderPrograms()}
 window.copyLink=async t=>{try{await navigator.clipboard.writeText(t);alert('학생용 링크를 복사했습니다.')}catch{prompt('아래 링크를 복사하세요.',t)}}
@@ -257,11 +264,16 @@ window.openManage=id=>{
   items.push(`<div class="tool-row"><div><b>연결 확인</b><p>프로그램 주소가 실제로 열리는지 확인합니다.</p></div><button class="btnx secondary small" onclick="checkAct('${esc(id)}')">확인</button></div>`);
   if(a.deploy_type==='server'&&!a.railway_service_id)items.push(`<div class="tool-row"><div><b>서버 최초 연결</b><p>Railway 서버를 처음 만듭니다.</p></div><button class="btnx secondary small" onclick="provisionAct('${esc(id)}')">연결</button></div>`);
   if(a.deploy_type==='server'&&a.railway_service_id)items.push(`<div class="tool-row"><div><b>서버 설정 동기화</b><p>환경변수·저장소·헬스체크 설정을 맞춥니다.</p></div><button class="btnx secondary small" onclick="syncInfraAct('${esc(id)}')">동기화</button></div>`);
+  items.push(`<div class="tool-row"><div><b>보관함으로 이동</b><p>학생 화면과 내 프로그램에서 숨기고, 나중에 복원합니다.</p></div><button class="btnx danger small" onclick="archiveAct('${esc(id)}')">보관</button></div>`);
   $('#manageTools').innerHTML=items.join('');openModal('manageModal');
 }
 window.checkAct=async id=>{try{const j=await api('/api/admin/check/'+encodeURIComponent(id));alert(j.ok?`연결 정상 · HTTP ${j.status}`:`연결 확인 실패\\n${j.detail||j.status||''}`)}catch(e){alert(e.message)}}
 window.provisionAct=async id=>{const a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}' 서버를 처음 만들고 연결할까요?`))return;try{await api('/api/admin/deploy/'+encodeURIComponent(id)+'/provision',{method:'POST'});alert('서버 연결을 요청했습니다.');closeModal('manageModal');await load()}catch(e){alert(e.message)}}
 window.syncInfraAct=async id=>{const a=acts.find(x=>x.id===id);if(!confirm(`'${a.name}' 서버 설정을 동기화할까요?`))return;try{const j=await api('/api/admin/deploy/'+encodeURIComponent(id)+'/sync-infra',{method:'POST'});alert(j.infrastructure?.warning?'동기화 완료 · 확인 필요\\n'+j.infrastructure.warning:'서버 설정 동기화 완료');await load()}catch(e){alert(e.message)}}
+window.archiveAct=async id=>{const a=acts.find(x=>x.id===id);if(!a||!confirm(`'${a.name}'을(를) 보관함으로 옮길까요?\n학생에게는 즉시 숨겨지며 나중에 복원할 수 있습니다.`))return;try{await api('/api/admin/activities/'+encodeURIComponent(id)+'/archive',{method:'POST'});closeModal('manageModal');await load()}catch(e){alert(e.message)}}
+function renderArchive(){const rows=acts.filter(a=>a.archived).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ko'));$('#archiveList').innerHTML=rows.length?rows.map(a=>`<div class="tool-row"><div><b>${esc(a.icon)} ${esc(a.name)}</b><p>${esc(a.subject)} · ${esc(a.kind)} · 학생 화면에서 숨김</p></div><div class="modal-actions"><button class="btnx secondary small" onclick="restoreArchived('${esc(a.id)}')">복원</button><button class="btnx danger small" onclick="deleteArchived('${esc(a.id)}')">목록에서 삭제</button></div></div>`).join(''):'<div class="empty">보관한 프로그램이 없습니다.</div>'}
+window.restoreArchived=async id=>{const a=acts.find(x=>x.id===id);if(!a)return;try{await api('/api/admin/activities/'+encodeURIComponent(id)+'/restore',{method:'POST'});await load();renderArchive()}catch(e){alert(e.message)}}
+window.deleteArchived=async id=>{const a=acts.find(x=>x.id===id);if(!a||!confirm(`'${a.name}'을(를) 관리 목록에서 영구 삭제할까요?\n\nGitHub/Railway의 원본 파일은 안전을 위해 지우지 않습니다.`))return;try{const j=await api('/api/admin/activities/'+encodeURIComponent(id),{method:'DELETE'});alert(j.note||'목록에서 삭제했습니다.');await load();renderArchive()}catch(e){alert(e.message)}}
 window.settingsAct=id=>{const a=acts.find(x=>x.id===id);if(!a)return;$('#setId').value=id;$('#setName').value=a.name;$('#setSubject').value=a.subject;$('#setKind').value=a.kind;$('#setAudience').value=a.audience;$('#setIcon').value=a.icon;$('#setOrder').value=a.sort_order;$('#setDesc').value=a.description||'';$('#setSchoolYear').value=a.school_year||'';$('#setSchedulePeriod').value=a.schedule_period||'';$('#setPublished').value=String(a.published);closeModal('manageModal');openModal('settingsModal')}
 window.historyAct=id=>{const a=acts.find(x=>x.id===id);if(!a)return;$('#historyName').textContent=a.name+' 버전 기록';const h=[...(a.histories||[])].reverse();$('#historyList').innerHTML=h.length?h.map(x=>{const safe=x.id&&x.restore_commit_sha;return `<div class="tool-row"><div><b>${esc(x.action||'기록')} · ${esc('v'+(x.version||''))}</b><p>${esc(new Date(x.at).toLocaleString('ko-KR'))} · ${esc((x.commit_sha||'').slice(0,10))}${x.note?' · '+esc(x.note):''}</p></div>${safe?`<button class="btnx danger small" onclick="restoreHistory('${esc(id)}','${esc(x.id)}')">이 작업 직전으로 복구</button>`:'<span class="hint">과거 기록 · 읽기 전용</span>'}</div>`}).join(''):'<div class="empty">버전 기록이 없습니다.</div>';closeModal('manageModal');openModal('historyModal')}
 window.restoreHistory=async(id,hid)=>{if(!confirm('이 작업 직전의 실제 파일로 복구할까요?'))return;try{await api('/api/admin/chatgpt/app-rollback/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('복구와 재배포를 요청했습니다.');closeModal('historyModal');await load()}catch(e){alert(e.message)}}
@@ -311,6 +323,7 @@ $('#coreHistoryBtn').onclick=()=>{const h=[...(historyData.core_histories||[])].
 window.coreRollback=async hid=>{if(!confirm('교사 화면 자체를 이 작업 직전 상태로 복구할까요?'))return;try{await api('/api/admin/chatgpt/core-rollback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history_id:hid})});alert('코어 복구와 재배포를 요청했습니다.');closeModal('coreModal');await load()}catch(e){alert(e.message)}}
 $('#refreshBtn').onclick=load;$('#logoutBtn').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.href='/'}
 $('#programSearch').oninput=renderPrograms;
+$('#archiveBtn').onclick=()=>{renderArchive();openModal('archiveModal')};
 $('#nName').oninput=e=>{if(!$('#nSlug').dataset.touched)$('#nSlug').value=e.target.value.trim().toLowerCase().replace(/[^a-z0-9가-힣_-]+/g,'-').replace(/^-+|-+$/g,'')}
 $('#nSlug').oninput=()=>$('#nSlug').dataset.touched='1';
 $('#deployType').onchange=e=>{const server=e.target.value==='server';$('#newFileLabel').textContent=server?'서버형 ZIP':'HTML 또는 ZIP';$('#newFileHint').textContent=server?'ZIP 최상위에 package.json과 start 스크립트가 필요합니다.':'정적 프로그램은 index.html을 기준으로 등록합니다.';$('#newFile').accept=server?'.zip':'.html,.htm,.zip'}
