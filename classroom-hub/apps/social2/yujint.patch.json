@@ -3,8 +3,8 @@
   "target_id": "social2-unit1",
   "slug": "social2",
   "name": "통합사회2 교사용 설명 페이지",
-  "version": "4.2",
-  "version_label": "초심자 설명 탭형 하단 레이아웃 v4.2",
+  "version": "4.3",
+  "version_label": "화면 높이 맞춤 및 외부 스크롤 제거 v4.3",
   "partial": true,
   "repo_path": "classroom-hub/apps/social2"
 }
