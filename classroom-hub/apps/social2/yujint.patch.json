@@ -3,8 +3,8 @@
   "target_id": "social2-unit1",
   "slug": "social2",
   "name": "통합사회2 교사용 설명 페이지",
-  "version": "4.8",
-  "version_label": "중복 설명 정리 및 대표 사례 보강 v4.8",
+  "version": "4.9",
+  "version_label": "중복 강조 버튼 제거 및 노란 상자 직접 표시 v4.9",
   "partial": true,
   "repo_path": "classroom-hub/apps/social2"
 }
