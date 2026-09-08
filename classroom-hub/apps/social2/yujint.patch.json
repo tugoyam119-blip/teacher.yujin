@@ -3,8 +3,8 @@
   "target_id": "social2-unit1",
   "slug": "social2",
   "name": "통합사회2 교사용 설명 페이지",
-  "version": "4.0",
-  "version_label": "처음 배우는 학생용 설명 보강 v4.0",
+  "version": "4.1",
+  "version_label": "수업 포인트 제거 및 수업 화면 확장 v4.1",
   "partial": true,
   "repo_path": "classroom-hub/apps/social2"
 }
