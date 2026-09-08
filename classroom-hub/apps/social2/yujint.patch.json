@@ -3,8 +3,8 @@
   "target_id": "social2-unit1",
   "slug": "social2",
   "name": "통합사회2 교사용 설명 페이지",
-  "version": "4.6",
-  "version_label": "자동 축소 화면 오른쪽 잘림 수정 v4.6",
+  "version": "4.7",
+  "version_label": "항상 표시되는 고정 하단 이동줄 v4.7",
   "partial": true,
   "repo_path": "classroom-hub/apps/social2"
 }
