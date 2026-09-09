@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "12.5.6",
+  "version": "12.5.7",
   "app_id": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "healthcheck_path": "/health",
@@ -15,5 +15,5 @@
     "DATA_DIR": "/data"
   },
   "volume_mount_path": "/data",
-  "description": "v12.5.6 · 자기평가서 작성 화면에서 1차 정책·최종 정책과 핵심 판단 ①②③ 제출 답안을 읽기 전용으로 다시 확인 가능 · 새 정보 영향 선택 1~2개 제한 · 학생 화면 테스트 완전 무기록 STEP 0 미리보기 및 기존 일정·채점·시간 기능 유지"
+  "description": "v12.5.7 · 교사 관리실에서도 반·차시를 선택해 수행을 시작하고 종료 가능 · 교실 운영실과 동일한 세션·타이머 상태 공유 · 기존 학생 답안·채점·시간 기록 유지"
 }
