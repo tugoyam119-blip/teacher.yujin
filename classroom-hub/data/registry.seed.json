@@ -21,12 +21,12 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 51,
-    "version_label": "v5.0",
+    "version": 52,
+    "version_label": "v5.1",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "df0d5e913def003d2f86dd34960665bbf5f5d386",
-    "last_deployment_id": "0057d7fa-bb89-456d-8faa-822fee3d0335",
+    "last_commit_sha": "98f7726c36ea6ecac84be5e7e59cb7e90346908a",
+    "last_deployment_id": "4ac71225-8624-4788-a28f-569614d0796e",
     "histories": [
       {
         "at": "2026-08-24T04:19:35.256Z",
@@ -98,19 +98,30 @@
         "restore_commit_sha": "972f6e5d4311340628a025e9849d9868e5110e59"
       },
       {
-        "version": 51,
-        "action": "safe-patch",
-        "commit_sha": "df0d5e913def003d2f86dd34960665bbf5f5d386",
         "at": "2026-09-10T01:52:55.874Z",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "id": "97192c15-28d6-41a9-8cc8-898e16e3ef50",
-        "restore_commit_sha": "7401b5a65230c953987d5a3df7fdfb82ba29ea86",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "action": "safe-patch",
+        "version": 51,
+        "commit_sha": "df0d5e913def003d2f86dd34960665bbf5f5d386",
+        "safe_restore": true,
         "applied_commit_sha": "df0d5e913def003d2f86dd34960665bbf5f5d386",
+        "restore_commit_sha": "7401b5a65230c953987d5a3df7fdfb82ba29ea86"
+      },
+      {
+        "version": 52,
+        "action": "safe-patch",
+        "commit_sha": "98f7726c36ea6ecac84be5e7e59cb7e90346908a",
+        "at": "2026-09-10T02:01:18.549Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "5b150b88-6f96-41d3-ae87-2386b62e005e",
+        "restore_commit_sha": "60dbd410e2f9f57792792b91bdf754e311101413",
+        "applied_commit_sha": "98f7726c36ea6ecac84be5e7e59cb7e90346908a",
         "safe_restore": true
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-09-10T01:52:55.874Z"
+    "updated_at": "2026-09-10T02:01:18.549Z"
   },
   {
     "id": "international-relations",
