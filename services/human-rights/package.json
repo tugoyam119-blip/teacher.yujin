@@ -1,8 +1,8 @@
 {
   "name": "hr-city-v12-0-global-server-class-session-yujint",
-  "version": "12.5.7",
+  "version": "12.6.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v12.5.7 - 교사 관리실 반별 수행 시작·종료 추가",
+  "description": "인권도시 정책결정 수행평가 v12.6.0 - AI 점수·신뢰도·확인 권장 필터와 재채점 안정화",
   "main": "server.js",
   "scripts": {
     "start": "node bootstrap-v12.5.js"
