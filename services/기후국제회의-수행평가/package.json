@@ -1,6 +1,6 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "private": true,
   "description": "기후국제회의 수행평가 v3.10.0 · 분리형 50건 가채점 검증",
   "main": "server.js",

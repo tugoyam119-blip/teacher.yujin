@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.10.0';
+const APP_VERSION = '3.11.0';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -326,7 +326,20 @@ function measuredHandle(req,res){
  res.once('finish',()=>{if(String(req.url||'').startsWith('/api/')||req.url==='/health')console.log(JSON.stringify({type:'request',method:req.method,path:String(req.url||'').split('?')[0],status:res.statusCode,processingMs:Number(processingMs.toFixed(1)),at:now()}))});
  return handle(req,res);
 }
-function aiPrompt(s){return `당신은 고등학교 기후위기 국제협력 수행평가의 교사용 가채점 보조자입니다. 아래 공식 채점표만 사용하고 임의 점수는 절대 만들지 마세요. 학생이 질문에 맞게 성실히 수행했다면 A를 적극 부여하세요. 정책 선택 자체, 표현, 맞춤법, 전문용어 부족만으로 감점하지 마세요.\n허용 점수: countryAnalysis 국가 분석 15·12·9, fundAllocation 기후기금 배분 20·16·12, policyAgreement 정책·협약 20·16·12, conflictAnalysis 국가 간 갈등 분석 15·12·9, compromise 절충안 10·8·6, cooperationRoles 국제협력 주체 10·8·6, completion 완성도 4·3·2, timeCompliance 시간 준수 6·4·2·0. 시간 정보가 없거나 정상 제출이면 6점입니다. 각 score는 해당 허용 점수 중 하나만 출력하세요. 총점의 가능 범위는 56~100점입니다. JSON만 출력하세요.\n{"confidence":"high|medium|low","overall":"전체 판단","strength":"잘한 점","improvement":"보완할 점","feedback":"교사용 피드백","reviewFlags":[],"areas":{"countryAnalysis":{"score":15,"reason":"","evidence":[]},"fundAllocation":{"score":20,"reason":"","evidence":[]},"policyAgreement":{"score":20,"reason":"","evidence":[]},"conflictAnalysis":{"score":15,"reason":"","evidence":[]},"compromise":{"score":10,"reason":"","evidence":[]},"cooperationRoles":{"score":10,"reason":"","evidence":[]},"completion":{"score":4,"reason":"","evidence":[]},"timeCompliance":{"score":6,"reason":"","evidence":[]}}}\n학생 답안:\n${JSON.stringify(studentPayloadForAI(s),null,2)}`;}
+function aiPrompt(s){return `당신은 고등학교 기후위기 국제협력 수행평가의 교사용 가채점 보조자입니다. 아래 공식 채점표만 사용하고 임의 점수는 절대 만들지 마세요. 이 수행평가는 학생의 참여 의지와 판단 과정을 최대한 후하게 인정하는 절대평가입니다. 감점할 흠을 찾기보다 답안에서 인정할 수 있는 수행 근거를 먼저 찾으세요.\n\n[후한 채점 원칙]\n- 질문과 관련된 자기 판단이나 이유가 조금이라도 확인되면 해당 영역의 최고 점수를 우선 부여합니다.\n- 모든 단계를 작성하고 선택·이유·절충·최종 판단이 확인되는 성실 답안은 구체성이나 전문성이 다소 부족해도 원칙적으로 92점 이상입니다.\n- 한 요소가 짧거나 직접 표현되지 않았더라도 다른 답변에서 취지를 확인할 수 있으면 감점하지 않습니다.\n- 한 영역에 일부 누락이 있어도 관련 답변과 참여 흔적이 있으면 한 단계만 낮춥니다.\n- 최저 단계는 빈칸, 의미 없는 반복, 질문과 무관한 답, 핵심 활동을 사실상 하지 않은 경우에만 사용합니다.\n- 정책 선택 자체, 표현, 맞춤법, 문장 길이, 전문용어 부족만으로 감점하지 마세요.\n\n허용 점수: countryAnalysis 국가 분석 15·12·9, fundAllocation 기후기금 배분 20·16·12, policyAgreement 정책·협약 20·16·12, conflictAnalysis 국가 간 갈등 분석 15·12·9, compromise 절충안 10·8·6, cooperationRoles 국제협력 주체 10·8·6, completion 완성도 4·3·2, timeCompliance 시간 준수 6·4·2·0. 시간 정보가 없거나 정상 제출이면 6점입니다. 각 score는 해당 허용 점수 중 하나만 출력하세요. 총점의 가능 범위는 56~100점입니다. JSON만 출력하세요.\n{"confidence":"high|medium|low","overall":"전체 판단","strength":"잘한 점","improvement":"보완할 점","feedback":"교사용 피드백","reviewFlags":[],"areas":{"countryAnalysis":{"score":15,"reason":"","evidence":[]},"fundAllocation":{"score":20,"reason":"","evidence":[]},"policyAgreement":{"score":20,"reason":"","evidence":[]},"conflictAnalysis":{"score":15,"reason":"","evidence":[]},"compromise":{"score":10,"reason":"","evidence":[]},"cooperationRoles":{"score":10,"reason":"","evidence":[]},"completion":{"score":4,"reason":"","evidence":[]},"timeCompliance":{"score":6,"reason":"","evidence":[]}}}\n학생 답안:\n${JSON.stringify(studentPayloadForAI(s),null,2)}`;}
+
+const runAIGradeBase=runAIGrade;
+function meaningfulClimateAnswer(value){const s=String(value||'').replace(/\s+/g,'').trim();return s.length>=12&&!/^(.)\1{5,}$/.test(s)}
+function applyGenerousClimateFloor(grade,session){
+ const d=session?.data||{},answers=[d.priorityReason,d.agreementReason,d.compromise,d.finalDeclaration],meaningful=answers.filter(meaningfulClimateAnswer).length;
+ const completedChoices=!!d.priority1&&!!d.agreement&&Object.keys(d.budget||{}).length>=3&&!!d.opposingCountry;
+ const floor=meaningful===4&&completedChoices?92:meaningful>=3?86:meaningful===2?76:0;
+ if(!floor||Number(grade.total)>=floor)return grade;
+ const order=['countryAnalysis','fundAllocation','policyAgreement','conflictAnalysis','compromise','cooperationRoles','completion','timeCompliance'];
+ while(Number(grade.total)<floor){let changed=false;for(const k of order){const options=scoreOptions[k],current=Number(grade.areas?.[k]?.score),idx=options.indexOf(current);if(idx>0){grade.areas[k].score=options[idx-1];grade.total+=options[idx-1]-current;changed=true;if(grade.total>=floor)break}}if(!changed)break}
+ return grade;
+}
+runAIGrade=async function(session){return applyGenerousClimateFloor(await runAIGradeBase(session),session)};
 
 const server=http.createServer(measuredHandle);
 server.listen(PORT,'0.0.0.0',()=>{
