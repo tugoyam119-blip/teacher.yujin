@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
-const APP_VERSION = 'v12.6.0';
+const APP_VERSION = 'v12.9.0';
 
 function patchFile(relPath, replacements) {
   const file = path.join(ROOT, relPath);
@@ -17,17 +17,20 @@ function patchFile(relPath, replacements) {
 
 // 배포 컨테이너에서 실행 직전에 버전 표기와 학생 UI 수정사항을 한 값으로 통일한다.
 // 기존 학생 답안/명단/채점/볼륨 데이터에는 손대지 않는다.
-patchFile('server.js', [[/v12\.(?:4|5|6)(?:\.\d+)?/g, APP_VERSION]]);
-patchFile('public/student_1.js', [[/const VERSION='v12\.(?:4|5|6)(?:\.\d+)?';/, `const VERSION='${APP_VERSION}';`]]);
-patchFile('public/student.html', [[/인권도시 정책결정 수행평가 v12\.(?:0|5|6)(?:\.\d+)?/g, `인권도시 정책결정 수행평가 ${APP_VERSION}`]]);
+patchFile('server.js', [[/v12\.\d+(?:\.\d+)?/g, APP_VERSION]]);
+patchFile('public/student_1.js', [[/const VERSION='v12\.\d+(?:\.\d+)?';/, `const VERSION='${APP_VERSION}';`]]);
+patchFile('public/student.html', [[/인권도시 정책결정 수행평가 v12\.\d+(?:\.\d+)?/g, `인권도시 정책결정 수행평가 ${APP_VERSION}`]]);
 patchFile('public/teacher.html', [
-  [/교사용 v12\.(?:4|5|6)(?:\.\d+)?/g, `교사용 ${APP_VERSION}`],
-  [/const VERSION='v12\.(?:4|5|6)(?:\.\d+)?';/g, `const VERSION='${APP_VERSION}';`]
+  [/교사용 v12\.\d+(?:\.\d+)?/g, `교사용 ${APP_VERSION}`],
+  [/const VERSION='v12\.\d+(?:\.\d+)?';/g, `const VERSION='${APP_VERSION}';`]
 ]);
 patchFile('public/landing.html', [
-  [/v12\.(?:5|6)\.\d+/g, APP_VERSION],
+  [/v12\.\d+(?:\.\d+)?/g, APP_VERSION],
   [/<p class="schedule-note">※ 수행평가는 선생님의 안내에 따라 시작하세요\. 당일 일정은 자동으로 강조됩니다\.<\/p>/g, '']
 ]);
+patchFile('public/operate.html', [[/v12\.\d+(?:\.\d+)?/g, APP_VERSION]]);
+patchFile('public/classroom.html', [[/v12\.\d+(?:\.\d+)?/g, APP_VERSION]]);
+patchFile('public/guide.html', [[/v12\.\d+(?:\.\d+)?/g, APP_VERSION]]);
 patchFile('public/student_3.js', [
   [/이 정보는 내 정책의 무엇을 바꾸나요\?<\/h2><p class="muted">1개 이상 선택하세요\.<\/p>/g, '이 정보는 내 정책의 무엇을 바꾸나요?</h2><p class="muted">1~2개 선택하세요.</p>'],
   [/else if\(state\.newImpacts\.length<3\)state\.newImpacts\.push\(id\)/g, "else if(state.newImpacts.length<2)state.newImpacts.push(id);else return alert('최대 2개까지 선택할 수 있습니다.')"],

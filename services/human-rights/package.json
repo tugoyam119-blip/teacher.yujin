@@ -1,8 +1,8 @@
 {
   "name": "hr-city-v12-0-global-server-class-session-yujint",
-  "version": "12.8.0",
+  "version": "12.9.0",
   "private": true,
-  "description": "인권도시 정책결정 수행평가 v12.7.0 - 분리형 50건 가채점 검증",
+  "description": "인권도시 정책결정 수행평가 v12.9.0 - 저장되지 않는 교사용 학생 화면 시범 모드",
   "main": "server.js",
   "scripts": {
     "start": "node bootstrap-v12.5.js"

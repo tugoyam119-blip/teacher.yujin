@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "type": "server",
-  "version": "12.5.7",
+  "version": "12.9.0",
   "app_id": "human-rights",
   "name": "인권도시 정책결정 수행평가",
   "healthcheck_path": "/health",
@@ -15,5 +15,5 @@
     "DATA_DIR": "/data"
   },
   "volume_mount_path": "/data",
-  "description": "v12.5.7 · 교사 관리실에서도 반·차시를 선택해 수행을 시작하고 종료 가능 · 교실 운영실과 동일한 세션·타이머 상태 공유 · 기존 학생 답안·채점·시간 기록 유지"
+  "description": "v12.9.0 · 000000 교사용 시범 계정은 서버와 기기에 기록하지 않음 · 새로고침 시 로그인 화면에서 새 시범 시작 · 기존 학생 답안·채점·시간 기록 유지"
 }
