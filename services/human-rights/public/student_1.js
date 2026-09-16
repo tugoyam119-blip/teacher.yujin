@@ -8,7 +8,7 @@ window.addEventListener('error',e=>{console.error(e.error||e.message);fatalStude
 window.addEventListener('unhandledrejection',e=>{console.error(e.reason||e);});
 const API_MODE=location.protocol==='http:'||location.protocol==='https:';
 const qs=new URLSearchParams(location.search);
-const observerMode=location.pathname==='/observe';
+let observerMode=false;try{observerMode=localStorage.getItem('HR10_ACTIVE_ROLE')==='observer'&&qs.get('test')!=='1'}catch{}
 const teacherMode=qs.get('teacher')==='1';
 const testMode=!observerMode&&qs.get('test')==='1';
 if(teacherMode){location.replace('/teacher');}
