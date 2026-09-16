@@ -28,5 +28,21 @@ test('submitted answers reopen only in active remaining regular time; preserve r
   put('control.json',{...baseControl,period_type:'2',session_id:'session2'});
   assert.equal((await post('/api/submit',{payload:revised})).status,200);
   const final=read('progress/10101.json');assert.equal(final.submission_count,2);assert.equal(final.first_submitted_at,original.first_submitted_at);assert.equal(final.payload.answer1,revised.answer1);assert.equal(final.previous_submission.payload.answer1,text);
+  // A completed reflection cannot be downgraded by a stale draft request.
+  assert.equal((await post('/api/self-eval',{text:'짧은 초안',draft:true})).status,409);
+  put('progress/10101.json',{...final,self_evaluation:null});
+  const timeBefore=fs.readFileSync(path.join(dir,'time/10101.json'),'utf8');
+  const draftText='  아직 작성 중인 자기평가서입니다.\n다음에 이어 쓰겠습니다.  ';
+  assert.equal((await post('/api/self-eval',{text:draftText,draft:true,name:'다른이름'})).status,403);
+  assert.equal((await post('/api/self-eval',{text:draftText,draft:true})).status,200);
+  const saved=await (await fetch('http://127.0.0.1:3419/api/progress?student_id=10101')).json();
+  assert.equal(saved.self_evaluation.text,draftText);assert.equal(saved.self_evaluation.submitted_at,null);assert(saved.self_evaluation.saved_at);
+  assert.equal((await post('/api/self-eval',{text:draftText})).status,400);
+  assert.equal((await post('/api/self-eval',{text:'가'.repeat(1001),draft:true})).status,400);
+  assert.equal((await post('/api/self-eval',{text:'',draft:true})).status,200);
+  const complete=Array.from({length:400},(_,i)=>String.fromCharCode(0xac00+i)).join('');
+  assert.equal((await post('/api/self-eval',{text:complete})).status,200);assert(read('progress/10101.json').self_evaluation.submitted_at);
+  assert.equal(read('progress/10101.json').payload.answer1,revised.answer1);
+  assert.equal(fs.readFileSync(path.join(dir,'time/10101.json'),'utf8'),timeBefore);
  }finally{const exited=once(child,'exit');child.kill();await exited;fs.rmSync(dir,{recursive:true,force:true})}
 });

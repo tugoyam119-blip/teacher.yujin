@@ -40,7 +40,7 @@
       ['정책의 한계', p.limitation === 'other' ? p.limitationOther || '' : label(p.limitation)],
       ['보완 방법', p.remedy === 'other' ? p.remedyOther || '' : p.remedy === 'budget' ? '추가 예산과 외부 지원 확보' : label(p.remedy)],
       ['정책 영향·보완', p.answer2 || ''], ['새 정보의 영향', list(p.newImpacts)], ['영향 정도', label(p.impactStrength)],
-      ['최종 판단 유형', label(p.finalDecision)], ['최종 정책', list(p.finalStations)], ['최종 판단', p.answer3 || ''], ['자기평가서', r.self_evaluation?.text || '']
+      ['최종 판단 유형', label(p.finalDecision)], ['최종 정책', list(p.finalStations)], ['최종 판단', p.answer3 || ''], ['자기평가서', r.self_evaluation?.text || ''], ['자기평가서 상태', r.self_evaluation?.submitted_at?'완료':r.self_evaluation?'임시저장':'미작성']
     ];
   }
   function exportTable(rows) {
