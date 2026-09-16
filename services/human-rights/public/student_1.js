@@ -8,17 +8,18 @@ window.addEventListener('error',e=>{console.error(e.error||e.message);fatalStude
 window.addEventListener('unhandledrejection',e=>{console.error(e.reason||e);});
 const API_MODE=location.protocol==='http:'||location.protocol==='https:';
 const qs=new URLSearchParams(location.search);
+const observerMode=location.pathname==='/observe';
 const teacherMode=qs.get('teacher')==='1';
-const testMode=qs.get('test')==='1';
+const testMode=!observerMode&&qs.get('test')==='1';
 if(teacherMode){location.replace('/teacher');}
 function storageOrNull(which){try{const st=window[which];const k='__hr_probe_'+Date.now();st.setItem(k,'1');st.removeItem(k);return st}catch(e){console.warn(which+' unavailable',e);return null}}
 const LS=storageOrNull('localStorage');
 const SS=storageOrNull('sessionStorage');
 try{if('serviceWorker' in navigator&&navigator.serviceWorker?.getRegistrations)navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if(window.caches?.keys)window.caches.keys().then(keys=>keys.filter(k=>/^hr-v/i.test(k)).forEach(k=>window.caches.delete(k))).catch(()=>{})}catch(e){}
 function safeParse(v,fallback=null){try{return v?JSON.parse(v):fallback}catch(e){return fallback}}
-function safeGet(store,key,fallback=''){try{return store?store.getItem(key)??fallback:fallback}catch(e){return fallback}}
-function safeSet(store,key,value){try{if(store)store.setItem(key,String(value));return true}catch(e){return false}}
-function safeRemove(store,key){try{if(store)store.removeItem(key);return true}catch(e){return false}}
+function safeGet(store,key,fallback=''){if(observerMode)key='OBSERVER_'+key;try{return store?store.getItem(key)??fallback:fallback}catch(e){return fallback}}
+function safeSet(store,key,value){if(observerMode)key='OBSERVER_'+key;try{if(store)store.setItem(key,String(value));return true}catch(e){return false}}
+function safeRemove(store,key){if(observerMode)key='OBSERVER_'+key;try{if(store)store.removeItem(key);return true}catch(e){return false}}
 const RESOURCE_IMAGES={
   "structure":"resource_01_structure.webp",
   "usage":"resource_02_usage.webp",

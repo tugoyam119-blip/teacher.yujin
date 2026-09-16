@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>참관 교사 명단 관리</title><link rel="stylesheet" href="/student.css"></head>
+<body><main class="wrap"><section class="card"><a href="/manage">← 교사 관리 화면</a><h1>참관 교사 명단 관리</h1><p>이름만 한 줄에 하나씩 입력하세요. 연락처는 등록하지 않습니다. 명단에 있는 교사는 이름으로 입장해 시간 제한 없이 참여할 수 있습니다.</p><label for="pin">관리 PIN</label><input id="pin" type="password" autocomplete="current-password"><p><button class="btn secondary" id="load">명단 불러오기</button></p><label for="names">교사 이름</label><textarea id="names" rows="18" disabled></textarea><p id="count"></p><button class="btn" id="save" disabled>명단 저장</button> <a class="btn secondary" href="/observe" target="_blank">교사 참여 화면</a><p id="msg" role="status"></p><p class="muted">명단에서 이름을 빼면 해당 이름의 참여가 중지됩니다. 동명이인은 같은 체험 기록을 사용하므로 구분할 수 있는 이름으로 등록하세요.</p></section></main>
+<script>
+const pin=document.getElementById('pin'),names=document.getElementById('names'),msg=document.getElementById('msg'),save=document.getElementById('save');
+try{pin.value=sessionStorage.getItem('HR102_TPIN')||''}catch{}
+function count(){document.getElementById('count').textContent=names.value.split('\n').filter(x=>x.trim()).length+'명'}
+async function request(action){save.disabled=true;document.getElementById('load').disabled=true;msg.textContent='처리 중…';try{const res=await fetch('/api/teacher/observers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:pin.value,action,names:names.value.split('\n')})}),data=await res.json();if(!res.ok)throw Error(data.error||'처리하지 못했습니다.');names.value=data.names.join('\n');names.disabled=false;count();msg.textContent=action==='save'?'명단을 저장했습니다.':'명단을 불러왔습니다.'}catch(e){msg.textContent=e.message}finally{save.disabled=names.disabled;document.getElementById('load').disabled=false}}
+document.getElementById('load').onclick=()=>request('get');save.onclick=()=>request('save');names.oninput=count;if(pin.value)request('get');
+</script></body></html>
