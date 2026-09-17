@@ -61,3 +61,5 @@ body.zoomOpen{overflow:hidden}.imgZoom{position:fixed;inset:0;background:rgba(9,
 @media(max-width:480px){.mobileToolBtns{max-width:76%}.mobileSaveState{max-width:24%}}
 
 .btn.needsAttention{background:#64748b;cursor:pointer}.btn.needsAttention:hover{background:#475569}
+
+.visitorExperience .mobileHelpBtn{display:none}

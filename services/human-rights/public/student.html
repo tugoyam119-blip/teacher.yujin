@@ -23,9 +23,9 @@
   </div>
 </div>
 
-<script src="student_1.js?v=12.9.4"></script>
-<script src="progress-checks.js?v=12.9.4"></script>
-<script src="student_2.js?v=12.9.4"></script>
+<script src="student_1.js?v=12.9.6"></script>
+<script src="progress-checks.js?v=12.9.6"></script>
+<script src="student_2.js?v=12.9.6"></script>
 <script>
 (function(){
   const schedule=[
@@ -56,7 +56,7 @@
   document.head.appendChild(style);
   if(typeof loginView!=='function')return;
   const base=loginView;
-  loginView=function(){base();const card=document.getElementById('sid')?.closest('.card');if(card&&!document.querySelector('.hrs-card'))card.insertAdjacentHTML('afterend',html());};
+  loginView=function(){base();if(visitorMode)return;const card=document.getElementById('sid')?.closest('.card');if(card&&!document.querySelector('.hrs-card'))card.insertAdjacentHTML('afterend',html());};
 })();
 </script>
 <script>
@@ -90,6 +90,7 @@
   };
 })();
 </script>
-<script src="student_3.js?v=12.9.4"></script>
+<script src="visitor.js?v=12.9.6"></script>
+<script src="student_3.js?v=12.9.6"></script>
 </body>
 </html>
