@@ -36,7 +36,7 @@
         "restore_commit_sha": "a792dcb3692b6747967916055c759c727eefbb0a"
       },
       {
-        "at": "2026-09-07T12:16:16.240Z",
+        "at": "2026-09-07T12:16:16.24Z",
         "id": "ffe0fd72-0005-43f6-bc6b-15afc38e0bc1",
         "note": "안전 패치 · 자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 파일명과 고정 주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
         "action": "safe-patch",
@@ -47,7 +47,7 @@
         "restore_commit_sha": "80f46bb311e0f4a98a08332a4ec42ee9600b9b91"
       },
       {
-        "at": "2026-09-10T00:34:05.930Z",
+        "at": "2026-09-10T00:34:05.93Z",
         "id": "7995bdd7-f1d3-4ef3-9ee4-b7242d5205d3",
         "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "action": "safe-patch",
@@ -211,7 +211,7 @@
     "manage_url": "",
     "sort_order": 30,
     "target_url": "/apps/boardgame/",
-    "updated_at": "2026-08-31T06:50:08.950Z",
+    "updated_at": "2026-08-31T06:50:08.95Z",
     "deploy_type": "static",
     "description": "45칸 학습 보드게임",
     "update_mode": "chatgpt",
@@ -302,7 +302,7 @@
         "restore_commit_sha": "b2cbc91af087b9cea901c627c3ddef3ff70e66e1"
       },
       {
-        "at": "2026-09-04T04:58:27.740Z",
+        "at": "2026-09-04T04:58:27.74Z",
         "note": "자동 연결: 교사가 직접 대상 선택",
         "action": "auto-patch",
         "version": 124,
@@ -354,7 +354,7 @@
         "commit_sha": "424ca34cb133603f5b572c641fa74d5a5c4b0b12"
       },
       {
-        "at": "2026-08-24T00:30:51.740Z",
+        "at": "2026-08-24T00:30:51.74Z",
         "note": "자동 연결: 교사가 직접 대상 선택",
         "action": "auto-patch",
         "version": 2,
@@ -390,7 +390,7 @@
     "audience": "teacher",
     "histories": [
       {
-        "at": "2026-08-23T10:22:14.240Z",
+        "at": "2026-08-23T10:22:14.24Z",
         "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
         "action": "auto-patch",
         "version": 222,
@@ -432,7 +432,7 @@
         "commit_sha": "1347a5062607cf3e1bf4434a861e277269370e0d"
       },
       {
-        "at": "2026-08-23T13:54:24.390Z",
+        "at": "2026-08-23T13:54:24.39Z",
         "note": "자동 연결: 교사가 직접 대상 선택",
         "action": "auto-patch",
         "version": 242,
@@ -512,7 +512,7 @@
         "restore_commit_sha": "5fd495eceace20813a1c3cfaec47b4fe2aaf8f8f"
       },
       {
-        "at": "2026-08-24T08:58:19.760Z",
+        "at": "2026-08-24T08:58:19.76Z",
         "id": "06b9484f-dd02-4970-b9b6-90259eff5ca5",
         "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "action": "safe-patch",
@@ -617,10 +617,10 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 1,
-    "version_label": "v1",
+    "version": 2,
+    "version_label": "v7.36",
     "update_mode": "chatgpt",
-    "deploy_status": "deploying",
+    "deploy_status": "ready",
     "last_commit_sha": "c4b3ff3079d44bd914c6e9912b3d0ddf8ab1b0e2",
     "last_deployment_id": "4f519078-df7e-4a70-9159-e7dcc94010cb",
     "histories": [
@@ -633,6 +633,6 @@
       }
     ],
     "created_at": "2026-09-17T03:31:53.263Z",
-    "updated_at": "2026-09-17T03:31:53.263Z"
+    "updated_at": "2026-09-17T04:19:51.444Z"
   }
 ]
