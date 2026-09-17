@@ -25,6 +25,17 @@ test('export retains full answers, human labels, zero scores, missing scores and
   assert.equal(value(0,'1차 정책'),'복지센터역');assert.equal(value(0,'보완 방법'),'추가 예산과 외부 지원 확보');
   assert.equal(value(0,'AI 자료·정책 인용 근거'),'첫째 줄');assert.equal(value(0,'자기평가서'),'자기평가');
 });
+test('reflection filters and dedicated export preserve drafts, complete text and missing records',()=>{
+ const rows=[{...fixture[0],self_evaluation:{text:'=1+1\n둘째 줄 <script>시험</script>',saved_at:'2026-09-17T01:00:00Z'}},{...fixture[1],self_evaluation:{text:'완료한 글',submitted_at:'2026-09-17T02:00:00Z'}},fixture[2]];
+ assert.equal(M.filter(rows,{status:'reflection_draft'}).length,1);
+ assert.equal(M.filter(rows,{status:'reflection_complete'})[0].student_id,'10201');
+ assert.equal(M.filter(rows,{status:'reflection_empty'})[0].student_id,'10102');
+ assert.equal(M.filter(rows,{status:'reflection_complete',class_no:1}).length,0);
+ const table=M.reflectionTable(M.filter(rows));assert.equal(table.rows.length,3);
+ assert.equal(table.rows[0][5],rows[0].self_evaluation.text);assert.equal(table.rows[0][4],rows[0].self_evaluation.text.length);
+ assert.equal(table.rows[1][3],'미작성');assert.equal(table.rows[2][6],rows[1].self_evaluation.submitted_at);
+ assert(!table.headers.includes('AI 잠정총점'));
+});
 test('authenticated results API and filtered XLSX contain matching students',async()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'hr-results-test-'));
   for(const sub of ['progress','grades'])fs.mkdirSync(path.join(dir,sub));
@@ -43,8 +54,12 @@ test('authenticated results API and filtered XLSX contain matching students',asy
     const xlsx=await fetch(base+'/api/teacher/export.xlsx?pin=test-only&class_no=1&status=graded&q=시험가');assert.equal(xlsx.status,200);
     const buffer=Buffer.from(await xlsx.arrayBuffer());assert.equal(buffer.subarray(0,2).toString(),'PK');
     const xml=buffer.toString('utf8');assert(xml.includes('시험가'));assert(!xml.includes('시험나'));assert(!xml.includes('시험다'));assert(xml.includes('&lt;script&gt;'));assert(xml.includes('=1+1'));assert(!xml.includes('<f>'));assert(xml.includes('첫째 줄'));
+    const reflection=await fetch(base+'/api/teacher/export.xlsx?pin=test-only&view=reflections&class_no=1&status=reflection_draft');
+    assert.equal(reflection.status,200);const reflectionXml=Buffer.from(await reflection.arrayBuffer()).toString('utf8');
+    assert(reflectionXml.includes('시험가'));assert(!reflectionXml.includes('시험다'));assert(!reflectionXml.includes('시험나'));assert(reflectionXml.includes('자기평가'));assert(reflectionXml.includes('임시저장'));assert(!reflectionXml.includes('AI 잠정총점'));
+    assert.equal((await fetch(base+'/api/teacher/export.xlsx?pin=wrong&view=reflections')).status,403);
     const empty=await fetch(base+'/api/teacher/export.xlsx?pin=test-only&q=no-match');assert.equal(empty.status,200);
     for(const file of ['teacher-results.html','teacher-results.js','results-model.js'])assert.equal((await fetch(base+'/'+file)).status,200);
-    const manage=await (await fetch(base+'/manage')).text();assert(manage.includes('학생 답안 한번에 보기'));assert(manage.includes('AI 가채점 결과 한번에 보기'));
+    const manage=await (await fetch(base+'/manage')).text();assert(manage.includes('자기평가서 모아보기·다운로드'));assert(manage.includes('학생 답안 한번에 보기'));assert(manage.includes('AI 가채점 결과 한번에 보기'));
   } finally { const exited=once(child,'exit');child.kill();await exited;fs.rmSync(dir,{recursive:true,force:true}); }
 });

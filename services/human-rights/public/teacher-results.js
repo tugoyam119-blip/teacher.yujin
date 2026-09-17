@@ -1,7 +1,7 @@
 'use strict';
 const M = ResultsModel, $ = id => document.getElementById(id);
 const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let records = [], pin = '', view = new URLSearchParams(location.search).get('view') === 'grades' ? 'grades' : 'answers';
+let records = [], pin = '', view = (['answers','grades','reflections'].includes(new URLSearchParams(location.search).get('view')) ? new URLSearchParams(location.search).get('view') : 'answers');
 let loading = false, generation = 0;
 try { pin = sessionStorage.getItem('HR102_TPIN') || ''; } catch {}
 function options() { return {class_no:$('classFilter').value,status:$('statusFilter').value,q:$('search').value}; }
@@ -32,6 +32,10 @@ function answerCard(r) {
   const extra=entries.filter(([name])=>!['정책 선택 이유','정책 영향·보완','최종 판단'].includes(name));
   return `<article class="panel">${head(r)}<div class="choices">1차 정책: ${esc(M.list(p.policyStations)||'미선택')} → 최종 정책: ${esc(M.list(p.finalStations)||'미선택')}</div><div class="answers">${[['정책 선택 이유',p.answer1],['정책 영향·보완',p.answer2],['최종 판단',p.answer3]].map(([title,text])=>`<section><h3>${title}</h3><div class="answer-text">${esc(text || '아직 작성하지 않았습니다.')}</div></section>`).join('')}</div><details><summary>선택 항목·자기평가서 모두 보기</summary>${extra.map(([title,text])=>`<p class="answer-text"><b>${title}</b> · ${esc(text||'미작성')}</p>`).join('')}</details></article>`;
 }
+function reflectionCard(r) {
+  const e=r.self_evaluation, date=v=>v?new Date(v).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}):'—';
+  return `<article class="panel"><div class="student-head"><h2>${esc(r.class_no)}반 · ${esc(r.student_id)} ${esc(r.name)}</h2><span class="badge${e?.submitted_at?'':' warn'}">${M.reflectionStatus(r)}</span><span class="muted">${(e?.text||'').length}자</span></div><div class="answer-text">${esc(e?.text || (e?'아직 저장된 내용이 없습니다.':'아직 자기평가서를 작성하지 않았습니다.'))}</div><p class="muted">마지막 저장: ${esc(date(e?.saved_at||e?.submitted_at))} · 완료: ${esc(date(e?.submitted_at))}</p></article>`;
+}
 function gradeCard(r) {
   const a=r.ai_grade;
   if(!a) return `<article class="panel">${head(r)}<p class="muted">아직 AI 가채점 결과가 없습니다.</p></article>`;
@@ -42,19 +46,24 @@ function scoreTable(rows) {
 }
 function render() {
   const rows=M.filter(records,options());
+  $('reflectionsTab').setAttribute('aria-pressed',String(view==='reflections'));
+  $('download').textContent=view==='reflections'?'자기평가서 Excel 다운로드':'조회 결과 Excel 다운로드';
+  $('downloadHint').textContent=view==='reflections'?'현재 조회한 학생의 학번·이름, 자기평가서 전문, 작성 상태·글자 수·저장 시각을 내려받습니다.':'현재 반·상태·검색 조건에 맞는 학생의 답안, AI 가채점, 교사 채점을 함께 내려받습니다.';
+  $('gradeHint').hidden=view==='reflections';
   $('answersTab').setAttribute('aria-pressed',String(view==='answers'));$('gradesTab').setAttribute('aria-pressed',String(view==='grades'));
   $('summary').textContent=`조회 ${rows.length}명 / 전체 ${records.length}명 · 제출 ${rows.filter(r=>r.submitted).length}명 · AI 가채점 ${rows.filter(r=>r.ai_grade).length}명 · 교사 채점 ${rows.filter(r=>r.teacher_grade).length}명`;
+  if(view==='reflections')$('summary').textContent=`조회 ${rows.length}명 / 전체 ${records.length}명 · 완료 ${rows.filter(r=>M.reflectionStatus(r)==='완료').length}명 · 임시저장 ${rows.filter(r=>M.reflectionStatus(r)==='임시저장').length}명 · 미작성 ${rows.filter(r=>M.reflectionStatus(r)==='미작성').length}명`;
   $('download').disabled=loading || !rows.length;
-  $('results').innerHTML=rows.length?(view==='answers'?rows.map(answerCard).join(''):scoreTable(rows)+rows.map(gradeCard).join('')):'<div class="panel empty">조건에 맞는 학생이 없습니다. 반·상태·검색 조건을 확인해 주세요.</div>';
+  $('results').innerHTML=rows.length?(view==='reflections'?rows.map(reflectionCard).join(''):view==='answers'?rows.map(answerCard).join(''):scoreTable(rows)+rows.map(gradeCard).join('')):'<div class="panel empty">조건에 맞는 학생이 없습니다. 반·상태·검색 조건을 확인해 주세요.</div>';
 }
 async function download() {
-  const query=new URLSearchParams({...options(),pin}); $('download').disabled=true;
+  const query=new URLSearchParams({...options(),pin,view}); $('download').disabled=true;
   try {
     const response=await fetch('/api/teacher/export.xlsx?'+query,{cache:'no-store'});
     if(response.status===403) { lock();throw Error('인증이 만료되었습니다. 다시 로그인해 주세요.'); }
     if(!response.ok) throw Error('Excel 다운로드에 실패했습니다. 다시 시도해 주세요.');
     const blob=await response.blob(),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url;a.download=`인권도시_${Number(query.get('class_no'))?query.get('class_no')+'반':'전체반'}_답안_AI가채점_교사채점_${new Date().toISOString().slice(0,10)}.xlsx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    a.href=url;a.download=`인권도시_${Number(query.get('class_no'))?query.get('class_no')+'반':'전체반'}_${query.get('view')==='reflections'?'자기평가서':'답안_AI가채점_교사채점'}_${new Date().toISOString().slice(0,10)}.xlsx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
     message('Excel 다운로드를 시작했습니다. 브라우저 다운로드 목록에서 확인하세요.');
   } catch(e) { message(e.message,true); } finally { $('download').disabled=!M.filter(records,options()).length; }
 }
@@ -63,6 +72,6 @@ $('logout').addEventListener('click',()=>{lock();message('로그아웃했습니�
 $('refresh').addEventListener('click',loadRecords);$('download').addEventListener('click',download);
 for(const id of ['classFilter','statusFilter']) $(id).addEventListener('change',render);
 $('search').addEventListener('input',render);
-for(const [id,mode] of [['answersTab','answers'],['gradesTab','grades']]) $(id).addEventListener('click',()=>{view=mode;render();});
+for(const [id,mode] of [['answersTab','answers'],['gradesTab','grades'],['reflectionsTab','reflections']]) $(id).addEventListener('click',()=>{view=mode;render();});
 const initialClass=new URLSearchParams(location.search).get('class_no');if(/^[0-7]$/.test(initialClass || '')) $('classFilter').value=initialClass;
 loadRecords();

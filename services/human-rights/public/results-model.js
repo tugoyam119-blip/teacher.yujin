@@ -25,11 +25,15 @@
   const confidence = value => ({high:'높음',medium:'보통',low:'낮음'}[value] || '미확인');
   const review = r => !!r.ai_grade && (r.ai_grade.review_required || r.ai_grade.confidence !== 'high' || !!r.ai_grade.reviewFlags?.length);
   const status = r => r.submitted ? '제출 완료' : r.ever_entered ? '작성 중' : '미시작';
+  const reflectionStatus = r => r.self_evaluation?.submitted_at ? '완료' : r.self_evaluation ? '임시저장' : '미작성';
+  function reflectionTable(rows) {
+    return {headers:['반','학번','이름','자기평가서 상태','글자 수','자기평가서','마지막 저장 시각','완료 시각'], rows:rows.map(r=>[r.class_no,String(r.student_id),r.name,reflectionStatus(r),(r.self_evaluation?.text||'').length,r.self_evaluation?.text||'',r.self_evaluation?.saved_at||r.self_evaluation?.submitted_at||'',r.self_evaluation?.submitted_at||''])};
+  }
   function filter(rows, options = {}) {
     const q = String(options.q || '').trim().toLowerCase(), c = Number(options.class_no || 0);
     return rows.filter(r => r.student_id !== '000000' && (!c || Number(r.class_no) === c)
       && (!q || String(r.student_id).toLowerCase().includes(q) || String(r.name).toLowerCase().includes(q))
-      && (!options.status || options.status === 'all' || ({submitted:!!r.submitted,unsubmitted:!r.submitted,graded:!!r.ai_grade,ungraded:!r.ai_grade,review:review(r),final:!!r.teacher_grade}[options.status])))
+      && (!options.status || options.status === 'all' || ({submitted:!!r.submitted,unsubmitted:!r.submitted,graded:!!r.ai_grade,ungraded:!r.ai_grade,review:review(r),final:!!r.teacher_grade,reflection_complete:reflectionStatus(r)==='완료',reflection_draft:reflectionStatus(r)==='임시저장',reflection_empty:reflectionStatus(r)==='미작성'}[options.status])))
       .sort((a,b) => Number(a.class_no)-Number(b.class_no) || String(a.student_id).localeCompare(String(b.student_id), 'ko', {numeric:true}));
   }
   function answers(r) {
@@ -55,5 +59,5 @@
         r.teacher_grade?'채점 완료':'미채점',...areas.map(([key])=>g[key] ?? ''),g.total ?? '',r.teacher_comment || ''];
     })};
   }
-  return {areas,label,list,confidence,review,status,filter,answers,exportTable};
+  return {areas,label,list,confidence,review,status,filter,answers,exportTable,reflectionStatus,reflectionTable};
 });
