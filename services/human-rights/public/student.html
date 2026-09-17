@@ -55,7 +55,7 @@
   document.head.appendChild(style);
   if(typeof loginView!=='function')return;
   const base=loginView;
-  loginView=function(){base();const card=document.getElementById('sid')?.closest('.card');if(card&&!document.querySelector('.hrs-card'))card.insertAdjacentHTML('beforebegin',html());};
+  loginView=function(){base();const card=document.getElementById('sid')?.closest('.card');if(card&&!document.querySelector('.hrs-card'))card.insertAdjacentHTML('afterend',html());};
 })();
 </script>
 <script>
