@@ -17,7 +17,7 @@ test('teacher name participation persists separately, requires token, and valida
   assert.equal((await post('/api/observer/save',{payload:{schemaVersion:10,answer1:'초안'}})).status,200);
   assert.equal((await post('/api/observer/submit',{payload:{schemaVersion:10}})).status,400);
   const text=Array.from({length:400},(_,i)=>String.fromCharCode(0xac00+i)).join('');
-  const payload={schemaVersion:10,step:7,seen:['structure','usage','map','voices','budget'],quizDone:{structure:true,usage:true,map:true,voices:true,budget:true},evidence:['ev_central_all','ev_school_cost','ev_budget50'],policyStations:['central','school'],criteria:['many','efficiency'],rights:['mobility_right'],answer1:text,answer2:text,answer3:text,beneficiaries:['wheel'],delayed:['elder'],limitation:'region',remedy:'plan',newImpacts:['budget'],impactStrength:'small',finalDecision:'keep',finalStations:['central','school']};
+  const payload={schemaVersion:10,step:7,seen:['structure','usage','map','voices','budget'],quizDone:{structure:true,usage:true,map:true,voices:true,budget:true},evidence:[],policyStations:['central','school'],criteria:['many','efficiency'],rights:['mobility_right'],answer1:text,answer2:text,answer3:text,beneficiaries:['wheel'],delayed:['elder'],limitation:'region',remedy:'plan',newImpacts:['budget'],impactStrength:'small',finalDecision:'keep',finalStations:['central','school']};
   assert.equal((await post('/api/observer/submit',{payload})).status,409);
   assert.equal((await post('/api/observer/manual-save',{payload})).status,200);
   assert.equal((await post('/api/observer/submit',{payload})).status,200);

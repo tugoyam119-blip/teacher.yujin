@@ -22,6 +22,7 @@ test('submitted answers reopen only in active remaining regular time; preserve r
   assert.equal(reopened.payload.answer1,text);assert.equal(reopened.payload.submitted,false);assert.equal(reopened.session.period1_used,2700);assert.equal(reopened.session.period2_used,30);
   const record=read('progress/10101.json');assert.equal(record.previous_submission.grade.ai_grade.total,80);assert.equal(record.self_evaluation.text,'기존 자기평가');assert.equal(record.manual_save_hash,null);assert.equal(read('grades/10101.json').ai_grade,null);assert.equal(read('grades/10101.json').teacher_grade,null);
   assert.equal((await post('/api/submit',{payload:reopened.payload})).status,409);
+  assert.equal((await post('/api/submit',{payload:{...reopened.payload,evidence:[]}})).status,400);
   const revised={...reopened.payload,answer1:text+' 근거 보완'};
   assert.equal((await post('/api/manual-save',{payload:revised})).status,200);
   put('control.json',{...baseControl,period_type:'2',session_id:'session2',timer_running:false,phase:'paused'});assert.equal((await post('/api/save',{payload:revised})).status,403);assert.equal((await post('/api/submit',{payload:revised})).status,403);

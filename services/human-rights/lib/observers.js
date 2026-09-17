@@ -47,7 +47,7 @@ module.exports=function createObservers({dataDir,readJson,writeJson,sendJson,sen
   if(route==='heartbeat')return ok({ok:1,session:session()});
   if(['save','manual-save','submit'].includes(route)){
    if(p.submitted)return fail('제출한 답안은 답안 다시 수정 버튼을 눌러 수정하세요.',409);
-   const issue=validatePayload(b.payload,route==='submit');if(issue)return fail(issue);
+   const issue=validatePayload(b.payload,route==='submit',{optionalEvidence:true});if(issue)return fail(issue);
    if(route==='submit'&&p.manual_save_hash!==payloadHash(b.payload))return fail('최종 제출 전에 현재 답안을 임시저장해 주세요.',409);
    record.progress={...p,payload:{...b.payload,submitted:route==='submit',receiptTime:route==='submit'?ts:''},updated_at:ts,submitted:route==='submit',submitted_at:route==='submit'?ts:null};
    if(route==='manual-save'){record.progress.manual_save_at=ts;record.progress.manual_save_hash=payloadHash(b.payload)}
