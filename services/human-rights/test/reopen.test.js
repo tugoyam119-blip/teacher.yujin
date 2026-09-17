@@ -32,12 +32,26 @@ test('submitted answers reopen only in active remaining regular time; preserve r
   // A completed reflection cannot be downgraded by a stale draft request.
   assert.equal((await post('/api/self-eval',{text:'짧은 초안',draft:true})).status,409);
   put('progress/10101.json',{...final,self_evaluation:null});
+  // Reflection-only access remains available after both periods and global closure.
+  put('control.json',{...baseControl,server_open:0,is_open:0,timer_running:false,phase:'closed',period_type:'2'});
+  put('time/10101.json',{...read('time/10101.json'),period1_used:2700,period2_used:2700});
   const timeBefore=fs.readFileSync(path.join(dir,'time/10101.json'),'utf8');
+  assert.equal((await post('/api/login',{name:'다른이름'})).status,403);
+  const login=await post('/api/login');assert.equal(login.status,200);
+  const loginBody=await login.json();assert.equal(loginBody.session.self_evaluation_available,true);
+  assert.equal(loginBody.session.is_open,0);
+  assert.equal((await post('/api/reopen-submission')).status,403);
+  assert.equal((await post('/api/save',{payload:revised})).status,409);
+  const submittedRecord=read('progress/10101.json');
+  put('progress/10101.json',{...submittedRecord,submitted:false});
+  assert.equal((await post('/api/login')).status,403);
+  assert.equal((await post('/api/self-eval',{text:'미완료',draft:true})).status,409);
+  put('progress/10101.json',submittedRecord);
   const draftText='  아직 작성 중인 자기평가서입니다.\n다음에 이어 쓰겠습니다.  ';
   assert.equal((await post('/api/self-eval',{text:draftText,draft:true,name:'다른이름'})).status,403);
   assert.equal((await post('/api/self-eval',{text:draftText,draft:true})).status,200);
   const saved=await (await fetch('http://127.0.0.1:3419/api/progress?student_id=10101')).json();
-  assert.equal(saved.self_evaluation.text,draftText);assert.equal(saved.self_evaluation.submitted_at,null);assert(saved.self_evaluation.saved_at);
+  assert.equal((await post('/api/login')).status,200);assert.equal(saved.submitted,true);assert.equal(saved.self_evaluation.text,draftText);assert.equal(saved.self_evaluation.submitted_at,null);assert(saved.self_evaluation.saved_at);
   assert.equal((await post('/api/self-eval',{text:draftText})).status,400);
   assert.equal((await post('/api/self-eval',{text:'가'.repeat(1001),draft:true})).status,400);
   assert.equal((await post('/api/self-eval',{text:'',draft:true})).status,200);

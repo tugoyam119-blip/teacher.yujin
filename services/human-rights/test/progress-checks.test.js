@@ -26,3 +26,14 @@ test('next action opens reasons without advancing, then allows valid state',()=>
  const ctx={state:{...valid,step:3,rights:[]},ProgressChecks:{reasons},observerMode:false,qualityError:qctx.qualityError,cost:options.cost,manualSavedForCurrent:true,isTeacherTest:()=>false,API_MODE:true,session:{is_open:1},alert:msg=>ctx.message=msg};
  vm.createContext(ctx);vm.runInContext(source.slice(source.indexOf('function advanceReasons()')),ctx);assert.equal(ctx.checkAdvance(),false);assert(ctx.message.includes('관련 권리'));ctx.state.rights=['mobility_right'];assert.equal(ctx.checkAdvance(),true);ctx.session={is_open:0,message:'수행 대기'};assert.equal(ctx.checkAdvance(),false);assert.equal(ctx.message,'수행 대기');
 });
+
+test('submitted students go directly to unfinished reflection even when the session is closed',()=>{
+ const s=fs.readFileSync(path.join(__dirname,'../public/student_3.js'),'utf8');
+ const ctx={student:{student_id:'10101'},state:{submitted:true},selfEvaluation:{text:'저장한 초안',submitted_at:null},API_MODE:true,session:{is_open:0},updateReopenStatus:()=>{}};
+ vm.createContext(ctx);vm.runInContext(s.slice(0,s.lastIndexOf('try{init()}')),ctx);
+ ctx.updateReopenStatus=()=>{};ctx.selfEvalView=()=>{ctx.screen='reflection';ctx.draft=ctx.selfEvaluation.text};ctx.waitView=()=>{ctx.screen='wait'};
+ ctx.render();assert.equal(ctx.screen,'reflection');assert.equal(ctx.draft,'저장한 초안');
+ vm.runInContext(source.slice(source.indexOf('function timeLabel()'),source.indexOf('function appTop(')),ctx);
+ assert(ctx.timeLabel().includes('자기평가서 시간 제한 없음'));
+ ctx.state.submitted=false;ctx.render();assert.equal(ctx.screen,'wait');
+});
