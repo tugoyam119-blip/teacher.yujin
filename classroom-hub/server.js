@@ -952,6 +952,8 @@ app.get('/api/admin/check/:id', needTeacher, async (req, res, next) => {
   } catch(e){res.json({ok:false,detail:e.message});}
 });
 
+require('./activity-download')(app, { needTeacher, getState, appsRoot: APPS });
+
 app.get('/api/admin/export', needTeacher, async (req,res,next)=>{try{const s=await getState();res.setHeader('Content-Disposition','attachment; filename="yujint-v3-registry.json"');res.json(s.activities);}catch(e){next(e);}});
 
 

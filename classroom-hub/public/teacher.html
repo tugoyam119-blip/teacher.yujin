@@ -244,6 +244,7 @@ function renderPrograms(){
       <div class="card-actions">
         <a class="btnx primary small" href="/open/${encodeURIComponent(a.slug)}" target="_blank">열기</a>
         ${a.manage_url?`<a class="btnx secondary small" href="/manage/${encodeURIComponent(a.slug)}" target="_blank">교사 관리</a>`:''}
+        ${a.id==='ef885acc-569e-4408-a89a-19585d5e6237'&&a.deploy_type==='static'?`<a class="btnx secondary small" href="/api/admin/activities/${encodeURIComponent(a.id)}/download">최신 HTML 다운로드</a>`:''}
         <button class="btnx ghost small kebab" onclick="openManage('${esc(a.id)}')">⋯</button>
       </div>
       ${safe?`<div class="undo-row"><span>문제가 생겼다면 바로 이전 상태로</span><button class="btnx danger small" onclick="undoLatest('${esc(a.id)}','${esc(safe.id)}')">마지막 업데이트 취소</button></div>`:''}
