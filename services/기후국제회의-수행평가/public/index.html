@@ -12,7 +12,7 @@
     <div class="topbar-inner">
       <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가</div>
       <div class="lesson-pill" id="lessonPill">수행 활동 · 기준 45분</div>
-      <div class="topbar-tools"><button id="countryGuideBtn" class="topbar-btn country-help hidden">4개국 배경</button><button id="decisionReviewBtn" class="topbar-btn decision-help hidden">나의 결정 전체보기</button><button id="glossaryBtn" class="topbar-btn glossary-help hidden">개념 도움말</button><button id="helpRequestBtn" class="topbar-btn help-request-btn hidden">🙋 도움 요청</button></div><div class="version">학생용 v3.13.0</div>
+      <div class="topbar-tools"><button id="countryGuideBtn" class="topbar-btn country-help hidden">4개국 배경</button><button id="decisionReviewBtn" class="topbar-btn decision-help hidden">나의 결정 전체보기</button><button id="glossaryBtn" class="topbar-btn glossary-help hidden">개념 도움말</button><button id="helpRequestBtn" class="topbar-btn help-request-btn hidden">🙋 도움 요청</button></div><div class="version">학생용 v3.14.0</div>
       <div id="timer" class="timer hidden" aria-live="polite">남은 시간 45:00</div>
     </div>
     <div class="progress-wrap"><div id="progress" class="progress"></div></div>
@@ -23,13 +23,15 @@
     <div class="server-gate-card">
       <div class="server-gate-icon">🔒</div>
       <div class="eyebrow">교사 안내 대기</div>
-      <h2>수행평가 서버가 아직 열리지 않았습니다.</h2>
-      <p>담당 교사의 설명을 들은 뒤 기다리세요. 교사가 서버를 열면 이 화면이 자동으로 사라지고 수행평가를 시작할 수 있습니다.</p>
-      <div class="server-gate-status"><span class="pulse-dot"></span><b>서버 열림을 기다리는 중</b></div>
+      <h2 id="gateTitle">학생 입장 상태를 확인하고 있습니다.</h2>
+      <p id="gateDescription">잠시만 기다려 주세요.</p>
+      <button id="gateRetryBtn" type="button">연결 다시 확인</button><button id="gateContinueBtn" type="button" class="secondary hidden">로그인 화면으로 이동</button>
+      <div class="server-gate-status"><span class="pulse-dot"></span><b id="gateStatusText" role="status">연결 확인 중</b></div>
     </div>
   </div>
 
   <main>
+    <section id="sessionRecovery" class="hero hidden" role="alert"><h1>응시가 초기화되었습니다.</h1><p>이전 답안은 더 이상 저장되지 않습니다. 아래 내용은 이 기기에 보관된 초안입니다. 필요한 내용을 복사한 뒤 다시 입장하세요. 새 응시에 자동으로 적용되지 않습니다.</p><label for="recoveryDraft">보관된 이전 초안</label><textarea id="recoveryDraft" readonly rows="8"></textarea><button id="reenterBtn" type="button">로그인 화면으로 돌아가기</button></section>
     <div id="activityPauseNotice" class="notice warning hidden" role="status"></div>
     <section id="login" class="hero">
       <div class="eyebrow">국제 관계와 국제기구 · 5단원 환경과 에너지</div>

@@ -1,4 +1,4 @@
-const VERSION='3.13.0';
+const VERSION='3.14.0';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
@@ -6,6 +6,7 @@ let session=null, state={}, step=0, remaining=TOTAL_SECONDS, timerHandle=null, t
 let renderedStep=-1,changeRevision=0,autoRetryAfter=0;
 let unsavedChanges=false,saveRetryTimer=null,submissionSyncBusy=false;
 let pendingSave=null,saveWorker=null,saveWaiters=[],navigationLocked=false,submitLocked=false;
+let gateDismissed=false,gateStatus='checking',startBusy=false,sessionInvalidated=false;
 const TEACHER_STUDENT_ID='000000';
 
 const countryData={
@@ -52,14 +53,28 @@ const budgetPlans={
 };
 const opponentByCountry={hanbit:'saebom',saebom:'hanbit',pureun:'taeyang',taeyang:'pureun'};
 
+async function studentFetch(url,options={}){
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),8000);
+ try{const response=await fetch(url,{...options,signal:controller.signal});const body=await response.json();return {ok:response.ok,status:response.status,json:async()=>body};}
+ catch(error){if(controller.signal.aborted)throw new Error('서버 응답이 늦어지고 있습니다. 연결을 확인하고 다시 시도해 주세요.');throw error;}
+ finally{clearTimeout(timeout);}
+}
+function invalidateStudentSession(){
+ if(sessionInvalidated||!session)return;collect();storeLocalDraft();sessionInvalidated=true;pendingSave=null;unsavedChanges=false;
+ clearTimeout(saveTimer);saveTimer=null;clearTimeout(saveRetryTimer);clearInterval(timerHandle);clearInterval(timerSyncHandle);closeHelpMenu();
+ for(const id of ['assessment','finalReview','countryAssign','preStartWait','timer','helpRequestBtn','decisionReviewBtn','activityPauseNotice'])$('#'+id)?.classList.add('hidden');
+ $('#lessonPill').textContent='응시 초기화 · 재입장 필요';$('#sessionRecovery').classList.remove('hidden');
+ $('#recoveryDraft').value=[`국가: ${countryLabels[session.country]||''}`,`우선 가치: ${priorityLabels[state.priority1]||''}`,`협약: ${agreementLabels[state.agreement]||''}`,`예산: ${Object.entries(state.budget||{}).map(([key,value])=>`${budgets[key]||key} ${value}억`).join(' / ')}`,`협력 주체: ${(state.actors||[]).map(key=>`${actorLabels[key]}: ${actorRoleOptions[state.actorAssignments?.[key]]||''}`).join(' / ')}`,...Object.entries({priorityReason:'처음 판단 이유',agreementReason:'협약과 예산 이유',compromise:'절충안',reflectionReason:'판단 변화 이유',actorReason:'협력 이유',finalDeclaration:'최종 합의문'}).map(([key,label])=>`${label}\n${state[key]||''}`)].join('\n\n');updateInputAvailability();
+}
+function checkStudentSession(response){if(response.status===404){invalidateStudentSession();return false;}return true;}
 function toast(msg='저장되었습니다.'){$('#toast').textContent=msg;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),1700)}
 const helpLabels={understand:'📖 문제 뜻을 이해하기 어려움',country:'🌍 국가 조건을 이해하기 어려움',write:'✍️ 생각을 글로 정리하기 어려움',tech:'⚙️ 화면·저장·입력 문제',other:'🙋 기타 도움 필요'};
 function updateHelpButton(){const btn=$('#helpRequestBtn');if(!btn)return;btn.classList.toggle('requested',!!helpState.requested);btn.textContent=helpState.requested?'🔔 도움 요청됨':'🙋 도움 요청'}
-async function syncHelpStatus(){if(!session)return;try{const r=await fetch(`/api/help/status/${session.sessionId}`,{cache:'no-store'});if(!r.ok)return;helpState=await r.json();updateHelpButton()}catch{}}
+async function syncHelpStatus(){if(!session)return;const id=session.sessionId;try{const r=await studentFetch(`/api/help/status/${id}`,{cache:'no-store'});if(!r.ok||sessionInvalidated||session?.sessionId!==id)return;helpState=await r.json();updateHelpButton()}catch{}}
 function closeHelpMenu(){$('#helpOverlay')?.remove()}
 function openHelpMenu(){closeHelpMenu();const overlay=document.createElement('div');overlay.id='helpOverlay';overlay.className='modal';overlay.innerHTML=`<div class="modal-card help-modal-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="modal-head"><div><span class="eyebrow">교사에게 알림 전송</span><h2 id="helpTitle">🙋 도움 요청</h2></div><button type="button" class="ghost" data-close-help>닫기</button></div>${helpState.requested?`<div class="help-requested-state"><b>선생님께 요청을 보냈습니다.</b><span>${esc(helpLabels[helpState.category]||helpLabels.other)}</span><button type="button" class="secondary" data-cancel-help>요청 취소</button></div>`:`<p class="sub">도움이 필요한 내용을 고르면 교사 관리 화면에 바로 표시됩니다.</p><div class="help-choice-grid">${Object.entries(helpLabels).map(([key,label])=>`<button type="button" class="help-choice" data-help-category="${key}">${label}</button>`).join('')}</div>`}</div>`;document.body.appendChild(overlay);overlay.querySelector('[data-close-help]').onclick=closeHelpMenu;overlay.addEventListener('click',e=>{if(e.target===overlay)closeHelpMenu()});overlay.querySelectorAll('[data-help-category]').forEach(btn=>btn.onclick=()=>sendHelpRequest(btn.dataset.helpCategory));overlay.querySelector('[data-cancel-help]')?.addEventListener('click',cancelHelpRequest)}
-async function sendHelpRequest(category){try{const r=await fetch('/api/help/request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,category})}),j=await r.json();if(!r.ok)throw new Error(j.error||'도움 요청 실패');helpState={requested:true,category,requestedAt:j.requestedAt};closeHelpMenu();updateHelpButton();toast('선생님께 도움 요청을 보냈습니다.')}catch(e){alert(e.message)}}
-async function cancelHelpRequest(){try{const r=await fetch('/api/help/cancel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId})}),j=await r.json();if(!r.ok)throw new Error(j.error||'요청 취소 실패');helpState={requested:false,category:'',requestedAt:null};closeHelpMenu();updateHelpButton();toast('도움 요청을 취소했습니다.')}catch(e){alert(e.message)}}
+async function sendHelpRequest(category){try{const r=await studentFetch('/api/help/request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,category})}),j=await r.json();if(!r.ok)throw new Error(j.error||'도움 요청 실패');helpState={requested:true,category,requestedAt:j.requestedAt};closeHelpMenu();updateHelpButton();toast('선생님께 도움 요청을 보냈습니다.')}catch(e){alert(e.message)}}
+async function cancelHelpRequest(){try{const r=await studentFetch('/api/help/cancel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId})}),j=await r.json();if(!r.ok)throw new Error(j.error||'요청 취소 실패');helpState={requested:false,category:'',requestedAt:null};closeHelpMenu();updateHelpButton();toast('도움 요청을 취소했습니다.')}catch(e){alert(e.message)}}
 function message(msg){const el=$('#inlineMessage');if(!msg){el.classList.add('hidden');return}el.textContent=msg;el.classList.remove('hidden')}
 function answerQuality(text,min=12){
  const s=String(text||'').trim(),compact=s.replace(/\s/g,'');
@@ -86,15 +101,25 @@ function shortWritingGuide(items=''){return `<div class="answer-criteria short-w
 function initState(){const defaults={assessmentVersion:'45min-v3.6.0',budgetPlan:'custom',budgetTouched:false,preparationComplete:false,budget:{renewable:0,disaster:0,tech:0,forest:0,transition:0},actors:[],evidenceSources:[],actorAssignments:{}};state={...defaults,...(session?.data||{})};state.budget={...defaults.budget,...(session?.data?.budget||{})};const oldBudgetTotal=Object.values(session?.data?.budget||{}).reduce((a,b)=>a+Number(b||0),0);state.budgetTouched=Boolean(session?.data?.budgetTouched||session?.data?.budgetPlan||oldBudgetTotal===100);state.actors=[...(session?.data?.actors||[])];state.evidenceSources=[...(session?.data?.evidenceSources||[])];state.actorAssignments={...(session?.data?.actorAssignments||{})}}
 
 function isTeacherEntry(){return $('#studentId')?.value.trim()===TEACHER_STUDENT_ID}
-function applyServerGate(open){serverOpen=!!open;const gate=$('#serverGate');if(gate){gate.classList.toggle('hidden',serverOpen||!!session);const b=gate.querySelector('b');if(b)b.textContent='학생 입장이 닫혀 있습니다. 선생님 안내를 기다리세요.';}const start=$('#startBtn');if(start){start.disabled=!serverOpen&&!isTeacherEntry();start.textContent=serverOpen||isTeacherEntry()?'수행평가 입장하기':'선생님이 입장을 열면 시작할 수 있습니다.';}}
-async function syncServerGate(){if(serverGateBusy)return;serverGateBusy=true;try{const r=await fetch(`/api/server-status?sync=${Date.now()}`,{cache:'no-store'});if(!r.ok)return;const j=await r.json();applyServerGate(!!j.open)}catch{}finally{serverGateBusy=false}}
+function renderServerGate(){
+ const gate=$('#serverGate'),unknown=gateStatus==='checking',failed=gateStatus==='error';
+ gate?.classList.toggle('hidden',!!session||gateStatus==='open'||(gateDismissed&&gateStatus==='error'));
+ $('#gateTitle').textContent=unknown?'학생 입장 상태를 확인하고 있습니다.':failed?'서버 연결 상태를 확인하지 못했습니다.':'수행평가 서버가 아직 열리지 않았습니다.';
+ $('#gateDescription').textContent=unknown?'잠시만 기다려 주세요.':failed?'연결이 지연되고 있습니다. 다시 확인하거나 로그인 화면으로 이동해 입장을 시도하세요.':'선생님이 입장을 열면 자동으로 로그인 화면으로 이동합니다.';
+ $('#gateStatusText').textContent=failed?'연결 확인 실패 · 자동으로 다시 확인합니다.':unknown?'연결 확인 중':'선생님 안내를 기다리세요.';
+ $('#gateContinueBtn').classList.toggle('hidden',!failed);
+ const start=$('#startBtn');start.disabled=startBusy||(gateStatus==='closed'&&!isTeacherEntry());start.textContent=startBusy?'입장 확인 중…':'수행평가 입장하기';
+}
+function applyServerGate(open){serverOpen=!!open;gateStatus=open?'open':'closed';renderServerGate();}
+async function syncServerGate(){if(serverGateBusy||session)return;serverGateBusy=true;try{const r=await studentFetch(`/api/server-status?sync=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw Error('status');const j=await r.json();applyServerGate(!!j.open)}catch{gateStatus='error';renderServerGate();}finally{serverGateBusy=false}}
 async function startAssessment(){
+ if(startBusy)return;startBusy=true;renderServerGate();
  message('');const studentId=$('#studentId').value.trim(),name=$('#studentName').value.trim();
  try{
-  const r=await fetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId,name})});const j=await r.json();if(!r.ok)throw new Error(j.error||'시작 오류');
-  session=j.session;initState();if(session.status==='submitted'){showSubmittedSession(session);return;}restoreLocalDraft();step=Number.isInteger(state.currentStep)?Math.min(3,Math.max(0,state.currentStep)):0;if(j.resumed&&!state.countryRevealDone&&(Number(session.progress||0)>0||step>0||state.priority1)){state.countryRevealDone=true}
+  const r=await studentFetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId,name})});const j=await r.json();if(!r.ok)throw new Error(j.error||'시작 오류');
+  sessionInvalidated=false;session=j.session;initState();if(session.status==='submitted'){showSubmittedSession(session);return;}restoreLocalDraft();step=Number.isInteger(state.currentStep)?Math.min(3,Math.max(0,state.currentStep)):0;if(j.resumed&&!state.countryRevealDone&&(Number(session.progress||0)>0||step>0||state.priority1)){state.countryRevealDone=true}
   $('#login').classList.add('hidden');$('#timer').classList.remove('hidden');$('#glossaryBtn').classList.remove('hidden');$('#countryGuideBtn').classList.remove('hidden');$('#helpRequestBtn').classList.remove('hidden');
-  await syncHelpStatus();
+  void syncHelpStatus();
   applyTimerState(j.timer||{});startTimer();
   if(session.status==='review_reopened'){state.countryRevealDone=true;state.reviewReady=true;$('#decisionReviewBtn').classList.remove('hidden');showFinalReview();toast('교사가 최종 검토 화면을 다시 열었습니다. 필요한 부분을 수정한 뒤 다시 제출하세요.');}
   else if(!state.countryRevealDone){showCountryAssignment()}
@@ -102,7 +127,8 @@ async function startAssessment(){
   else if(state.reviewReady){$('#decisionReviewBtn').classList.remove('hidden');showFinalReview()}
   else{$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render()}
   if(j.resumed)toast('이전 진행 내용을 불러왔습니다.');
- }catch(e){alert(e.message)}
+ }catch(e){message(e.message);$('#serverGate').classList.add('hidden');}
+ finally{startBusy=false;$('#startBtn').disabled=false;$('#startBtn').textContent='수행평가 입장하기';}
 }
 function allCountryOverview(){const intro={hanbit:'책임과 기술력은 크지만 산업과 일자리를 지켜야 합니다.',saebom:'발전이 필요하지만 석탄 사용과 배출도 줄여야 합니다.',pureun:'배출 책임은 작지만 해수면 상승 피해가 매우 큽니다.',taeyang:'석유 산업을 유지하면서 친환경 산업으로 바꿔야 합니다.'};return `<div class="country-overview-grid">${Object.entries(countryData).map(([k,c])=>`<article class="country-overview-card ${state.countryRevealDone&&session?.country===k?'my-country':''}">${state.countryRevealDone&&session?.country===k?'<span class="my-country-badge">내 국가</span>':''}<div class="country-overview-head"><span class="country-symbol">${{hanbit:'🏭',saebom:'🏗️',pureun:'🌊',taeyang:'☀️'}[k]}</span><div><h3>${c.name}</h3><span>${c.type}</span></div></div><p>${intro[k]}</p><div class="country-overview-points"><b>회의에서 해결할 문제</b><span>${c.dilemma}</span></div></article>`).join('')}</div>`}
 function showCountryAssignment(){
@@ -116,23 +142,23 @@ function showAssignedCountryResult(){
 async function spinCountryRoulette(){
  const btn=$('#spinCountryBtn'),wheel=$('#rouletteWheel');if(btn.disabled)return;btn.disabled=true;btn.textContent='국가를 배정하고 있습니다…';
  const idx=['hanbit','saebom','pureun','taeyang'].indexOf(session.country);const target=1440+(315-idx*90);wheel.style.transition='transform 2.8s cubic-bezier(.15,.72,.12,1)';wheel.style.transform=`rotate(${target}deg)`;
- setTimeout(async()=>{state.countryRevealDone=true;await savePreparation(false);showAssignedCountryResult();toast(`${countryLabels[session.country]} 대표로 배정되었습니다.`)},2900)
+ setTimeout(async()=>{state.countryRevealDone=true;await savePreparation(false);if(sessionInvalidated)return;showAssignedCountryResult();toast(`${countryLabels[session.country]} 대표로 배정되었습니다.`)},2900)
 }
-async function savePreparation(complete=true){if(!session)return false;state.countryRevealDone=true;if(complete)state.preparationComplete=true;try{const r=await fetch('/api/preparation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,countryRevealDone:true,preparationComplete:!!state.preparationComplete})});if(!r.ok)throw new Error();return true}catch{toast('준비 상태 저장에 실패했습니다. 인터넷 연결을 확인하세요.');return false}}
+async function savePreparation(complete=true){if(!session)return false;state.countryRevealDone=true;if(complete)state.preparationComplete=true;try{const r=await studentFetch('/api/preparation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,countryRevealDone:true,preparationComplete:!!state.preparationComplete})});if(!checkStudentSession(r)||sessionInvalidated)return false;if(!r.ok)throw new Error();return true}catch{toast('준비 상태 저장에 실패했습니다. 인터넷 연결을 확인하세요.');return false}}
 function showPreStartWait(){waitingForClassStart=true;$('#countryAssign').classList.add('hidden');$('#assessment').classList.add('hidden');$('#finalReview').classList.add('hidden');$('#preStartWait').classList.remove('hidden');$('#decisionReviewBtn').classList.add('hidden');$('#progress').style.width='5%';$('#lessonPill').textContent='국가 배정 완료 · 수행 시작 대기';$('#waitingCountrySummary').innerHTML=`<span>${countryLabels[session.country]}</span><small>${countryData[session.country].type}</small>`;window.scrollTo({top:0,behavior:'smooth'})}
 async function beginAssignedAssessment(){state.countryRevealDone=true;state.preparationComplete=true;const saved=await savePreparation(true);if(!saved)return;if(timerPhase==='running'){waitingForClassStart=false;$('#countryAssign').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();window.scrollTo({top:0,behavior:'smooth'});return}showPreStartWait()}
 function handleClassStartTransition(){if(!waitingForClassStart||timerPhase!=='running')return;waitingForClassStart=false;$('#preStartWait').classList.add('hidden');$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render();toast('수행이 시작되었습니다. 지금부터 45분입니다.');window.scrollTo({top:0,behavior:'smooth'})}
 function applyTimerState(t={}){timerExempt=!!t.exempt;timerPhase=String(t.phase||'');if(typeof t.serverOpen==='boolean')applyServerGate(t.serverOpen);timerPaused=!!t.paused||!serverOpen;if(Number.isFinite(Number(t.remainingSeconds)))remaining=Math.max(0,Number(t.remainingSeconds));updateTimer();updateInputAvailability()}
-async function syncTimer(){if(!session||timerSyncBusy)return;timerSyncBusy=true;try{const r=await fetch(`/api/timer/${session.sessionId}?sync=${Date.now()}`,{cache:'no-store'});if(!r.ok)return;const timing=await r.json();applyTimerState(timing);if(timing.sessionStatus==='submitted'){await refreshSubmittedSession();return;}handleClassStartTransition();if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}finally{timerSyncBusy=false}}
+async function syncTimer(){if(!session||sessionInvalidated||timerSyncBusy)return;timerSyncBusy=true;try{const r=await studentFetch(`/api/timer/${session.sessionId}?sync=${Date.now()}`,{cache:'no-store'});if(!checkStudentSession(r)||!r.ok||sessionInvalidated)return;const timing=await r.json();applyTimerState(timing);if(timing.sessionStatus==='submitted'){await refreshSubmittedSession();return;}handleClassStartTransition();if(!timerExempt&&remaining<=0&&!autoSubmitting)autoSubmitOnTime()}catch{}finally{timerSyncBusy=false}}
 function syncStudentOnResume(){if(document.visibilityState!=='visible')return;if(session)syncTimer();else syncServerGate()}
 function startTimer(){clearInterval(timerHandle);clearInterval(timerSyncHandle);updateTimer();timerHandle=setInterval(()=>{if(timerExempt||timerPaused)return;if(remaining>0)remaining--;updateTimer();if(remaining===10*60)toast('남은 수행 활동 시간이 10분입니다.');if(remaining===5*60)toast('5분 남았습니다. 최종 판단과 제출을 확인하세요.');if(remaining<=0&&!autoSubmitting)autoSubmitOnTime()},1000);timerSyncHandle=setInterval(syncTimer,1000);syncTimer()}
 function updateTimer(){const el=$('#timer');if(timerExempt){el.textContent='수정 허용';el.classList.remove('urgent');el.classList.add('paused');return}const m=Math.floor(Math.max(0,remaining)/60),s=Math.max(0,remaining)%60,time=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;el.textContent=timerPaused?`⏸ 남은 시간 ${time}`:`남은 시간 ${time}`;const phaseMessage={ready:'선생님이 수행을 시작하면 시간이 시작됩니다.',paused:'선생님이 수행을 일시정지했습니다. 답안은 보존됩니다.',finished:'45분 수행시간이 종료되었습니다.'};el.title=timerPaused?(phaseMessage[timerPhase]||'수행평가 시간이 일시정지되어 있습니다.'):'';el.classList.toggle('paused',timerPaused);el.classList.toggle('urgent',!timerPaused&&remaining<=600)}
 async function autoSubmitOnTime(){if(autoSubmitting||timerExempt||Date.now()<autoRetryAfter)return;autoSubmitting=true;try{if(!await finalSubmit(true))autoRetryAfter=Date.now()+3000;}finally{autoSubmitting=false}}
 function updateInputAvailability(){
- const blocked=!!session&&(!serverOpen||(!timerExempt&&timerPhase!=='running'));
+ const blocked=sessionInvalidated||session?.status==='submitted'||!!session&&(!serverOpen||(!timerExempt&&timerPhase!=='running'));
  document.querySelectorAll('#assessment input,#assessment textarea,#assessment select,#assessment [data-budget],#assessment .actor,#finalReview .review-edit-btn').forEach(el=>{el.disabled=blocked;el.setAttribute('aria-disabled',String(blocked))});
  for(const id of ['nextBtn','prevBtn','saveBtn','returnReviewBtn','confirmFinalSubmitBtn']){const el=$('#'+id);if(el)el.disabled=blocked;}
- const msg=$('#activityPauseNotice');if(msg){msg.classList.toggle('hidden',!blocked);msg.textContent=!serverOpen?'학생 입장이 닫혀 작성이 일시정지되었습니다. 저장된 답안은 보존됩니다.':'선생님이 수행을 시작하거나 재개하면 작성할 수 있습니다.';}
+ const msg=$('#activityPauseNotice');if(msg){msg.classList.toggle('hidden',!blocked||sessionInvalidated||session?.status==='submitted');msg.textContent=!serverOpen?'학생 입장이 닫혀 작성이 일시정지되었습니다. 저장된 답안은 보존됩니다.':'선생님이 수행을 시작하거나 재개하면 작성할 수 있습니다.';}
 }
 function showAssessment(){$('#finalReview').classList.add('hidden');$('#preStartWait').classList.add('hidden');$('#assessment').classList.remove('hidden')}
 function render(){
@@ -196,7 +222,7 @@ function collect(){if(renderedStep!==step||$('#assessment')?.classList.contains(
  if(step===1){state.agreement=document.querySelector('input[name="agreement"]:checked')?.value||'';state.budgetPlan='custom';state.agreementReason=v('#agreementReason');state.budgetHighReason=state.agreementReason}
  if(step===2){state.opposingCountry=document.querySelector('input[name="opposingCountry"]:checked')?.value||state.opposingCountry||'';state.oppositionReason=countryData[state.opposingCountry]?.dilemma||'';state.compromiseDimension=document.querySelector('input[name="compromiseDimension"]:checked')?.value||'';state.compromiseChoice=document.querySelector('input[name="compromiseChoice"]:checked')?.value||'';state.compromise=v('#compromise')}
  if(step===3){state.reconsiderChoice=document.querySelector('input[name="reconsiderChoice"]:checked')?.value||'';state.finalDeclaration=v('#finalDeclaration');state.reflectionReason=v('#reflectionReason');state.actorReason=v('#actorReason');document.querySelectorAll('[data-actor-role]').forEach(el=>{state.actorAssignments[el.dataset.actorRole]=el.value})}
- state.assessmentVersion='45min-v3.13.0';
+ state.assessmentVersion='45min-v3.14.0';
 }
 function budgetSum(){return Object.values(state.budget||{}).reduce((a,b)=>a+Number(b||0),0)}
 function budgetSummary(){return Object.entries(state.budget||{}).map(([k,v])=>`${budgets[k]} ${Number(v||0)}억`).join(' · ')}
@@ -209,8 +235,8 @@ function validate(){collect();
  return'';
 }
 function setSaveStatus(kind,text){const el=$('#saveStatus'),btn=$('#saveBtn');if(el){el.className=`save-status ${kind||''}`.trim();el.textContent=text}if(btn){btn.disabled=kind==='saving'||kind==='queued';btn.textContent=kind==='saving'||kind==='queued'?'저장 중…':'임시 저장'}}
-async function runSaveWorker(){let persistedRevision=-1,ok=true,lastError='';setSaveStatus('saving','저장 중… 화면을 그대로 두세요.');while(pendingSave){const job=pendingSave;pendingSave=null;try{const r=await fetch('/api/save',{signal:AbortSignal.timeout(10000),method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(job.payload)});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'저장 요청에 실패했습니다.');persistedRevision=job.revision;if(job.show)toast('저장 완료');if(pendingSave)setSaveStatus('queued','새 변경사항을 이어서 저장 중…')}catch(e){ok=false;lastError=e.message||'인터넷 연결을 확인하세요.';pendingSave=null;break}}if(ok&&persistedRevision===changeRevision&&!saveTimer){unsavedChanges=false;try{localStorage.removeItem(draftKey())}catch{}}else if(!ok){clearTimeout(saveRetryTimer);saveRetryTimer=setTimeout(()=>{if(session?.status!=='submitted'&&unsavedChanges)save(false)},3000);}if(ok)setSaveStatus('saved',`저장 완료 · ${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}`);else setSaveStatus('error',`저장 실패 · ${lastError}`);const waiters=saveWaiters.splice(0);saveWorker=null;waiters.forEach(resolve=>resolve(ok));return ok}
-async function save(show=true){if(!session||session.status==='submitted')return false;clearTimeout(saveTimer);saveTimer=null;collect();unsavedChanges=true;storeLocalDraft();state.currentStep=step;const snapshot=JSON.parse(JSON.stringify(state));pendingSave={revision:++changeRevision,show:show||pendingSave?.show,payload:{sessionId:session.sessionId,data:snapshot,progress:stepProgress[step]||0}};const result=new Promise(resolve=>saveWaiters.push(resolve));if(saveWorker)setSaveStatus('queued','변경사항을 모아 저장 중…');else saveWorker=runSaveWorker();return result}
+async function runSaveWorker(){let persistedRevision=-1,ok=true,lastError='';setSaveStatus('saving','저장 중… 화면을 그대로 두세요.');while(pendingSave){const job=pendingSave;pendingSave=null;try{const r=await studentFetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(job.payload)});const j=await r.json().catch(()=>({}));if(!checkStudentSession(r)||sessionInvalidated)throw new Error('응시가 초기화되었습니다. 다시 입장해 주세요.');if(!r.ok)throw new Error(j.error||'저장 요청에 실패했습니다.');persistedRevision=job.revision;if(job.show)toast('저장 완료');if(pendingSave)setSaveStatus('queued','새 변경사항을 이어서 저장 중…')}catch(e){ok=false;lastError=e.message||'인터넷 연결을 확인하세요.';pendingSave=null;break}}if(ok&&persistedRevision===changeRevision&&!saveTimer){unsavedChanges=false;try{localStorage.removeItem(draftKey())}catch{}}else if(!ok&&!sessionInvalidated){clearTimeout(saveRetryTimer);saveRetryTimer=setTimeout(()=>{if(session?.status!=='submitted'&&unsavedChanges)save(false)},3000);}if(ok)setSaveStatus('saved',`저장 완료 · ${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}`);else setSaveStatus('error',`저장 실패 · ${lastError}`);const waiters=saveWaiters.splice(0);saveWorker=null;waiters.forEach(resolve=>resolve(ok));return ok}
+async function save(show=true){if(!session||sessionInvalidated||session.status==='submitted')return false;clearTimeout(saveTimer);saveTimer=null;collect();unsavedChanges=true;storeLocalDraft();state.currentStep=step;const snapshot=JSON.parse(JSON.stringify(state));pendingSave={revision:++changeRevision,show:show||pendingSave?.show,payload:{sessionId:session.sessionId,data:snapshot,progress:stepProgress[step]||0}};const result=new Promise(resolve=>saveWaiters.push(resolve));if(saveWorker)setSaveStatus('queued','변경사항을 모아 저장 중…');else saveWorker=runSaveWorker();return result}
 function draftKey(){return session?'climateDraft:'+session.sessionId:'';}
 function storeLocalDraft(){if(!session)return;try{localStorage.setItem(draftKey(),JSON.stringify({data:state,at:Date.now()}))}catch{}}
 function restoreLocalDraft(){try{const draft=JSON.parse(localStorage.getItem(draftKey())||'null');if(draft&&draft.at>Date.parse(session.updatedAt||session.startedAt||0)){state={...state,...draft.data};unsavedChanges=true;toast('이 기기에 남아 있는 미저장 답안을 복원했습니다. 임시 저장을 눌러 주세요.');}}catch{}}
@@ -232,27 +258,30 @@ async function editFromReview(targetStep){reviewEditStep=targetStep;step=targetS
 function ensureReviewReturnButton(){let btn=document.getElementById('returnReviewBtn');if(reviewEditStep===null){btn?.remove();return}if(!btn){btn=document.createElement('button');btn.id='returnReviewBtn';btn.className='secondary';btn.textContent='최종 검토로 돌아가기';document.querySelector('#assessment .actions .right')?.prepend(btn)}btn.onclick=async()=>{const err=validate();if(err){message(err);return}collect();if(!await save(false))return;reviewEditStep=null;showFinalReview();window.scrollTo({top:0,behavior:'smooth'})}}
 
 function showSubmittedSession(saved){
- session=saved;state=saved.data||{};unsavedChanges=false;clearTimeout(saveTimer);clearTimeout(saveRetryTimer);clearInterval(timerHandle);clearInterval(timerSyncHandle);
+ if(sessionInvalidated)return;session=saved;state=saved.data||{};unsavedChanges=false;clearTimeout(saveTimer);clearTimeout(saveRetryTimer);clearInterval(timerHandle);clearInterval(timerSyncHandle);
  try{localStorage.removeItem(draftKey())}catch{}
  for(const id of ['login','assessment','finalReview','countryAssign','preStartWait','timer','helpRequestBtn'])$('#'+id)?.classList.add('hidden');
- $('#done').classList.remove('hidden');$('#progress').style.width='100%';
+ $('#activityPauseNotice').classList.add('hidden');$('#serverGate').classList.add('hidden');$('#lessonPill').textContent='최종 제출 완료';$('#done').classList.remove('hidden');$('#progress').style.width='100%';
  const reason=saved.submissionReason==='time_expired'?'시간이 종료되어 서버에 마지막으로 저장된 답안이 확정되었습니다.':saved.submissionReason==='teacher_finish'?'교사가 수행을 마감하여 서버에 저장된 답안이 확정되었습니다.':'최종 제출이 완료되었습니다.';
  $('#doneInfo').textContent=`${saved.studentId} ${saved.name} · ${reason}`;$('#doneSummary').innerHTML=finalReviewSummaryHtml(false);
 }
-async function refreshSubmittedSession(){if(submissionSyncBusy)return;submissionSyncBusy=true;try{const r=await fetch('/api/session/'+session.sessionId,{cache:'no-store'}),j=await r.json();if(r.ok&&j.session?.status==='submitted')showSubmittedSession(j.session);}finally{submissionSyncBusy=false;}}
+async function refreshSubmittedSession(){if(submissionSyncBusy||sessionInvalidated||!session)return;submissionSyncBusy=true;try{const r=await studentFetch('/api/session/'+session.sessionId,{cache:'no-store'}),j=await r.json();if(checkStudentSession(r)&&!sessionInvalidated&&r.ok&&j.session?.status==='submitted')showSubmittedSession(j.session);}finally{submissionSyncBusy=false;}}
 async function finalSubmit(auto=false){
- if(submitLocked)return false;collect();if(!auto&&!confirm('이 내용으로 최종 제출하시겠습니까? 제출 후에는 교사가 다시 열기 전까지 수정할 수 없습니다.'))return false;
+ if(submitLocked||sessionInvalidated||!session)return false;collect();if(!auto&&!confirm('이 내용으로 최종 제출하시겠습니까? 제출 후에는 교사가 다시 열기 전까지 수정할 수 없습니다.'))return false;
  submitLocked=true;const btn=$('#confirmFinalSubmitBtn');if(btn){btn.disabled=true;btn.textContent='제출 확인 중…'}
  try{
   if(!auto&&!await save(false))throw new Error('최신 답안을 저장하지 못했습니다. 연결을 확인한 뒤 다시 제출하세요.');
-  const r=await fetch('/api/submit',{signal:AbortSignal.timeout(10000),method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,data:state})}),j=await r.json();
-  if(!r.ok)throw new Error(j.error||'제출 실패');if(j.session)showSubmittedSession(j.session);else await refreshSubmittedSession();return true;
+  const r=await studentFetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:session.sessionId,data:state})}),j=await r.json();
+  if(!checkStudentSession(r)||sessionInvalidated)return false;if(!r.ok)throw new Error(j.error||'제출 실패');if(j.session)showSubmittedSession(j.session);else await refreshSubmittedSession();return true;
  }catch(e){if(auto){setSaveStatus('error','제출 확인 실패 · 연결이 복구되면 다시 확인합니다.');}else alert(e.message);return false;}
  finally{submitLocked=false;if(btn){btn.disabled=false;btn.textContent='이 내용으로 최종 제출 →'}}
 }
 
 $('#startBtn').addEventListener('click',startAssessment);
-$('#studentId').addEventListener('input',()=>applyServerGate(serverOpen));
+$('#studentId').addEventListener('input',renderServerGate);
+$('#gateRetryBtn').addEventListener('click',syncServerGate);
+$('#gateContinueBtn').addEventListener('click',()=>{gateDismissed=true;$('#serverGate').classList.add('hidden')});
+$('#reenterBtn').addEventListener('click',()=>location.reload());
 $('#studentId').addEventListener('keydown',e=>{if(e.key==='Enter'&&isTeacherEntry()){e.preventDefault();startAssessment()}});
 $('#spinCountryBtn').addEventListener('click',spinCountryRoulette);
 $('#beginAssignedBtn').addEventListener('click',beginAssignedAssessment);
