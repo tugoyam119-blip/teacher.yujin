@@ -389,7 +389,7 @@
     "slug": "기후국제회의-수행평가",
     "kind": "수행평가",
     "subject": "공통",
-    "audience": "both",
+    "audience": "teacher",
     "description": "",
     "school_year": "",
     "schedule_period": "",
@@ -488,7 +488,7 @@
       }
     ],
     "created_at": "2026-08-23T10:00:15.387Z",
-    "updated_at": "2026-09-21T00:47:51.404Z"
+    "updated_at": "2026-09-21T02:27:40.766Z"
   },
   {
     "id": "335893b2-c0c1-40bd-b96e-ac07babc6d55",
