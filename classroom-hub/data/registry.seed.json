@@ -665,12 +665,12 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 3,
-    "version_label": "v3",
+    "version": 4,
+    "version_label": "v4",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "ade21b98631a70df0c8fe181c1840490c0e58345",
-    "last_deployment_id": "11acc060-7c49-4938-8647-ffa1dceb0d09",
+    "last_commit_sha": "fd61ed0f30457b495d35e79672fa4f23efb3198c",
+    "last_deployment_id": "3472d68d-ff3e-494e-8d7e-b9c1b513deb8",
     "histories": [
       {
         "at": "2026-09-21T07:56:22.894Z",
@@ -691,18 +691,29 @@
         "restore_commit_sha": "222d4cf85a12ef0149a06c0a31b27e5f06e5d9e7"
       },
       {
-        "version": 3,
-        "action": "safe-patch",
-        "commit_sha": "ade21b98631a70df0c8fe181c1840490c0e58345",
         "at": "2026-09-21T08:35:42.543Z",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "id": "64acaec7-aea4-4daf-b2e1-16d2b594f0cc",
-        "restore_commit_sha": "fccd6e5b958ff0d1c5a297b895246d1b238bfad8",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "action": "safe-patch",
+        "version": 3,
+        "commit_sha": "ade21b98631a70df0c8fe181c1840490c0e58345",
+        "safe_restore": true,
         "applied_commit_sha": "ade21b98631a70df0c8fe181c1840490c0e58345",
+        "restore_commit_sha": "fccd6e5b958ff0d1c5a297b895246d1b238bfad8"
+      },
+      {
+        "version": 4,
+        "action": "safe-patch",
+        "commit_sha": "fd61ed0f30457b495d35e79672fa4f23efb3198c",
+        "at": "2026-09-21T08:41:05.671Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "01f2a454-fe6a-4d78-a34a-197e7e0b0837",
+        "restore_commit_sha": "559d6160accccd32790150fd0640be67df5f6a40",
+        "applied_commit_sha": "fd61ed0f30457b495d35e79672fa4f23efb3198c",
         "safe_restore": true
       }
     ],
     "created_at": "2026-09-21T07:56:22.894Z",
-    "updated_at": "2026-09-21T08:35:42.543Z"
+    "updated_at": "2026-09-21T08:41:05.670Z"
   }
 ]
