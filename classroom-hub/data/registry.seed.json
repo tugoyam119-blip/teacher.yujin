@@ -36,7 +36,7 @@
         "restore_commit_sha": "a792dcb3692b6747967916055c759c727eefbb0a"
       },
       {
-        "at": "2026-09-07T12:16:16.24Z",
+        "at": "2026-09-07T12:16:16.240Z",
         "id": "ffe0fd72-0005-43f6-bc6b-15afc38e0bc1",
         "note": "안전 패치 · 자동 연결: 패치 메타데이터의 프로그램 ID/주소 일치 · GitHub 경로 일치 · 파일명과 고정 주소 일치 · 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
         "action": "safe-patch",
@@ -47,7 +47,7 @@
         "restore_commit_sha": "80f46bb311e0f4a98a08332a4ec42ee9600b9b91"
       },
       {
-        "at": "2026-09-10T00:34:05.93Z",
+        "at": "2026-09-10T00:34:05.930Z",
         "id": "7995bdd7-f1d3-4ef3-9ee4-b7242d5205d3",
         "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "action": "safe-patch",
@@ -188,6 +188,7 @@
     "slug": "boardgame",
     "subject": "공통",
     "version": 51,
+    "archived": false,
     "audience": "teacher",
     "histories": [
       {
@@ -211,17 +212,20 @@
     "manage_url": "",
     "sort_order": 30,
     "target_url": "/apps/boardgame/",
-    "updated_at": "2026-08-31T06:50:08.95Z",
+    "updated_at": "2026-09-17T04:22:29.994Z",
     "deploy_type": "static",
     "description": "45칸 학습 보드게임",
+    "school_year": "",
     "update_mode": "chatgpt",
     "deploy_status": "warning",
     "version_label": "v51",
     "railway_domain": "",
     "last_commit_sha": "fb694da7ae5c291ce9a075bd33e0abaa97bd8d22",
+    "schedule_period": "",
     "railway_volume_id": "",
     "last_deployment_id": "c646aef4-a3a7-4bb2-ae68-91b1bf61bd7e",
-    "railway_service_id": ""
+    "railway_service_id": "",
+    "published_before_archive": false
   },
   {
     "id": "human-rights",
@@ -302,7 +306,7 @@
         "restore_commit_sha": "b2cbc91af087b9cea901c627c3ddef3ff70e66e1"
       },
       {
-        "at": "2026-09-04T04:58:27.74Z",
+        "at": "2026-09-04T04:58:27.740Z",
         "note": "자동 연결: 교사가 직접 대상 선택",
         "action": "auto-patch",
         "version": 124,
@@ -354,7 +358,7 @@
         "commit_sha": "424ca34cb133603f5b572c641fa74d5a5c4b0b12"
       },
       {
-        "at": "2026-08-24T00:30:51.74Z",
+        "at": "2026-08-24T00:30:51.740Z",
         "note": "자동 연결: 교사가 직접 대상 선택",
         "action": "auto-patch",
         "version": 2,
@@ -381,16 +385,35 @@
   },
   {
     "id": "65f76e71-29bb-49dc-9447-4e057f30da83",
-    "icon": "🔗",
-    "kind": "수행평가",
     "name": "기후국제회의 수행평가",
     "slug": "기후국제회의-수행평가",
+    "kind": "수행평가",
     "subject": "공통",
+    "audience": "both",
+    "description": "",
+    "school_year": "",
+    "schedule_period": "",
+    "icon": "🔗",
+    "published": true,
+    "archived": false,
+    "published_before_archive": false,
+    "sort_order": 100,
+    "deploy_type": "server",
+    "repo_path": "services/기후국제회의-수행평가",
+    "target_url": "https://yt-production-66c8.up.railway.app",
+    "manage_url": "https://yt-production-66c8.up.railway.app/manage",
+    "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9",
+    "railway_domain": "yt-production-66c8.up.railway.app",
+    "railway_volume_id": "df544c61-ff97-4c01-8c5d-eba02bc0e475",
     "version": 393,
-    "audience": "teacher",
+    "version_label": "v3.9.2",
+    "update_mode": "chatgpt",
+    "deploy_status": "deploying",
+    "last_commit_sha": "9d8567f9846cf0ce43f6cc68c8d440ed71d29186",
+    "last_deployment_id": "0edb40c7-22b8-41ae-802a-3d7e20a24011",
     "histories": [
       {
-        "at": "2026-08-23T10:22:14.24Z",
+        "at": "2026-08-23T10:22:14.240Z",
         "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 프로그램 이름 일치 · 관련 내용 1개 확인",
         "action": "auto-patch",
         "version": 222,
@@ -432,7 +455,7 @@
         "commit_sha": "1347a5062607cf3e1bf4434a861e277269370e0d"
       },
       {
-        "at": "2026-08-23T13:54:24.39Z",
+        "at": "2026-08-23T13:54:24.390Z",
         "note": "자동 연결: 교사가 직접 대상 선택",
         "action": "auto-patch",
         "version": 242,
@@ -464,23 +487,8 @@
         "commit_sha": "4126bf3791b9b30727d88330ab09aa2e2e172465"
       }
     ],
-    "published": true,
-    "repo_path": "services/기후국제회의-수행평가",
     "created_at": "2026-08-23T10:00:15.387Z",
-    "manage_url": "https://yt-production-66c8.up.railway.app/manage",
-    "sort_order": 100,
-    "target_url": "https://yt-production-66c8.up.railway.app",
-    "updated_at": "2026-09-04T05:20:56.137Z",
-    "deploy_type": "server",
-    "description": "",
-    "update_mode": "chatgpt",
-    "deploy_status": "deploying",
-    "version_label": "v3.9.2",
-    "railway_domain": "yt-production-66c8.up.railway.app",
-    "last_commit_sha": "9d8567f9846cf0ce43f6cc68c8d440ed71d29186",
-    "railway_volume_id": "df544c61-ff97-4c01-8c5d-eba02bc0e475",
-    "last_deployment_id": "0edb40c7-22b8-41ae-802a-3d7e20a24011",
-    "railway_service_id": "568dcbbe-8109-4af6-98e1-944cad64d7f9"
+    "updated_at": "2026-09-21T00:47:48.071Z"
   },
   {
     "id": "335893b2-c0c1-40bd-b96e-ac07babc6d55",
@@ -512,7 +520,7 @@
         "restore_commit_sha": "5fd495eceace20813a1c3cfaec47b4fe2aaf8f8f"
       },
       {
-        "at": "2026-08-24T08:58:19.76Z",
+        "at": "2026-08-24T08:58:19.760Z",
         "id": "06b9484f-dd02-4970-b9b6-90259eff5ca5",
         "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "action": "safe-patch",
@@ -597,42 +605,42 @@
   },
   {
     "id": "ef885acc-569e-4408-a89a-19585d5e6237",
+    "icon": "🔗",
+    "kind": "수업자료",
     "name": "통합사회2 3단원 수업용 프로그램",
     "slug": "통합사회2-3단원-수업용-프로그램",
-    "kind": "수업자료",
     "subject": "공통",
-    "audience": "teacher",
-    "description": "",
-    "school_year": "",
-    "schedule_period": "",
-    "icon": "🔗",
-    "published": true,
-    "archived": false,
-    "published_before_archive": false,
-    "sort_order": 100,
-    "deploy_type": "static",
-    "repo_path": "classroom-hub/apps/통합사회2-3단원-수업용-프로그램",
-    "target_url": "/apps/통합사회2-3단원-수업용-프로그램/",
-    "manage_url": "",
-    "railway_service_id": "",
-    "railway_domain": "",
-    "railway_volume_id": "",
     "version": 5,
-    "version_label": "v7.39",
-    "update_mode": "chatgpt",
-    "deploy_status": "ready",
-    "last_commit_sha": "c4b3ff3079d44bd914c6e9912b3d0ddf8ab1b0e2",
-    "last_deployment_id": "4f519078-df7e-4a70-9159-e7dcc94010cb",
+    "archived": false,
+    "audience": "teacher",
     "histories": [
       {
-        "version": 1,
-        "action": "create",
-        "commit_sha": "c4b3ff3079d44bd914c6e9912b3d0ddf8ab1b0e2",
         "at": "2026-09-17T03:31:53.263Z",
-        "note": ""
+        "note": "",
+        "action": "create",
+        "version": 1,
+        "commit_sha": "c4b3ff3079d44bd914c6e9912b3d0ddf8ab1b0e2"
       }
     ],
+    "published": true,
+    "repo_path": "classroom-hub/apps/통합사회2-3단원-수업용-프로그램",
     "created_at": "2026-09-17T03:31:53.263Z",
-    "updated_at": "2026-09-17T07:58:38.350Z"
+    "manage_url": "",
+    "sort_order": 100,
+    "target_url": "/apps/통합사회2-3단원-수업용-프로그램/",
+    "updated_at": "2026-09-17T08:00:22.347Z",
+    "deploy_type": "static",
+    "description": "",
+    "school_year": "",
+    "update_mode": "chatgpt",
+    "deploy_status": "ready",
+    "version_label": "v7.39",
+    "railway_domain": "",
+    "last_commit_sha": "c4b3ff3079d44bd914c6e9912b3d0ddf8ab1b0e2",
+    "schedule_period": "",
+    "railway_volume_id": "",
+    "last_deployment_id": "4f519078-df7e-4a70-9159-e7dcc94010cb",
+    "railway_service_id": "",
+    "published_before_archive": false
   }
 ]
