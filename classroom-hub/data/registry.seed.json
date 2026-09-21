@@ -665,22 +665,33 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 1,
-    "version_label": "v1",
+    "version": 2,
+    "version_label": "v2",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "88c93a4e266e62c0fa431575b724985c546e11d4",
-    "last_deployment_id": "7cf813c2-d0c4-430a-9096-ed6b7ab175ce",
+    "last_commit_sha": "32fe45d240cc17bd18ea7c8369f6f445887d38b2",
+    "last_deployment_id": "05371179-1efe-4945-8357-20bb9ef039a2",
     "histories": [
       {
-        "version": 1,
-        "action": "create",
-        "commit_sha": "88c93a4e266e62c0fa431575b724985c546e11d4",
         "at": "2026-09-21T07:56:22.894Z",
-        "note": ""
+        "note": "",
+        "action": "create",
+        "version": 1,
+        "commit_sha": "88c93a4e266e62c0fa431575b724985c546e11d4"
+      },
+      {
+        "version": 2,
+        "action": "safe-patch",
+        "commit_sha": "32fe45d240cc17bd18ea7c8369f6f445887d38b2",
+        "at": "2026-09-21T08:05:04.292Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "33d760b4-5a3e-462c-a77c-002cbe71cbc5",
+        "restore_commit_sha": "222d4cf85a12ef0149a06c0a31b27e5f06e5d9e7",
+        "applied_commit_sha": "32fe45d240cc17bd18ea7c8369f6f445887d38b2",
+        "safe_restore": true
       }
     ],
     "created_at": "2026-09-21T07:56:22.894Z",
-    "updated_at": "2026-09-21T07:56:22.894Z"
+    "updated_at": "2026-09-21T08:05:04.292Z"
   }
 ]
