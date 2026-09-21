@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 45분</div>
-    <div class="version">교사용 v3.9.2</div>
+    <div class="version">교사용 v3.12.0</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -47,7 +47,7 @@
     </div>
     <div class="run-control-row">
       <div><span id="serverStateBadge" class="badge">확인 중</span><strong id="classSessionState">1반 · 상태 확인 중</strong></div>
-      <div class="flow-actions"><button id="pauseClassSession" class="secondary">쉬는 시간·일시정지</button><button id="resumeClassSession" class="secondary">다시 시작</button><button id="finishClassSession" class="ghost">선택 반 마감</button></div>
+      <div class="flow-actions"><button id="pauseClassSession" class="secondary">쉬는 시간·일시정지</button><button id="resumeClassSession" class="secondary">다시 시작</button><button id="extendClassSession" class="secondary">추가 시간 +5분</button><button id="finishClassSession" class="ghost">선택 반 마감</button></div>
     </div>
     <div class="status-five">
       <article><span>미접속</span><b id="liveNever">0</b></article>
@@ -61,7 +61,7 @@
       <div id="teacherHelpList" class="teacher-help-list"></div>
     </section>
     <div class="live-steps-block">
-      <div><h3>실시간 단계 현황</h3><p class="sub">학생들이 어느 단계에 있는지 새로고침할 때 함께 갱신됩니다.</p></div>
+      <div><h3>실시간 단계 현황</h3><p class="sub">학생들이 어느 단계에 있는지 5초마다 자동으로 갱신됩니다.</p></div>
       <div class="live-step-cards">
         <article><span>1단계</span><b id="stepCount1">0</b><small>국가와 처음 판단</small></article>
         <article><span>2단계</span><b id="stepCount2">0</b><small>정책 선택</small></article>
@@ -222,7 +222,7 @@
       <div class="op-actions"><button id="runBenchmark50" class="primary">50건 검증 시작</button><button id="exportBenchmark50" class="secondary" disabled>검증 결과 Excel</button></div>
     </article>
     </div>
-    <article class="teacher-op-card" style="margin-top:16px;border-color:#efcaca;background:#fff8f8"><div class="op-card-head"><div><span class="eyebrow" style="color:#a33">시험 운영 기록 초기화</span><h3>답안·접속 기록만 초기화</h3></div><div class="op-actions"><button id="resetSelectedClass" class="ghost">선택 반 기록 초기화</button><button id="resetAllRecords" class="danger-btn">전체 기록 초기화</button></div></div><p class="sub">학생 명단은 유지하고 응시 답안·접속·가채점·교사 점수만 삭제합니다.</p></article>
+    <article class="teacher-op-card" style="margin-top:16px;border-color:#efcaca;background:#fff8f8"><div class="op-card-head"><div><span class="eyebrow" style="color:#a33">시험 운영 기록 초기화</span><h3>답안·접속 기록·시간 초기화</h3></div><div class="op-actions"><button id="resetSelectedClass" class="ghost">선택 반 기록 초기화</button><button id="resetAllRecords" class="danger-btn">전체 기록 초기화</button></div></div><p class="sub">학생 명단을 유지하고 선택 반의 답안·접속·점수를 초기화하며 남은 시간을 45분으로 돌립니다. 전체 학생 입장은 닫히고 다른 진행 중인 반은 일시정지됩니다.</p></article>
     </details>
   </section>
   <section id="detail" class="panel detail hidden"></section>

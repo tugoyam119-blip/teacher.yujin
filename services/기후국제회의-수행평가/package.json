@@ -1,12 +1,12 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.11.0",
+  "version": "3.12.0",
   "private": true,
-  "description": "기후국제회의 수행평가 v3.10.0 · 분리형 50건 가채점 검증",
+  "description": "기후국제회의 수행평가 · 서버 마감 확정 및 평가 정합성 개선",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node test/class-session.test.js"
+    "test": "node --test test/*.test.js"
   },
   "engines": {
     "node": ">=20"

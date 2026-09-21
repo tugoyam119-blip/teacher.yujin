@@ -64,11 +64,12 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
 
   await post('/api/teacher/class-runtime',{action:'start',classNo:1,mode:'regular'},teacherHeaders);
   assert.equal((await get(`/api/timer/${ready.session.sessionId}`)).phase,'running','teacher start did not begin the class timer');
+  await post('/api/save',{sessionId:ready.session.sessionId,data:{finalDeclaration:'보존 답안'},progress:75});
   await editClass(1,r=>{r.elapsedSeconds=2699;r.runStartedAt=new Date(Date.now()-2000).toISOString();r.phase='running';r.checkpointSeconds=2700});
   const finished=await get(`/api/timer/${ready.session.sessionId}`);
   assert.equal(finished.phase,'finished');
   assert.equal(finished.remainingSeconds,0);
-  await post('/api/submit',{sessionId:ready.session.sessionId,data:{finalDeclaration:'보존 답안'}});
+  await post('/api/submit',{sessionId:ready.session.sessionId,data:{finalDeclaration:'마감 후 변경 시도'}});
 
   await post('/api/teacher/class-runtime',{action:'open_admission',classNo:2,mode:'regular'},teacherHeaders);
   const class2=await post('/api/start',{studentId:'10201',name:'신규이반'});
