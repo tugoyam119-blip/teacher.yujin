@@ -1,4 +1,4 @@
-const VERSION='3.12.0';
+const VERSION='3.13.0';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
@@ -196,7 +196,7 @@ function collect(){if(renderedStep!==step||$('#assessment')?.classList.contains(
  if(step===1){state.agreement=document.querySelector('input[name="agreement"]:checked')?.value||'';state.budgetPlan='custom';state.agreementReason=v('#agreementReason');state.budgetHighReason=state.agreementReason}
  if(step===2){state.opposingCountry=document.querySelector('input[name="opposingCountry"]:checked')?.value||state.opposingCountry||'';state.oppositionReason=countryData[state.opposingCountry]?.dilemma||'';state.compromiseDimension=document.querySelector('input[name="compromiseDimension"]:checked')?.value||'';state.compromiseChoice=document.querySelector('input[name="compromiseChoice"]:checked')?.value||'';state.compromise=v('#compromise')}
  if(step===3){state.reconsiderChoice=document.querySelector('input[name="reconsiderChoice"]:checked')?.value||'';state.finalDeclaration=v('#finalDeclaration');state.reflectionReason=v('#reflectionReason');state.actorReason=v('#actorReason');document.querySelectorAll('[data-actor-role]').forEach(el=>{state.actorAssignments[el.dataset.actorRole]=el.value})}
- state.assessmentVersion='45min-v3.12.0';
+ state.assessmentVersion='45min-v3.13.0';
 }
 function budgetSum(){return Object.values(state.budget||{}).reduce((a,b)=>a+Number(b||0),0)}
 function budgetSummary(){return Object.entries(state.budget||{}).map(([k,v])=>`${budgets[k]} ${Number(v||0)}억`).join(' · ')}

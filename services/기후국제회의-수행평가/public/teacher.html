@@ -11,7 +11,7 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-dot"></span>국제기후회의 수행평가 · 교사용</div>
     <div class="lesson-pill">수행 활동 · 기준 45분</div>
-    <div class="version">교사용 v3.12.0</div>
+    <div class="version">교사용 v3.13.0</div>
   </div>
 </div>
 <section id="teacherLogin" class="teacher-login hero">
@@ -99,7 +99,7 @@
     </div>
 
     <div class="guide-panel hidden" data-guide-panel="run">
-      <h3>45분 운영 흐름</h3><div class="teacher-reading-tip"><b>v3.0 간편 운영</b><span>교사가 반별 입장을 열고 시작 버튼을 누르면 45분 타이머가 흐릅니다. 학생은 자동 배정된 국가를 확인하고 4단계만 수행합니다. 긴 자료 분석과 자유 예산 배분은 없앴으며, 선택형 문항과 짧은 서술을 결합했습니다. 마지막에는 전체 답안을 확인하고 수정한 뒤 제출합니다.</span></div>
+      <h3>45분 운영 흐름</h3><div class="teacher-reading-tip"><b>4단계 운영</b><span>교사가 반별 입장을 열고 시작 버튼을 누르면 45분 타이머가 흐릅니다. 학생은 자동 배정된 국가를 확인하고 4단계만 수행합니다. 협약을 고르고 100억 원을 직접 배분하며, 개인 모의협상과 협력 주체·역할을 설계합니다. 마지막에는 전체 답안을 확인하고 수정한 뒤 제출합니다.</span></div>
       <div class="timeline">
         <div><b>준비·입장</b><span>학생 로그인·국가 배정·활동 안내. 정답보다 국가 조건과 판단 근거가 중요하다고 설명합니다.</span></div>
         <div><b>1단계</b><span>국가 조건 확인과 처음 판단을 작성합니다.</span></div>
@@ -156,15 +156,7 @@
     <div class="guide-panel hidden" data-guide-panel="score">
       <h3>처음 채점할 때의 원칙 · 총 100점</h3>
       <p>정책 선택의 방향이 아니라 <b>자료와 국가 조건을 근거로 판단했는지, 상대국 이해관계를 고려했는지, 협상 후 판단이 논리적으로 이어지는지</b>를 봅니다.</p>
-      <div class="rubric-overview">
-        <div><b>자료 분석 · 15</b><span>자료의 핵심 사실을 정확히 사용했는가</span></div>
-        <div><b>국가 입장 · 15</b><span>국가 조건과 우선순위가 연결되는가</span></div>
-        <div><b>예산·TRADE-OFF · 20</b><span>한정된 자원에서 우선순위와 포기 기준이 드러나는가</span></div>
-        <div><b>국제관계 · 15</b><span>상대 국가의 이해관계를 근거로 분석했는가</span></div>
-        <div><b>갈등 조정 · 15</b><span>양측이 일부 수용할 수 있는 절충인가</span></div>
-        <div><b>국제협력 · 10</b><span>주체의 성격에 맞는 서로 다른 역할을 설계했는가</span></div>
-        <div><b>재판단·최종합의 · 10</b><span>협상 후 새 고려 요소가 최종 판단에 반영되는가</span></div>
-      </div>
+      <div id="rubricGuideOverview" class="rubric-overview"></div>
       <div class="notice soft"><b>AI 가채점</b> · AI 가채점은 학생 이름·학번을 보내지 않고 답안 내용과 배정 국가만 분석합니다. AI 추천점수는 학생에게 공개되지 않으며 최종 점수는 반드시 교사가 확정합니다.</div><div class="notice soft"><b>공동 채점 팁</b> · 처음 3명 정도를 함께 채점해 점수 기준을 맞춘 뒤 나머지를 나누면 교사 간 편차가 줄어듭니다. 학생 상세 화면에서는 각 요소의 점수별 기준을 바로 펼쳐볼 수 있습니다.</div>
     </div>
   </section>

@@ -1,6 +1,6 @@
 {
   "name": "international-climate-conference-assessment",
-  "version": "3.12.0",
+  "version": "3.13.0",
   "private": true,
   "description": "기후국제회의 수행평가 · 서버 마감 확정 및 평가 정합성 개선",
   "main": "server.js",
