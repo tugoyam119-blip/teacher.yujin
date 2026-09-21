@@ -113,7 +113,7 @@ function renderServerGate(){
 function applyServerGate(open){serverOpen=!!open;gateStatus=open?'open':'closed';renderServerGate();}
 async function syncServerGate(){if(serverGateBusy||session)return;serverGateBusy=true;try{const r=await studentFetch(`/api/server-status?sync=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw Error('status');const j=await r.json();applyServerGate(!!j.open)}catch{gateStatus='error';renderServerGate();}finally{serverGateBusy=false}}
 async function startAssessment(){
- if(startBusy)return;startBusy=true;renderServerGate();
+ if(startBusy)return;startBusy=true;$('#loginMessage').classList.add('hidden');renderServerGate();
  message('');const studentId=$('#studentId').value.trim(),name=$('#studentName').value.trim();
  try{
   const r=await studentFetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studentId,name})});const j=await r.json();if(!r.ok)throw new Error(j.error||'시작 오류');
@@ -127,7 +127,7 @@ async function startAssessment(){
   else if(state.reviewReady){$('#decisionReviewBtn').classList.remove('hidden');showFinalReview()}
   else{$('#decisionReviewBtn').classList.remove('hidden');showAssessment();render()}
   if(j.resumed)toast('이전 진행 내용을 불러왔습니다.');
- }catch(e){message(e.message);$('#serverGate').classList.add('hidden');}
+ }catch(e){$('#loginMessage').textContent=e.message;$('#loginMessage').classList.remove('hidden');$('#serverGate').classList.add('hidden');}
  finally{startBusy=false;$('#startBtn').disabled=false;$('#startBtn').textContent='수행평가 입장하기';}
 }
 function allCountryOverview(){const intro={hanbit:'책임과 기술력은 크지만 산업과 일자리를 지켜야 합니다.',saebom:'발전이 필요하지만 석탄 사용과 배출도 줄여야 합니다.',pureun:'배출 책임은 작지만 해수면 상승 피해가 매우 큽니다.',taeyang:'석유 산업을 유지하면서 친환경 산업으로 바꿔야 합니다.'};return `<div class="country-overview-grid">${Object.entries(countryData).map(([k,c])=>`<article class="country-overview-card ${state.countryRevealDone&&session?.country===k?'my-country':''}">${state.countryRevealDone&&session?.country===k?'<span class="my-country-badge">내 국가</span>':''}<div class="country-overview-head"><span class="country-symbol">${{hanbit:'🏭',saebom:'🏗️',pureun:'🌊',taeyang:'☀️'}[k]}</span><div><h3>${c.name}</h3><span>${c.type}</span></div></div><p>${intro[k]}</p><div class="country-overview-points"><b>회의에서 해결할 문제</b><span>${c.dilemma}</span></div></article>`).join('')}</div>`}
