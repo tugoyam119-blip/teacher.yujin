@@ -610,7 +610,7 @@
     "name": "통합사회2 3단원 수업용 프로그램",
     "slug": "통합사회2-3단원-수업용-프로그램",
     "subject": "공통",
-    "version": 20,
+    "version": 19,
     "archived": false,
     "audience": "teacher",
     "histories": [
@@ -628,13 +628,13 @@
     "manage_url": "",
     "sort_order": 100,
     "target_url": "/apps/통합사회2-3단원-수업용-프로그램/",
-    "updated_at": "2026-09-22T07:37:34.117Z",
+    "updated_at": "2026-09-22T07:25:49.634Z",
     "deploy_type": "static",
     "description": "",
     "school_year": "",
     "update_mode": "chatgpt",
     "deploy_status": "ready",
-    "version_label": "v7.54",
+    "version_label": "v7.53",
     "railway_domain": "",
     "last_commit_sha": "c4b3ff3079d44bd914c6e9912b3d0ddf8ab1b0e2",
     "schedule_period": "",
@@ -665,24 +665,13 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 25,
-    "version_label": "v25",
+    "version": 26,
+    "version_label": "v26",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "05b7c3f15c67ad5f46478f7bff6aa9c8253762c3",
-    "last_deployment_id": "18ab43c3-e74b-4617-8cdc-23a29545426e",
+    "last_commit_sha": "7049a805c36d644196c2e003dda166f809ec4052",
+    "last_deployment_id": "cc1470c5-db80-4491-8f06-fefccf252b9e",
     "histories": [
-      {
-        "at": "2026-09-22T05:13:04.557Z",
-        "id": "f24e9744-dc79-43e6-9ac6-bea440bd66db",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
-        "action": "safe-patch",
-        "version": 16,
-        "commit_sha": "74f5b4dcd31795ce25fab3a51ad8d0571310301c",
-        "safe_restore": true,
-        "applied_commit_sha": "74f5b4dcd31795ce25fab3a51ad8d0571310301c",
-        "restore_commit_sha": "6e3d8dca4d7a60b2a831d05bdcddbed5621e3755"
-      },
       {
         "at": "2026-09-22T05:55:32.246Z",
         "id": "4f49d5ef-a86d-4e97-a0d1-febc262dbd18",
@@ -772,18 +761,29 @@
         "restore_commit_sha": "d5c204a3b6855f7ee3f852ee9e1a6e2d754a9b02"
       },
       {
-        "version": 25,
-        "action": "safe-patch",
-        "commit_sha": "05b7c3f15c67ad5f46478f7bff6aa9c8253762c3",
         "at": "2026-09-22T07:16:21.052Z",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "id": "2a27c1ac-ca67-4a16-ac4f-ad455086dc30",
-        "restore_commit_sha": "1b30437e416e1f5bbcce8ed6523bb2e20cf7e278",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "action": "safe-patch",
+        "version": 25,
+        "commit_sha": "05b7c3f15c67ad5f46478f7bff6aa9c8253762c3",
+        "safe_restore": true,
         "applied_commit_sha": "05b7c3f15c67ad5f46478f7bff6aa9c8253762c3",
+        "restore_commit_sha": "1b30437e416e1f5bbcce8ed6523bb2e20cf7e278"
+      },
+      {
+        "version": 26,
+        "action": "safe-patch",
+        "commit_sha": "7049a805c36d644196c2e003dda166f809ec4052",
+        "at": "2026-09-22T07:38:25.046Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "d17b2f19-47e3-496c-a5a5-16d3fe3e5e9e",
+        "restore_commit_sha": "afa0710a86b8395bf309283d675d31b3e7fa39a7",
+        "applied_commit_sha": "7049a805c36d644196c2e003dda166f809ec4052",
         "safe_restore": true
       }
     ],
     "created_at": "2026-09-21T07:56:22.894Z",
-    "updated_at": "2026-09-22T07:16:21.052Z"
+    "updated_at": "2026-09-22T07:38:25.046Z"
   }
 ]
