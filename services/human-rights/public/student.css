@@ -63,3 +63,5 @@ body.zoomOpen{overflow:hidden}.imgZoom{position:fixed;inset:0;background:rgba(9,
 .btn.needsAttention{background:#64748b;cursor:pointer}.btn.needsAttention:hover{background:#475569}
 
 .visitorExperience .mobileHelpBtn{display:none}
+
+.studentTimePanel{position:sticky;top:0;z-index:45;background:#eaf3ff;border-bottom:2px solid #416b9f;color:#132f54;padding:10px 18px;text-align:center;box-shadow:0 2px 8px #132f5412}.studentTimePanel strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.studentTimePanel span{display:block;font-size:12px;margin-top:4px}.pasteNotice{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);width:min(90%,650px);z-index:3000;background:#8b2519;color:#fff;padding:16px;border-radius:12px;text-align:center}@media(max-width:600px){.studentTimePanel strong{font-size:16px}.studentTimePanel span{font-size:11px}}
