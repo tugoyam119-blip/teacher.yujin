@@ -1,5 +1,5 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),{spawn}=require('node:child_process'),{once}=require('node:events');
-test('teacher name participation persists separately, requires token, and validates final answers',async()=>{
+test('teacher name participation persists separately, requires token, and permits incomplete preview submissions',async()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'hr-observers-'));
  fs.writeFileSync(path.join(dir,'roster.json'),JSON.stringify({enabled:true,rows:[{student_id:'10101',name:'시험학생',class_no:1}]}));
  const child=spawn(process.execPath,[path.join(__dirname,'../server.js')],{env:{...process.env,PORT:'3422',DATA_DIR:dir,TEACHER_PIN:'test-only',OPENAI_API_KEY:''},stdio:['ignore','pipe','pipe']});
@@ -15,22 +15,23 @@ test('teacher name participation persists separately, requires token, and valida
   assert.equal((await fetch(base+'/api/observer/progress?student_id='+id)).status,403);
   assert.equal((await post('/api/observer/save',{payload:{schemaVersion:10}},false)).status,403);
   assert.equal((await post('/api/observer/save',{payload:{schemaVersion:10,answer1:'초안'}})).status,200);
-  assert.equal((await post('/api/observer/submit',{payload:{schemaVersion:10}})).status,400);
+  assert.equal((await post('/api/observer/submit',{payload:{schemaVersion:9}})).status,400);
   const text=Array.from({length:400},(_,i)=>String.fromCharCode(0xac00+i)).join('');
   const payload={schemaVersion:10,step:7,seen:['structure','usage','map','voices','budget'],quizDone:{structure:true,usage:true,map:true,voices:true,budget:true},evidence:[],policyStations:['central','school'],criteria:['many','efficiency'],rights:['mobility_right'],answer1:text,answer2:text,answer3:text,beneficiaries:['wheel'],delayed:['elder'],limitation:'region',remedy:'plan',newImpacts:['budget'],impactStrength:'small',finalDecision:'keep',finalStations:['central','school']};
-  assert.equal((await post('/api/observer/submit',{payload})).status,409);
   assert.equal((await post('/api/observer/manual-save',{payload})).status,200);
   assert.equal((await post('/api/observer/submit',{payload})).status,200);
   assert.equal((await post('/api/observer/self-eval',{text:'초안',draft:true})).status,200);
-  assert.equal((await post('/api/observer/self-eval',{text:'초안'})).status,400);
+  assert.equal((await post('/api/observer/self-eval',{text:'가'.repeat(1001)})).status,400);
   assert.equal((await post('/api/observer/self-eval',{text})).status,200);
   assert.equal((await post('/api/observer/self-eval',{text:'초안',draft:true})).status,409);
   const again=await (await post('/api/observer/login',{name:'시험교사'})).json();assert.equal(again.student_id,id);
   const progress=await (await fetch(base+'/api/observer/progress?student_id='+id,{headers:{'X-Observer-Token':token}})).json();assert.equal(progress.payload.answer1,text);assert.equal(progress.self_evaluation.text,text);
   assert.equal((await post('/api/observer/reopen-submission')).status,200);
-  assert.equal((await post('/api/observer/submit',{payload})).status,409);
   assert.equal((await post('/api/observer/manual-save',{payload})).status,200);
   assert.equal((await post('/api/observer/submit',{payload})).status,200);
+  assert.equal((await post('/api/observer/reopen-submission')).status,200);
+  assert.equal((await post('/api/observer/submit',{payload:{schemaVersion:10,step:7}})).status,200);
+  assert.equal((await post('/api/observer/self-eval',{text:''})).status,200);
   for(const folder of ['students','progress','presence','time','grades'])assert.deepEqual(fs.readdirSync(path.join(dir,folder)),[]);
   const results=await (await fetch(base+'/api/teacher/results?pin=test-only')).json();assert(!JSON.stringify(results).includes('시험교사'));
   assert.equal((await post('/api/teacher/observers',{pin:token,action:'get'})).status,403);

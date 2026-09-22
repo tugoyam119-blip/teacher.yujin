@@ -69,8 +69,8 @@ module.exports=function createObservers({dataDir,readJson,writeJson,sendJson,sen
   if(route==='heartbeat')return ok({ok:1,session:session()});
   if(['save','manual-save','submit'].includes(route)){
    if(p.submitted)return fail('제출한 답안은 답안 다시 수정 버튼을 눌러 수정하세요.',409);
-   const issue=validatePayload(b.payload,route==='submit',{optionalEvidence:true});if(issue)return fail(issue);
-   if(route==='submit'&&p.manual_save_hash!==payloadHash(b.payload))return fail('최종 제출 전에 현재 답안을 임시저장해 주세요.',409);
+   const issue=validatePayload(b.payload,visitor&&route==='submit',{optionalEvidence:true});if(issue)return fail(issue);
+   if(visitor&&route==='submit'&&p.manual_save_hash!==payloadHash(b.payload))return fail('최종 제출 전에 현재 답안을 임시저장해 주세요.',409);
    record.progress={...p,payload:{...b.payload,submitted:route==='submit',receiptTime:route==='submit'?ts:''},updated_at:ts,submitted:route==='submit',submitted_at:route==='submit'?ts:null};
    if(route==='manual-save'){record.progress.manual_save_at=ts;record.progress.manual_save_hash=payloadHash(b.payload)}
    save();return ok({ok:1,session:session(),manual_save_at:record.progress.manual_save_at,submitted_at:record.progress.submitted_at,extra_seconds:0,time_penalty:0,penalty_exempt:true});
@@ -83,7 +83,7 @@ module.exports=function createObservers({dataDir,readJson,writeJson,sendJson,sen
    if(!p.submitted)return fail('정책 답안을 먼저 제출하세요.',409);
    const draft=b.draft===true,text=draft?String(b.text||''):String(b.text||'').trim();
    if(draft&&p.self_evaluation?.submitted_at)return fail('이미 완료한 자기평가서입니다.',409);
-   const issue=draft?(text.length>1000?'1000자 이내로 작성하세요.':''):textIssue(text,400);if(issue)return fail(issue);
+   const issue=draft?(text.length>1000?'1000자 이내로 작성하세요.':''):visitor?textIssue(text,400):(text.length>1000?'1000자 이내로 작성하세요.':'');if(issue)return fail(issue);
    p.self_evaluation={text,saved_at:ts,submitted_at:draft?null:ts};record.progress=p;save();return ok({ok:1,...p.self_evaluation,draft});
   }
   return fail('없는 요청',404);

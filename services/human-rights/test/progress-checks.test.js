@@ -19,11 +19,11 @@ test('each stage lists missing conditions and valid choices pass including lates
 });
 test('step 4 overlap helper exists at runtime and completed answers advance',()=>{
  const s=fs.readFileSync(path.join(__dirname,'../public/student_3.js'),'utf8');
- const ctx={visitorMode:false,state:{...valid},isTeacherTest:()=>false,qualityError:qctx.qualityError,goStep:n=>ctx.next=n};vm.createContext(ctx);vm.runInContext(s.slice(0,s.lastIndexOf('try{init()}')),ctx);
+ const ctx={visitorMode:false,state:{...valid},isTeacherTest:()=>false,isObserverPreview:()=>false,qualityError:qctx.qualityError,goStep:n=>ctx.next=n};vm.createContext(ctx);vm.runInContext(s.slice(0,s.lastIndexOf('try{init()}')),ctx);
  assert.equal(typeof ctx.hasOverlap,'function');assert.equal(ctx.hasOverlap(),false);ctx.saveAnswer2();assert.equal(ctx.next,5);
 });
 test('next action opens reasons without advancing, then allows valid state',()=>{
- const ctx={visitorMode:false,state:{...valid,step:3,rights:[]},ProgressChecks:{reasons},observerMode:false,qualityError:qctx.qualityError,cost:options.cost,manualSavedForCurrent:true,isTeacherTest:()=>false,API_MODE:true,session:{is_open:1},alert:msg=>ctx.message=msg};
+ const ctx={visitorMode:false,state:{...valid,step:3,rights:[]},ProgressChecks:{reasons},observerMode:false,qualityError:qctx.qualityError,cost:options.cost,manualSavedForCurrent:true,isTeacherTest:()=>false,isObserverPreview:()=>false,API_MODE:true,session:{is_open:1},alert:msg=>ctx.message=msg};
  vm.createContext(ctx);vm.runInContext(source.slice(source.indexOf('function advanceReasons()')),ctx);assert.equal(ctx.checkAdvance(),false);assert(ctx.message.includes('관련 권리'));ctx.state.rights=['mobility_right'];assert.equal(ctx.checkAdvance(),true);ctx.session={is_open:0,message:'수행 대기'};assert.equal(ctx.checkAdvance(),false);assert.equal(ctx.message,'수행 대기');
 });
 
@@ -44,4 +44,14 @@ test('public completion opens feedback rather than student self-evaluation',()=>
  vm.createContext(ctx);vm.runInContext(s.slice(0,s.lastIndexOf('try{init()}')),ctx);
  ctx.updateReopenStatus=()=>{};ctx.visitorFeedbackView=()=>{ctx.screen='feedback'};
  ctx.render();assert.equal(ctx.screen,'feedback');
+});
+
+test('registered observers bypass every step while public visitors retain requirements',()=>{
+ const ctx={observerMode:true,visitorMode:false,state:{step:1},isTeacherTest:()=>false};vm.createContext(ctx);
+ vm.runInContext(source.slice(source.indexOf('function isObserverPreview()'),source.indexOf('function isTeacherTest()')),ctx);
+ vm.runInContext(source.slice(source.indexOf('function advanceReasons()')),ctx);
+ for(let step=1;step<=7;step++){ctx.state.step=step;assert.equal(ctx.checkAdvance(),true);assert.equal(ctx.advanceReasons().length,0)}
+ const s=fs.readFileSync(path.join(__dirname,'../public/student_3.js'),'utf8');vm.runInContext(s.slice(0,s.lastIndexOf('try{init()}')),ctx);ctx.goStep=n=>ctx.next=n;
+ ctx.saveAnswer1();assert.equal(ctx.next,4);ctx.saveAnswer2();assert.equal(ctx.next,5);ctx.saveAnswer3();assert.equal(ctx.next,7);
+ ctx.visitorMode=true;assert.equal(ctx.isObserverPreview(),false);ctx.observerMode=false;assert.equal(ctx.isObserverPreview(),false);
 });
