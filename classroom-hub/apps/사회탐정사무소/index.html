@@ -239,20 +239,27 @@ function roleTeamValid(){const r=roleState(),ids=r.teams.flat();return ids.lengt
 function roleAllocate(shuffle=false){let ids=[...eligible()];if(!ids.length){toast('먼저 학생 이름을 등록하세요.');return;}if(shuffle)for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]];}const r=roleState();r.teams=[];for(let i=0;i<ids.length;i+=4)r.teams.push(ids.slice(i,i+4));r.calls={};r.contributions={};save();render();}
 function roleMember(team,role){return team[role%team.length];}
 function roleAssignments(){const r=roleState();return `<div class="roleTeams">${r.teams.map((t,i)=>`<section class="panel"><h3>${i+1}팀</h3>${roleNames.map((name,j)=>`<p><b>${name}</b> · ${safe(nameOf(roleMember(t,j)))}</p>`).join('')}</section>`).join('')}</div>`;}
-function roleGo(n){const r=roleState();if(n===2&&!roleTeamValid()){toast('현재 참여 명단으로 팀을 배정해 주세요.');return;}r.step=n;s.stage=n;s.unlocked=Math.max(s.unlocked,n);if(n===2){s.running=true;lastTick=Date.now();}pauseRoleTimer();roleTimer.elapsed=0;save();render();window.scrollTo(0,0);}
+function roleGo(n){const r=roleState();if(n===2&&!roleTeamValid()){toast('현재 참여 명단으로 팀을 배정해 주세요.');return;}r.step=n;s.stage=n;s.unlocked=Math.max(s.unlocked,n);if(n===2){s.running=true;lastTick=Date.now();}if(n<2||n>5)pauseRoleTimer();save();render();window.scrollTo(0,0);}
 function roleFacts(){const r=roleState();return `<details class="roleFacts" ${r.step>1?'open':''}><summary>발견 사실 · ${r.read.length}개 (결론은 함께 판단)</summary>${r.read.map(id=>`<p><b>${safe(clues.find(c=>c.id===id).title)}</b> — ${safe(roleEvidence[id].fact)}</p>`).join('')||'<p>자료를 읽고 기록하면 여기에 남습니다.</p>'}</details>`;}
 const roleMissionData={
 2:{title:'임무 1 · 약속대로 일했을까?',goal:'하늘이 약속한 조건과 실제로 일한 기록을 연결하세요.',tasks:['시급·주휴수당 약속 찾기','실제 시간·개근 여부 찾기','다른 직원의 근무일 수 확인','“약속은 ___, 실제 기록은 ___.”'],ids:['contract','attendance','profile'],q:'지금 기록으로 뒷받침되는 설명은?',options:['하늘은 세 주 모두 약속한 날에 출근했다.','하늘은 여러 번 결근했다.','시급이 얼마인지는 아직 기록이 없다.'],answer:0,feedback:'계약서의 월~금 약속과 출퇴근 기록의 개근을 연결하세요.'},
 3:{title:'임무 2 · 사장의 설명을 믿어도 될까?',goal:'주장과 사실을 구별하고, 다음에 요청할 증거를 정하세요.',tasks:['계약서와 익명 글의 충돌 찾기','사진에서 확인되는 사실 말하기','사장에게 추가로 물을 질문 만들기','“아직 ___을 확인해야 합니다.”'],ids:['photo','post'],q:'실제로 어떤 돈을 빼거나 빠뜨렸는지 확인하려면?',options:['컵 사진만 다시 보면 충분하다.','익명 글에 추천이 많은지 확인한다.','급여 원장과 공제에 관한 대화를 요청한다.'],answer:2,feedback:'사진은 파손 흔적입니다. 실제 급여 계산과 당사자의 의사를 보여 주는 기록이 더 필요합니다.'},
 4:{title:'임무 3 · 빠진 돈의 근거를 찾자',goal:'새 기록과 노동권 수첩으로 처음의 의심을 검증하세요.',tasks:['주휴수당의 조건을 사건과 대조','원장에서 누락·차감 항목 찾기','실수 책임과 임금 공제를 구별','“우리 결론의 근거는 ___와 ___.”'],ids:['pay','chat'],q:'추가 기록과 수첩을 함께 읽었을 때 타당한 결론은?',options:['주말에 일하지 않았으니 주휴수당은 없다.','주휴수당 누락과 일방적인 컵값 공제를 검토해야 한다.','컵을 깼다면 모든 임금을 주지 않아도 된다.'],answer:1,feedback:'주휴는 주말의 실제 근무 대가와 다릅니다. 개근·약정 시간·고용 기간, 공제 동의 여부를 각각 확인하세요.'}
 };
-let roleTimer={elapsed:0,start:0,running:false};
-function roleSeconds(){return Math.floor((roleTimer.elapsed+(roleTimer.running?Date.now()-roleTimer.start:0))/1000);}
-function pauseRoleTimer(){if(roleTimer.running){roleTimer.elapsed+=Date.now()-roleTimer.start;roleTimer.running=false;}roleTimerPaint();}
-function roleTimerToggle(){if(roleTimer.running)pauseRoleTimer();else{roleTimer.running=true;roleTimer.start=Date.now();}roleTimerPaint();}
-function roleTimerReset(){roleTimer={elapsed:0,start:0,running:false};roleTimerPaint();}
-function roleTimerPaint(){if(!$('roleTime'))return;$('roleTime').textContent=timeText(roleSeconds());$('roleTimerButton').textContent=roleTimer.running?'일시정지':'팀 토론 시작 / 계속';$('roleTimerHint').textContent=roleSeconds()<80?roleNames[Math.min(3,Math.floor(roleSeconds()/20))]+' 차례 · 20초씩 돌아가며 설명':'네 역할이 모두 말했나요? 근거를 연결하세요.';}
-setInterval(()=>{if(roleTimer.running){if(library||currentCase!==1)pauseRoleTimer();else roleTimerPaint();}},250);
+// One elapsed stopwatch per case; never count time while the page is closed.
+let roleTimer={elapsed:0,start:0,running:false},roleTimerOwner=null;
+function roleTimerSync(){if(roleTimerOwner===s)return;roleTimerOwner=s;const elapsed=Number(s.discussionElapsedMs);roleTimer={elapsed:Number.isFinite(elapsed)&&elapsed>=0?elapsed:0,start:0,running:false};}
+function roleMillis(){roleTimerSync();return roleTimer.elapsed+(roleTimer.running?Math.max(0,Date.now()-roleTimer.start):0);}
+function roleSeconds(){return Math.floor(roleMillis()/1000);}
+const saveBeforeDiscussionTimer=save;
+save=function(){if(roleTimerOwner===s)s.discussionElapsedMs=roleMillis();saveBeforeDiscussionTimer();};
+function pauseRoleTimer(){roleTimerSync();if(roleTimer.running){roleTimer.elapsed=roleMillis();roleTimer.running=false;save();}roleTimerPaint();}
+function roleTimerToggle(){roleTimerSync();if(roleTimer.running)pauseRoleTimer();else{roleTimer.running=true;roleTimer.start=Date.now();save();}roleTimerPaint();}
+function roleTimerReset(){roleTimerOwner=s;roleTimer={elapsed:0,start:0,running:false};s.discussionElapsedMs=0;save();roleTimerPaint();}
+function roleTimerPaint(){roleTimerSync();if(!$('roleTime'))return;$('roleTime').textContent=timeText(roleSeconds());$('roleTimerButton').textContent=roleTimer.running?'일시정지':'팀 토론 시작 / 계속';$('roleTimerButton').setAttribute('aria-pressed',String(roleTimer.running));$('roleTimerHint').textContent=roleTimer.running?'토론 경과 시간 · 각자 확인한 근거를 차례로 말해 주세요.':'시간은 늘어납니다. 시작 / 계속을 눌러 토론 시간을 재세요.';}
+setInterval(()=>{roleTimerSync();if(!roleTimer.running)return;const r=s.roleCase;if(library||!r||r.step<2||r.step>5||r.rounds?.[5]?.revealed)pauseRoleTimer();else roleTimerPaint();},250);
+window.addEventListener('pagehide',()=>{if(roleTimerOwner===s)save();});
+
 function roleClock(){return `<div class="roleClock"><strong id="roleTime">00:00</strong><button id="roleTimerButton" onclick="roleTimerToggle()">팀 토론 시작 / 계속</button><button onclick="roleTimerReset()">0초로</button><span id="roleTimerHint">약속 탐정부터 20초씩</span></div>`;}
 function roleCall(pass=false){const r=roleState();if(!roleTeamValid()){toast('팀 명단을 다시 배정해 주세요.');return;}const candidates=r.teams.flatMap((t,i)=>roleNames.map((_,j)=>({team:i,role:j,id:roleMember(t,j)})));const min=Math.min(...candidates.map(c=>r.calls[c.id]||0));const pool=candidates.filter(c=>(r.calls[c.id]||0)===min),pick=pool[Math.floor(Math.random()*pool.length)];r.calls[pick.id]=(r.calls[pick.id]||0)+1;r.called=pick;s.active=pick.id;save();render();}
 function roleCredit(){const r=roleState();if(!r.called)return;const key=r.step+':'+r.called.id;if(r.contributions[key]){toast('이 임무의 기여를 이미 기록했습니다.');return;}r.contributions[key]=true;s.active=r.called.id;award(1);save();render();}
