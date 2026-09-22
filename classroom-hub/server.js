@@ -7,6 +7,7 @@ const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
 const crypto = require('crypto');
+const { withArtifactVersion } = require('./activity-artifact');
 
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'public');
@@ -707,7 +708,7 @@ function publicActivity(a) {
 
 // static assets and embedded apps
 app.use('/assets', express.static(PUBLIC, { maxAge: '5m', setHeaders: res => { res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
-app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHeaders: res => { res.setHeader('Content-Disposition', 'inline'); res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
+app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHeaders: (res, file) => { if (/\.html$/i.test(file)) res.setHeader('Cache-Control', 'no-cache'); res.setHeader('Content-Disposition', 'inline'); res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
 
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
 app.get('/teacher', (req, res) => isTeacher(req) ? res.sendFile(path.join(PUBLIC, 'teacher.html')) : res.redirect('/'));
@@ -749,7 +750,7 @@ app.get('/api/admin/system', needTeacher, async (req, res) => {
   });
 });
 
-app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) { const ds=String(st.status).toLowerCase(); /* Railway는 새 배포가 생기면 이전 deployment를 REMOVED로 표시할 수 있다. 오래된 deployment id 때문에 프로그램 자체가 제거된 것처럼 보이지 않도록 REMOVED는 무시한다. */ if (ds !== 'removed') a.deploy_status = ds; } } } res.json({ activities: s.activities.sort((a,b)=>a.sort_order-b.sort_order), announcements: normalizeAnnouncements(s.announcements), updated_at: s.updated_at }); } catch(e){next(e);} });
+app.get('/api/admin/activities', needTeacher, async (req, res, next) => { try { const s = await getState(); for (const a of s.activities) { if (a.last_deployment_id) { const st = await deploymentStatus(a.last_deployment_id); if (st?.status) { const ds=String(st.status).toLowerCase(); /* Railway는 새 배포가 생기면 이전 deployment를 REMOVED로 표시할 수 있다. 오래된 deployment id 때문에 프로그램 자체가 제거된 것처럼 보이지 않도록 REMOVED는 무시한다. */ if (ds !== 'removed') a.deploy_status = ds; } } } res.set('Cache-Control', 'no-store'); res.json({ activities: await Promise.all(s.activities.sort((a,b)=>a.sort_order-b.sort_order).map(a => withArtifactVersion(APPS, a))), announcements: normalizeAnnouncements(s.announcements), updated_at: s.updated_at }); } catch(e){next(e);} });
 
 app.put('/api/admin/announcements', needTeacher, async (req, res, next) => {
   try {

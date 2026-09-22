@@ -208,7 +208,7 @@ async function api(url,opt={}){const r=await fetch(url,opt);const j=await r.json
 function openModal(id){$('#'+id).classList.add('show')}function closeModal(id){$('#'+id).classList.remove('show')}
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
 document.querySelectorAll('.modal-bg').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});
-const ver=a=>a.version_label||('v'+(a.version||1));
+const ver=a=>a.release_version_label||a.version_label||('v'+(a.version||1));
 function deployClass(a){const s=String(a.deploy_status||'ready').toLowerCase();return ['failed','crashed'].includes(s)?'bad':s==='warning'?'warn':'good'}
 function deployText(a){const s=String(a.deploy_status||'ready').toLowerCase();return ({ready:'준비됨',success:'배포 완료',deploying:'배포 중',building:'빌드 중',warning:'확인 필요',failed:'실패',crashed:'오류'}[s]||s)}
 function latestSafe(a){return [...(a.histories||[])].reverse().find(h=>h?.id&&h?.restore_commit_sha)}
@@ -244,7 +244,7 @@ function renderPrograms(){
       <div class="card-actions">
         <a class="btnx primary small" href="/open/${encodeURIComponent(a.slug)}" target="_blank">열기</a>
         ${a.manage_url?`<a class="btnx secondary small" href="/manage/${encodeURIComponent(a.slug)}" target="_blank">교사 관리</a>`:''}
-        ${(a.kind==='학습게임'||a.id==='ef885acc-569e-4408-a89a-19585d5e6237')&&a.deploy_type==='static'?`<a class="btnx secondary small" href="/api/admin/activities/${encodeURIComponent(a.id)}/download">최신 HTML 다운로드</a>`:''}
+        ${(a.kind==='학습게임'||a.id==='ef885acc-569e-4408-a89a-19585d5e6237')&&a.deploy_type==='static'?`<a class="btnx secondary small" href="/api/admin/activities/${encodeURIComponent(a.id)}/download${a.release_build?`?build=${encodeURIComponent(a.release_build)}`:''}">최신 HTML 다운로드</a>`:''}
         <button class="btnx ghost small kebab" onclick="openManage('${esc(a.id)}')">⋯</button>
       </div>
       ${safe?`<div class="undo-row"><span>문제가 생겼다면 바로 이전 상태로</span><button class="btnx danger small" onclick="undoLatest('${esc(a.id)}','${esc(safe.id)}')">마지막 업데이트 취소</button></div>`:''}
