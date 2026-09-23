@@ -640,12 +640,12 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 23,
-    "version_label": "v23",
+    "version": 24,
+    "version_label": "v24",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "4787f46d6abaa7f504fc2200f5e64dfe42911d01",
-    "last_deployment_id": "9c270ce8-5d80-49c9-b890-ed45d21742a1",
+    "last_commit_sha": "70fc21ce9cb730e1479886178ee079d5e6b861f2",
+    "last_deployment_id": "de6ef4aa-094d-4789-991f-0be7eae58d63",
     "histories": [
       {
         "at": "2026-09-17T03:31:53.263Z",
@@ -677,19 +677,30 @@
         "restore_commit_sha": "00143b82d4f2fb62b6bbce1b87610ee8483137c6"
       },
       {
-        "version": 23,
-        "action": "safe-patch",
-        "commit_sha": "4787f46d6abaa7f504fc2200f5e64dfe42911d01",
         "at": "2026-09-23T01:37:44.027Z",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "id": "69747848-7749-4cf2-8e93-717cb1a04001",
-        "restore_commit_sha": "92be10506ebd1311888ef92872dad85c0e320621",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "action": "safe-patch",
+        "version": 23,
+        "commit_sha": "4787f46d6abaa7f504fc2200f5e64dfe42911d01",
+        "safe_restore": true,
         "applied_commit_sha": "4787f46d6abaa7f504fc2200f5e64dfe42911d01",
+        "restore_commit_sha": "92be10506ebd1311888ef92872dad85c0e320621"
+      },
+      {
+        "version": 24,
+        "action": "safe-patch",
+        "commit_sha": "70fc21ce9cb730e1479886178ee079d5e6b861f2",
+        "at": "2026-09-23T01:55:19.884Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "9bacbe4b-679f-4519-aa73-b752c81952ad",
+        "restore_commit_sha": "ef03658cef596b4d72ebf0c56e17563831a6117d",
+        "applied_commit_sha": "70fc21ce9cb730e1479886178ee079d5e6b861f2",
         "safe_restore": true
       }
     ],
     "created_at": "2026-09-17T03:31:53.263Z",
-    "updated_at": "2026-09-23T01:37:44.027Z"
+    "updated_at": "2026-09-23T01:55:19.884Z"
   },
   {
     "id": "822d4364-cd37-4309-9b63-b09e7e0f5d0b",
