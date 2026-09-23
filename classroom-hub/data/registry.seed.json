@@ -640,12 +640,12 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 21,
-    "version_label": "v21",
+    "version": 22,
+    "version_label": "v22",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "5f2268045275eadc5561442d3afd6ccc7532f582",
-    "last_deployment_id": "b8a3f831-14d3-4142-8cba-16a41b4c566e",
+    "last_commit_sha": "fae372644768611ca2989887aff7adef03c26704",
+    "last_deployment_id": "db2468f2-e9de-4e9c-8368-681221cc31dd",
     "histories": [
       {
         "at": "2026-09-17T03:31:53.263Z",
@@ -655,19 +655,30 @@
         "commit_sha": "c4b3ff3079d44bd914c6e9912b3d0ddf8ab1b0e2"
       },
       {
-        "version": 21,
-        "action": "safe-patch",
-        "commit_sha": "5f2268045275eadc5561442d3afd6ccc7532f582",
         "at": "2026-09-23T00:46:21.445Z",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "id": "43220d16-2604-45a5-b6cd-e145f595029d",
-        "restore_commit_sha": "8e524c57cb731d3c8318783edf85039693266ff0",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "action": "safe-patch",
+        "version": 21,
+        "commit_sha": "5f2268045275eadc5561442d3afd6ccc7532f582",
+        "safe_restore": true,
         "applied_commit_sha": "5f2268045275eadc5561442d3afd6ccc7532f582",
+        "restore_commit_sha": "8e524c57cb731d3c8318783edf85039693266ff0"
+      },
+      {
+        "version": 22,
+        "action": "safe-patch",
+        "commit_sha": "fae372644768611ca2989887aff7adef03c26704",
+        "at": "2026-09-23T01:36:28.665Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "1569c4c6-47e7-4987-b985-9ed35705bae6",
+        "restore_commit_sha": "00143b82d4f2fb62b6bbce1b87610ee8483137c6",
+        "applied_commit_sha": "fae372644768611ca2989887aff7adef03c26704",
         "safe_restore": true
       }
     ],
     "created_at": "2026-09-17T03:31:53.263Z",
-    "updated_at": "2026-09-23T00:46:21.445Z"
+    "updated_at": "2026-09-23T01:36:28.665Z"
   },
   {
     "id": "822d4364-cd37-4309-9b63-b09e7e0f5d0b",
