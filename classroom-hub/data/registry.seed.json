@@ -21,20 +21,13 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 53,
-    "version_label": "v53",
+    "version": 54,
+    "version_label": "v54",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "787516811f6505c48b84b4a8ff09a18c95ec2fd6",
-    "last_deployment_id": "4b7bd99c-1e36-498d-a357-6f9e1500a3e5",
+    "last_commit_sha": "2a475c2c4c72e84c59232788863aca16dc65eec7",
+    "last_deployment_id": "4ec17179-c55a-46ba-9cd6-daad92cde4ef",
     "histories": [
-      {
-        "at": "2026-08-24T04:19:35.256Z",
-        "note": "자동 연결: 패치 내부에서 고정 주소 확인 · 패치 내부에서 프로그램 ID 확인 · 관련 내용 3개 확인",
-        "action": "auto-patch",
-        "version": 12,
-        "commit_sha": "6ccd4aed07fbc855293df23ace2866d0f6f23982"
-      },
       {
         "at": "2026-08-24T04:38:18.416Z",
         "note": "복구 원본 e336f25",
@@ -120,19 +113,30 @@
         "restore_commit_sha": "60dbd410e2f9f57792792b91bdf754e311101413"
       },
       {
-        "version": 53,
-        "action": "safe-patch",
-        "commit_sha": "787516811f6505c48b84b4a8ff09a18c95ec2fd6",
         "at": "2026-09-23T00:31:52.448Z",
-        "note": "안전 패치 · 자동 연결: 파일명과 고정 주소 일치 · 패치 내부에서 고정 주소 확인 · 관련 내용 3개 확인",
         "id": "b60cc6ba-b650-403a-9ee3-54d4ca011665",
-        "restore_commit_sha": "b93eecf9f2fc028622aa54a0be78df0fe48960c4",
+        "note": "안전 패치 · 자동 연결: 파일명과 고정 주소 일치 · 패치 내부에서 고정 주소 확인 · 관련 내용 3개 확인",
+        "action": "safe-patch",
+        "version": 53,
+        "commit_sha": "787516811f6505c48b84b4a8ff09a18c95ec2fd6",
+        "safe_restore": true,
         "applied_commit_sha": "787516811f6505c48b84b4a8ff09a18c95ec2fd6",
+        "restore_commit_sha": "b93eecf9f2fc028622aa54a0be78df0fe48960c4"
+      },
+      {
+        "version": 54,
+        "action": "safe-rollback",
+        "commit_sha": "2a475c2c4c72e84c59232788863aca16dc65eec7",
+        "at": "2026-09-23T00:43:50.143Z",
+        "note": "안전 복구 원본 b93eecf",
+        "id": "2b3f78b4-89bb-45bb-aba3-c98a550537af",
+        "restore_commit_sha": "4bf1abcea200b9d99a760e04a14b74eb64ea376c",
+        "applied_commit_sha": "2a475c2c4c72e84c59232788863aca16dc65eec7",
         "safe_restore": true
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-09-23T00:31:52.448Z"
+    "updated_at": "2026-09-23T00:43:50.143Z"
   },
   {
     "id": "international-relations",
