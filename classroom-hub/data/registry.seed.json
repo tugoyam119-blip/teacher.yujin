@@ -1,7 +1,7 @@
 [
   {
     "id": "social2-unit1",
-    "name": "통합사회2 1,3단원 교사설명용",
+    "name": "통합사회2 1단원 교사설명용",
     "slug": "social2",
     "kind": "수업자료",
     "subject": "통합사회2",
@@ -25,7 +25,7 @@
     "version_label": "v54",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "2a475c2c4c72e84c59232788863aca16dc65eec7",
+    "last_commit_sha": "cdf119c4e5d86336d9a5edff742869803ee16880",
     "last_deployment_id": "4ec17179-c55a-46ba-9cd6-daad92cde4ef",
     "histories": [
       {
@@ -124,19 +124,19 @@
         "restore_commit_sha": "b93eecf9f2fc028622aa54a0be78df0fe48960c4"
       },
       {
-        "version": 54,
-        "action": "safe-rollback",
-        "commit_sha": "2a475c2c4c72e84c59232788863aca16dc65eec7",
         "at": "2026-09-23T00:43:50.143Z",
-        "note": "안전 복구 원본 b93eecf",
         "id": "2b3f78b4-89bb-45bb-aba3-c98a550537af",
-        "restore_commit_sha": "4bf1abcea200b9d99a760e04a14b74eb64ea376c",
+        "note": "안전 복구 원본 b93eecf",
+        "action": "safe-rollback",
+        "version": 54,
+        "commit_sha": "2a475c2c4c72e84c59232788863aca16dc65eec7",
+        "safe_restore": true,
         "applied_commit_sha": "2a475c2c4c72e84c59232788863aca16dc65eec7",
-        "safe_restore": true
+        "restore_commit_sha": "4bf1abcea200b9d99a760e04a14b74eb64ea376c"
       }
     ],
     "created_at": "2026-08-20T22:09:46.658Z",
-    "updated_at": "2026-09-23T00:43:50.143Z"
+    "updated_at": "2026-09-23T00:44:01.194Z"
   },
   {
     "id": "international-relations",
