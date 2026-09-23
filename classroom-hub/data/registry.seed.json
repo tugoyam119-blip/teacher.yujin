@@ -640,12 +640,12 @@
     "railway_service_id": "",
     "railway_domain": "",
     "railway_volume_id": "",
-    "version": 24,
-    "version_label": "v24",
+    "version": 25,
+    "version_label": "v25",
     "update_mode": "chatgpt",
     "deploy_status": "deploying",
-    "last_commit_sha": "70fc21ce9cb730e1479886178ee079d5e6b861f2",
-    "last_deployment_id": "de6ef4aa-094d-4789-991f-0be7eae58d63",
+    "last_commit_sha": "e73fa704732c67eda66490330513d1c843355ae7",
+    "last_deployment_id": "d56e221d-9c05-4279-8f54-1960c6aeb32c",
     "histories": [
       {
         "at": "2026-09-17T03:31:53.263Z",
@@ -688,19 +688,30 @@
         "restore_commit_sha": "92be10506ebd1311888ef92872dad85c0e320621"
       },
       {
-        "version": 24,
-        "action": "safe-patch",
-        "commit_sha": "70fc21ce9cb730e1479886178ee079d5e6b861f2",
         "at": "2026-09-23T01:55:19.884Z",
-        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
         "id": "9bacbe4b-679f-4519-aa73-b752c81952ad",
-        "restore_commit_sha": "ef03658cef596b4d72ebf0c56e17563831a6117d",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "action": "safe-patch",
+        "version": 24,
+        "commit_sha": "70fc21ce9cb730e1479886178ee079d5e6b861f2",
+        "safe_restore": true,
         "applied_commit_sha": "70fc21ce9cb730e1479886178ee079d5e6b861f2",
+        "restore_commit_sha": "ef03658cef596b4d72ebf0c56e17563831a6117d"
+      },
+      {
+        "version": 25,
+        "action": "safe-patch",
+        "commit_sha": "e73fa704732c67eda66490330513d1c843355ae7",
+        "at": "2026-09-23T02:45:15.794Z",
+        "note": "안전 패치 · 자동 연결: 교사가 직접 대상 선택",
+        "id": "3030ab13-5291-4a96-a6c5-1941fdce1778",
+        "restore_commit_sha": "9e6126c45d7f1ddeeaeee1279bb67799be5ee3d7",
+        "applied_commit_sha": "e73fa704732c67eda66490330513d1c843355ae7",
         "safe_restore": true
       }
     ],
     "created_at": "2026-09-17T03:31:53.263Z",
-    "updated_at": "2026-09-23T01:55:19.884Z"
+    "updated_at": "2026-09-23T02:45:15.794Z"
   },
   {
     "id": "822d4364-cd37-4309-9b63-b09e7e0f5d0b",
