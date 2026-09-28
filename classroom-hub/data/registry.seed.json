@@ -495,7 +495,7 @@
     "description": "",
     "school_year": "",
     "update_mode": "chatgpt",
-    "deploy_status": "warning",
+    "deploy_status": "ready",
     "version_label": "v3.9.2",
     "railway_domain": "yt-production-66c8.up.railway.app",
     "last_commit_sha": "9d8567f9846cf0ce43f6cc68c8d440ed71d29186",
