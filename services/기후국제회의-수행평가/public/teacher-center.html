@@ -10,3 +10,4 @@ document.getElementById('loginBtn').onclick=signIn;input.onkeydown=e=>{if(e.key=
 document.getElementById('logout').onclick=async()=>{await fetch('/api/teacher/logout',{method:'POST'}).catch(()=>{});sessionStorage.removeItem('climateTeacherKey');sessionStorage.removeItem('climateOperateTeacherKey');location.reload()};
 resumeCenter();
 </script></body></html>
+

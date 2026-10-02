@@ -48,3 +48,4 @@ test('authoritative deadline, immutable submit, extension, reopening and atomic 
   await req('/api/teacher/reset-records',{className:'1반'},true);const clean=await req('/api/teacher/submissions',null,true);assert.equal(clean.sessions.length,0);assert(clean.presence.every(x=>!x.everEntered));
  }finally{child.kill();await sleep(100);assert(data.startsWith(path.join(os.tmpdir(),'climate-regression-')));fs.rmSync(data,{recursive:true,force:true})}
 });
+

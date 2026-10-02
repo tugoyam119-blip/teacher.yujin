@@ -49,3 +49,4 @@ function parseRoster(input,options={}){
 function toHumanRightsRows(students){return students.map(s=>({student_id:s.studentId,name:s.name}))}
 function toClimateRows(students){return students.map(s=>({studentId:s.studentId,name:s.name,className:`${s.classNo}반`}))}
 module.exports={HEADER_ALIASES,parseCsv,parseRoster,normalizeClass,inferClass,toHumanRightsRows,toClimateRows};
+

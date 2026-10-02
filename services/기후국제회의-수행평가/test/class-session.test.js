@@ -107,3 +107,4 @@ async function editClass(classNo,mutate){const file=path.join(dataDir,'class-run
   assert.ok(fs.existsSync(path.join(dataDir,'events.jsonl'))&&fs.existsSync(path.join(dataDir,'runtime.json'))&&fs.existsSync(path.join(dataDir,'class-runtime.json')));
   console.log('PASS 45m timer, session cache, timing header, class isolation, makeup, reopen/history, four-area scoring, xlsx export');
 }finally{child.kill();await sleep(100);await fsp.rm(dataDir,{recursive:true,force:true});}})().catch(e=>{console.error(e);child.kill();process.exitCode=1});
+

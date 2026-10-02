@@ -21,3 +21,4 @@ test('regrading preserves history, rejects stale/reset writes, and exports curre
   await q('/api/teacher/reset',{sessionId:id});assert.equal((await grade(s)).http,404);assert.equal((await q('/api/teacher/score',{sessionId:'missing',score,expectedUpdatedAt:s.updatedAt,expectedRevision:s.revision})).http,404);
  }finally{await new Promise(r=>{child.once('exit',r);child.kill()});fs.rmSync(data,{recursive:true,force:true})}
 });
+

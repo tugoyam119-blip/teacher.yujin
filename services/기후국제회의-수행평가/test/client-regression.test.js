@@ -37,3 +37,4 @@ test('submitted screen clears pending-review title and pause notice',()=>{
 });
 
 test('login timeout restores retry button and displays error in login section',async()=>{const h=harness();vm.runInContext("session=null;fetch=(_url,{signal})=>new Promise((_r,reject)=>signal.addEventListener('abort',()=>reject(Error('aborted'))))",h.c);const waiting=vm.runInContext('startAssessment()',h.c);for(const callback of [...h.timers.values()])callback();await waiting;assert.equal(h.el('#startBtn').disabled,false);assert.match(h.el('#loginMessage').textContent,/다시 시도/);});
+

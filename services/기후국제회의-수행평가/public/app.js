@@ -1,4 +1,4 @@
-const VERSION='3.14.0';
+const VERSION='3.14.1';
 const TOTAL_SECONDS=45*60;
 const stepProgress=[25,50,75,100];
 const $=s=>document.querySelector(s);
@@ -222,7 +222,7 @@ function collect(){if(renderedStep!==step||$('#assessment')?.classList.contains(
  if(step===1){state.agreement=document.querySelector('input[name="agreement"]:checked')?.value||'';state.budgetPlan='custom';state.agreementReason=v('#agreementReason');state.budgetHighReason=state.agreementReason}
  if(step===2){state.opposingCountry=document.querySelector('input[name="opposingCountry"]:checked')?.value||state.opposingCountry||'';state.oppositionReason=countryData[state.opposingCountry]?.dilemma||'';state.compromiseDimension=document.querySelector('input[name="compromiseDimension"]:checked')?.value||'';state.compromiseChoice=document.querySelector('input[name="compromiseChoice"]:checked')?.value||'';state.compromise=v('#compromise')}
  if(step===3){state.reconsiderChoice=document.querySelector('input[name="reconsiderChoice"]:checked')?.value||'';state.finalDeclaration=v('#finalDeclaration');state.reflectionReason=v('#reflectionReason');state.actorReason=v('#actorReason');document.querySelectorAll('[data-actor-role]').forEach(el=>{state.actorAssignments[el.dataset.actorRole]=el.value})}
- state.assessmentVersion='45min-v3.14.0';
+ state.assessmentVersion='45min-v3.14.1';
 }
 function budgetSum(){return Object.values(state.budget||{}).reduce((a,b)=>a+Number(b||0),0)}
 function budgetSummary(){return Object.entries(state.budget||{}).map(([k,v])=>`${budgets[k]} ${Number(v||0)}억`).join(' · ')}
@@ -311,3 +311,4 @@ window.addEventListener('online',syncStudentOnResume);
 // v2.4.2 · 학생 접속 게이트: 교사가 서버를 열어야 수행 시작/진행 가능
 syncServerGate();clearInterval(serverGateHandle);serverGateHandle=setInterval(syncServerGate,3000);
 $('#loginCountryIntro').innerHTML=allCountryOverview();
+

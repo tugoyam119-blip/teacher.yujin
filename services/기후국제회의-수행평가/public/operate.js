@@ -54,3 +54,4 @@ $('#fullScreenBtn').onclick=async()=>{try{if(!document.fullscreenElement)await d
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('presentation-mode'))exitPresentation()});
 async function resumeOperateSession(){const saved=sessionStorage.getItem('climateOperateTeacherKey');if(saved){teacherKey=saved;return openApp()}try{const auth=await fetch('/api/teacher/auth',{cache:'no-store'});if(auth.ok){teacherKey='';openApp()}}catch{}}
 resumeOperateSession();
+

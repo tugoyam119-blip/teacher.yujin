@@ -7,7 +7,7 @@ const { URL } = require('url');
 const {parseRoster,toClimateRows}=require('./lib/roster-standard');
 
 const PORT = Number(process.env.PORT || 3000);
-const APP_VERSION = '3.14.0';
+const APP_VERSION = '3.14.1';
 const PROJECT_ID = 'international-climate-conference-assessment';
 const PROJECT_NAME = '기후국제회의 수행평가';
 const TEACHER_PASSWORD = process.env.TEACHER_PASSWORD || '000000';
@@ -145,6 +145,8 @@ function applySessionEvent(sessions,e){
   if(e.type==='submit'){s.data={...s.data,...(e.data||{})};s.progress=100;s.status='submitted';s.submittedAt=e.ts;s.updatedAt=e.ts;s.timerExempt=false;s.submissionReason=e.submissionReason||'manual';s.elapsedSeconds=e.elapsedSeconds??s.elapsedSeconds??null;s.timeComplianceScore=e.timeComplianceScore??s.timeComplianceScore??null;}
   if(e.type==='score'){s.gradeReviewRequired=false;s.score=e.score;s.teacherNote=e.teacherNote||'';s.scoreHistory.push({at:e.ts,total:Number(e.score?.total||0),score:e.score,teacherNote:e.teacherNote||''});s.updatedAt=e.ts;}
   if(e.type==='ai_grade'){s.aiGradeHistory=s.aiGradeHistory||[];s.aiGradeHistory.push({at:e.ts,submittedAt:s.submittedAt,aiGrade:e.aiGrade});s.aiGrade=e.aiGrade;s.updatedAt=e.ts;}
+  if(e.type==='individual_time'){s.individualTime={seconds:e.seconds,startedAt:null,pauseBaseMs:0};s.timerExempt=true;s.updatedAt=e.ts;}
+  if(e.type==='individual_time_start'){if(s.individualTime&&!s.individualTime.startedAt){s.individualTime.startedAt=e.ts;s.individualTime.pauseBaseMs=e.pauseBaseMs;s.updatedAt=e.ts;}}
   if(e.type==='reopen'){s.score=null;s.teacherNote='';s.aiGrade=null;s.gradeReviewRequired=true;s.status='review_reopened';s.reopenedAt=e.ts;s.reopenCount+=1;s.reopenHistory.push({at:e.ts});s.updatedAt=e.ts;s.timerExempt=true;s.data={...s.data,reviewReady:true};}
   if(e.type==='reset'){s.status='reset';s.updatedAt=e.ts;}
 }
@@ -156,8 +158,25 @@ function reconstruct(events,includeReset=false){
  return [...sessions.values()].filter(s=>includeReset||s.status!=='reset');
 }
 async function latestByStudent(studentId){return (await readSessions()).filter(s=>s.studentId===studentId).sort((a,b)=>new Date(b.startedAt)-new Date(a.startedAt))[0]||null;}
-async function classSessionWriteState(s){if(!s||s.timerMode!=='class_session_v1'||s.timerExempt)return {ok:true};const cr=await readClassRuntime(),rec=cr.sessions[String(s.classSessionId||'')];if(!rec)return {ok:false,error:'반별 수행 세션을 찾을 수 없습니다.'};await settleClassRecord(cr,rec);const phase=cr.sessions[rec.sessionId].phase;return {ok:phase==='running',phase,error:phase==='ready'?'선생님이 수행 시작을 누르면 답안을 작성할 수 있습니다.':phase==='finished'?'수행시간이 종료되었습니다. 현재 답안이 자동 제출됩니다.':'현재 수행이 일시정지되어 있습니다.'};}
-async function timerForSession(s){const rt=await readRuntime();if(s.timerExempt)return {remainingSeconds:null,paused:true,exempt:true,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};if(s.timerMode==='class_session_v1'){const cr=await readClassRuntime(),rec=cr.sessions[String(s.classSessionId||'')];if(!rec)return {remainingSeconds:TOTAL_SECONDS,paused:true,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen,phase:'closed',timerMode:'class_session_v1'};const live=await settleClassRecord(cr,rec),elapsed=classElapsedSeconds(live);return {remainingSeconds:Math.max(0,Number(live.timeLimitSeconds||TOTAL_SECONDS)-elapsed),paused:live.phase!=='running',exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen,phase:live.phase,timeLimitSeconds:Number(live.timeLimitSeconds||TOTAL_SECONDS),timerMode:'class_session_v1',classNo:live.classNo,classSessionId:live.sessionId,elapsedSeconds:elapsed,checkpointSeconds:Number(live.checkpointSeconds||2700),mode:live.mode};}const start=Date.parse(s.startedAt);if(!Number.isFinite(start))return {remainingSeconds:TOTAL_SECONDS,paused:rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};const pausedSinceStart=Math.max(0,effectivePausedMs(rt)-Number(s.pauseBaseMs||0));const activeElapsed=Math.max(0,Date.now()-start-pausedSinceStart);return {remainingSeconds:Math.max(0,TOTAL_SECONDS-Math.floor(activeElapsed/1000)),paused:!!rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};}
+async function classSessionWriteState(s){if(s?.individualTime){const t=await individualTimer(s);return {ok:t.phase==='running',phase:t.phase,error:t.phase==='finished'?'추가 수행시간이 종료되었습니다.':'교사가 입장을 열고 학생이 접속하면 추가 시간이 시작됩니다.'};}if(!s||s.timerMode!=='class_session_v1'||s.timerExempt)return {ok:true};const cr=await readClassRuntime(),rec=cr.sessions[String(s.classSessionId||'')];if(!rec)return {ok:false,error:'반별 수행 세션을 찾을 수 없습니다.'};await settleClassRecord(cr,rec);const phase=cr.sessions[rec.sessionId].phase;return {ok:phase==='running',phase,error:phase==='ready'?'선생님이 수행 시작을 누르면 답안을 작성할 수 있습니다.':phase==='finished'?'수행시간이 종료되었습니다. 현재 답안이 자동 제출됩니다.':'현재 수행이 일시정지되어 있습니다.'};}
+
+const individualStartLocks=new Map();
+async function beginIndividualTime(s){
+ if(!s.individualTime||s.individualTime.startedAt||s.status==='submitted')return;
+ if(individualStartLocks.has(s.sessionId))return individualStartLocks.get(s.sessionId);
+ const task=(async()=>{const rt=await readRuntime();if(rt.serverOpen&&!s.individualTime.startedAt)await appendEvent({type:'individual_time_start',sessionId:s.sessionId,pauseBaseMs:effectivePausedMs(rt)});})();
+ individualStartLocks.set(s.sessionId,task);try{await task;}finally{individualStartLocks.delete(s.sessionId);}
+}
+async function individualTimer(s,rt){
+ rt=rt||await readRuntime();const t=s.individualTime;
+ const pausedMs=Math.max(0,effectivePausedMs(rt)-Number(t.pauseBaseMs||0));
+ const elapsed=t.startedAt?Math.max(0,Math.floor((Date.now()-Date.parse(t.startedAt)-pausedMs)/1000)):0;
+ const remaining=Math.max(0,t.seconds-elapsed),finished=remaining===0;
+ if(finished&&s.status!=='submitted')await appendEvent({type:'submit',sessionId:s.sessionId,data:{},submissionReason:'individual_time_expired',elapsedSeconds:s.elapsedSeconds,timeComplianceScore:s.timeComplianceScore});
+ return {remainingSeconds:remaining,paused:!t.startedAt||!rt.serverOpen||finished,exempt:false,totalSeconds:t.seconds,timeLimitSeconds:t.seconds,serverOpen:!!rt.serverOpen,phase:finished?'finished':t.startedAt&&rt.serverOpen?'running':'ready',timerMode:'individual_time_v1'};
+}
+
+async function timerForSession(s){const rt=await readRuntime();if(s.individualTime)return individualTimer(s,rt);if(s.timerExempt)return {remainingSeconds:null,paused:true,exempt:true,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};if(s.timerMode==='class_session_v1'){const cr=await readClassRuntime(),rec=cr.sessions[String(s.classSessionId||'')];if(!rec)return {remainingSeconds:TOTAL_SECONDS,paused:true,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen,phase:'closed',timerMode:'class_session_v1'};const live=await settleClassRecord(cr,rec),elapsed=classElapsedSeconds(live);return {remainingSeconds:Math.max(0,Number(live.timeLimitSeconds||TOTAL_SECONDS)-elapsed),paused:live.phase!=='running',exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen,phase:live.phase,timeLimitSeconds:Number(live.timeLimitSeconds||TOTAL_SECONDS),timerMode:'class_session_v1',classNo:live.classNo,classSessionId:live.sessionId,elapsedSeconds:elapsed,checkpointSeconds:Number(live.checkpointSeconds||2700),mode:live.mode};}const start=Date.parse(s.startedAt);if(!Number.isFinite(start))return {remainingSeconds:TOTAL_SECONDS,paused:rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};const pausedSinceStart=Math.max(0,effectivePausedMs(rt)-Number(s.pauseBaseMs||0));const activeElapsed=Math.max(0,Date.now()-start-pausedSinceStart);return {remainingSeconds:Math.max(0,TOTAL_SECONDS-Math.floor(activeElapsed/1000)),paused:!!rt.timerPaused,exempt:false,totalSeconds:TOTAL_SECONDS,serverOpen:!!rt.serverOpen};}
 function sendJson(res,status,obj,extra={}){const body=JSON.stringify(obj);res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store',...extra});res.end(body);}
 function sendText(res,status,body,type='text/plain; charset=utf-8',extra={}){res.writeHead(status,{'Content-Type':type,'Content-Length':Buffer.byteLength(body),'Cache-Control':'no-store',...extra});res.end(body);}
 async function bodyJson(req){return await new Promise((resolve,reject)=>{let data='';req.on('data',c=>{data+=c;if(data.length>3_000_000){reject(new Error('too large'));req.destroy();}});req.on('end',()=>{try{resolve(data?JSON.parse(data):{})}catch(e){reject(e)}});req.on('error',reject)});}
@@ -256,7 +275,7 @@ async function handle(req,res){
    if(rosterEntry&&String(rosterEntry.name).trim()!==name)return sendJson(res,400,{error:'등록된 학생 명단의 이름과 일치하지 않습니다. 이름을 정확히 입력하세요.'});
    const existing=await latestByStudent(studentId);
    if(existing&&existing.status==='submitted'){touchPresence(existing,true);return sendJson(res,200,{resumed:true,session:existing,serverNow:now(),timer:await timerForSession(existing)});}
-   if(existing&&['in_progress','review_reopened'].includes(existing.status)&&existing.name===name){touchPresence(existing,true);return sendJson(res,200,{resumed:true,session:existing,serverNow:now(),timer:await timerForSession(existing)});}
+   if(existing&&['in_progress','review_reopened'].includes(existing.status)&&existing.name===name){await beginIndividualTime(existing);touchPresence(existing,true);return sendJson(res,200,{resumed:true,session:existing,serverNow:now(),timer:await timerForSession(existing)});}
    if(existing&&['in_progress','review_reopened'].includes(existing.status)&&existing.name!==name)return sendJson(res,409,{error:'같은 학번으로 진행 중인 수행평가가 있습니다. 교사에게 문의하세요.'});
    const rt=await readRuntime(),className=rosterEntry?.className||deriveClass(studentId),classNo=Number(String(className).replace(/\D/g,''));if(classNo<1||classNo>3)return sendJson(res,409,{error:'학생의 반 정보를 확인할 수 없습니다. 교사에게 문의하세요.'});const {rec}=await currentClassRecord(classNo);if(!rec||['closed','finished'].includes(rec.phase))return sendJson(res,423,{error:'우리 반 입장이 아직 열리지 않았습니다. 선생님 안내를 기다려 주세요.',code:'CLASS_ADMISSION_CLOSED'});const country=rosterEntry?.country||fallbackCountry(studentId,className),pauseBaseMs=effectivePausedMs(rt),sessionId=newId();
    await appendEvent({type:'start',sessionId,studentId,name,className,country,pauseBaseMs,timerMode:'class_session_v1',classNo,classSessionId:rec.sessionId});
@@ -280,8 +299,8 @@ async function handle(req,res){
    await appendEvent({type:'save',sessionId:student.sessionId,data:b.data||{},progress:Number(b.progress||0)});touchPresence(student);
    return sendJson(res,200,{ok:true,savedAt:now()});
   }
-  if(req.method==='GET'&&url.pathname.startsWith('/api/session/')){const id=url.pathname.split('/').pop(),s=(await readSessions()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});touchPresence(s);return sendJson(res,200,{session:s,serverNow:now(),timer:await timerForSession(s)});}
-  if(req.method==='GET'&&url.pathname.startsWith('/api/timer/')){const id=url.pathname.split('/').pop(),s=(await readSessions()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});touchPresence(s);return sendJson(res,200,{...await timerForSession(s),sessionStatus:s.status});}
+  if(req.method==='GET'&&url.pathname.startsWith('/api/session/')){const id=url.pathname.split('/').pop(),s=(await readSessions()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});await beginIndividualTime(s);touchPresence(s);return sendJson(res,200,{session:s,serverNow:now(),timer:await timerForSession(s)});}
+  if(req.method==='GET'&&url.pathname.startsWith('/api/timer/')){const id=url.pathname.split('/').pop(),s=(await readSessions()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});await beginIndividualTime(s);touchPresence(s);return sendJson(res,200,{...await timerForSession(s),sessionStatus:s.status});}
   if(req.method==='GET'&&url.pathname.startsWith('/api/help/status/')){const id=url.pathname.split('/').pop(),s=(await readSessions()).find(x=>x.sessionId===id);if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});const p=readPresence()[String(s.studentId)]||{};return sendJson(res,200,{requested:!!p.helpRequest,category:p.helpCategory||'',requestedAt:p.helpRequestedAt||null});}
   if(req.method==='POST'&&url.pathname==='/api/help/request'){const b=await bodyJson(req),s=(await readSessions()).find(x=>x.sessionId===String(b.sessionId||''));if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});if(s.status==='submitted')return sendJson(res,409,{error:'제출이 완료된 뒤에는 도움을 요청할 수 없습니다.'});const allowed=new Set(['understand','country','write','tech','other']),category=allowed.has(String(b.category||''))?String(b.category):'other',p=readPresence(),old=p[String(s.studentId)]||{};p[String(s.studentId)]={...old,studentId:String(s.studentId),className:s.className||deriveClass(s.studentId),lastSeen:now(),helpRequest:true,helpCategory:category,helpRequestedAt:now()};await writePresence();return sendJson(res,200,{ok:true,requested:true,category,requestedAt:p[String(s.studentId)].helpRequestedAt});}
   if(req.method==='POST'&&url.pathname==='/api/help/cancel'){const b=await bodyJson(req),s=(await readSessions()).find(x=>x.sessionId===String(b.sessionId||''));if(!s)return sendJson(res,404,{error:'세션을 찾을 수 없습니다.'});const p=readPresence(),old=p[String(s.studentId)]||{};p[String(s.studentId)]={...old,helpRequest:false,helpCategory:'',helpRequestedAt:null};await writePresence();return sendJson(res,200,{ok:true,requested:false});}
@@ -343,6 +362,16 @@ async function handle(req,res){
    return sendJson(res,200,{ok:true,created,skipped,total:roster.students.length});
   }
   if(req.method==='DELETE'&&url.pathname==='/api/teacher/synthetic-submissions'){const synthetic=(await readSessions()).filter(s=>s.synthetic);for(const s of synthetic)await appendEvent({type:'reset',sessionId:s.sessionId});return sendJson(res,200,{ok:true,removed:synthetic.length});}
+
+  if(req.method==='POST'&&url.pathname==='/api/teacher/individual-time'){
+   const b=await bodyJson(req),minutes=Number(b.minutes),s=(await readStudentSessions()).find(x=>x.sessionId===b.sessionId);
+   if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});
+   if(!Number.isInteger(minutes)||minutes<1||minutes>120)return sendJson(res,400,{error:'추가 시간은 1~120분으로 입력하세요.'});
+   if(s.individualTime?.startedAt&&s.status!=='submitted')return sendJson(res,409,{error:'이미 시작한 추가 시간을 다시 예약할 수 없습니다.'});
+   if(s.status==='submitted')await appendEvent({type:'reopen',sessionId:s.sessionId});
+   await appendEvent({type:'individual_time',sessionId:s.sessionId,seconds:minutes*60});
+   return sendJson(res,200,{ok:true,session:s,message:'교사가 입장을 열고 학생이 접속하면 추가 시간이 시작됩니다.'});
+  }
   if(req.method==='POST'&&url.pathname==='/api/teacher/reopen'){const b=await bodyJson(req),s=(await readSessions()).find(x=>x.sessionId===b.sessionId);if(!s)return sendJson(res,404,{error:'학생 응시를 찾을 수 없습니다.'});if(s.status!=='submitted')return sendJson(res,400,{error:'제출 완료 학생만 최종 검토 상태로 다시 열 수 있습니다.'});await appendEvent({type:'reopen',sessionId:s.sessionId});return sendJson(res,200,{ok:true});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/reset'){const b=await bodyJson(req);if(!b.sessionId)return sendJson(res,400,{error:'세션 정보가 없습니다.'});await appendEvent({type:'reset',sessionId:b.sessionId});return sendJson(res,200,{ok:true});}
   if(req.method==='POST'&&url.pathname==='/api/teacher/reset-records'){
@@ -406,3 +435,4 @@ server.listen(PORT,'0.0.0.0',()=>{
  setImmediate(()=>lifecycleJob(async()=>{await readSessions();await removeCurrentTeacherDemoRecords();await settleAllClasses()}).catch(e=>console.error('세션 초기화 실패',e)));
  setInterval(()=>lifecycleJob(settleAllClasses).catch(e=>console.error('마감 확정 실패',e)),1000).unref();
 });
+
