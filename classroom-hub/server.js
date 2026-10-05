@@ -709,66 +709,6 @@ function publicActivity(a) {
 
 // static assets and embedded apps
 app.use('/assets', express.static(PUBLIC, { maxAge: '5m', setHeaders: res => { res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
-// Moonpath development preview: center dynamic text layers without altering the artwork.
-app.get(['/apps/moonpath-dev', '/apps/moonpath-dev/', '/apps/moonpath-dev/index.html'], async (req, res, next) => {
-  try {
-    const file = path.join(APPS, 'moonpath-dev', 'index.html');
-    let html = await fsp.readFile(file, 'utf8');
-    const debugAlign = String(req.query.align_debug || '') === '1';
-    const centeringPatch = `<style id="moonpath-dev-centering-patch">
-/* Anchor every dynamic text region to the popup artwork's exact 50% axis. */
-#game-popup-header{
-  left:50% !important;
-  right:auto !important;
-  width:71% !important;
-  transform:translateX(-50%) !important;
-  box-sizing:border-box !important;
-  text-align:center !important;
-}
-#game-popup-content{
-  left:50% !important;
-  right:auto !important;
-  width:82.8% !important;
-  transform:translateX(-50%) !important;
-  box-sizing:border-box !important;
-}
-#game-popup-message{
-  left:50% !important;
-  right:auto !important;
-  width:71% !important;
-  transform:translateX(-50%) !important;
-  box-sizing:border-box !important;
-  text-align:center !important;
-}
-.popup-slot-grid{width:100% !important;margin:0 !important;}
-.popup-slot-number{left:39% !important;right:auto !important;width:22% !important;text-align:center !important;}
-.popup-slot-info{left:13% !important;right:13% !important;text-align:center !important;align-items:center !important;}
-${debugAlign ? `
-#game-popup::after{
-  content:"";
-  position:absolute;
-  z-index:9999;
-  top:0;bottom:0;left:50%;
-  width:2px;
-  transform:translateX(-1px);
-  background:rgba(255,55,55,.95);
-  pointer-events:none;
-}
-#game-popup-header{outline:2px solid #42f5e6 !important;background:rgba(66,245,230,.08) !important;}
-#game-popup-content{outline:2px solid #ffd84d !important;background:rgba(255,216,77,.05) !important;}
-.popup-slot-grid{outline:2px dashed #ff66e5 !important;}
-.popup-slot{outline:1px solid rgba(120,255,120,.9) !important;}
-.popup-slot-info{outline:1px dashed rgba(255,255,255,.9) !important;background:rgba(255,255,255,.04) !important;}
-` : ''}
-</style>`;
-    html = /<\\/head>/i.test(html) ? html.replace(/<\\/head>/i, centeringPatch + '</head>') : centeringPatch + html;
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Content-Disposition', 'inline');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.send(html);
-  } catch (e) { next(e); }
-});
 app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHeaders: (res, file) => { if (/\.html$/i.test(file)) res.setHeader('Cache-Control', 'no-cache'); res.setHeader('Content-Disposition', 'inline'); res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
 
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
