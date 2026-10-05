@@ -709,6 +709,24 @@ function publicActivity(a) {
 
 // static assets and embedded apps
 app.use('/assets', express.static(PUBLIC, { maxAge: '5m', setHeaders: res => { res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
+// Moonpath development preview: center dynamic text layers without altering the artwork.
+app.get(['/apps/moonpath-dev', '/apps/moonpath-dev/', '/apps/moonpath-dev/index.html'], async (req, res, next) => {
+  try {
+    const file = path.join(APPS, 'moonpath-dev', 'index.html');
+    let html = await fsp.readFile(file, 'utf8');
+    const centeringPatch = `<style id="moonpath-dev-centering-patch">
+#game-popup-header{left:14.5% !important;right:14.5% !important;}
+#game-popup-content{left:8.6% !important;right:8.6% !important;}
+#game-popup-message{left:14.5% !important;right:14.5% !important;}
+</style>`;
+    html = /<\\/head>/i.test(html) ? html.replace(/<\\/head>/i, centeringPatch + '</head>') : centeringPatch + html;
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.send(html);
+  } catch (e) { next(e); }
+});
 app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHeaders: (res, file) => { if (/\.html$/i.test(file)) res.setHeader('Cache-Control', 'no-cache'); res.setHeader('Content-Disposition', 'inline'); res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
 
 app.get('/', (req, res) => res.sendFile(path.join(PUBLIC, 'index.html')));
