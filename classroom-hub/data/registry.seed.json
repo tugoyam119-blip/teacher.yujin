@@ -1,5 +1,28 @@
 [
   {
+    "id": "moonpath-dev",
+    "name": "미지의 길 : 달빛 마도 탐험 (개발용)",
+    "slug": "moonpath-dev",
+    "kind": "학습게임",
+    "subject": "통합사회2",
+    "audience": "teacher",
+    "description": "개발 중인 오프라인 학습게임 미리보기입니다. 학생 화면에는 노출되지 않습니다.",
+    "icon": "🌙",
+    "deploy_type": "static",
+    "repo_path": "classroom-hub/apps/moonpath-dev",
+    "target_url": "/apps/moonpath-dev/",
+    "manage_url": "",
+    "published": true,
+    "archived": false,
+    "sort_order": 5,
+    "version": 1,
+    "version_label": "dev-v1",
+    "update_mode": "chatgpt",
+    "deploy_status": "ready",
+    "updated_at": "2026-10-05T04:55:00.000Z",
+    "histories": []
+  },
+  {
     "id": "social2-unit1",
     "icon": "📘",
     "kind": "수업자료",
