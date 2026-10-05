@@ -356,32 +356,64 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 
 </style>
-<style id="moonpath-centering-v2">
-/* Exact center-axis correction: popup ornament star = 50% of popup. */
+<style id="moonpath-layout-v3">
+/*
+  Popup alignment v3
+  Visual anchor: the gold star ornament at the top of the popup.
+  The artwork is untouched; only HTML text/content layers are positioned.
+*/
+#game-popup{
+  --popup-axis:50%;
+  --header-w:64%;
+  --slots-w:83.2%;
+}
+
+/* Header: exact star axis + more breathing room below the ornament */
 #game-popup-header{
-  left:50% !important;
+  left:var(--popup-axis) !important;
   right:auto !important;
-  width:71% !important;
+  top:17.1% !important;
+  width:var(--header-w) !important;
   transform:translateX(-50%) !important;
   text-align:center !important;
+  box-sizing:border-box !important;
 }
+#game-popup-title{
+  margin:0 !important;
+  text-align:center !important;
+}
+#game-popup-subtitle{
+  margin:9px auto 0 !important;
+  text-align:center !important;
+  max-width:86% !important;
+}
+
+/* Three slot frames: centered as one measured group on the same axis */
 #game-popup-content{
-  left:50% !important;
+  left:var(--popup-axis) !important;
   right:auto !important;
-  width:82.8% !important;
+  top:34.8% !important;
+  bottom:7.0% !important;
+  width:var(--slots-w) !important;
   transform:translateX(-50%) !important;
-}
-#game-popup-message{
-  left:50% !important;
-  right:auto !important;
-  width:71% !important;
-  transform:translateX(-50%) !important;
-  text-align:center !important;
+  box-sizing:border-box !important;
 }
 .popup-slot-grid{
   width:100% !important;
-  margin:0 auto !important;
+  height:100% !important;
+  margin:0 !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:3.8% !important;
+  align-items:stretch !important;
+  justify-items:stretch !important;
 }
+.popup-slot{
+  width:100% !important;
+  min-width:0 !important;
+}
+
+/* Slot labels: use the card itself as the axis, not left/right guesses */
 .popup-slot-number{
   left:50% !important;
   right:auto !important;
@@ -392,38 +424,55 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 .popup-slot-info{
   left:50% !important;
   right:auto !important;
-  width:74% !important;
+  width:72% !important;
   transform:translateX(-50%) !important;
   align-items:center !important;
   text-align:center !important;
 }
+.popup-slot-title,
+.popup-slot-meta,
+.popup-slot-hint{
+  width:100% !important;
+  text-align:center !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
 
-/* Optional visual debugging: ?align_debug=1 */
+/* Bottom status follows the same popup axis */
+#game-popup-message{
+  left:var(--popup-axis) !important;
+  right:auto !important;
+  width:64% !important;
+  transform:translateX(-50%) !important;
+  text-align:center !important;
+}
+
+/* Diagnostic mode: append ?align_debug=1 */
 body.moonpath-align-debug #game-popup::after{
   content:"";
   position:absolute;
   z-index:9999;
   top:0;
   bottom:0;
-  left:50%;
+  left:var(--popup-axis);
   width:2px;
   transform:translateX(-1px);
-  background:rgba(255,45,45,.96);
+  background:rgba(255,48,48,.98);
   pointer-events:none;
 }
 body.moonpath-align-debug #game-popup-header{
-  outline:2px solid #33f1e0 !important;
-  background:rgba(51,241,224,.08) !important;
+  outline:2px solid #2ff3de !important;
+  background:rgba(47,243,222,.09) !important;
 }
 body.moonpath-align-debug #game-popup-content{
-  outline:2px solid #ffd84d !important;
-  background:rgba(255,216,77,.05) !important;
+  outline:2px solid #ffd84a !important;
+  background:rgba(255,216,74,.05) !important;
 }
 body.moonpath-align-debug .popup-slot-grid{
-  outline:2px dashed #ff66e5 !important;
+  outline:2px dashed #ff65e6 !important;
 }
 body.moonpath-align-debug .popup-slot{
-  outline:1px solid rgba(100,255,120,.95) !important;
+  outline:1px solid rgba(102,255,120,.95) !important;
 }
 body.moonpath-align-debug .popup-slot-info{
   outline:1px dashed rgba(255,255,255,.95) !important;
@@ -914,7 +963,7 @@ body.moonpath-align-debug .popup-slot-info{
 })();
 </script>
 
-<script id="moonpath-align-debug-script">
+<script id="moonpath-align-debug-v3">
 try{
   if(new URLSearchParams(location.search).get('align_debug')==='1'){
     document.body.classList.add('moonpath-align-debug');
