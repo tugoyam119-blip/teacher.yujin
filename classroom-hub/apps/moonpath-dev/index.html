@@ -356,23 +356,26 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 
 </style>
-<style id="moonpath-layout-v3">
+<style id="moonpath-layout-v4">
 /*
-  Popup alignment v3
-  Visual anchor: the gold star ornament at the top of the popup.
-  The artwork is untouched; only HTML text/content layers are positioned.
+  Popup layout v4
+  - Header moved slightly downward.
+  - Slot row moved slightly upward.
+  - First three slots fit exactly in one view with tighter gaps.
+  - Additional slots become a horizontal swipe/scroll row automatically.
 */
 #game-popup{
   --popup-axis:50%;
   --header-w:64%;
-  --slots-w:83.2%;
+  --slots-w:84.2%;
+  --slot-gap:2.1%;
 }
 
-/* Header: exact star axis + more breathing room below the ornament */
+/* Header */
 #game-popup-header{
   left:var(--popup-axis) !important;
   right:auto !important;
-  top:17.1% !important;
+  top:18.4% !important;
   width:var(--header-w) !important;
   transform:translateX(-50%) !important;
   text-align:center !important;
@@ -384,36 +387,53 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 #game-popup-subtitle{
   margin:9px auto 0 !important;
-  text-align:center !important;
   max-width:86% !important;
+  text-align:center !important;
 }
 
-/* Three slot frames: centered as one measured group on the same axis */
+/* Slot viewport */
 #game-popup-content{
   left:var(--popup-axis) !important;
   right:auto !important;
-  top:34.8% !important;
-  bottom:7.0% !important;
+  top:33.2% !important;
+  bottom:8.6% !important;
   width:var(--slots-w) !important;
   transform:translateX(-50%) !important;
   box-sizing:border-box !important;
+  overflow:hidden !important;
 }
+
+/* Horizontal future-ready slot rail */
 .popup-slot-grid{
   width:100% !important;
   height:100% !important;
   margin:0 !important;
-  display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-  gap:3.8% !important;
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  gap:var(--slot-gap) !important;
   align-items:stretch !important;
-  justify-items:stretch !important;
+  justify-content:flex-start !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  scroll-snap-type:x proximity !important;
+  scroll-behavior:smooth !important;
+  overscroll-behavior-x:contain !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+  touch-action:pan-x !important;
+  padding:0 !important;
 }
+.popup-slot-grid::-webkit-scrollbar{display:none !important;}
+
 .popup-slot{
-  width:100% !important;
-  min-width:0 !important;
+  flex:0 0 31.933333% !important;
+  width:31.933333% !important;
+  min-width:31.933333% !important;
+  height:100% !important;
+  scroll-snap-align:start !important;
 }
 
-/* Slot labels: use the card itself as the axis, not left/right guesses */
+/* Card-local centering */
 .popup-slot-number{
   left:50% !important;
   right:auto !important;
@@ -431,14 +451,13 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 .popup-slot-title,
 .popup-slot-meta,
-.popup-slot-hint{
+.popup-slot-action{
   width:100% !important;
   text-align:center !important;
   margin-left:auto !important;
   margin-right:auto !important;
 }
 
-/* Bottom status follows the same popup axis */
 #game-popup-message{
   left:var(--popup-axis) !important;
   right:auto !important;
@@ -447,14 +466,12 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   text-align:center !important;
 }
 
-/* Diagnostic mode: append ?align_debug=1 */
+/* Diagnostic mode: ?align_debug=1 */
 body.moonpath-align-debug #game-popup::after{
   content:"";
   position:absolute;
   z-index:9999;
-  top:0;
-  bottom:0;
-  left:var(--popup-axis);
+  top:0; bottom:0; left:var(--popup-axis);
   width:2px;
   transform:translateX(-1px);
   background:rgba(255,48,48,.98);
@@ -473,10 +490,6 @@ body.moonpath-align-debug .popup-slot-grid{
 }
 body.moonpath-align-debug .popup-slot{
   outline:1px solid rgba(102,255,120,.95) !important;
-}
-body.moonpath-align-debug .popup-slot-info{
-  outline:1px dashed rgba(255,255,255,.95) !important;
-  background:rgba(255,255,255,.04) !important;
 }
 </style>
 </head>
@@ -704,7 +717,8 @@ body.moonpath-align-debug .popup-slot-info{
     const grid=document.createElement("div");
     grid.className="popup-slot-grid";
 
-    [0,1,2].forEach(function(i){
+    const slotCount=Math.max(3,Array.isArray(data.slots)?data.slots.length:0);
+    Array.from({length:slotCount},(_,i)=>i).forEach(function(i){
       const slot=data.slots[i];
       const view=slotView(slot,mode);
 
@@ -963,7 +977,7 @@ body.moonpath-align-debug .popup-slot-info{
 })();
 </script>
 
-<script id="moonpath-align-debug-v3">
+<script id="moonpath-align-debug-v4">
 try{
   if(new URLSearchParams(location.search).get('align_debug')==='1'){
     document.body.classList.add('moonpath-align-debug');
