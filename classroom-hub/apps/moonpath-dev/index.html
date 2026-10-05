@@ -356,13 +356,23 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 
 </style>
-<style id="moonpath-layout-v5">
+<style id="moonpath-layout-v6">
+@font-face{
+  font-family:'DungGeunMo';
+  src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
 #game-popup{
   --popup-axis:50%;
   --header-w:64%;
   --slots-w:84.2%;
   --slot-gap:2.1%;
 }
+
+/* Header placement */
 #game-popup-header{
   left:var(--popup-axis) !important;
   right:auto !important;
@@ -372,9 +382,47 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   text-align:center !important;
   box-sizing:border-box !important;
 }
-#game-popup-title{margin:0 !important;text-align:center !important;}
-#game-popup-subtitle{margin:9px auto 0 !important;max-width:86% !important;text-align:center !important;}
 
+/* Pixel typography */
+#game-popup-title,
+#game-popup-subtitle,
+.popup-slot-number,
+.popup-slot-title,
+.popup-slot-meta,
+.popup-slot-action{
+  font-family:'DungGeunMo','Apple SD Gothic Neo','Malgun Gothic',monospace !important;
+  -webkit-font-smoothing:none !important;
+  font-synthesis:none !important;
+  text-rendering:geometricPrecision !important;
+}
+
+#game-popup-title{
+  margin:0 !important;
+  font-size:40px !important;
+  line-height:1.04 !important;
+  font-weight:normal !important;
+  letter-spacing:.01em !important;
+  color:#fff2cf !important;
+  text-align:center !important;
+  text-shadow:
+    0 3px 0 #3e245a,
+    0 0 10px rgba(255,214,120,.28) !important;
+}
+
+#game-popup-subtitle{
+  margin:12px auto 0 !important;
+  max-width:88% !important;
+  font-size:18px !important;
+  line-height:1.35 !important;
+  letter-spacing:.015em !important;
+  color:#f3ebff !important;
+  text-align:center !important;
+  text-shadow:
+    0 2px 0 #26163b,
+    0 0 6px rgba(255,255,255,.08) !important;
+}
+
+/* Slot viewport - raised, 3 visible, horizontal future rail */
 #game-popup-content{
   left:var(--popup-axis) !important;
   right:auto !important;
@@ -385,6 +433,7 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   box-sizing:border-box !important;
   overflow:hidden !important;
 }
+
 .popup-slot-grid{
   width:100% !important;
   height:100% !important;
@@ -405,6 +454,7 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   padding:0 !important;
 }
 .popup-slot-grid::-webkit-scrollbar{display:none !important;}
+
 .popup-slot{
   flex:0 0 31.933333% !important;
   width:31.933333% !important;
@@ -412,34 +462,82 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   height:100% !important;
   scroll-snap-align:start !important;
 }
+
+/* Larger, sharper slot typography */
 .popup-slot-number{
   left:50% !important;
   right:auto !important;
   width:22% !important;
   transform:translateX(-50%) !important;
+  font-size:30px !important;
+  line-height:1 !important;
+  font-weight:normal !important;
+  letter-spacing:0 !important;
   text-align:center !important;
+  color:#fff0d0 !important;
+  text-shadow:0 2px 0 #24133b !important;
 }
+
 .popup-slot-info{
   left:50% !important;
   right:auto !important;
-  width:72% !important;
+  width:76% !important;
   transform:translateX(-50%) !important;
   align-items:center !important;
   text-align:center !important;
+  gap:6px !important;
+  bottom:5.4% !important;
+  height:30% !important;
 }
-.popup-slot-title,.popup-slot-meta,.popup-slot-action{
+
+.popup-slot-title{
   width:100% !important;
+  margin:0 auto !important;
+  font-size:22px !important;
+  line-height:1.08 !important;
+  font-weight:normal !important;
+  letter-spacing:.01em !important;
+  color:#fff !important;
+  white-space:nowrap !important;
   text-align:center !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
+  text-shadow:0 2px 0 #25153e !important;
 }
+
+.popup-slot-meta{
+  width:100% !important;
+  margin:0 auto !important;
+  font-size:12.5px !important;
+  line-height:1.28 !important;
+  letter-spacing:.01em !important;
+  color:#ddd2ef !important;
+  white-space:pre-line !important;
+  word-break:keep-all !important;
+  text-align:center !important;
+  text-shadow:0 1px 0 #211233 !important;
+}
+
+.popup-slot-action{
+  width:100% !important;
+  margin:1px auto 0 !important;
+  font-size:12.5px !important;
+  line-height:1.15 !important;
+  letter-spacing:.01em !important;
+  color:#f4dcff !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+  text-shadow:0 1px 0 #24133b !important;
+}
+
 #game-popup-message{
   left:var(--popup-axis) !important;
   right:auto !important;
   width:64% !important;
   transform:translateX(-50%) !important;
   text-align:center !important;
+  font-family:'DungGeunMo','Apple SD Gothic Neo','Malgun Gothic',monospace !important;
 }
+
+/* Debug mode: ?align_debug=1 */
 body.moonpath-align-debug #game-popup::after{
   content:"";
   position:absolute;
@@ -450,10 +548,20 @@ body.moonpath-align-debug #game-popup::after{
   background:rgba(255,48,48,.98);
   pointer-events:none;
 }
-body.moonpath-align-debug #game-popup-header{outline:2px solid #2ff3de !important;background:rgba(47,243,222,.09) !important;}
-body.moonpath-align-debug #game-popup-content{outline:2px solid #ffd84a !important;background:rgba(255,216,74,.05) !important;}
+body.moonpath-align-debug #game-popup-header{
+  outline:2px solid #2ff3de !important;
+  background:rgba(47,243,222,.09) !important;
+}
+body.moonpath-align-debug #game-popup-content{
+  outline:2px solid #ffd84a !important;
+  background:rgba(255,216,74,.05) !important;
+}
 body.moonpath-align-debug .popup-slot-grid{outline:2px dashed #ff65e6 !important;}
 body.moonpath-align-debug .popup-slot{outline:1px solid rgba(102,255,120,.95) !important;}
+body.moonpath-align-debug .popup-slot-info{
+  outline:1px dashed rgba(255,255,255,.95) !important;
+  background:rgba(255,255,255,.04) !important;
+}
 </style>
 </head>
 <body>
@@ -671,7 +779,7 @@ body.moonpath-align-debug .popup-slot{outline:1px solid rgba(102,255,120,.95) !i
     }
     return {
       title:"챕터 "+(slot.chapter||1),
-      meta:(slot.updatedAt||"저장 정보 없음")+" · "+(slot.playTime||"00:00"),
+      meta:(slot.updatedAt||"저장 정보 없음")+"\n"+(slot.playTime||"00:00"),
       action:mode==="continue"?"선택하여 이어하기":"새 탐험으로 덮어쓰기"
     };
   }
@@ -940,7 +1048,7 @@ body.moonpath-align-debug .popup-slot{outline:1px solid rgba(102,255,120,.95) !i
 })();
 </script>
 
-<script id="moonpath-align-debug-v5">
+<script id="moonpath-align-debug-v6">
 try{
   if(new URLSearchParams(location.search).get('align_debug')==='1'){
     document.body.classList.add('moonpath-align-debug');
