@@ -356,22 +356,13 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 
 </style>
-<style id="moonpath-layout-v4">
-/*
-  Popup layout v4
-  - Header moved slightly downward.
-  - Slot row moved slightly upward.
-  - First three slots fit exactly in one view with tighter gaps.
-  - Additional slots become a horizontal swipe/scroll row automatically.
-*/
+<style id="moonpath-layout-v5">
 #game-popup{
   --popup-axis:50%;
   --header-w:64%;
   --slots-w:84.2%;
   --slot-gap:2.1%;
 }
-
-/* Header */
 #game-popup-header{
   left:var(--popup-axis) !important;
   right:auto !important;
@@ -381,29 +372,19 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   text-align:center !important;
   box-sizing:border-box !important;
 }
-#game-popup-title{
-  margin:0 !important;
-  text-align:center !important;
-}
-#game-popup-subtitle{
-  margin:9px auto 0 !important;
-  max-width:86% !important;
-  text-align:center !important;
-}
+#game-popup-title{margin:0 !important;text-align:center !important;}
+#game-popup-subtitle{margin:9px auto 0 !important;max-width:86% !important;text-align:center !important;}
 
-/* Slot viewport */
 #game-popup-content{
   left:var(--popup-axis) !important;
   right:auto !important;
-  top:33.2% !important;
-  bottom:8.6% !important;
+  top:30.6% !important;
+  bottom:11.2% !important;
   width:var(--slots-w) !important;
   transform:translateX(-50%) !important;
   box-sizing:border-box !important;
   overflow:hidden !important;
 }
-
-/* Horizontal future-ready slot rail */
 .popup-slot-grid{
   width:100% !important;
   height:100% !important;
@@ -424,7 +405,6 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   padding:0 !important;
 }
 .popup-slot-grid::-webkit-scrollbar{display:none !important;}
-
 .popup-slot{
   flex:0 0 31.933333% !important;
   width:31.933333% !important;
@@ -432,8 +412,6 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   height:100% !important;
   scroll-snap-align:start !important;
 }
-
-/* Card-local centering */
 .popup-slot-number{
   left:50% !important;
   right:auto !important;
@@ -449,15 +427,12 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   align-items:center !important;
   text-align:center !important;
 }
-.popup-slot-title,
-.popup-slot-meta,
-.popup-slot-action{
+.popup-slot-title,.popup-slot-meta,.popup-slot-action{
   width:100% !important;
   text-align:center !important;
   margin-left:auto !important;
   margin-right:auto !important;
 }
-
 #game-popup-message{
   left:var(--popup-axis) !important;
   right:auto !important;
@@ -465,32 +440,20 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
   transform:translateX(-50%) !important;
   text-align:center !important;
 }
-
-/* Diagnostic mode: ?align_debug=1 */
 body.moonpath-align-debug #game-popup::after{
   content:"";
   position:absolute;
   z-index:9999;
-  top:0; bottom:0; left:var(--popup-axis);
+  top:0;bottom:0;left:var(--popup-axis);
   width:2px;
   transform:translateX(-1px);
   background:rgba(255,48,48,.98);
   pointer-events:none;
 }
-body.moonpath-align-debug #game-popup-header{
-  outline:2px solid #2ff3de !important;
-  background:rgba(47,243,222,.09) !important;
-}
-body.moonpath-align-debug #game-popup-content{
-  outline:2px solid #ffd84a !important;
-  background:rgba(255,216,74,.05) !important;
-}
-body.moonpath-align-debug .popup-slot-grid{
-  outline:2px dashed #ff65e6 !important;
-}
-body.moonpath-align-debug .popup-slot{
-  outline:1px solid rgba(102,255,120,.95) !important;
-}
+body.moonpath-align-debug #game-popup-header{outline:2px solid #2ff3de !important;background:rgba(47,243,222,.09) !important;}
+body.moonpath-align-debug #game-popup-content{outline:2px solid #ffd84a !important;background:rgba(255,216,74,.05) !important;}
+body.moonpath-align-debug .popup-slot-grid{outline:2px dashed #ff65e6 !important;}
+body.moonpath-align-debug .popup-slot{outline:1px solid rgba(102,255,120,.95) !important;}
 </style>
 </head>
 <body>
@@ -977,7 +940,7 @@ body.moonpath-align-debug .popup-slot{
 })();
 </script>
 
-<script id="moonpath-align-debug-v4">
+<script id="moonpath-align-debug-v5">
 try{
   if(new URLSearchParams(location.search).get('align_debug')==='1'){
     document.body.classList.add('moonpath-align-debug');
