@@ -356,161 +356,141 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 
 </style>
-<style id="moonpath-layout-v9">
+<style id="moonpath-layout-v10">
 @font-face{
   font-family:'DungGeunMo';
   src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
-  font-weight:normal;
-  font-style:normal;
-  font-display:swap;
+  font-weight:normal;font-style:normal;font-display:swap;
 }
-#game-popup{
-  --popup-axis:50%;
-  --header-w:64%;
-  --slots-w:84.2%;
-  --slot-gap:2.1%;
-}
+#game-popup{--popup-axis:50%;--header-w:64%;--slots-w:84.2%;--slot-gap:2.1%;}
 #game-popup-header{
-  left:var(--popup-axis)!important;
-  right:auto!important;
-  top:18.4%!important;
-  width:var(--header-w)!important;
-  transform:translateX(-50%)!important;
-  text-align:center!important;
-  box-sizing:border-box!important;
+  left:var(--popup-axis)!important;right:auto!important;top:18.4%!important;width:var(--header-w)!important;
+  transform:translateX(-50%)!important;text-align:center!important;box-sizing:border-box!important;
 }
-#game-popup-title,
-#game-popup-subtitle,
-.popup-slot-number,
-.popup-slot-title,
-.popup-slot-meta,
-.popup-slot-action{
+#game-popup-title,#game-popup-subtitle,.popup-slot-number,.popup-slot-title,.popup-slot-meta,.popup-slot-action,
+.popup-journal,.popup-settings,.popup-save,.popup-select{
   font-family:'DungGeunMo','Apple SD Gothic Neo','Malgun Gothic',monospace!important;
-  -webkit-font-smoothing:none!important;
-  font-synthesis:none!important;
-  text-rendering:geometricPrecision!important;
+  -webkit-font-smoothing:none!important;font-synthesis:none!important;text-rendering:geometricPrecision!important;
 }
 #game-popup-title{
-  margin:0!important;
-  font-size:40px!important;
-  line-height:1.04!important;
-  font-weight:normal!important;
-  letter-spacing:.01em!important;
-  color:#fff2cf!important;
-  text-align:center!important;
-  text-shadow:0 3px 0 #3e245a,0 0 10px rgba(255,214,120,.28)!important;
+  margin:0!important;font-size:40px!important;line-height:1.04!important;font-weight:normal!important;letter-spacing:.01em!important;
+  color:#fff2cf!important;text-align:center!important;text-shadow:0 3px 0 #3e245a,0 0 10px rgba(255,214,120,.28)!important;
 }
 #game-popup-subtitle{
-  margin:12px auto 0!important;
-  max-width:88%!important;
-  font-size:18px!important;
-  line-height:1.35!important;
-  letter-spacing:.015em!important;
-  color:#f3ebff!important;
-  text-align:center!important;
-  text-shadow:0 2px 0 #26163b,0 0 6px rgba(255,255,255,.08)!important;
+  margin:12px auto 0!important;max-width:88%!important;font-size:18px!important;line-height:1.35!important;
+  color:#f3ebff!important;text-align:center!important;text-shadow:0 2px 0 #26163b,0 0 6px rgba(255,255,255,.08)!important;
 }
 #game-popup-content{
-  left:var(--popup-axis)!important;
-  right:auto!important;
-  top:30.6%!important;
-  bottom:11.2%!important;
-  width:var(--slots-w)!important;
-  transform:translateX(-50%)!important;
-  box-sizing:border-box!important;
-  overflow:hidden!important;
+  left:var(--popup-axis)!important;right:auto!important;top:30.6%!important;bottom:11.2%!important;width:var(--slots-w)!important;
+  transform:translateX(-50%)!important;box-sizing:border-box!important;overflow:hidden!important;
 }
 .popup-slot-grid{
-  width:100%!important;
-  height:100%!important;
-  margin:0!important;
-  display:flex!important;
-  flex-wrap:nowrap!important;
-  gap:var(--slot-gap)!important;
-  align-items:stretch!important;
-  justify-content:flex-start!important;
-  overflow-x:auto!important;
-  overflow-y:hidden!important;
-  scroll-snap-type:x proximity!important;
-  scroll-behavior:smooth!important;
-  overscroll-behavior-x:contain!important;
-  -webkit-overflow-scrolling:touch!important;
-  scrollbar-width:none!important;
-  touch-action:pan-x!important;
-  padding:0!important;
+  width:100%!important;height:100%!important;margin:0!important;display:flex!important;flex-wrap:nowrap!important;gap:var(--slot-gap)!important;
+  align-items:stretch!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;
+  scroll-snap-type:x proximity!important;scroll-behavior:smooth!important;overscroll-behavior-x:contain!important;
+  -webkit-overflow-scrolling:touch!important;scrollbar-width:none!important;touch-action:pan-x!important;padding:0!important;
 }
 .popup-slot-grid::-webkit-scrollbar{display:none!important;}
-.popup-slot{
-  flex:0 0 31.933333%!important;
-  width:31.933333%!important;
-  min-width:31.933333%!important;
-  height:100%!important;
-  scroll-snap-align:start!important;
-}
+.popup-slot{flex:0 0 31.933333%!important;width:31.933333%!important;min-width:31.933333%!important;height:100%!important;scroll-snap-align:start!important;}
 .popup-slot-number{
-  left:50%!important;
-  right:auto!important;
-  top:5.8%!important;
-  width:28%!important;
-  transform:translateX(-50%)!important;
-  font-size:28px!important;
-  line-height:1!important;
-  font-weight:normal!important;
-  letter-spacing:.03em!important;
-  text-align:center!important;
-  color:#fff0d0!important;
-  text-shadow:0 2px 0 #24133b!important;
+  left:50%!important;right:auto!important;top:5.8%!important;width:28%!important;transform:translateX(-50%)!important;
+  font-size:28px!important;line-height:1!important;font-weight:normal!important;letter-spacing:.03em!important;text-align:center!important;
+  color:#fff0d0!important;text-shadow:0 2px 0 #24133b!important;
 }
 .popup-slot-info{
-  left:50%!important;
-  right:auto!important;
-  width:76%!important;
-  transform:translateX(-50%)!important;
-  align-items:center!important;
-  text-align:center!important;
-  gap:6px!important;
-  bottom:5.4%!important;
-  height:30%!important;
+  left:50%!important;right:auto!important;width:76%!important;transform:translateX(-50%)!important;
+  align-items:center!important;text-align:center!important;gap:6px!important;bottom:5.4%!important;height:30%!important;
 }
-.popup-slot-title{
-  width:100%!important;
-  margin:0 auto!important;
-  font-size:22px!important;
-  line-height:1.08!important;
-  font-weight:normal!important;
-  color:#fff!important;
-  white-space:nowrap!important;
-  text-align:center!important;
-  text-shadow:0 2px 0 #25153e!important;
+.popup-slot-title{width:100%!important;margin:0 auto!important;font-size:22px!important;line-height:1.08!important;font-weight:normal!important;color:#fff!important;white-space:nowrap!important;text-align:center!important;text-shadow:0 2px 0 #25153e!important;}
+.popup-slot-meta{width:100%!important;margin:0 auto!important;font-size:12.5px!important;line-height:1.28!important;color:#ddd2ef!important;white-space:pre-line!important;word-break:keep-all!important;text-align:center!important;text-shadow:0 1px 0 #211233!important;}
+.popup-slot-action{width:100%!important;margin:1px auto 0!important;font-size:12.5px!important;line-height:1.15!important;color:#f4dcff!important;white-space:nowrap!important;text-align:center!important;text-shadow:0 1px 0 #24133b!important;}
+
+/* ornamental divider inspired by the supplied pixel-art reference */
+.moon-divider{
+  width:88%;height:28px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center;
+  color:#ffd995;filter:drop-shadow(0 2px 0 #2c1755);pointer-events:none;
 }
-.popup-slot-meta{
-  width:100%!important;
-  margin:0 auto!important;
-  font-size:12.5px!important;
-  line-height:1.28!important;
-  color:#ddd2ef!important;
-  white-space:pre-line!important;
-  word-break:keep-all!important;
-  text-align:center!important;
-  text-shadow:0 1px 0 #211233!important;
+.moon-divider-line{
+  flex:1;height:4px;border-top:2px solid #f5c66f;border-bottom:2px solid #5b3d99;
+  background:#2e1e66;box-shadow:0 0 4px rgba(255,210,130,.24);
 }
-.popup-slot-action{
-  width:100%!important;
-  margin:1px auto 0!important;
-  font-size:12.5px!important;
-  line-height:1.15!important;
-  color:#f4dcff!important;
-  white-space:nowrap!important;
-  text-align:center!important;
-  text-shadow:0 1px 0 #24133b!important;
+.moon-divider-mini{
+  width:11px;height:11px;margin:0 8px;transform:rotate(45deg);
+  background:linear-gradient(135deg,#8d66d5 0 48%,#f2bf72 49% 68%,#382269 69%);
+  border:1px solid #f1c879;box-shadow:0 0 0 2px #3a236d;
 }
-#game-popup-message{
-  left:var(--popup-axis)!important;
-  right:auto!important;
-  width:64%!important;
-  transform:translateX(-50%)!important;
-  text-align:center!important;
-  font-family:'DungGeunMo','Apple SD Gothic Neo','Malgun Gothic',monospace!important;
+.moon-divider-star{
+  width:34px;height:34px;display:grid;place-items:center;margin:0 7px;font-size:29px;line-height:1;
+  color:#ffe4a8;text-shadow:0 0 6px rgba(255,196,105,.7),2px 2px 0 #5c388e,-2px -2px 0 #5c388e;
+}
+.moon-divider-end{width:16px;height:16px;transform:rotate(45deg);background:#49307d;border:2px solid #e8b865;box-shadow:inset 0 0 0 2px #27174e;}
+.moon-divider-end.left{margin-right:6px}.moon-divider-end.right{margin-left:6px}
+
+/* JOURNAL: remove long web-like cards */
+#game-popup:has(.journal-ornament-list) #game-popup-content,
+#game-popup:has(.settings-ornament-list) #game-popup-content{
+  top:31.8%!important;
+  bottom:9.3%!important;
+  width:78.5%!important;
+}
+.journal-ornament-list{
+  height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;padding:4px 8px 14px!important;
+  display:block!important;scrollbar-width:none!important;
+}
+.journal-ornament-list::-webkit-scrollbar{display:none!important;}
+.journal-ornament-entry{
+  border:0!important;border-radius:0!important;background:transparent!important;padding:10px 18px 8px!important;
+  box-shadow:none!important;min-height:78px;
+}
+.journal-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:10px;}
+.journal-ornament-entry h3{
+  margin:0!important;font-size:20px!important;line-height:1.1!important;font-weight:normal!important;color:#fff2cf!important;
+  text-shadow:0 2px 0 #2b1744!important;
+}
+.journal-recent{font-size:11.5px;color:#cfc0df;white-space:nowrap;text-shadow:0 1px 0 #211233;}
+.journal-ornament-entry .popup-journal-line{
+  font-size:14px!important;line-height:1.5!important;color:#e9e0f3!important;padding-left:4px;text-shadow:0 1px 0 #211233;
+}
+.journal-ornament-list .popup-empty{
+  color:#dfd5ec;font-size:15px;line-height:1.6;text-shadow:0 1px 0 #211233;
+}
+
+/* SETTINGS: grouped parchment-like sections, no long rectangular cards */
+.settings-ornament-list{
+  height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;padding:4px 10px 16px!important;
+  display:block!important;scrollbar-width:none!important;
+}
+.settings-ornament-list::-webkit-scrollbar{display:none!important;}
+.settings-group{width:88%;margin:0 auto;padding:6px 8px 2px;}
+.settings-group-title{
+  font-size:20px;color:#fff2cf;margin:0 0 8px 4px;text-shadow:0 2px 0 #2b1744;
+}
+.settings-ornament-list .popup-setting-row{
+  min-height:48px!important;border:0!important;border-radius:0!important;background:transparent!important;
+  padding:8px 6px!important;box-shadow:none!important;
+}
+.settings-ornament-list .popup-setting-row + .popup-setting-row{
+  border-top:1px solid rgba(178,145,220,.16)!important;
+}
+.settings-ornament-list .popup-setting-label strong{
+  font-size:15px!important;font-weight:normal!important;color:#f7efff!important;text-shadow:0 1px 0 #24143b;
+}
+.settings-ornament-list .popup-setting-label span{
+  margin-top:3px;display:block;font-size:11px!important;color:#c8b9d8!important;line-height:1.35;
+}
+.settings-ornament-list .popup-switch{
+  transform:scale(1.06);transform-origin:center;
+}
+.settings-ornament-list .popup-select{
+  min-width:92px;height:34px;border:1px solid rgba(239,202,133,.55)!important;border-radius:6px!important;
+  background:#2c1c63!important;color:#fff0d8!important;font-size:13px!important;padding:0 10px!important;
+  box-shadow:inset 0 0 0 2px rgba(72,43,121,.7);
+}
+.settings-save-zone{display:flex!important;justify-content:center!important;padding:6px 0 12px!important;}
+.settings-save-zone .popup-save{
+  min-width:150px;height:38px;border:2px solid #e3b76a!important;border-radius:6px!important;
+  background:linear-gradient(180deg,#68429d,#3e286f)!important;color:#fff0cf!important;font-size:15px!important;
+  text-shadow:0 1px 0 #25143f;box-shadow:inset 0 0 0 2px #2d1a57,0 2px 0 #22133f;
 }
 </style>
 </head>
@@ -841,12 +821,25 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
     content.replaceChildren(buildSlots("continue"));
   }
 
+  function makeOrnamentDivider(){
+    const d=document.createElement("div");
+    d.className="moon-divider";
+    d.setAttribute("aria-hidden","true");
+    d.innerHTML='<span class="moon-divider-end left"></span><span class="moon-divider-line"></span><span class="moon-divider-mini"></span><span class="moon-divider-star">✦</span><span class="moon-divider-mini"></span><span class="moon-divider-line"></span><span class="moon-divider-end right"></span>';
+    return d;
+  }
+
+  function romanLabel(n){
+    const r=["I","II","III","IV","V","VI","VII","VIII","IX","X"];
+    return r[n-1]||String(n);
+  }
+
   function renderJournal(){
     titleEl.textContent="탐험 일지";
     subEl.textContent="저장 슬롯별 탐험 기록을 확인합니다.";
 
     const wrap=document.createElement("div");
-    wrap.className="popup-journal";
+    wrap.className="popup-journal journal-ornament-list";
     const existing=data.slots.map((s,i)=>({s:s,i:i})).filter(x=>x.s);
 
     if(!existing.length){
@@ -855,31 +848,36 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
       empty.innerHTML="아직 기록된 탐험이 없습니다.<br>새로운 탐험을 시작하면 여기에 기록됩니다.";
       wrap.append(empty);
     }else{
-      existing.forEach(function(x){
+      existing.forEach(function(x,idx){
         const card=document.createElement("article");
-        card.className="popup-journal-card";
+        card.className="popup-journal-card journal-ornament-entry";
+
+        const head=document.createElement("div");
+        head.className="journal-head";
 
         const h=document.createElement("h3");
-        h.textContent=`저장 슬롯 ${x.i+1} · 챕터 ${x.s.chapter||1}`;
-        card.append(h);
+        h.textContent="저장 슬롯 "+romanLabel(x.i+1)+" · 챕터 "+(x.s.chapter||1);
+
+        const recent=document.createElement("span");
+        recent.className="journal-recent";
+        recent.textContent="최근 저장  "+(x.s.updatedAt||"-");
+
+        head.append(h,recent);
+        card.append(head);
 
         const entries=Array.isArray(x.s.journal)&&x.s.journal.length
           ? x.s.journal
           : ["아직 기록이 없습니다."];
 
-        entries.forEach(function(t){
+        entries.slice(-3).forEach(function(t){
           const line=document.createElement("div");
           line.className="popup-journal-line";
-          line.textContent="• "+t;
+          line.textContent="✦ "+t;
           card.append(line);
         });
 
-        const last=document.createElement("div");
-        last.className="popup-journal-line";
-        last.textContent="최근 저장: "+(x.s.updatedAt||"-");
-        card.append(last);
-
         wrap.append(card);
+        if(idx<existing.length-1) wrap.append(makeOrnamentDivider());
       });
     }
 
@@ -922,24 +920,35 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
     subEl.textContent="HOME과 탐험 화면에서 사용할 기본 환경을 조절합니다.";
 
     const wrap=document.createElement("div");
-    wrap.className="popup-settings";
+    wrap.className="popup-settings settings-ornament-list";
 
-    wrap.append(
+    const soundGroup=document.createElement("section");
+    soundGroup.className="settings-group";
+    const soundTitle=document.createElement("div");
+    soundTitle.className="settings-group-title";
+    soundTitle.textContent="소리와 화면";
+    soundGroup.append(
+      soundTitle,
       toggleRow("bgm","배경 음악","게임의 배경 음악을 재생합니다.",data.settings.bgm),
       toggleRow("sfx","효과음","버튼 및 게임 효과음을 재생합니다.",data.settings.sfx),
       toggleRow("effects","화면 효과","빛·반짝임·간단한 움직임 효과를 사용합니다.",data.settings.effects)
     );
+    wrap.append(soundGroup,makeOrnamentDivider());
+
+    const textGroup=document.createElement("section");
+    textGroup.className="settings-group";
+    const textTitle=document.createElement("div");
+    textTitle.className="settings-group-title";
+    textTitle.textContent="읽기 환경";
+    textGroup.append(textTitle);
 
     const row=document.createElement("div");
     row.className="popup-setting-row";
-
     const l=document.createElement("div");
     l.className="popup-setting-label";
     l.innerHTML="<strong>텍스트 속도</strong><span>대사와 설명이 표시되는 기본 속도</span>";
-
     const ctrl=document.createElement("div");
     ctrl.className="popup-setting-control";
-
     const select=document.createElement("select");
     select.className="popup-select";
     select.setAttribute("aria-label","텍스트 속도");
@@ -950,16 +959,14 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
       if(data.settings.textSpeed===pair[0])o.selected=true;
       select.append(o);
     });
-    select.addEventListener("change",function(){
-      data.settings.textSpeed=select.value;
-    });
-
+    select.addEventListener("change",function(){ data.settings.textSpeed=select.value; });
     ctrl.append(select);
     row.append(l,ctrl);
-    wrap.append(row);
+    textGroup.append(row);
+    wrap.append(textGroup,makeOrnamentDivider());
 
     const footer=document.createElement("div");
-    footer.className="popup-settings-footer";
+    footer.className="popup-settings-footer settings-save-zone";
     const saveBtn=document.createElement("button");
     saveBtn.type="button";
     saveBtn.className="popup-save";
