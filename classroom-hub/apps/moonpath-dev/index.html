@@ -356,6 +356,80 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 }
 
 </style>
+<style id="moonpath-centering-v2">
+/* Exact center-axis correction: popup ornament star = 50% of popup. */
+#game-popup-header{
+  left:50% !important;
+  right:auto !important;
+  width:71% !important;
+  transform:translateX(-50%) !important;
+  text-align:center !important;
+}
+#game-popup-content{
+  left:50% !important;
+  right:auto !important;
+  width:82.8% !important;
+  transform:translateX(-50%) !important;
+}
+#game-popup-message{
+  left:50% !important;
+  right:auto !important;
+  width:71% !important;
+  transform:translateX(-50%) !important;
+  text-align:center !important;
+}
+.popup-slot-grid{
+  width:100% !important;
+  margin:0 auto !important;
+}
+.popup-slot-number{
+  left:50% !important;
+  right:auto !important;
+  width:22% !important;
+  transform:translateX(-50%) !important;
+  text-align:center !important;
+}
+.popup-slot-info{
+  left:50% !important;
+  right:auto !important;
+  width:74% !important;
+  transform:translateX(-50%) !important;
+  align-items:center !important;
+  text-align:center !important;
+}
+
+/* Optional visual debugging: ?align_debug=1 */
+body.moonpath-align-debug #game-popup::after{
+  content:"";
+  position:absolute;
+  z-index:9999;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:2px;
+  transform:translateX(-1px);
+  background:rgba(255,45,45,.96);
+  pointer-events:none;
+}
+body.moonpath-align-debug #game-popup-header{
+  outline:2px solid #33f1e0 !important;
+  background:rgba(51,241,224,.08) !important;
+}
+body.moonpath-align-debug #game-popup-content{
+  outline:2px solid #ffd84d !important;
+  background:rgba(255,216,77,.05) !important;
+}
+body.moonpath-align-debug .popup-slot-grid{
+  outline:2px dashed #ff66e5 !important;
+}
+body.moonpath-align-debug .popup-slot{
+  outline:1px solid rgba(100,255,120,.95) !important;
+}
+body.moonpath-align-debug .popup-slot-info{
+  outline:1px dashed rgba(255,255,255,.95) !important;
+  background:rgba(255,255,255,.04) !important;
+}
+</style>
 </head>
 <body>
 <div id="viewport">
@@ -840,5 +914,12 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 })();
 </script>
 
+<script id="moonpath-align-debug-script">
+try{
+  if(new URLSearchParams(location.search).get('align_debug')==='1'){
+    document.body.classList.add('moonpath-align-debug');
+  }
+}catch(e){}
+</script>
 </body>
 </html>
