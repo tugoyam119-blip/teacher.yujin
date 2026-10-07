@@ -28,3 +28,14 @@ test('individual extra time contributes to total elapsed and compliance',()=>{
   assert.match(server,/submissionReason='individual_time_manual'/);
   assert.match(server,/timeComplianceScore:compliance/);
 });
+
+test('grading workflow exposes audit filters and next-student navigation',()=>{
+  assert.match(teacher,/gradingFilterValues=new Set\(\['unscored','ai_missing','ai_review','regrade','scored'\]\)/);
+  assert.match(teacher,/function gradingQueue\(\)/);
+  assert.match(teacher,/window\.openAdjacentUngraded/);
+  assert.match(teacher,/저장 후 다음 미채점/);
+  assert.match(teacher,/서버 자동/);
+  assert.match(teacher,/수동 변경 · 서버/);
+  assert.match(server,/timeComplianceManual=Number\.isInteger\(student\.timeComplianceScore\)/);
+  assert.match(server,/시간점수_수동변경/);
+});
