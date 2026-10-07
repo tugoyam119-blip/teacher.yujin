@@ -232,6 +232,22 @@ async function handleApi(req,res,url){
         };
         return send(res,200,{ok:true,message:'Sites 백업을 이관했습니다.',counts,backupFile:path.basename(backupPath)});
       }
+      else if(action==='import_detail'){
+        const id=String(b.studentId||''); const detail=b.detail?.attempt||b.detail;
+        if(!id||!detail)return send(res,400,{error:'상세 이관 데이터가 없습니다.'});
+        const a=s.attempts[id]||{student_id:id,name:detail.name||'',class_name:detail.class_name||classNameFor(id),answers:{}};
+        const merged={...a,...detail,student_id:id,class_name:detail.class_name||a.class_name||classNameFor(id)};
+        if(typeof merged.ai_breakdown==='string'){try{merged.ai_breakdown=JSON.parse(merged.ai_breakdown)}catch{}}
+        if(typeof merged.teacher_breakdown==='string'){try{merged.teacher_breakdown=JSON.parse(merged.teacher_breakdown)}catch{}}
+        if(detail.visit)s.visits[id]={...detail.visit,student_id:id,class_name:detail.visit.class_name||detail.class_name||classNameFor(id)};
+        if(Array.isArray(detail.grade_history)){
+          s.gradeHistory=s.gradeHistory.filter(x=>x.student_id!==id);
+          for(const h of detail.grade_history)s.gradeHistory.push({...h,student_id:id});
+        }
+        delete merged.grade_history; delete merged.visit;
+        s.attempts[id]=merged; writeStore(s);
+        return send(res,200,{ok:true,studentId:id,gradeHistory:s.gradeHistory.filter(x=>x.student_id===id).length});
+      }
       else if(action==='ai_grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r=scoreRubric(a);a.ai_breakdown=r;a.ai_score=r.total;a.ai_feedback='복원 서버의 기준표 자동 가채점입니다. 최종 점수는 교사가 확인하세요.';a.ai_graded_at=now();writeStore(s);return send(res,200,{ok:true,message:'가채점했습니다.',grade:r})}
       else if(action==='grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r={...(b.rubric||{})};r.time=timeScore(a);r.total=['economy','policy','organization','cooperation','completion','time'].reduce((n,k)=>n+Number(r[k]||0),0);a.teacher_breakdown=r;a.teacher_score=r.total;a.feedback=String(b.feedback||'');s.gradeHistory.push({id:String(now()),student_id:a.student_id,created_at:now(),teacher_score:r.total,provisional_score:a.ai_score,feedback:a.feedback,rubric:r});writeStore(s);return send(res,200,{ok:true,message:'교사 채점을 저장했습니다.',score:r.total})}
       else if(action==='reset'){delete s.attempts[String(b.studentId)];writeStore(s);return send(res,200,{ok:true,message:'학생 응시 기록을 초기화했습니다.'})}
