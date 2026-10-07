@@ -48,6 +48,7 @@ test('명단 검증·반 운영·학생 제출·채점 흐름이 이어진다',a
 });
 
 test('추가시간은 원본 규칙대로 시간점수에 반영된다',async()=>{
+ await post('/api/admin',{code:'123456',action:'import_roster',csvText:'반,학번,이름\n1,30101,홍길동\n9,DEMO001,김환율'});
  await post('/api/admin',{code:'123456',action:'open_class',className:'모의반'});
  await post('/api/admin',{code:'123456',action:'start_class',className:'모의반'});
  await post('/api/exam',{action:'login',studentId:'DEMO001',name:'김환율'});
