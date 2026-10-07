@@ -173,7 +173,7 @@
   <div class="toolbar toolbar-wide">
     <input id="search" placeholder="학번 또는 이름 검색">
     <select id="classFilter"><option value="all">전체 반</option></select>
-    <select id="statusFilter"><option value="all">전체 상태</option><option value="not_started">미시작</option><option value="submitted">제출 완료</option><option value="in_progress">진행·수정 중</option><option value="ai_review">AI 확인 권장</option></select>
+    <select id="statusFilter"><option value="all">전체 상태</option><option value="not_started">미시작</option><option value="submitted">제출 완료</option><option value="in_progress">진행·수정 중</option><option value="unscored">🔴 미채점</option><option value="ai_missing">🟡 AI 미실행</option><option value="ai_review">🟠 교사 확인 권장</option><option value="regrade">🔵 재채점 필요</option><option value="scored">🟢 채점 완료</option></select>
     <button id="refresh" class="secondary">새로고침</button>
     <button id="exportXlsx" class="primary">가채점 결과 엑셀 내려받기</button>
     <button id="exportCsv" class="secondary hidden" aria-hidden="true">CSV 내려받기</button>
