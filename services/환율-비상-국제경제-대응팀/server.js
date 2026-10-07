@@ -5,6 +5,7 @@ const {parseRoster}=require('./lib/roster-standard');
 
 const PORT=Number(process.env.PORT||3000);
 const TEACHER_PIN=String(process.env.TEACHER_PIN||'000000');
+const MIGRATION_TOKEN=String(process.env.MIGRATION_TOKEN||'');
 const DATA_DIR=process.env.DATA_DIR||path.join(__dirname,'data');
 const STORE_FILE=path.join(DATA_DIR,'exchange-crisis.json');
 fs.mkdirSync(DATA_DIR,{recursive:true});
@@ -184,7 +185,11 @@ async function handleApi(req,res,url){
       return send(res,200,{setting:{id:1,status:'closed',duration_minutes:45,started_at:null,paused_at:null,paused_seconds:0,updated_at:s.updated_at},sessions:Object.entries(s.classes).map(([class_name,x])=>({class_name,...x})),roster:s.roster,visits:Object.values(s.visits),attempts:Object.values(s.attempts).map(attemptView),helps:s.helps,aiConfig:{configured:false,source:'restored-compatible',model:'deterministic-rubric'}});
     }
     if(req.method==='POST'){
-      const b=await bodyJson(req);if(!teacherOK(b.code))return send(res,401,{error:'인증번호가 올바르지 않습니다.'});const action=b.action,cls=b.className||'3학년 1반',c=s.classes[cls]||(s.classes[cls]={status:'closed',duration_minutes:45});
+      const b=await bodyJson(req);const action=b.action;
+      const migrationAction=action==='import_snapshot'||action==='import_detail';
+      const migrationOK=migrationAction&&MIGRATION_TOKEN&&String(b.code||'')===MIGRATION_TOKEN;
+      if(!teacherOK(b.code)&&!migrationOK)return send(res,401,{error:'인증번호가 올바르지 않습니다.'});
+      const cls=b.className||'3학년 1반',c=s.classes[cls]||(s.classes[cls]={status:'closed',duration_minutes:45});
       if(action==='open_class'){c.status='open';c.started_at=null;c.deadline=null}
       else if(action==='start_class'){c.status='open';c.started_at=now();c.deadline=c.started_at+Number(c.duration_minutes||45)*60000;for(const a of Object.values(s.attempts))if(a.class_name===cls&&a.status==='waiting'){a.status='in_progress';a.started_at=a.started_at||c.started_at}}
       else if(action==='pause_class'){if(c.started_at&&!c.paused_at)c.paused_at=now()}
