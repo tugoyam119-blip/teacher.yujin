@@ -22,10 +22,27 @@ const emptyStore=()=>({
   roster:[], attempts:{}, visits:{}, helps:[], gradeHistory:[], updated_at:now()
 });
 function readStore(){try{return {...emptyStore(),...JSON.parse(fs.readFileSync(STORE_FILE,'utf8'))}}catch{return emptyStore()}}
-function writeStore(s){s.updated_at=now();fs.writeFileSync(STORE_FILE,JSON.stringify(s,null,2))}
+function writeStore(s){
+  s.updated_at=now();
+  const tmp=STORE_FILE+'.tmp';
+  fs.writeFileSync(tmp,JSON.stringify(s,null,2),'utf8');
+  fs.renameSync(tmp,STORE_FILE);
+}
 function send(res,status,body,type='application/json; charset=utf-8'){res.writeHead(status,{'content-type':type,'cache-control':'no-store'});res.end(type.startsWith('application/json')?JSON.stringify(body):body)}
 function bodyJson(req){return new Promise((resolve,reject)=>{let raw='';req.on('data',c=>{raw+=c;if(raw.length>2_000_000){req.destroy();reject(new Error('too large'))}});req.on('end',()=>{try{resolve(JSON.parse(raw||'{}'))}catch(e){reject(e)}});req.on('error',reject)})}
-function classNameFor(id){const s=String(id||'');if(/^301/.test(s))return '3학년 1반';if(/^302/.test(s))return '3학년 2반';if(/^303/.test(s))return '3학년 3반';return '모의반'}
+function classNameFor(id){
+  const s=String(id||'');
+  if(/^301/.test(s))return '3학년 1반';
+  if(/^302/.test(s))return '3학년 2반';
+  if(/^303/.test(s))return '3학년 3반';
+  return '모의반';
+}
+function classNameFromRosterEntry(r,id){
+  if(r?.class_name)return r.class_name;
+  if(r?.className)return r.className;
+  if(Number(r?.classNo))return '3학년 '+Number(r.classNo)+'반';
+  return classNameFor(id);
+}
 function timePenalty(a){
   if(a.extra_penalty_exempt)return 0;
   const m=Number(a.extra_granted_minutes||0);
@@ -135,9 +152,10 @@ async function handleApi(req,res,url){
     if(req.method==='POST'){
       const b=await bodyJson(req),id=String(b.studentId||'').trim();
       if(!id)return send(res,400,{error:'학번을 입력하세요.'});
-      const action=b.action,cls=classNameFor(id),setting=s.classes[cls]||(s.classes[cls]={status:'closed',duration_minutes:45});
+      const action=b.action,rosterEntry=s.roster.find(x=>String(x.student_id)===id),cls=classNameFromRosterEntry(rosterEntry,id),setting=s.classes[cls]||(s.classes[cls]={status:'closed',duration_minutes:45});
       if(action==='login'){
-        const name=String(b.name||'').trim(),r=s.roster.find(x=>String(x.student_id)===id);
+        const name=String(b.name||'').trim(),r=rosterEntry;
+        if(s.roster.length&&!r)return send(res,400,{error:'등록된 학생 명단에서 학번을 찾을 수 없습니다.'});
         if(r&&String(r.name).trim()!==name)return send(res,400,{error:'등록된 이름과 일치하지 않습니다.'});
         if(setting.status==='closed')return send(res,423,{error:cls+' 수행평가가 아직 시작되지 않았습니다.'});
         let a=s.attempts[id];
@@ -147,9 +165,19 @@ async function handleApi(req,res,url){
       }
       const a=s.attempts[id];if(!a)return send(res,404,{error:'응시 기록을 찾지 못했습니다.'});
       if(action==='start'){if(!setting.started_at)return send(res,423,{error:'교사가 수행을 시작하지 않았습니다.'});a.status='in_progress';a.started_at=a.started_at||now()}
-      else if(action==='save'){a.answers=b.answers||{};a.current_step=Number(b.currentStep||a.current_step||1);a.updated_at=now()}
-      else if(action==='submit'){a.answers=b.answers||a.answers||{};a.current_step=Number(b.currentStep||5);a.status='submitted';a.submitted_at=now();a.submission_type=b.submissionType||'manual'}
-      else if(action==='reopen_self'){if(a.status!=='submitted')return send(res,400,{error:'제출 완료 기록이 아닙니다.'});a.status='in_progress';a.submitted_at=null}
+      else if(action==='save'){
+        if(setting.paused_at)return send(res,423,{error:'현재 수행이 일시정지되어 저장할 수 없습니다.'});
+        if(setting.status==='closed')return send(res,423,{error:'현재 수행이 종료되어 저장할 수 없습니다.'});
+        a.answers=b.answers||{};a.current_step=Number(b.currentStep||a.current_step||1);a.updated_at=now()
+      }
+      else if(action==='submit'){
+        if(setting.paused_at)return send(res,423,{error:'현재 수행이 일시정지되어 제출할 수 없습니다.'});
+        if(setting.status==='closed')return send(res,423,{error:'현재 수행이 종료되어 제출할 수 없습니다.'});
+        a.answers=b.answers||a.answers||{};a.current_step=Number(b.currentStep||5);a.status='submitted';a.submitted_at=now();a.submission_type=b.submissionType||'manual'
+      }
+      else if(action==='reopen_self'){
+        return send(res,403,{error:'제출 후 수정은 교사 관리실에서만 다시 열 수 있습니다.'});
+      }
       else return send(res,400,{error:'알 수 없는 동작입니다.'});
       s.visits[id]={...(s.visits[id]||{}),student_id:id,name:a.name,class_name:a.class_name,last_seen_at:now(),last_phase:a.status};writeStore(s);
       return send(res,200,{setting:{class_name:cls,...setting},attempt:attemptView(a)});
@@ -254,7 +282,16 @@ async function handleApi(req,res,url){
         return send(res,200,{ok:true,studentId:id,gradeHistory:s.gradeHistory.filter(x=>x.student_id===id).length});
       }
       else if(action==='ai_grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r=scoreRubric(a);a.ai_breakdown=r;a.ai_score=r.total;a.ai_feedback='복원 서버의 기준표 자동 가채점입니다. 최종 점수는 교사가 확인하세요.';a.ai_graded_at=now();writeStore(s);return send(res,200,{ok:true,message:'가채점했습니다.',grade:r})}
-      else if(action==='grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r={...(b.rubric||{})};r.time=timeScore(a);r.total=['economy','policy','organization','cooperation','completion','time'].reduce((n,k)=>n+Number(r[k]||0),0);a.teacher_breakdown=r;a.teacher_score=r.total;a.feedback=String(b.feedback||'');s.gradeHistory.push({id:String(now()),student_id:a.student_id,created_at:now(),teacher_score:r.total,provisional_score:a.ai_score,feedback:a.feedback,rubric:r});writeStore(s);return send(res,200,{ok:true,message:'교사 채점을 저장했습니다.',score:r.total})}
+      else if(action==='grade'){
+        const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});
+        const limits={economy:25,policy:25,organization:20,cooperation:20,completion:4,time:6},r={...(b.rubric||{})};
+        for(const [k,max] of Object.entries(limits))if(k!=='time'&&(!Number.isFinite(Number(r[k]))||Number(r[k])<0||Number(r[k])>max))return send(res,400,{error:k+' 점수 범위를 확인하세요.'});
+        r.time=timeScore(a);
+        r.total=['economy','policy','organization','cooperation','completion','time'].reduce((n,k)=>n+Number(r[k]||0),0);
+        a.teacher_breakdown=r;a.teacher_score=r.total;a.feedback=String(b.feedback||'');
+        s.gradeHistory.push({id:String(now()),student_id:a.student_id,created_at:now(),teacher_score:r.total,provisional_score:a.ai_score,feedback:a.feedback,rubric:r});
+        writeStore(s);return send(res,200,{ok:true,message:'교사 채점을 저장했습니다.',score:r.total})
+      }
       else if(action==='reset'){delete s.attempts[String(b.studentId)];writeStore(s);return send(res,200,{ok:true,message:'학생 응시 기록을 초기화했습니다.'})}
       else return send(res,400,{error:'알 수 없는 관리 동작입니다.'});
       writeStore(s);return send(res,200,{ok:true,message:'반영되었습니다.'});
