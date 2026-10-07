@@ -191,6 +191,47 @@ async function handleApi(req,res,url){
       else if(action==='resume_class'){if(c.paused_at){const d=now()-c.paused_at;c.paused_seconds=Number(c.paused_seconds||0)+d;c.deadline=Number(c.deadline||now())+d;c.paused_at=null}}
       else if(action==='close_class'){c.status='closed'}
       else if(action==='import_roster'){const report=parseRoster(b.csvText||'');if(!report.students.length)return send(res,400,{error:'유효한 명단이 없습니다.'});s.roster=report.students.map(x=>({student_id:String(x.studentId||x.student_id),name:x.name,class_name:x.className||x.class_name||classNameFor(x.studentId||x.student_id)}));writeStore(s);return send(res,200,{ok:true,message:s.roster.length+'명의 명단을 저장했습니다.'})}
+      else if(action==='import_snapshot'){
+        const snap=b.snapshot||{};
+        const backupPath=path.join(DATA_DIR,'sites-backup-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json');
+        fs.writeFileSync(backupPath,JSON.stringify(snap,null,2),'utf8');
+        const ns=emptyStore();
+        ns.roster=Array.isArray(snap.roster)?snap.roster.map(x=>({student_id:String(x.student_id||x.studentId||''),name:x.name||'',class_name:x.class_name||x.className||classNameFor(x.student_id||x.studentId)})).filter(x=>x.student_id):[];
+        ns.visits={};
+        for(const v of (snap.visits||[])){const id=String(v.student_id||v.studentId||'');if(id)ns.visits[id]={...v,student_id:id,class_name:v.class_name||v.className||classNameFor(id)}}
+        ns.helps=Array.isArray(snap.helps)?snap.helps:[];
+        ns.gradeHistory=[];
+        ns.attempts={};
+        const details=snap.details||{};
+        for(const row of (snap.attempts||[])){
+          const id=String(row.student_id||row.studentId||''); if(!id)continue;
+          const d=details[id]?.attempt||details[id]||row;
+          const a={...row,...d,student_id:id,class_name:d.class_name||row.class_name||classNameFor(id)};
+          if(typeof a.ai_breakdown==='string'){try{a.ai_breakdown=JSON.parse(a.ai_breakdown)}catch{}}
+          if(typeof a.teacher_breakdown==='string'){try{a.teacher_breakdown=JSON.parse(a.teacher_breakdown)}catch{}}
+          if(Array.isArray(a.grade_history)) for(const h of a.grade_history)ns.gradeHistory.push({...h,student_id:id});
+          delete a.grade_history; delete a.visit;
+          ns.attempts[id]=a;
+        }
+        for(const sess of (snap.sessions||[])){
+          const name=sess.class_name||sess.className; if(!name)continue;
+          ns.classes[name]={
+            status:sess.status||'closed',duration_minutes:Number(sess.duration_minutes||45),
+            started_at:sess.started_at??null,paused_at:sess.paused_at??null,
+            paused_seconds:Number(sess.paused_seconds||0),deadline:sess.deadline??null
+          };
+        }
+        writeStore(ns);
+        const counts={
+          roster:ns.roster.length,attempts:Object.keys(ns.attempts).length,
+          submitted:Object.values(ns.attempts).filter(x=>x.status==='submitted').length,
+          teacherScored:Object.values(ns.attempts).filter(x=>x.teacher_score!=null).length,
+          aiScored:Object.values(ns.attempts).filter(x=>x.ai_score!=null).length,
+          extra:Object.values(ns.attempts).filter(x=>Number(x.extra_granted_minutes||0)>0||x.extra_status==='approved').length,
+          gradeHistory:ns.gradeHistory.length
+        };
+        return send(res,200,{ok:true,message:'Sites 백업을 이관했습니다.',counts,backupFile:path.basename(backupPath)});
+      }
       else if(action==='ai_grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r=scoreRubric(a);a.ai_breakdown=r;a.ai_score=r.total;a.ai_feedback='복원 서버의 기준표 자동 가채점입니다. 최종 점수는 교사가 확인하세요.';a.ai_graded_at=now();writeStore(s);return send(res,200,{ok:true,message:'가채점했습니다.',grade:r})}
       else if(action==='grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r={...(b.rubric||{})};r.time=timeScore(a);r.total=['economy','policy','organization','cooperation','completion','time'].reduce((n,k)=>n+Number(r[k]||0),0);a.teacher_breakdown=r;a.teacher_score=r.total;a.feedback=String(b.feedback||'');s.gradeHistory.push({id:String(now()),student_id:a.student_id,created_at:now(),teacher_score:r.total,provisional_score:a.ai_score,feedback:a.feedback,rubric:r});writeStore(s);return send(res,200,{ok:true,message:'교사 채점을 저장했습니다.',score:r.total})}
       else if(action==='reset'){delete s.attempts[String(b.studentId)];writeStore(s);return send(res,200,{ok:true,message:'학생 응시 기록을 초기화했습니다.'})}
