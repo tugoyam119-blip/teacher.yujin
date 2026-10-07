@@ -2,13 +2,33 @@ const http=require('http');
 const fs=require('fs');
 const path=require('path');
 const {parseRoster}=require('./lib/roster-standard');
+const {validId,timestamp,deadline,writeBlock,studentView,createAccess}=require('./lib/student-access');
 
 const PORT=Number(process.env.PORT||3000);
-const TEACHER_PIN=String(process.env.TEACHER_PIN||'000000');
+const TEACHER_PIN=String(process.env.TEACHER_PIN||'');
 const MIGRATION_TOKEN=String(process.env.MIGRATION_TOKEN||'');
 const DATA_DIR=process.env.DATA_DIR||path.join(__dirname,'data');
 const STORE_FILE=path.join(DATA_DIR,'exchange-crisis.json');
 fs.mkdirSync(DATA_DIR,{recursive:true});
+const access=createAccess(DATA_DIR);
+const teacherFailures=new Map();
+function teacherAuthFailure(req,code,migrationAction=false){
+ const current=Date.now(),key=req.socket.remoteAddress||'unknown';
+ for(const [k,v] of teacherFailures)if(v.until<=current)teacherFailures.delete(k);
+ const f=teacherFailures.get(key);
+ if(f&&f.count>=10)return {status:429,error:'교사 인증 시도가 많습니다. 잠시 후 다시 시도하세요.'};
+ if(teacherOK(code)||(migrationAction&&MIGRATION_TOKEN&&String(code||'')===MIGRATION_TOKEN)){teacherFailures.delete(key);return null}
+ if(!f&&teacherFailures.size>=10000)return {status:429,error:'잠시 후 다시 시도하세요.'};
+ teacherFailures.set(key,{count:(f?.count||0)+1,until:f?.until||current+60000});
+ return {status:401,error:'인증번호가 올바르지 않습니다.'};
+}
+const attemptMatches=(a,r)=>!a||(!!r&&String(a.name).trim()===String(r.name).trim()&&a.class_name===r.class_name);
+const rosterIdentity=r=>r?JSON.stringify([r.student_id,r.name,r.class_name]):'';
+function requireStudent(req,res,s,id){
+ const r=s.roster.find(x=>String(x.student_id)===id);
+ if(!validId(id)||!r||!attemptMatches(s.attempts[id],r)||!access.authorized(req,id,rosterIdentity(r))){send(res,401,{error:'본인 계정으로 다시 입장하세요.'});return false}
+ return true;
+}
 
 const now=()=>Date.now();
 const emptyStore=()=>({
@@ -21,9 +41,9 @@ const emptyStore=()=>({
   },
   roster:[], attempts:{}, visits:{}, helps:[], gradeHistory:[], updated_at:now()
 });
-function readStore(){try{return {...emptyStore(),...JSON.parse(fs.readFileSync(STORE_FILE,'utf8'))}}catch{return emptyStore()}}
-function writeStore(s){s.updated_at=now();fs.writeFileSync(STORE_FILE,JSON.stringify(s,null,2))}
-function send(res,status,body,type='application/json; charset=utf-8'){res.writeHead(status,{'content-type':type,'cache-control':'no-store'});res.end(type.startsWith('application/json')?JSON.stringify(body):body)}
+function readStore(){try{return {...emptyStore(),...JSON.parse(fs.readFileSync(STORE_FILE,'utf8'))}}catch(e){if(e.code==='ENOENT')return emptyStore();throw e}}
+function writeStore(s){s.updated_at=now();const tmp=STORE_FILE+'.tmp';fs.writeFileSync(tmp,JSON.stringify(s,null,2));fs.renameSync(tmp,STORE_FILE)}
+function send(res,status,body,type='application/json; charset=utf-8'){res.writeHead(status,{'content-type':type,'cache-control':'no-store','referrer-policy':'no-referrer','x-content-type-options':'nosniff'});res.end(type.startsWith('application/json')?JSON.stringify(body):body)}
 function bodyJson(req){return new Promise((resolve,reject)=>{let raw='';req.on('data',c=>{raw+=c;if(raw.length>2_000_000){req.destroy();reject(new Error('too large'))}});req.on('end',()=>{try{resolve(JSON.parse(raw||'{}'))}catch(e){reject(e)}});req.on('error',reject)})}
 function classNameFor(id){const s=String(id||'');if(/^301/.test(s))return '3학년 1반';if(/^302/.test(s))return '3학년 2반';if(/^303/.test(s))return '3학년 3반';return '모의반'}
 function timePenalty(a){
@@ -33,7 +53,7 @@ function timePenalty(a){
 }
 function timeScore(a){const p=timePenalty(a);return p===0?6:p===2?4:p===4?2:0}
 function attemptView(a){return a?{...a,extra_penalty:timePenalty(a)}:null}
-function teacherOK(code){return String(code||'')===TEACHER_PIN}
+function teacherOK(code){return !!TEACHER_PIN&&String(code||'')===TEACHER_PIN}
 function scoreRubric(a){
   const g=a.answers||{};
   const textLen=(g.exportReason||'').length+(g.importReason||'').length+(g.policyEffect||'').length+(g.policyRisk||'').length+(g.report||'').length;
@@ -58,9 +78,9 @@ button,.btn{border:0;border-radius:11px;padding:11px 15px;font-weight:800;cursor
 
 function studentHtml(){
 return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>환율 비상! 국제경제 대응팀</title>${CSS}</head><body><main>
-<section class="card" id="login"><div class="muted">학생용 · v3.0 복원본</div><h1>환율 비상!<br>국제경제 대응팀</h1><p>교사가 서버를 연 뒤 학번과 이름으로 입장하세요.</p><form id="loginForm"><label>학번<input id="sid" placeholder="예: 30101"></label><label>이름<input id="sname" placeholder="이름"></label><button>입장하고 대기하기</button></form><p id="msg"></p></section>
+<section class="card" id="login"><div class="muted">학생용 · v3.0 복원본</div><h1>환율 비상!<br>국제경제 대응팀</h1><p>교사가 서버를 연 뒤 학번, 이름, 개인 입장코드로 입장하세요. 코드는 다른 사람에게 알려주지 마세요.</p><form id="loginForm"><label>학번<input id="sid" placeholder="예: 30101"></label><label>이름<input id="sname" placeholder="이름"></label><label>개인 입장코드<input id="accessCode" type="password" autocomplete="off" required></label><button>입장하고 대기하기</button></form><p id="msg"></p></section>
 <section id="exam" class="hidden">
-<div class="card top"><div><b id="who"></b><div class="muted" id="phase"></div></div><div class="timer" id="timer">45:00</div></div>
+<div class="card top"><div><b id="who"></b><div class="muted" id="phase"></div></div><div class="timer" id="timer">45:00</div><button id="logoutBtn" class="secondary">로그아웃</button></div>
 <div class="card"><h2>1단계 · 환율 변화 판단</h2><div class="grid">
 <label>원화 가치<select id="won"><option value="">선택</option><option>하락</option><option>상승</option></select></label>
 <label>달러 가치<select id="dollar"><option value="">선택</option><option>상승</option><option>하락</option></select></label>
@@ -72,21 +92,22 @@ return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="v
 </section>
 <script>
 const policyList=['외환시장에 달러 공급','기준금리 인상','수입 생필품 가격 지원','수출기업 지원 확대','수입기업 긴급대출','모든 수입품 수입 금지'];
-let studentId='',studentName='',attempt=null,setting=null;
+let studentId='',studentName='',attempt=null,setting=null,dirty=false,busy=false,pollTimer=null;
 const $=id=>document.getElementById(id);
 $('policies').innerHTML=policyList.map((p,i)=>'<label><input type="checkbox" name="pol" value="'+p+'"> '+p+'</label>').join('');
 function answers(){return {won:$('won').value,dollar:$('dollar').value,cost:$('cost').value,exportReason:$('exportReason').value,importReason:$('importReason').value,effects:$('effects').value,policies:[...document.querySelectorAll('input[name=pol]:checked')].map(x=>x.value),policyEffect:$('policyEffect').value,policyRisk:$('policyRisk').value,report:$('report').value}}
 function fill(a){const g=a?.answers||{};for(const k of ['won','dollar','cost','exportReason','importReason','effects','policyEffect','policyRisk','report'])if($(k))$(k).value=g[k]||'';document.querySelectorAll('input[name=pol]').forEach(x=>x.checked=(g.policies||[]).includes(x.value))}
 async function post(url,b){const r=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)}),j=await r.json();if(!r.ok)throw Error(j.error||'요청 실패');return j}
-$('loginForm').onsubmit=async e=>{e.preventDefault();studentId=$('sid').value.trim();studentName=$('sname').value.trim();try{let j=await post('/api/exam',{action:'login',studentId,name:studentName});attempt=j.attempt;setting=j.setting;$('login').classList.add('hidden');$('exam').classList.remove('hidden');$('who').textContent=studentId+' '+studentName;fill(attempt);tick();poll()}catch(err){$('msg').textContent=err.message}};
-async function save(){if(!attempt||attempt.status==='submitted')return;try{let j=await post('/api/exam',{action:'save',studentId,answers:answers(),currentStep:5});attempt=j.attempt;$('saveMsg').textContent='저장 완료 '+new Date().toLocaleTimeString()}catch(e){$('saveMsg').textContent=e.message}}
-document.addEventListener('input',()=>{clearTimeout(window._sv);window._sv=setTimeout(save,700)});
-$('submitBtn').onclick=async()=>{if(!confirm('제출할까요?'))return;try{let j=await post('/api/exam',{action:'submit',studentId,answers:answers(),currentStep:5,submissionType:'manual'});attempt=j.attempt;alert('제출 완료');tick()}catch(e){alert(e.message)}};
+$('loginForm').onsubmit=async e=>{e.preventDefault();studentId=$('sid').value.trim();studentName=$('sname').value.trim();try{let j=await post('/api/exam',{action:'login',studentId,name:studentName,accessCode:$('accessCode').value.trim()});attempt=j.attempt;setting=j.setting;dirty=false;$('accessCode').value='';$('login').classList.add('hidden');$('exam').classList.remove('hidden');$('who').textContent=studentId+' '+studentName;fill(attempt);tick();poll()}catch(err){$('msg').textContent=err.message}};
+async function save(){if(!attempt||!dirty||busy||attempt.write_block)return;busy=true;const snapshot=JSON.stringify(answers());try{let j=await post('/api/exam',{action:'save',studentId,answers:answers(),currentStep:5});attempt=j.attempt;if(JSON.stringify(answers())===snapshot)dirty=false;$('saveMsg').textContent='저장 완료 '+new Date().toLocaleTimeString()}catch(e){$('saveMsg').textContent=e.message}finally{busy=false;if(dirty&&attempt&&!attempt.write_block)window._sv=setTimeout(save,1500)}}
+$('exam').addEventListener('input',()=>{dirty=true;clearTimeout(window._sv);window._sv=setTimeout(save,700)});
+$('submitBtn').onclick=async()=>{if(busy)return;if(!confirm('제출할까요?'))return;busy=true;clearTimeout(window._sv);try{let j=await post('/api/exam',{action:'submit',studentId,answers:answers(),currentStep:5,submissionType:'manual'});attempt=j.attempt;dirty=false;alert('제출 완료');tick()}catch(e){alert(e.message)}finally{busy=false}};
 $('helpBtn').onclick=async()=>{const m=prompt('어려운 내용을 간단히 적어 주세요.');if(m)try{alert((await post('/api/help',{action:'request',studentId,message:m})).message)}catch(e){alert(e.message)}};
 $('extraBtn').onclick=async()=>{if(!confirm('추가시간을 실제로 사용하면 5분 이내 2점, 10분 이내 4점이 감점됩니다. 요청할까요?'))return;try{alert((await post('/api/extra',{action:'request',studentId})).message)}catch(e){alert(e.message)}};
-function tick(){if(!setting)return;const cls=setting.class_name||'';$('phase').textContent=cls+' · '+(attempt?.status||'');let end=Number(setting.deadline||0);if(attempt?.extra_started_at&&attempt?.extra_granted_minutes)end=Number(attempt.extra_started_at)+Number(attempt.extra_granted_minutes)*60000;let s=end?Math.max(0,Math.floor((end-Date.now())/1000)):Number(setting.duration_minutes||45)*60;$('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if(attempt?.status==='submitted')$('submitBtn').disabled=true}
+function tick(){if(!setting||!attempt)return;const cls=setting.class_name||'';const end=Number(attempt.effective_deadline||0),current=setting.paused_at?(Number(setting.paused_at)||Date.parse(setting.paused_at)):Date.now();const expired=end&&current>=end;const blocked=attempt.write_block||expired;$('phase').textContent=cls+' · '+attempt.status+(blocked?' · '+(attempt.write_block||'수행 시간이 종료되었습니다.'):'');let seconds=end?Math.max(0,Math.floor((end-current)/1000)):Number(setting.duration_minutes||45)*60;$('timer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');document.querySelectorAll('#exam input,#exam textarea,#exam select').forEach(x=>x.disabled=!!blocked);$('submitBtn').disabled=!!blocked||busy;$('extraBtn').disabled=attempt.status==='submitted'||setting.status!=='open';}
 setInterval(tick,1000);
-async function poll(){try{const r=await fetch('/api/exam?studentId='+encodeURIComponent(studentId),{cache:'no-store'}),j=await r.json();if(r.ok){attempt=j.attempt||attempt;setting=j.setting||setting;fill(attempt);tick()}}catch{}setTimeout(poll,5000)}
+$('logoutBtn').onclick=async()=>{if(dirty&&!confirm('저장되지 않은 입력이 사라질 수 있습니다. 로그아웃할까요?'))return;try{await post('/api/exam',{action:'logout',studentId});location.reload()}catch(e){alert(e.message)}};
+async function poll(){clearTimeout(pollTimer);try{const r=await fetch('/api/exam?studentId='+encodeURIComponent(studentId),{cache:'no-store'}),j=await r.json();if(r.status===401){$('saveMsg').textContent=j.error;attempt=null;$('exam').classList.add('hidden');$('login').classList.remove('hidden');$('msg').textContent=j.error;return}if(r.ok&&!busy){attempt=j.attempt||attempt;setting=j.setting||setting;tick();if(dirty&&!attempt.write_block)save()}}catch{}pollTimer=setTimeout(poll,5000)}
 </script></main></body></html>`}
 
 function teacherHtml(){
@@ -95,25 +116,29 @@ return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="v
 <section id="dash" class="hidden">
 <div class="card top"><div><h1>환율 비상! 국제경제 대응팀</h1><div class="muted">서버·학생 기록·채점 관리</div></div><button id="refresh" class="secondary">새로고침</button></div>
 <div class="card"><h2>반별 운영</h2><div class="row"><select id="classSel"><option>3학년 1반</option><option>3학년 2반</option><option>3학년 3반</option><option>모의반</option></select><button data-act="open_class">입장 열기</button><button data-act="start_class">수행 시작</button><button data-act="pause_class" class="secondary">일시정지</button><button data-act="resume_class" class="secondary">재개</button><button data-act="close_class" class="danger">종료</button></div><p id="classState" class="muted"></p></div>
-<div class="card"><h2>학생명단</h2><input type="file" id="rosterFile" accept=".csv"><button id="rosterBtn" class="secondary">CSV 업로드</button></div>
+<div class="card"><h2>학생명단</h2><input type="file" id="rosterFile" accept=".csv"><button id="rosterBtn" class="secondary">CSV 업로드</button><label>개인 입장코드 발급 대상<select id="codeStudent"></select></label><button id="issueCode" class="secondary">코드 발급·재발급</button><p id="issuedCode" class="warn hidden"></p></div>
 <div class="card"><div class="top"><h2>학생별 진행·채점 현황</h2><button id="gradeAll" class="secondary">미가채점 일괄 가채점</button></div><div style="overflow:auto"><table><thead><tr><th>반</th><th>학번</th><th>이름</th><th>상태</th><th>AI/자동</th><th>교사점수</th><th>추가시간</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></div>
 <div class="card"><h2>도움 요청</h2><div id="helps"></div></div>
 </section>
 <dialog id="detail" style="width:min(760px,95vw);border:0;border-radius:18px;padding:0"><div class="card" style="margin:0"><button id="closeDetail" class="secondary">닫기</button><div id="detailBody"></div></div></dialog>
 <script>
 let code='',data=null;const $=id=>document.getElementById(id);
-async function get(u){const r=await fetch(u,{cache:'no-store'}),j=await r.json();if(!r.ok)throw Error(j.error||'조회 실패');return j}
+const jsId=v=>/^[A-Za-z0-9_-]{1,40}$/.test(String(v))?String(v):'';
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function get(u){const r=await fetch(u,{cache:'no-store',headers:{'x-teacher-code':code}}),j=await r.json();if(!r.ok)throw Error(j.error||'조회 실패');return j}
 async function post(u,b){const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)}),j=await r.json();if(!r.ok)throw Error(j.error||'요청 실패');return j}
 $('tform').onsubmit=async e=>{e.preventDefault();code=$('code').value.trim();try{await load();$('tlogin').classList.add('hidden');$('dash').classList.remove('hidden')}catch(err){$('tmsg').textContent=err.message}};
 $('refresh').onclick=load;
 document.querySelectorAll('[data-act]').forEach(b=>b.onclick=async()=>{try{alert((await post('/api/admin',{code,action:b.dataset.act,className:$('classSel').value})).message);await load()}catch(e){alert(e.message)}});
 $('rosterBtn').onclick=async()=>{const f=$('rosterFile').files[0];if(!f)return;try{alert((await post('/api/admin',{code,action:'import_roster',csvText:await f.text()})).message);await load()}catch(e){alert(e.message)}};
 $('gradeAll').onclick=async()=>{for(const a of (data.attempts||[]).filter(x=>x.status==='submitted'&&!x.ai_score)){try{await post('/api/admin',{code,action:'ai_grade',studentId:a.student_id})}catch{}}await load()};
-async function load(){data=await get('/api/admin?code='+encodeURIComponent(code));render()}
-function render(){const cls=$('classSel').value,s=(data.sessions||[]).find(x=>x.class_name===cls);$('classState').textContent=cls+' · '+(s?.status||'closed');$('rows').innerHTML=(data.attempts||[]).map(a=>'<tr><td>'+a.class_name+'</td><td>'+a.student_id+'</td><td>'+a.name+'</td><td>'+a.status+'</td><td>'+(a.ai_score??'')+'</td><td>'+(a.teacher_score??'')+'</td><td>'+(a.extra_status||'none')+'</td><td><button onclick="openDetail(\''+a.student_id+'\')">보기</button></td></tr>').join('');$('helps').innerHTML=(data.helps||[]).filter(x=>x.status==='open').map(h=>'<div class="warn"><b>'+h.class_name+' · '+h.student_id+' '+h.name+'</b><p>'+h.message+'</p><button onclick="resolveHelp(\''+h.student_id+'\')">처리 완료</button></div>').join('')||'<p class="muted">대기 중인 요청 없음</p>'}
+async function load(){data=await get('/api/admin');render()}
+$('issueCode').onclick=async()=>{const studentId=$('codeStudent').value;if(!studentId||!confirm('기존 코드를 취소하고 새 개인 입장코드를 발급할까요?'))return;try{const j=await post('/api/admin',{code,action:'issue_student_code',studentId});$('issuedCode').classList.remove('hidden');$('issuedCode').textContent=studentId+' 개인 입장코드: '+j.accessCode+' · '+j.message}catch(e){alert(e.message)}};
+function render(){const selected=$('codeStudent').value;$('codeStudent').replaceChildren(...(data.roster||[]).map(r=>{const o=document.createElement('option');o.value=r.student_id;o.textContent=r.student_id+' '+r.name;return o}));if(selected)$('codeStudent').value=selected;const cls=$('classSel').value,s=(data.sessions||[]).find(x=>x.class_name===cls);$('classState').textContent=cls+' · '+(s?.status||'closed');$('rows').innerHTML=(data.attempts||[]).map(a=>'<tr><td>'+esc(a.class_name)+'</td><td>'+esc(a.student_id)+'</td><td>'+esc(a.name)+'</td><td>'+esc(a.status)+'</td><td>'+esc((a.ai_score??''))+'</td><td>'+esc((a.teacher_score??''))+'</td><td>'+esc((a.extra_status||'none'))+'</td><td><button onclick="openDetail(\\''+jsId(a.student_id)+'\\')">보기</button></td></tr>').join('');$('helps').innerHTML=(data.helps||[]).filter(x=>x.status==='open').map(h=>'<div class="warn"><b>'+esc(h.class_name)+' · '+esc(h.student_id)+' '+esc(h.name)+'</b><p>'+esc(h.message)+'</p><button onclick="resolveHelp(\\''+jsId(h.student_id)+'\\')">처리 완료</button></div>').join('')||'<p class="muted">대기 중인 요청 없음</p>'}
 window.resolveHelp=async id=>{await post('/api/help',{code,action:'resolve',studentId:id});await load()};
-window.openDetail=async id=>{const j=await get('/api/admin?code='+encodeURIComponent(code)+'&studentId='+encodeURIComponent(id)),a=j.attempt,g=a.answers||{},r=a.teacher_breakdown||a.ai_breakdown||{economy:25,policy:25,organization:20,cooperation:20,completion:4,time:6};$('detailBody').innerHTML='<h2>'+a.student_id+' '+a.name+'</h2><p><b>최종 보고서</b><br>'+String(g.report||'').replaceAll('<','&lt;')+'</p><div class="grid">'+[['economy',25,'경제 이해'],['policy',25,'정책 판단'],['organization',20,'국제기구'],['cooperation',20,'국제협력'],['completion',4,'완성도'],['time',6,'시간']].map(x=>'<label>'+x[2]+' /'+x[1]+'<input type="number" id="g_'+x[0]+'" value="'+(r[x[0]]??0)+'" '+(x[0]==='time'?'disabled':'')+'></label>').join('')+'</div><label>피드백<textarea id="feedback">'+(a.feedback||'')+'</textarea></label><div class="row"><button onclick="aiGrade(\''+a.student_id+'\')">가채점</button><button onclick="saveGrade(\''+a.student_id+'\')">점수·이력 저장</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',5,false)">5분 승인 · -2</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',10,false)">10분 승인 · -4</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',5,true)">기술문제 5분</button></div>';$('detail').showModal()};
+window.openDetail=async id=>{const j=await get('/api/admin?studentId='+encodeURIComponent(id)),a=j.attempt,g=a.answers||{},r=a.teacher_breakdown||a.ai_breakdown||{economy:25,policy:25,organization:20,cooperation:20,completion:4,time:6};$('detailBody').innerHTML='<h2>'+esc(a.student_id)+' '+esc(a.name)+'</h2><p><b>최종 보고서</b><br>'+esc(g.report||'')+'</p><div class="grid">'+[['economy',25,'경제 이해'],['policy',25,'정책 판단'],['organization',20,'국제기구'],['cooperation',20,'국제협력'],['completion',4,'완성도'],['time',6,'시간']].map(x=>'<label>'+x[2]+' /'+x[1]+'<input type="number" id="g_'+x[0]+'" value="'+esc((r[x[0]]??0))+'" '+(x[0]==='time'?'disabled':'')+'></label>').join('')+'</div><label>피드백<textarea id="feedback">'+esc((a.feedback||''))+'</textarea></label><div class="row"><button class="secondary" onclick="reopenAttempt(\\''+jsId(a.student_id)+'\\')">재작성 허용</button><button onclick="aiGrade(\\''+jsId(a.student_id)+'\\')">가채점</button><button onclick="saveGrade(\\''+jsId(a.student_id)+'\\')">점수·이력 저장</button><button class="secondary" onclick="extraApprove(\\''+jsId(a.student_id)+'\\',5,false)">5분 승인 · -2</button><button class="secondary" onclick="extraApprove(\\''+jsId(a.student_id)+'\\',10,false)">10분 승인 · -4</button><button class="secondary" onclick="extraApprove(\\''+jsId(a.student_id)+'\\',5,true)">기술문제 5분</button></div>';$('detail').showModal()};
 $('closeDetail').onclick=()=>$('detail').close();
+window.reopenAttempt=async id=>{try{await post('/api/admin',{code,action:'reopen_attempt',studentId:decodeURIComponent(id)});$('detail').close();await load()}catch(e){alert(e.message)}};
 window.aiGrade=async id=>{await post('/api/admin',{code,action:'ai_grade',studentId:id});$('detail').close();await load();openDetail(id)};
 window.saveGrade=async id=>{let rubric={};for(const k of ['economy','policy','organization','cooperation','completion','time'])rubric[k]=Number($('g_'+k).value||0);await post('/api/admin',{code,action:'grade',studentId:id,rubric,feedback:$('feedback').value});$('detail').close();await load()};
 window.extraApprove=async(id,min,exempt)=>{await post('/api/extra',{code,studentId:id,action:'approve',minutes:min,exempt});$('detail').close();await load()};
@@ -121,81 +146,110 @@ setInterval(()=>{if(code)load().catch(()=>{})},10000);
 </script></main></body></html>`}
 
 async function handleApi(req,res,url){
+  if(req.method==='POST'&&!/^application\/json(?:;|$)/i.test(String(req.headers['content-type']||'')))return send(res,415,{error:'JSON 요청만 허용됩니다.'});
+  if(req.headers.origin&&req.headers.origin!==('https://'+req.headers.host)&&req.headers.origin!==('http://'+req.headers.host))return send(res,403,{error:'다른 사이트의 요청은 허용되지 않습니다.'});
+  let b=null;try{if(req.method==='POST')b=await bodyJson(req)}catch{return send(res,400,{error:'JSON 요청을 읽지 못했습니다.'})}
+  if(req.method==='POST'&&(!b||typeof b!=='object'||Array.isArray(b)))return send(res,400,{error:'올바른 JSON 객체가 필요합니다.'});
+  const teacherCode=req.method==='GET'?(req.headers['x-teacher-code']||url.searchParams.get('code')):b?.code;
+  const teacherRequest=url.pathname==='/api/admin'||(url.pathname==='/api/help'&&(req.method==='GET'?!!teacherCode:b?.action==='resolve'))||(url.pathname==='/api/extra'&&req.method==='POST'&&b?.action!=='request');
+  if(teacherRequest){const failure=teacherAuthFailure(req,teacherCode,url.pathname==='/api/admin'&&req.method==='POST'&&['import_snapshot','import_detail'].includes(b?.action));if(failure)return send(res,failure.status,{error:failure.error})}
   const s=readStore();
 
   if(req.method==='POST'&&url.pathname==='/api/roster/validate'){
-    try{const b=await bodyJson(req),report=parseRoster(b.csvText||b.students||[]);return send(res,report.students.length?200:400,{ok:!!report.students.length,report})}catch{return send(res,400,{ok:false,error:'명단 요청을 읽지 못했습니다.'})}
+    try{const report=parseRoster(b.csvText||b.students||[]);return send(res,report.students.length?200:400,{ok:!!report.students.length,report})}catch{return send(res,400,{ok:false,error:'명단 요청을 읽지 못했습니다.'})}
   }
 
   if(url.pathname==='/api/exam'){
     if(req.method==='GET'){
-      const id=String(url.searchParams.get('studentId')||''),a=s.attempts[id],cls=a?.class_name||classNameFor(id),setting={class_name:cls,...(s.classes[cls]||{})};
-      return send(res,200,{setting,attempt:attemptView(a)});
+      const id=String(url.searchParams.get('studentId')||'');
+      if(!requireStudent(req,res,s,id))return;
+      const a=s.attempts[id],cls=a?.class_name,setting={class_name:cls,...(s.classes[cls]||{})};
+      return send(res,200,{setting,attempt:studentView(a,setting)});
     }
     if(req.method==='POST'){
-      const b=await bodyJson(req),id=String(b.studentId||'').trim();
-      if(!id)return send(res,400,{error:'학번을 입력하세요.'});
-      const action=b.action,cls=classNameFor(id),setting=s.classes[cls]||(s.classes[cls]={status:'closed',duration_minutes:45});
+      const id=String(b.studentId||'').trim();
+      if(!validId(id))return send(res,400,{error:'올바른 학번을 입력하세요.'});
+      const action=b.action,r=s.roster.find(x=>String(x.student_id)===id),cls=s.attempts[id]?.class_name||r?.class_name,setting=s.classes[cls]||{};
       if(action==='login'){
-        const name=String(b.name||'').trim(),r=s.roster.find(x=>String(x.student_id)===id);
-        if(r&&String(r.name).trim()!==name)return send(res,400,{error:'등록된 이름과 일치하지 않습니다.'});
-        if(setting.status==='closed')return send(res,423,{error:cls+' 수행평가가 아직 시작되지 않았습니다.'});
+        const name=String(b.name||'').trim();
+        const identity=r&&String(r.name).trim()===name?rosterIdentity(r):'';
+        const failure=access.login(req,res,id,String(b.accessCode||'').trim(),identity);
+        if(failure)return send(res,failure.status,{error:failure.error});
+        if(!attemptMatches(s.attempts[id],r)){access.logout(req,res);return send(res,409,{error:'기존 기록과 명단이 다릅니다. 교사에게 확인을 요청하세요.'})}
+        if(setting.status!=='open'){access.logout(req,res);return send(res,423,{error:cls+' 수행평가가 아직 시작되지 않았습니다.'})}
         let a=s.attempts[id];
         if(!a)a=s.attempts[id]={student_id:id,name,class_name:cls,answers:{},status:'waiting',current_step:1,started_at:null,updated_at:now(),submitted_at:null,submission_type:null,ai_score:null,ai_feedback:null,ai_breakdown:null,teacher_score:null,teacher_breakdown:null,feedback:'',extra_status:'none',extra_requested_at:null,extra_granted_minutes:0,extra_started_at:null,extra_penalty_exempt:0};
+        if(a.status==='waiting'&&!writeBlock(a,setting)){a.status='in_progress';a.started_at=a.started_at||now()}
         const v=s.visits[id]||{student_id:id,name,class_name:cls,first_seen_at:now(),login_count:0};v.last_seen_at=now();v.login_count++;v.last_phase=a.status;s.visits[id]=v;writeStore(s);
-        return send(res,200,{setting:{class_name:cls,...setting},attempt:attemptView(a)});
+        return send(res,200,{setting:{class_name:cls,...setting},attempt:studentView(a,setting)});
       }
+      if(!requireStudent(req,res,s,id))return;
+      if(action==='logout'){access.logout(req,res);return send(res,200,{ok:true})}
       const a=s.attempts[id];if(!a)return send(res,404,{error:'응시 기록을 찾지 못했습니다.'});
+      if(action==='reopen_self')return send(res,403,{error:'재작성은 교사만 허용할 수 있습니다.'});
+      const blocked=writeBlock(a,setting);if(blocked)return send(res,423,{error:blocked});
       if(action==='start'){if(!setting.started_at)return send(res,423,{error:'교사가 수행을 시작하지 않았습니다.'});a.status='in_progress';a.started_at=a.started_at||now()}
       else if(action==='save'){a.answers=b.answers||{};a.current_step=Number(b.currentStep||a.current_step||1);a.updated_at=now()}
       else if(action==='submit'){a.answers=b.answers||a.answers||{};a.current_step=Number(b.currentStep||5);a.status='submitted';a.submitted_at=now();a.submission_type=b.submissionType||'manual'}
-      else if(action==='reopen_self'){if(a.status!=='submitted')return send(res,400,{error:'제출 완료 기록이 아닙니다.'});a.status='in_progress';a.submitted_at=null}
       else return send(res,400,{error:'알 수 없는 동작입니다.'});
       s.visits[id]={...(s.visits[id]||{}),student_id:id,name:a.name,class_name:a.class_name,last_seen_at:now(),last_phase:a.status};writeStore(s);
-      return send(res,200,{setting:{class_name:cls,...setting},attempt:attemptView(a)});
+      return send(res,200,{setting:{class_name:cls,...setting},attempt:studentView(a,setting)});
     }
   }
 
   if(url.pathname==='/api/help'){
     if(req.method==='GET'){
-      const code=url.searchParams.get('code'),studentId=url.searchParams.get('studentId');
+      const code=req.headers['x-teacher-code']||url.searchParams.get('code'),studentId=url.searchParams.get('studentId');
       if(code){if(!teacherOK(code))return send(res,401,{error:'인증번호가 올바르지 않습니다.'});return send(res,200,{helps:s.helps.filter(x=>x.status==='open'),helpHistory:s.helps})}
+      if(!requireStudent(req,res,s,String(studentId||'')))return;
       const h=[...s.helps].reverse().find(x=>x.student_id===studentId&&x.status==='open');return send(res,200,{help:h||null});
     }
     if(req.method==='POST'){
-      const b=await bodyJson(req);
-      if(b.action==='request'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'응시 기록이 없습니다.'});s.helps.push({id:String(now()),student_id:a.student_id,name:a.name,class_name:a.class_name,message:String(b.message||'').slice(0,300),status:'open',requested_at:now()});writeStore(s);return send(res,200,{ok:true,message:'교사에게 도움 요청을 보냈습니다.'})}
+
+      if(b.action==='request'){if(!requireStudent(req,res,s,String(b.studentId||'')))return;const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'응시 기록이 없습니다.'});s.helps.push({id:String(now()),student_id:a.student_id,name:a.name,class_name:a.class_name,message:String(b.message||'').slice(0,300),status:'open',requested_at:now()});writeStore(s);return send(res,200,{ok:true,message:'교사에게 도움 요청을 보냈습니다.'})}
       if(b.action==='resolve'){if(!teacherOK(b.code))return send(res,401,{error:'인증번호가 올바르지 않습니다.'});for(const h of s.helps)if(h.student_id===String(b.studentId)&&h.status==='open'){h.status='resolved';h.resolved_at=now()}writeStore(s);return send(res,200,{ok:true,message:'도움 요청을 처리 완료했습니다.'})}
     }
   }
 
   if(url.pathname==='/api/extra'&&req.method==='POST'){
-    const b=await bodyJson(req),a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'응시 기록이 없습니다.'});
-    if(b.action==='request'){a.extra_status='pending';a.extra_requested_at=now();writeStore(s);return send(res,200,{ok:true,message:'추가시간 요청을 보냈습니다.'})}
+    if(b.action==='request'&&!requireStudent(req,res,s,String(b.studentId||'')))return;
+    if(b.action!=='request'&&!teacherOK(b.code))return send(res,401,{error:'인증번호가 올바르지 않습니다.'});
+    const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'응시 기록이 없습니다.'});
+    if(b.action==='request'){if(a.status==='submitted'||s.classes[a.class_name]?.status!=='open')return send(res,423,{error:'추가시간을 요청할 수 없습니다.'});if(a.extra_status==='approved')return send(res,409,{error:'이미 승인된 추가시간이 있습니다.'});a.extra_status='pending';a.extra_requested_at=now();writeStore(s);return send(res,200,{ok:true,message:'추가시간 요청을 보냈습니다.'})}
     if(!teacherOK(b.code))return send(res,401,{error:'인증번호가 올바르지 않습니다.'});
-    if(b.action==='approve'){a.extra_status='approved';a.extra_granted_minutes=Math.max(0,Number(b.minutes||5));a.extra_started_at=now();a.extra_penalty_exempt=b.exempt?1:0;writeStore(s);return send(res,200,{ok:true,message:'추가시간을 승인했습니다.'})}
+    if(b.action==='approve'){a.extra_status='approved';a.extra_granted_minutes=[5,10].includes(Number(b.minutes))?Number(b.minutes):5;a.extra_started_at=now();a.extra_penalty_exempt=b.exempt?1:0;writeStore(s);return send(res,200,{ok:true,message:'추가시간을 승인했습니다.'})}
     if(b.action==='deny'){a.extra_status='denied';writeStore(s);return send(res,200,{ok:true,message:'추가시간 요청을 거절했습니다.'})}
   }
 
   if(url.pathname==='/api/admin'){
     if(req.method==='GET'){
-      const code=url.searchParams.get('code');if(!teacherOK(code))return send(res,401,{error:'인증번호가 올바르지 않습니다.'});
+      const code=req.headers['x-teacher-code']||url.searchParams.get('code');if(!teacherOK(code))return send(res,401,{error:'인증번호가 올바르지 않습니다.'});
       const studentId=url.searchParams.get('studentId');
       if(studentId){const a=s.attempts[studentId];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});return send(res,200,{attempt:attemptView({...a,visit:s.visits[studentId],grade_history:s.gradeHistory.filter(x=>x.student_id===studentId)})})}
       return send(res,200,{setting:{id:1,status:'closed',duration_minutes:45,started_at:null,paused_at:null,paused_seconds:0,updated_at:s.updated_at},sessions:Object.entries(s.classes).map(([class_name,x])=>({class_name,...x})),roster:s.roster,visits:Object.values(s.visits),attempts:Object.values(s.attempts).map(attemptView),helps:s.helps,aiConfig:{configured:false,source:'restored-compatible',model:'deterministic-rubric'}});
     }
     if(req.method==='POST'){
-      const b=await bodyJson(req);const action=b.action;
+      const action=b.action;
       const migrationAction=action==='import_snapshot'||action==='import_detail';
       const migrationOK=migrationAction&&MIGRATION_TOKEN&&String(b.code||'')===MIGRATION_TOKEN;
       if(!teacherOK(b.code)&&!migrationOK)return send(res,401,{error:'인증번호가 올바르지 않습니다.'});
       const cls=b.className||'3학년 1반',c=s.classes[cls]||(s.classes[cls]={status:'closed',duration_minutes:45});
-      if(action==='open_class'){c.status='open';c.started_at=null;c.deadline=null}
-      else if(action==='start_class'){c.status='open';c.started_at=now();c.deadline=c.started_at+Number(c.duration_minutes||45)*60000;for(const a of Object.values(s.attempts))if(a.class_name===cls&&a.status==='waiting'){a.status='in_progress';a.started_at=a.started_at||c.started_at}}
+      if(action==='issue_student_code'){
+        const id=String(b.studentId||''),r=s.roster.find(x=>String(x.student_id)===id);
+        if(!validId(id)||!r)return send(res,404,{error:'명단에 등록된 학생만 코드를 발급할 수 있습니다.'});
+        return send(res,200,{ok:true,studentId:id,accessCode:access.issue(id,rosterIdentity(r)),message:'이 코드는 지금만 표시됩니다. 해당 학생에게만 전달하세요. 기존 코드는 취소되었습니다.'});
+      }
+      else if(action==='reopen_attempt'){
+        const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});
+        const blocked=writeBlock(a,s.classes[a.class_name],now(),true);if(blocked)return send(res,423,{error:blocked});
+        a.status='in_progress';a.submitted_at=null;a.submission_type=null;a.updated_at=now();
+      }
+      else if(action==='open_class'){c.status='open';c.started_at=null;c.deadline=null;c.paused_at=null;c.paused_seconds=0}
+      else if(action==='start_class'){c.status='open';c.started_at=now();c.deadline=c.started_at+Number(c.duration_minutes||45)*60000;c.paused_at=null;c.paused_seconds=0;for(const a of Object.values(s.attempts))if(a.class_name===cls&&a.status==='waiting'){a.status='in_progress';a.started_at=a.started_at||c.started_at}}
       else if(action==='pause_class'){if(c.started_at&&!c.paused_at)c.paused_at=now()}
-      else if(action==='resume_class'){if(c.paused_at){const d=now()-c.paused_at;c.paused_seconds=Number(c.paused_seconds||0)+d;c.deadline=Number(c.deadline||now())+d;c.paused_at=null}}
+      else if(action==='resume_class'){if(c.paused_at){const paused=timestamp(c.paused_at),end=timestamp(c.deadline),current=now();if(!Number.isFinite(paused)||!Number.isFinite(end)||paused>current)return send(res,409,{error:'시간 설정을 확인하세요.'});const d=current-paused;c.paused_seconds=Number(c.paused_seconds||0)+d;c.deadline=end+d;for(const a of Object.values(s.attempts))if(a.class_name===cls&&a.extra_status==='approved'&&Number.isFinite(timestamp(a.extra_started_at)))a.extra_started_at=timestamp(a.extra_started_at)+Math.max(0,current-Math.max(paused,timestamp(a.extra_started_at)));c.paused_at=null}}
       else if(action==='close_class'){c.status='closed'}
-      else if(action==='import_roster'){const report=parseRoster(b.csvText||'');if(!report.students.length)return send(res,400,{error:'유효한 명단이 없습니다.'});s.roster=report.students.map(x=>({student_id:String(x.studentId||x.student_id),name:x.name,class_name:x.className||x.class_name||classNameFor(x.studentId||x.student_id)}));writeStore(s);return send(res,200,{ok:true,message:s.roster.length+'명의 명단을 저장했습니다.'})}
+      else if(action==='import_roster'){const report=parseRoster(b.csvText||'');if(!report.students.length)return send(res,400,{error:'유효한 명단이 없습니다.'});s.roster=report.students.map(x=>({student_id:String(x.studentId||x.student_id),name:x.name,class_name:x.className||x.class_name||(x.classNo?'3학년 '+x.classNo+'반':classNameFor(x.studentId||x.student_id))}));writeStore(s);return send(res,200,{ok:true,message:s.roster.length+'명의 명단을 저장했습니다.'})}
       else if(action==='import_snapshot'){
         const snap=b.snapshot||{};
         const backupPath=path.join(DATA_DIR,'sites-backup-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json');
@@ -255,7 +309,7 @@ async function handleApi(req,res,url){
       }
       else if(action==='ai_grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r=scoreRubric(a);a.ai_breakdown=r;a.ai_score=r.total;a.ai_feedback='복원 서버의 기준표 자동 가채점입니다. 최종 점수는 교사가 확인하세요.';a.ai_graded_at=now();writeStore(s);return send(res,200,{ok:true,message:'가채점했습니다.',grade:r})}
       else if(action==='grade'){const a=s.attempts[String(b.studentId)];if(!a)return send(res,404,{error:'학생 기록이 없습니다.'});const r={...(b.rubric||{})};r.time=timeScore(a);r.total=['economy','policy','organization','cooperation','completion','time'].reduce((n,k)=>n+Number(r[k]||0),0);a.teacher_breakdown=r;a.teacher_score=r.total;a.feedback=String(b.feedback||'');s.gradeHistory.push({id:String(now()),student_id:a.student_id,created_at:now(),teacher_score:r.total,provisional_score:a.ai_score,feedback:a.feedback,rubric:r});writeStore(s);return send(res,200,{ok:true,message:'교사 채점을 저장했습니다.',score:r.total})}
-      else if(action==='reset'){delete s.attempts[String(b.studentId)];writeStore(s);return send(res,200,{ok:true,message:'학생 응시 기록을 초기화했습니다.'})}
+      else if(action==='reset'){access.revoke(String(b.studentId));delete s.attempts[String(b.studentId)];writeStore(s);return send(res,200,{ok:true,message:'학생 응시 기록을 초기화했습니다.'})}
       else return send(res,400,{error:'알 수 없는 관리 동작입니다.'});
       writeStore(s);return send(res,200,{ok:true,message:'반영되었습니다.'});
     }
@@ -275,3 +329,4 @@ http.createServer(async(req,res)=>{
     return send(res,404,'Not Found','text/plain; charset=utf-8');
   }catch(e){console.error(e);return send(res,500,{error:'서버 처리 중 오류가 발생했습니다.'})}
 }).listen(PORT,'0.0.0.0',()=>console.log('exchange crisis restored server listening',PORT));
+
