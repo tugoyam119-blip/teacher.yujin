@@ -27,6 +27,7 @@ function writeStore(s){s.updated_at=now();fs.writeFileSync(STORE_FILE,JSON.strin
 function send(res,status,body,type='application/json; charset=utf-8'){res.writeHead(status,{'content-type':type,'cache-control':'no-store'});res.end(type.startsWith('application/json')?JSON.stringify(body):body)}
 function bodyJson(req){return new Promise((resolve,reject)=>{let raw='';req.on('data',c=>{raw+=c;if(raw.length>2_000_000){req.destroy();reject(new Error('too large'))}});req.on('end',()=>{try{resolve(JSON.parse(raw||'{}'))}catch(e){reject(e)}});req.on('error',reject)})}
 function classNameFor(id){const s=String(id||'');if(/^301/.test(s))return '3학년 1반';if(/^302/.test(s))return '3학년 2반';if(/^303/.test(s))return '3학년 3반';return '모의반'}
+function attemptView(a){return a?{...a,extra_penalty:timePenalty(a)}:null}
 function teacherOK(code){return String(code||'')===TEACHER_PIN}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
