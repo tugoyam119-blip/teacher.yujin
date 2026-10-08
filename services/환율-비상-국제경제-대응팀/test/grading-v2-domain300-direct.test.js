@@ -92,3 +92,5 @@ test('domain 300 x 6 audit',()=>{
  console.log('GRADING_V2_DOMAIN300 '+JSON.stringify(summary));
  assert.equal(Object.values(summary).reduce((s,x)=>s+x.n,0),1800);
 });
+
+// regression suite also runs alongside npm test in Railway validation
