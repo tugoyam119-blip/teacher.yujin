@@ -30,6 +30,10 @@ function isNonsense(s){
 }
 function hasAny(s,terms){const t=normalizeText(s);return terms.some(x=>t.includes(normalizeText(x)))}
 function countConcepts(s,groups){return groups.filter(g=>hasAny(s,g)).length}
+function lowDiversity(s){
+  const w=wordsOf(s);if(w.length<10)return false;
+  return new Set(w).size/w.length<.38;
+}
 function qualityFlags(g){
   const fields=['exportReason','importReason','policyEffect','policyRisk','report'];
   const filled=fields.filter(k=>String(g[k]||'').trim());
@@ -62,7 +66,7 @@ function scoreRubric(a){
   const plausiblePolicies=['외환시장에 달러 공급','기준금리 인상','수입 생필품 가격 지원','수출기업 지원 확대','수입기업 긴급대출'];
   const plausible=policies.filter(x=>plausiblePolicies.includes(x)).length;
   const extreme=policies.includes('모든 수입품 수입 금지');
-  const effectConcepts=countConcepts(g.policyEffect,[['환율','외환시장','달러'],['완화','안정','감소'],['유동성','자금','결제 부담','물가']]);
+  const effectConcepts=countConcepts(g.policyEffect,[['환율','외환시장','달러'],['완화','안정','감소','줄일'],['유동성','자금','결제 부담','물가'],['금리','자본 유출','외화 유출']]);
   const riskConcepts=countConcepts(g.policyRisk,[['외환보유액','재정','부실대출','부실'],['이자 부담','경기 둔화','물가'],['부작용','위험','부담','감소']]);
   let policy=0;
   if(flags.allNonsense)policy=0;
@@ -77,20 +81,24 @@ function scoreRubric(a){
   const joined=[g.exportReason,g.importReason,g.policyEffect,g.policyRisk,g.report].join(' ');
   const actorConcepts=countConcepts(joined,[['정부'],['중앙은행','한국은행'],['외환시장'],['국제통화기금','imf','국제금융기구'],['기업'],['외환보유액']]);
   const actionConcepts=countConcepts(joined,[['공급','개입'],['금리','인상'],['대출','지원'],['조정','관리'],['완화','안정']]);
+  const mechanismConcepts=countConcepts(joined,[['자본 유출','외화 유출'],['이자 부담','경기 둔화'],['원화 환산','환산 효과'],['원자재','결제 부담','생산비']]);
   let organization=0;
   if(flags.allNonsense)organization=0;
   else if(actorConcepts>=3&&actionConcepts>=2)organization=20;
   else if(actorConcepts>=2&&actionConcepts>=1)organization=18;
   else if(actorConcepts>=1&&actionConcepts>=1)organization=15;
   else if(actorConcepts>=1)organization=11;
+  else if(mechanismConcepts>=2)organization=15;
+  else if(mechanismConcepts>=1)organization=12;
   else if(String(joined).trim())organization=5;
+  if(lowDiversity(joined)&&organization>12){organization=12;reviewFlags.push('기관·개념어 반복 나열 가능성')}
   if(actorConcepts>=3&&actionConcepts===0)reviewFlags.push('기관·주체 키워드 나열 가능성');
 
   const report=String(g.report||'');
   const reportConcepts={
     diagnosis:countConcepts(report,[['원화 가치','달러 가치','환율'],['수입 비용','수입 원자재','구매 비용']]),
-    policy:countConcepts(report,[['달러 공급','외환시장'],['기준금리'],['긴급대출','가격 지원','기업 지원']]),
-    effect:countConcepts(report,[['완화','안정','감소'],['부담을 줄','유동성','자금난']]),
+    policy:countConcepts(report,[['달러 공급','외환시장'],['기준금리'],['긴급대출','가격 지원','기업 지원','지원']]),
+    effect:countConcepts(report,[['완화','안정','감소'],['부담을 줄','유동성','자금난','도움']]),
     risk:countConcepts(report,[['부작용','위험','부담'],['외환보유액','부실대출','재정'],['경기 둔화','이자 부담']]),
     judgement:countConcepts(report,[['따라서','그러나','반면','관리해야','병행','한시적']])
   };
@@ -100,16 +108,18 @@ function scoreRubric(a){
   else if(isNonsense(report))cooperation=0;
   else if(reportElements>=5)cooperation=20;
   else if(reportElements===4)cooperation=18;
-  else if(reportElements===3)cooperation=15;
+  else if(reportElements===3)cooperation=17;
   else if(reportElements===2)cooperation=10;
   else cooperation=5;
+  if(lowDiversity(report)&&cooperation>10){cooperation=10;reviewFlags.push('보고서 반복 표현 과다')}
   if(report.length>=120&&reportElements<=1)reviewFlags.push('긴 보고서이나 논리 요소 부족');
 
   let completion=0;
   if(!report.trim())completion=0;
   else if(isNonsense(report))completion=0;
   else if(report.length>=120&&reportElements>=3)completion=4;
-  else if(report.length>=60&&reportElements>=2)completion=3;
+  else if(report.length>=60&&!lowDiversity(report))completion=3;
+  else if(report.length>=60&&lowDiversity(report))completion=1;
   else if(report.length>=20)completion=2;
   else completion=1;
 
