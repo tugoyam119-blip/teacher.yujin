@@ -2,6 +2,7 @@ const http=require('http');
 const fs=require('fs');
 const path=require('path');
 const {parseRoster}=require('./lib/roster-standard');
+const {timePenalty,timeScore,scoreRubric}=require('./lib/grading');
 
 const PORT=Number(process.env.PORT||3000);
 const TEACHER_PIN=String(process.env.TEACHER_PIN||'000000');
@@ -26,25 +27,8 @@ function writeStore(s){s.updated_at=now();fs.writeFileSync(STORE_FILE,JSON.strin
 function send(res,status,body,type='application/json; charset=utf-8'){res.writeHead(status,{'content-type':type,'cache-control':'no-store'});res.end(type.startsWith('application/json')?JSON.stringify(body):body)}
 function bodyJson(req){return new Promise((resolve,reject)=>{let raw='';req.on('data',c=>{raw+=c;if(raw.length>2_000_000){req.destroy();reject(new Error('too large'))}});req.on('end',()=>{try{resolve(JSON.parse(raw||'{}'))}catch(e){reject(e)}});req.on('error',reject)})}
 function classNameFor(id){const s=String(id||'');if(/^301/.test(s))return '3학년 1반';if(/^302/.test(s))return '3학년 2반';if(/^303/.test(s))return '3학년 3반';return '모의반'}
-function timePenalty(a){
-  if(a.extra_penalty_exempt)return 0;
-  const m=Number(a.extra_granted_minutes||0);
-  if(m<=0)return 0;if(m<=5)return 2;if(m<=10)return 4;return 6;
-}
-function timeScore(a){const p=timePenalty(a);return p===0?6:p===2?4:p===4?2:0}
 function attemptView(a){return a?{...a,extra_penalty:timePenalty(a)}:null}
 function teacherOK(code){return String(code||'')===TEACHER_PIN}
-function scoreRubric(a){
-  const g=a.answers||{};
-  const textLen=(g.exportReason||'').length+(g.importReason||'').length+(g.policyEffect||'').length+(g.policyRisk||'').length+(g.report||'').length;
-  const economy=(g.won&&g.dollar&&g.cost&&g.exportReason&&g.importReason)?25:(g.won||g.dollar||g.cost?16:0);
-  const policy=(Array.isArray(g.policies)&&g.policies.length>=2&&g.policyEffect&&g.policyRisk)?25:(Array.isArray(g.policies)&&g.policies.length?16:0);
-  const organization=textLen>=140?20:textLen>=80?16:textLen?12:0;
-  const cooperation=(g.report||'').length>=120?20:(g.report||'').length>=60?16:(g.report||'').length?12:0;
-  const completion=(g.report||'').length>=120?4:(g.report||'').length>=60?3:(g.report||'').length?2:0;
-  const time=timeScore(a);
-  return {economy,policy,organization,cooperation,completion,time,total:economy+policy+organization+cooperation+completion+time};
-}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
 const CSS=`<style>
