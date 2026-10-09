@@ -1006,5 +1006,31 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 })();
 </script>
 
+
+<script id="moonpath-crossroads-bridge-v24">
+/* HOME visual assets are intentionally unchanged; approved PNGs live in crossroads.html. */
+(()=>{
+  let overlay=null;
+  function show(slot){
+    if(overlay)overlay.remove();
+    overlay=document.createElement('section');
+    overlay.id='moonpath-crossroads-overlay';
+    overlay.setAttribute('aria-label','미지의 길 갈림길');
+    Object.assign(overlay.style,{position:'fixed',inset:'0',zIndex:'99999',background:'#060b20'});
+    const frame=document.createElement('iframe');
+    frame.title='미지의 길 갈림길';
+    frame.src='./crossroads.html?slot='+encodeURIComponent(slot||1);
+    Object.assign(frame.style,{width:'100%',height:'100%',border:'0',display:'block'});
+    overlay.append(frame);
+    document.body.append(overlay);
+  }
+  document.addEventListener('game-start',e=>show(e.detail?.slot));
+  document.addEventListener('game-continue',e=>show(e.detail?.slot));
+  window.addEventListener('message',e=>{
+    if(e.origin!==location.origin)return;
+    if(e.data?.type==='moonpath-back-home'&&overlay){overlay.remove();overlay=null;}
+  });
+})();
+</script>
 </body>
 </html>
