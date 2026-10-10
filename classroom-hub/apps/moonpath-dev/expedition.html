@@ -498,6 +498,19 @@ button{cursor:pointer}
   #setup .setupPane .summaryBox{grid-template-columns:repeat(2,minmax(0,1fr))}
   #setup .setupPane .packBox{box-sizing:border-box;max-width:100%}
 }
+
+/* Keep right-side summary and action controls fully inside the frame height. */
+@media(min-width:951px){
+ #setup .setupPane:nth-child(2){padding-top:139px!important;padding-bottom:54px!important}
+ #setup .setupPane:nth-child(2) h2{margin-bottom:10px}
+ #setup .setupPane:nth-child(2) .packBox{padding:10px 14px}
+ #setup .setupPane:nth-child(2) .packBox p{margin:6px 0;line-height:1.4}
+ #setup .setupPane:nth-child(2) .summaryBox{margin:9px 0;gap:8px}
+ #setup .setupPane:nth-child(2) .metric{padding:8px 5px}
+ #setup .setupPane:nth-child(2) .metric b{font-size:20px}
+ #setup .setupPane:nth-child(2) .primary{margin-top:12px!important}
+ #setup .setupPane:nth-child(2) .secondary{margin-top:7px!important}
+}
 </style>
 </head>
 <body>
