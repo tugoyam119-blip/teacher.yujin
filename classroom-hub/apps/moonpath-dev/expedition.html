@@ -675,7 +675,21 @@ function startNewRun(){
   };
   state.nodes=generateMap(rand);
   logDirector(`새 탐험 시작 seed=${seedText}, mode=${mode}, director=${director}`);
-  saveRun();startTimer();showScreen("game");renderGame();showExpeditionBrief();
+  saveRun();
+  // Commit the HOME slot summary only when the expedition is actually started.
+  try{
+    const key="moonpath-home-v3";
+    const home=JSON.parse(localStorage.getItem(key)||"{}");
+    const slots=Array.isArray(home.slots)?home.slots:[null,null,null];
+    while(slots.length<3)slots.push(null);
+    const idx=MP_SLOT-1;
+    if(!slots[idx]){
+      slots[idx]={chapter:1,playTime:"00:00",updatedAt:new Date().toLocaleString("ko-KR"),journal:["달빛 마도 탐험을 시작했습니다."]};
+      home.slots=slots;
+      localStorage.setItem(key,JSON.stringify(home));
+    }
+  }catch(err){console.warn("HOME 슬롯 메타데이터 동기화 실패",err)}
+  startTimer();showScreen("game");renderGame();showExpeditionBrief();
 }
 function generateMap(rand){
   const nodes=[{id:"start",x:55,y:560,layer:0,region:1,status:"visited",type:"start",risk:"safe",links:["r1a","r1b"],scouted:[],trace:false,visited:true}];
