@@ -1006,5 +1006,18 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 })();
 </script>
 
+
+<script id="moonpath-expedition-navigation-v1">
+/* HOME appearance and existing logic intentionally unchanged. */
+(function(){
+  function enter(event,mode){
+    const slot=Number(event.detail&&event.detail.slot)||1;
+    if(slot<1||slot>3)return;
+    location.assign("expedition.html?mode="+encodeURIComponent(mode)+"&slot="+slot);
+  }
+  document.addEventListener("game-start",function(e){enter(e,"new")});
+  document.addEventListener("game-continue",function(e){enter(e,"continue")});
+})();
+</script>
 </body>
 </html>
