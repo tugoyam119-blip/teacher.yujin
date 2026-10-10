@@ -445,6 +445,72 @@ button{cursor:pointer}
 #setup .setupPane:before,#setup .setupPane h2:after{display:none!important}
 #setup .setupPane h2{margin:0 0 15px;font-size:clamp(27px,2.25vw,38px);line-height:1.2}
 @media(max-width:950px){#setup .setupGrid{width:min(740px,calc(100vw - 24px));grid-template-columns:1fr;gap:10px}#setup .setupPane{min-height:650px;padding:95px 12% 50px!important}#setup .setupPane:nth-child(2){padding:100px 12% 54px!important;min-height:620px}}
+
+/* MP_SETUP v3 — panel art and content have independent geometry.
+   Fix: apparent frame was too small because transparent PNG padding,
+   while the setup controls were drawn across the border. */
+@media(min-width:951px){
+  #setup{padding:20px 32px;overflow-x:hidden}
+  #setup .setupGrid{
+    width:min(1510px,calc(100vw - 100px));
+    max-width:none;
+    grid-template-columns:minmax(0,3fr) minmax(0,2fr);
+    column-gap:30px;
+    margin:auto;
+    align-items:stretch;
+  }
+  #setup .setupPane{
+    position:relative;isolation:isolate;overflow:visible;
+    min-height:704px;max-height:none;
+    background:none!important;
+    padding:151px 77px 65px!important;
+  }
+  #setup .setupPane:nth-child(2){padding:151px 75px 62px!important}
+  #setup .setupPane::before{
+    display:block!important;content:""!important;
+    position:absolute;z-index:-1;pointer-events:none;
+    inset:-8px -67px -10px -67px;
+    background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png");
+    background-repeat:no-repeat;background-size:100% 100%;background-position:center;
+    font-size:0;opacity:1;
+  }
+  #setup .setupPane:nth-child(2)::before{
+    background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png");
+    inset:-8px -75px -10px -75px;
+  }
+  #setup .setupPane > *{position:relative;z-index:1;min-width:0}
+  #setup .setupPane h2{margin:0 0 16px;font-size:clamp(29px,2.1vw,36px);line-height:1.23}
+  #setup .setupPane .packBox,#setup .setupPane .summaryBox,
+  #setup .setupPane .metric,#setup .setupPane button.primary,
+  #setup .setupPane button.secondary{box-sizing:border-box;max-width:100%;min-width:0}
+  #setup .setupPane .summaryBox{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  #setup .setupPane .packBox{background:rgba(255,247,227,.9);overflow-wrap:anywhere}
+  #setup .setupPane .small{font-size:clamp(13px,1vw,16px)}
+  #setup .setupPane .field label{font-size:clamp(15px,1.08vw,18px)}
+}
+@media(max-width:950px){
+  #setup .setupGrid{max-width:680px;width:calc(100% - 16px);grid-template-columns:1fr}
+  #setup .setupPane{position:relative;isolation:isolate;overflow:visible;background:none!important;padding:125px 13% 55px!important;min-height:620px}
+  #setup .setupPane:nth-child(2){padding:125px 13% 62px!important}
+  #setup .setupPane::before{content:""!important;display:block!important;position:absolute;z-index:-1;inset:0 -2%;background:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png") center/100% 100% no-repeat;font-size:0}
+  #setup .setupPane:nth-child(2)::before{background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png")}
+  #setup .setupPane>*{position:relative;z-index:1;min-width:0}
+  #setup .setupPane .summaryBox{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #setup .setupPane .packBox{box-sizing:border-box;max-width:100%}
+}
+
+/* Keep right-side summary and action controls fully inside the frame height. */
+@media(min-width:951px){
+ #setup .setupPane:nth-child(2){padding-top:139px!important;padding-bottom:54px!important}
+ #setup .setupPane:nth-child(2) h2{margin-bottom:10px}
+ #setup .setupPane:nth-child(2) .packBox{padding:10px 14px}
+ #setup .setupPane:nth-child(2) .packBox p{margin:6px 0;line-height:1.4}
+ #setup .setupPane:nth-child(2) .summaryBox{margin:9px 0;gap:8px}
+ #setup .setupPane:nth-child(2) .metric{padding:8px 5px}
+ #setup .setupPane:nth-child(2) .metric b{font-size:20px}
+ #setup .setupPane:nth-child(2) .primary{margin-top:12px!important}
+ #setup .setupPane:nth-child(2) .secondary{margin-top:7px!important}
+}
 </style>
 </head>
 <body>
