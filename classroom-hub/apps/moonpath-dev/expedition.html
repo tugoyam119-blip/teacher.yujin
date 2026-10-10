@@ -470,6 +470,34 @@ button{cursor:pointer}
   #setup .setupPane h2{font-size:clamp(28px,4vw,36px)}
 }
 
+
+/* MOONPATH VERIFIED FRAME 1900x1300 1400x1750 */
+@media(min-width:851px){
+  #setup{padding:8px 12px;overflow-x:hidden;}
+  #setup .setupGrid{
+    width:min(1600px,calc(100vw - 32px));
+    height:min(790px,calc(100vh - 24px));
+    min-height:690px;
+    grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);
+    gap:12px;
+  }
+  #setup .setupPane{padding:132px 8.4% 50px!important}
+  #setup .setupPane:nth-child(2){padding:132px 10.7% 49px!important}
+  #setup .setupPane h2{font-size:clamp(29px,2.1vw,37px);margin-bottom:12px}
+  #setup .setupPane:nth-child(2) .packBox{padding:9px 12px}
+  #setup .setupPane:nth-child(2) .packBox p{margin:5px 0}
+  #setup .setupPane:nth-child(2) .summaryBox{gap:7px;margin:10px 0}
+  #setup .setupPane:nth-child(2) .metric{padding:8px 3px}
+  #setup .setupPane:nth-child(2) .primary{margin-top:12px!important}
+}
+#setup .setupPane::before{
+  background-image:url("./assets/MP_SETUP_FRAME_LEFT_1900x1300_VERIFIED.png");
+  background-size:100% 100%;
+}
+#setup .setupPane:nth-child(2)::before{
+  background-image:url("./assets/MP_SETUP_FRAME_RIGHT_1400x1750_VERIFIED.png");
+}
+
 </style>
 </head>
 <body>
