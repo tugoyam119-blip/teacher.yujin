@@ -1006,5 +1006,51 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
 })();
 </script>
 
+
+<script id="moonpath-crossroads-integration">
+(function(){
+  'use strict';
+  let overlay=null;
+  let currentSlot=null;
+  function openCrossroads(event){
+    const slot=Number(event.detail&&event.detail.slot);
+    if(!Number.isInteger(slot)||slot<1||slot>3)return;
+    currentSlot=slot;
+    if(overlay)overlay.remove();
+    overlay=document.createElement('section');
+    overlay.id='moonpath-crossroads-overlay';
+    overlay.setAttribute('aria-label','미지의 길 갈림길');
+    Object.assign(overlay.style,{position:'fixed',inset:'0',zIndex:'99999',background:'#080d21',display:'flex',alignItems:'center',justifyContent:'center'});
+    const frame=document.createElement('iframe');
+    frame.title='어느 길로 갈까요?';
+    frame.src='./crossroads.html?slot='+encodeURIComponent(slot);
+    frame.setAttribute('allowfullscreen','');
+    Object.assign(frame.style,{width:'100%',height:'100%',border:'0',display:'block'});
+    const back=document.createElement('button');
+    back.type='button';
+    back.textContent='HOME 돌아가기';
+    back.setAttribute('aria-label','HOME 돌아가기');
+    Object.assign(back.style,{position:'absolute',left:'12px',top:'12px',zIndex:'10',background:'#20143e',border:'1px solid #c59e6b',color:'#ffefce',borderRadius:'8px',padding:'9px 13px',cursor:'pointer',fontWeight:'bold'});
+    back.addEventListener('click',closeCrossroads);
+    overlay.append(frame,back);
+    document.body.append(overlay);
+    back.focus({preventScroll:true});
+  }
+  function closeCrossroads(){if(overlay){overlay.remove();overlay=null;}currentSlot=null;}
+  document.addEventListener('game-start',openCrossroads);
+  document.addEventListener('game-continue',openCrossroads);
+  window.addEventListener('message',function(event){
+    if(event.origin!==location.origin||!overlay)return;
+    if(event.data&&event.data.type==='moonpath-back-home'){closeCrossroads();return;}
+    if(event.data&&event.data.type==='moonpath-route-selected'){
+      const detail={slot:currentSlot,side:event.data.side,region:event.data.region};
+      if(detail.side!=='left'&&detail.side!=='right')return;
+      document.dispatchEvent(new CustomEvent('moonpath-route-selected',{detail,bubbles:true}));
+    }
+  });
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&overlay){event.preventDefault();closeCrossroads();}});
+  window.MoonpathCrossroads={open:function(slot){openCrossroads({detail:{slot:slot}})},close:closeCrossroads};
+})();
+</script>
 </body>
 </html>
