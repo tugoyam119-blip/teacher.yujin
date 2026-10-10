@@ -498,6 +498,22 @@ button{cursor:pointer}
   background-image:url("./assets/MP_SETUP_FRAME_RIGHT_1400x1750_VERIFIED.png");
 }
 
+
+/* MOONPATH TITLE SAFE AREA PATCH */
+/* Lift only the left decorative artwork so its crescent and inner gold top edge
+   sit above the real HTML title; preserve all interactive element coordinates. */
+@media(min-width:851px){
+ #setup .setupPane:first-child::before{
+   top:-52px;
+   bottom:-32px;
+ }
+ #setup .setupPane:first-child h2{
+   position:relative;
+   z-index:2;
+   text-shadow:0 1px 0 rgba(255,250,239,.85);
+ }
+}
+
 </style>
 </head>
 <body>
