@@ -339,178 +339,137 @@ button{cursor:pointer}
  .resultBody{grid-template-columns:1fr}
 }
 
-/* === Moonpath SETUP theme v1: presentation only. Existing game controls unchanged. === */
+/* MOONPATH SETUP V4 — one authoritative frame/content layout.
+   1672×941 reference; proportions are responsive, screen may scroll when short.
+   Decoration art uses ::before. All text, inputs and actions remain real HTML. */
 #setup{
-  position:relative;isolation:isolate;overflow:auto;
-  background:radial-gradient(ellipse at 50% 4%,rgba(165,133,241,.34),transparent 38%),
-    radial-gradient(ellipse at 15% 80%,rgba(54,66,152,.38),transparent 45%),
-    linear-gradient(155deg,#0d102c 5%,#1b1740 53%,#090c27 100%);
-  align-items:center;justify-content:center;padding:26px 38px;
-  color:#f8ecd1;
+  position:relative;isolation:isolate;display:none;overflow-x:hidden;overflow-y:auto;
+  background-image:linear-gradient(rgba(8,8,27,.13),rgba(8,8,27,.22)),
+    url("./assets/MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png");
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  padding:12px 32px;align-items:center;justify-content:center;
+  color:#2e2950;
 }
-#setup:before{
-  content:"";position:fixed;inset:0;pointer-events:none;opacity:.65;z-index:-1;
-  background-image:radial-gradient(circle,#fff 1px,transparent 1.5px),radial-gradient(circle,#efd69f 1px,transparent 1.5px);
-  background-size:83px 91px,127px 143px;background-position:5px 12px,43px 53px;
-}
+#setup.active{display:flex}
 #setup .setupGrid{
-  width:min(1210px,100%);margin:auto;gap:22px;
-  grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);
+  display:grid;width:min(1480px,calc(100vw - 100px));
+  height:min(760px,calc(100vh - 32px));min-height:720px;max-width:none;
+  margin:auto;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);
+  gap:20px;align-items:stretch;
 }
 #setup .setupPane{
-  position:relative;overflow:hidden;padding:25px 30px 24px;
-  background:linear-gradient(145deg,#fff4d9 0%,#f0dcbc 56%,#ecce9c 100%);
-  border:3px solid #c79848;border-radius:17px;
-  box-shadow:0 0 0 3px #241b43,0 0 0 5px #7555a8,inset 0 0 0 2px #ffe8ac,0 20px 55px rgba(0,0,0,.5);
-  color:#322a40;
+  position:relative;isolation:isolate;box-sizing:border-box;
+  min-width:0;height:100%;min-height:0;overflow:visible;
+  padding:140px 72px 46px!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+  background:transparent!important;color:#302846;
 }
-#setup .setupPane:before{
-  content:"✦";position:absolute;right:18px;top:12px;color:#b7873e;font-size:28px;opacity:.65;
+#setup .setupPane:nth-child(2){padding:140px 60px 43px!important}
+#setup .setupPane::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png");
+  background-repeat:no-repeat;background-size:100% 100%;background-position:center;
+  opacity:1;display:block;
 }
+#setup .setupPane:nth-child(2)::before{
+  background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png");
+}
+#setup .setupPane>*{position:relative;z-index:1;box-sizing:border-box;min-width:0;max-width:100%}
 #setup .setupPane h2{
-  margin:0 0 19px;text-align:center;font-size:clamp(24px,2.6vw,31px);
-  color:#30234d;text-shadow:0 1px #fff7e9;letter-spacing:.025em;
+  color:#282054;text-shadow:none;letter-spacing:0;
+  font-size:clamp(27px,2.1vw,36px);font-weight:900;line-height:1.15;
+  text-align:center;margin:0 0 12px;
 }
-#setup .setupPane h2:after{
-  content:"✦ ───────── ✦ ───────── ✦";display:block;max-width:100%;
-  font-size:12px;letter-spacing:2px;color:#ad7838;margin-top:8px;
+#setup .setupPane h2::after{display:none}
+#setup .setupPane .packBox{
+  width:100%;max-width:100%;overflow-wrap:anywhere;
+  padding:11px 15px;border:1px solid #d0b78d;border-radius:9px;
+  background:rgba(255,250,239,.88);color:#302846;
 }
-#setup .packBox{
-  padding:14px 16px;background:rgba(255,247,224,.65);
-  border:1px solid #c9ad7a;border-radius:9px;color:#342b3e;
+#setup .setupPane .packBox b{color:#292354}
+#setup .setupPane .small{font-size:clamp(13px,.93vw,16px);color:#554d60;line-height:1.43}
+#setup .setupPane .field{margin:10px 0}
+#setup .setupPane .field label{
+  color:#292354;font-size:clamp(16px,1.1vw,19px);
+  font-weight:800;margin:0 0 5px;line-height:1.22;
 }
-#setup .packBox b{color:#44305f}
-#setup .field{margin:14px 0}
-#setup .field label{color:#3b2d53;margin-bottom:7px}
-#setup .segment{gap:8px}
-#setup .segment button{
-  border:1px solid #b99a68;border-radius:8px;
-  background:linear-gradient(#fdf1d5,#e9d3b0);color:#49385d;
-  font-size:14px;font-weight:800;min-height:39px;padding:9px 12px;
+#setup .setupPane .segment{display:flex;gap:8px;flex-wrap:nowrap;min-width:0}
+#setup .setupPane .segment button{
+  flex:1 1 0;min-width:0;max-width:100%;
+  padding:9px 7px;min-height:42px;
+  font-size:clamp(13px,1.03vw,18px);font-weight:800;
+  line-height:1.18;white-space:normal;
+  background:#fffaf1;color:#302854;
+  border:1px solid #c9b69b;border-radius:8px;
 }
-#setup .segment button.sel{
-  background:linear-gradient(135deg,#36306c,#20245a);color:#fff1c9;
-  border-color:#b88e52;box-shadow:inset 0 0 0 1px #6a62aa,0 2px 10px #291f4633;
+#setup .setupPane .segment button.sel{
+  background:linear-gradient(145deg,#29377c,#172260);color:#fff1d0;
+  border:2px solid #d3ad65;box-shadow:inset 0 0 0 1px #7263a8;
 }
-#setup .segment button:focus-visible,#setup button:focus-visible,#setup input:focus-visible{outline:3px solid #7d57d1;outline-offset:2px}
-#setup .metric{
-  background:linear-gradient(145deg,#efe0bd,#e3c694);
-  border:1px solid #c5a36e;border-radius:10px;
-  padding:12px 7px;color:#3c2d51;
+#setup .setupPane .teamRow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:8px 0}
+#setup .setupPane .teamRow label{margin:0!important;white-space:nowrap}
+#setup .setupPane .teamRow input{
+  width:66px;max-width:66px;min-width:0;min-height:39px;padding:6px;
+  background:#fffaf3;border:1px solid #bfa987;border-radius:7px;
+  font-size:18px;color:#25224a;
 }
-#setup .metric b{color:#231d50;font-size:22px}
-#setup .summaryBox{gap:9px;margin:15px 0}
-#setup .teamRow{flex-wrap:wrap}
-#setup .teamRow input,#setup #seedInput{
-  border:1px solid #b79b70;border-radius:7px;background:#fff8eb;color:#302a3d;
-  padding:8px 10px;min-height:38px;
+#setup #seedInput{
+  box-sizing:border-box;width:min(100%,360px)!important;max-width:100%;
+  padding:9px!important;min-height:40px;font-size:17px;
+  border:1px solid #bfa987;border-radius:7px;background:#fffaf3;color:#25224a;
 }
-#setup .primary{
-  color:#ffecaf;border:2px solid #e9c578;border-radius:9px;
-  background:linear-gradient(115deg,#302a7a,#19265f 55%,#352265);
-  box-shadow:inset 0 0 0 1px #8172b4,0 5px 13px #2a1d4a44;
+#setup .setupPane:nth-child(2) .packBox{padding:11px 14px}
+#setup .setupPane:nth-child(2) .packBox p{margin:7px 0;line-height:1.45}
+#setup .setupPane .summaryBox{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;margin:12px 0;
 }
-#setup .secondary{
-  color:#372956;border:1px solid #aa8755;border-radius:9px;
-  background:linear-gradient(#f8eac9,#ddc192);
+#setup .setupPane .metric{
+  box-sizing:border-box;min-width:0;max-width:100%;
+  padding:10px 5px;border:1px solid #d2b896;border-radius:9px;
+  background:rgba(255,246,228,.91);color:#292354;
+  font-size:clamp(14px,.96vw,17px);text-align:center;
 }
-#setup .small{opacity:.83;color:#51475a;line-height:1.5}
-@media(max-width:950px){
-  #setup{align-items:flex-start;padding:18px}
-  #setup .setupGrid{grid-template-columns:1fr;max-width:660px}
-  #setup .setupPane{padding:18px 20px}
+#setup .setupPane .metric b{
+  display:block;margin-top:3px;font-size:clamp(19px,1.45vw,27px);
+  line-height:1.14;color:#252051;overflow-wrap:anywhere;
 }
-@media(max-height:790px) and (min-width:951px){
-  #setup{align-items:flex-start;padding-top:14px;padding-bottom:14px}
-  #setup .setupPane{padding-top:16px;padding-bottom:15px}
-  #setup .field{margin:9px 0}
-  #setup .setupPane h2{margin-bottom:11px}
+#setup .setupPane .primary,
+#setup .setupPane .secondary{
+  box-sizing:border-box;max-width:100%;min-width:0;
+  font-weight:900;border-radius:8px;white-space:normal;
 }
-
-
-/* Approved BG01 moonlit terrace: needs matching binary asset before merge. */
-#setup{
- background-image: linear-gradient(rgba(8,8,27,.18),rgba(8,8,27,.28)),url("./assets/MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png");
- background-size:cover;
- background-position:center center;
- background-repeat:no-repeat;
+#setup .setupPane .primary{
+  min-height:53px;margin-top:13px!important;padding:10px 12px;
+  background:linear-gradient(135deg,#29377c,#1c1d5d);color:#fff4d1;
+  border:2px solid #ddb96b;box-shadow:inset 0 0 0 1px #756bae;
 }
-#setup:before{display:none}
-
-/* MP_SETUP FLOWER panel assets: left/right transparent PNGs required before merge */
-#setup .setupGrid{width:min(1568px,calc(100vw - 48px));grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:20px;align-items:stretch}
-#setup .setupPane{box-sizing:border-box;min-width:0;min-height:696px;background-color:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;background-repeat:no-repeat!important;background-position:center!important;background-size:100% 100%!important;padding:103px 58px 55px!important}
-#setup .setupPane:nth-child(1){background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png")!important}
-#setup .setupPane:nth-child(2){background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png")!important;padding:103px 43px 55px!important}
-#setup .setupPane:before,#setup .setupPane h2:after{display:none!important}
-#setup .setupPane h2{margin:0 0 15px;font-size:clamp(27px,2.25vw,38px);line-height:1.2}
-@media(max-width:950px){#setup .setupGrid{width:min(740px,calc(100vw - 24px));grid-template-columns:1fr;gap:10px}#setup .setupPane{min-height:650px;padding:95px 12% 50px!important}#setup .setupPane:nth-child(2){padding:100px 12% 54px!important;min-height:620px}}
-
-/* MP_SETUP v3 — panel art and content have independent geometry.
-   Fix: apparent frame was too small because transparent PNG padding,
-   while the setup controls were drawn across the border. */
-@media(min-width:951px){
-  #setup{padding:20px 32px;overflow-x:hidden}
-  #setup .setupGrid{
-    width:min(1510px,calc(100vw - 100px));
-    max-width:none;
-    grid-template-columns:minmax(0,3fr) minmax(0,2fr);
-    column-gap:30px;
-    margin:auto;
-    align-items:stretch;
-  }
-  #setup .setupPane{
-    position:relative;isolation:isolate;overflow:visible;
-    min-height:704px;max-height:none;
-    background:none!important;
-    padding:151px 77px 65px!important;
-  }
-  #setup .setupPane:nth-child(2){padding:151px 75px 62px!important}
-  #setup .setupPane::before{
-    display:block!important;content:""!important;
-    position:absolute;z-index:-1;pointer-events:none;
-    inset:-8px -67px -10px -67px;
-    background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png");
-    background-repeat:no-repeat;background-size:100% 100%;background-position:center;
-    font-size:0;opacity:1;
-  }
-  #setup .setupPane:nth-child(2)::before{
-    background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png");
-    inset:-8px -75px -10px -75px;
-  }
-  #setup .setupPane > *{position:relative;z-index:1;min-width:0}
-  #setup .setupPane h2{margin:0 0 16px;font-size:clamp(29px,2.1vw,36px);line-height:1.23}
-  #setup .setupPane .packBox,#setup .setupPane .summaryBox,
-  #setup .setupPane .metric,#setup .setupPane button.primary,
-  #setup .setupPane button.secondary{box-sizing:border-box;max-width:100%;min-width:0}
-  #setup .setupPane .summaryBox{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  #setup .setupPane .packBox{background:rgba(255,247,227,.9);overflow-wrap:anywhere}
-  #setup .setupPane .small{font-size:clamp(13px,1vw,16px)}
-  #setup .setupPane .field label{font-size:clamp(15px,1.08vw,18px)}
+#setup .setupPane .secondary{
+  min-height:40px;margin-top:8px!important;padding:8px 12px;
+  background:linear-gradient(#fff9ec,#eadbc0);color:#2a2752;
+  border:1px solid #bfa582;
 }
-@media(max-width:950px){
-  #setup .setupGrid{max-width:680px;width:calc(100% - 16px);grid-template-columns:1fr}
-  #setup .setupPane{position:relative;isolation:isolate;overflow:visible;background:none!important;padding:125px 13% 55px!important;min-height:620px}
-  #setup .setupPane:nth-child(2){padding:125px 13% 62px!important}
-  #setup .setupPane::before{content:""!important;display:block!important;position:absolute;z-index:-1;inset:0 -2%;background:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png") center/100% 100% no-repeat;font-size:0}
-  #setup .setupPane:nth-child(2)::before{background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png")}
-  #setup .setupPane>*{position:relative;z-index:1;min-width:0}
-  #setup .setupPane .summaryBox{grid-template-columns:repeat(2,minmax(0,1fr))}
-  #setup .setupPane .packBox{box-sizing:border-box;max-width:100%}
+#setup .setupPane .packBox .secondary{margin-top:0!important}
+#setup .setupPane button:focus-visible,#setup .setupPane input:focus-visible{
+ outline:3px solid #8562d0;outline-offset:2px;
+}
+@media(max-width:1170px){
+  #setup{padding:12px 15px}
+  #setup .setupGrid{width:calc(100vw - 42px);gap:8px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+  #setup .setupPane{padding-left:10%!important;padding-right:10%!important}
+  #setup .setupPane:nth-child(2){padding-left:11%!important;padding-right:11%!important}
+  #setup .setupPane .segment{gap:5px}
+  #setup .setupPane .segment button{font-size:13px;padding:8px 4px}
+}
+@media(max-width:850px){
+  #setup{align-items:flex-start;padding:14px 10px}
+  #setup .setupGrid{display:grid;width:min(690px,100%);height:auto;min-height:0;grid-template-columns:1fr;gap:16px}
+  #setup .setupPane{height:auto;min-height:640px;padding:123px 12% 55px!important}
+  #setup .setupPane:nth-child(2){min-height:660px;padding:123px 13% 65px!important}
+  #setup .setupPane .segment button{font-size:clamp(13px,2.5vw,18px)}
+  #setup .setupPane h2{font-size:clamp(28px,4vw,36px)}
 }
 
-/* Keep right-side summary and action controls fully inside the frame height. */
-@media(min-width:951px){
- #setup .setupPane:nth-child(2){padding-top:139px!important;padding-bottom:54px!important}
- #setup .setupPane:nth-child(2) h2{margin-bottom:10px}
- #setup .setupPane:nth-child(2) .packBox{padding:10px 14px}
- #setup .setupPane:nth-child(2) .packBox p{margin:6px 0;line-height:1.4}
- #setup .setupPane:nth-child(2) .summaryBox{margin:9px 0;gap:8px}
- #setup .setupPane:nth-child(2) .metric{padding:8px 5px}
- #setup .setupPane:nth-child(2) .metric b{font-size:20px}
- #setup .setupPane:nth-child(2) .primary{margin-top:12px!important}
- #setup .setupPane:nth-child(2) .secondary{margin-top:7px!important}
-}
 </style>
 </head>
 <body>
