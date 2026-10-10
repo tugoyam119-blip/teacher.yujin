@@ -74,18 +74,19 @@ async function poll(){try{const r=await fetch('/api/exam?studentId='+encodeURICo
 </script></main></body></html>`}
 
 function teacherHtml(){
-return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>환율 비상! 교사 관리실</title>${CSS}</head><body><main>
+return String.raw`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>환율 비상! 교사 관리실</title>${CSS}</head><body><main>
 <section id="tlogin" class="card"><div class="muted">교사용 관리 · v3.0 복원본</div><h1>교사 관리실</h1><form id="tform"><label>인증번호<input type="password" id="code"></label><button>관리 화면 입장</button></form><p id="tmsg"></p></section>
 <section id="dash" class="hidden">
 <div class="card top"><div><h1>환율 비상! 국제경제 대응팀</h1><div class="muted">서버·학생 기록·채점 관리</div></div><button id="refresh" class="secondary">새로고침</button></div>
 <div class="card"><h2>반별 운영</h2><div class="row"><select id="classSel"><option>3학년 1반</option><option>3학년 2반</option><option>3학년 3반</option><option>모의반</option></select><button data-act="open_class">입장 열기</button><button data-act="start_class">수행 시작</button><button data-act="pause_class" class="secondary">일시정지</button><button data-act="resume_class" class="secondary">재개</button><button data-act="close_class" class="danger">종료</button></div><p id="classState" class="muted"></p></div>
 <div class="card"><h2>학생명단</h2><input type="file" id="rosterFile" accept=".csv"><button id="rosterBtn" class="secondary">CSV 업로드</button></div>
-<div class="card"><div class="top"><h2>학생별 진행·채점 현황</h2><button id="gradeAll" class="secondary">미가채점 일괄 가채점</button></div><div style="overflow:auto"><table><thead><tr><th>반</th><th>학번</th><th>이름</th><th>상태</th><th>AI/자동</th><th>교사점수</th><th>추가시간</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></div>
+<div class="card"><div class="top"><h2>학생별 진행·채점 현황</h2><button id="gradeAll" class="secondary">미가채점 일괄 가채점</button></div><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="reviewOnly" style="width:auto">확인 권장 학생만 보기</label><p id="reviewSummary" class="muted" aria-live="polite"></p><div style="overflow:auto"><table><thead><tr><th>반</th><th>학번</th><th>이름</th><th>상태</th><th>AI/자동</th><th>교사점수</th><th>추가시간</th><th>가채점 확인</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></div>
 <div class="card"><h2>도움 요청</h2><div id="helps"></div></div>
 </section>
 <dialog id="detail" style="width:min(760px,95vw);border:0;border-radius:18px;padding:0"><div class="card" style="margin:0"><button id="closeDetail" class="secondary">닫기</button><div id="detailBody"></div></div></dialog>
 <script>
 let code='',data=null;const $=id=>document.getElementById(id);
+const escapeHtml=${escapeHtml.toString()};
 async function get(u){const r=await fetch(u,{cache:'no-store'}),j=await r.json();if(!r.ok)throw Error(j.error||'조회 실패');return j}
 async function post(u,b){const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)}),j=await r.json();if(!r.ok)throw Error(j.error||'요청 실패');return j}
 $('tform').onsubmit=async e=>{e.preventDefault();code=$('code').value.trim();try{await load();$('tlogin').classList.add('hidden');$('dash').classList.remove('hidden')}catch(err){$('tmsg').textContent=err.message}};
@@ -94,11 +95,35 @@ document.querySelectorAll('[data-act]').forEach(b=>b.onclick=async()=>{try{alert
 $('rosterBtn').onclick=async()=>{const f=$('rosterFile').files[0];if(!f)return;try{alert((await post('/api/admin',{code,action:'import_roster',csvText:await f.text()})).message);await load()}catch(e){alert(e.message)}};
 $('gradeAll').onclick=async()=>{for(const a of (data.attempts||[]).filter(x=>x.status==='submitted'&&!x.ai_score)){try{await post('/api/admin',{code,action:'ai_grade',studentId:a.student_id})}catch{}}await load()};
 async function load(){data=await get('/api/admin?code='+encodeURIComponent(code));render()}
-function render(){const cls=$('classSel').value,s=(data.sessions||[]).find(x=>x.class_name===cls);$('classState').textContent=cls+' · '+(s?.status||'closed');$('rows').innerHTML=(data.attempts||[]).map(a=>'<tr><td>'+a.class_name+'</td><td>'+a.student_id+'</td><td>'+a.name+'</td><td>'+a.status+'</td><td>'+(a.ai_score??'')+'</td><td>'+(a.teacher_score??'')+'</td><td>'+(a.extra_status||'none')+'</td><td><button onclick="openDetail(\''+a.student_id+'\')">보기</button></td></tr>').join('');$('helps').innerHTML=(data.helps||[]).filter(x=>x.status==='open').map(h=>'<div class="warn"><b>'+h.class_name+' · '+h.student_id+' '+h.name+'</b><p>'+h.message+'</p><button onclick="resolveHelp(\''+h.student_id+'\')">처리 완료</button></div>').join('')||'<p class="muted">대기 중인 요청 없음</p>'}
+// Read saved AI review metadata without changing scores or older attempt records.
+function reviewInfo(a){
+  let breakdown=a?.ai_breakdown;
+  if(typeof breakdown==='string'){try{breakdown=JSON.parse(breakdown)}catch{return {required:false,flags:[]}}}
+  if(!breakdown||typeof breakdown!=='object'||Array.isArray(breakdown))return {required:false,flags:[]};
+  const flags=Array.isArray(breakdown.reviewFlags)?[...new Set(breakdown.reviewFlags.filter(x=>typeof x==='string').map(x=>x.trim()).filter(Boolean))]:[];
+  return {required:breakdown.reviewRequired===true||flags.length>0,flags};
+}
+function reviewNotice(a){
+  const review=reviewInfo(a);
+  if(!review.required)return '';
+  const flags=review.flags.length?review.flags:['가채점에서 교사 확인을 권장했으나 구체적인 사유가 기록되지 않았습니다.'];
+  return '<section class="warn" aria-label="가채점 확인 권장"><h3>가채점 확인 권장</h3><ul>'+flags.map(flag=>'<li>'+escapeHtml(flag)+'</li>').join('')+'</ul><p>답안을 확인할 때 참고하는 안내이며, 이 표시로 추가 감점되지는 않습니다.</p></section>';
+}
+function render(){
+  const cls=$('classSel').value,s=(data.sessions||[]).find(x=>x.class_name===cls);
+  $('classState').textContent=cls+' · '+(s?.status||'closed');
+  const attempts=data.attempts||[],reviewCount=attempts.filter(a=>reviewInfo(a).required).length;
+  const visible=$('reviewOnly').checked?attempts.filter(a=>reviewInfo(a).required):attempts;
+  $('reviewSummary').textContent='확인 권장 '+reviewCount+'명 · 표시 '+visible.length+'명 / 전체 '+attempts.length+'명';
+  $('rows').innerHTML=visible.map(a=>'<tr><td>'+escapeHtml(a.class_name)+'</td><td>'+escapeHtml(a.student_id)+'</td><td>'+escapeHtml(a.name)+'</td><td>'+escapeHtml(a.status)+'</td><td>'+escapeHtml(a.ai_score??'')+'</td><td>'+escapeHtml(a.teacher_score??'')+'</td><td>'+escapeHtml(a.extra_status||'none')+'</td><td>'+(reviewInfo(a).required?'<span class="pill warn">확인 권장</span>':'—')+'</td><td><button data-detail-id="'+escapeHtml(a.student_id)+'">보기</button></td></tr>').join('')||'<tr><td colspan="9" class="muted">'+($('reviewOnly').checked?'확인 권장 학생이 없습니다.':'학생 기록이 없습니다.')+'</td></tr>';
+  $('helps').innerHTML=(data.helps||[]).filter(x=>x.status==='open').map(h=>'<div class="warn"><b>'+h.class_name+' · '+h.student_id+' '+h.name+'</b><p>'+h.message+'</p><button onclick="resolveHelp(\''+h.student_id+'\')">처리 완료</button></div>').join('')||'<p class="muted">대기 중인 요청 없음</p>';
+}
+$('reviewOnly').onchange=render;
+$('rows').onclick=e=>{const button=e.target.closest('button[data-detail-id]');if(button)openDetail(button.dataset.detailId)};
 window.resolveHelp=async id=>{await post('/api/help',{code,action:'resolve',studentId:id});await load()};
-window.openDetail=async id=>{const j=await get('/api/admin?code='+encodeURIComponent(code)+'&studentId='+encodeURIComponent(id)),a=j.attempt,g=a.answers||{},r=a.teacher_breakdown||a.ai_breakdown||{economy:25,policy:25,organization:20,cooperation:20,completion:4,time:6};$('detailBody').innerHTML='<h2>'+a.student_id+' '+a.name+'</h2><p><b>최종 보고서</b><br>'+String(g.report||'').replaceAll('<','&lt;')+'</p><div class="grid">'+[['economy',25,'경제 이해'],['policy',25,'정책 판단'],['organization',20,'국제기구'],['cooperation',20,'국제협력'],['completion',4,'완성도'],['time',6,'시간']].map(x=>'<label>'+x[2]+' /'+x[1]+'<input type="number" id="g_'+x[0]+'" value="'+(r[x[0]]??0)+'" '+(x[0]==='time'?'disabled':'')+'></label>').join('')+'</div><label>피드백<textarea id="feedback">'+(a.feedback||'')+'</textarea></label><div class="row"><button onclick="aiGrade(\''+a.student_id+'\')">가채점</button><button onclick="saveGrade(\''+a.student_id+'\')">점수·이력 저장</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',5,false)">5분 승인 · -2</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',10,false)">10분 승인 · -4</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',5,true)">기술문제 5분</button></div>';$('detail').showModal()};
+window.openDetail=async id=>{const j=await get('/api/admin?code='+encodeURIComponent(code)+'&studentId='+encodeURIComponent(id)),a=j.attempt,g=a.answers||{},r=a.teacher_breakdown||a.ai_breakdown||{economy:25,policy:25,organization:20,cooperation:20,completion:4,time:6};$('detailBody').innerHTML='<h2>'+a.student_id+' '+a.name+'</h2>'+reviewNotice(a)+'<p><b>최종 보고서</b><br>'+String(g.report||'').replaceAll('<','&lt;')+'</p><div class="grid">'+[['economy',25,'경제 이해'],['policy',25,'정책 판단'],['organization',20,'국제기구'],['cooperation',20,'국제협력'],['completion',4,'완성도'],['time',6,'시간']].map(x=>'<label>'+x[2]+' /'+x[1]+'<input type="number" id="g_'+x[0]+'" value="'+(r[x[0]]??0)+'" '+(x[0]==='time'?'disabled':'')+'></label>').join('')+'</div><label>피드백<textarea id="feedback">'+(a.feedback||'')+'</textarea></label><div class="row"><button onclick="aiGrade(\''+a.student_id+'\')">가채점</button><button onclick="saveGrade(\''+a.student_id+'\')">점수·이력 저장</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',5,false)">5분 승인 · -2</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',10,false)">10분 승인 · -4</button><button class="secondary" onclick="extraApprove(\''+a.student_id+'\',5,true)">기술문제 5분</button></div>';$('detail').showModal()};
 $('closeDetail').onclick=()=>$('detail').close();
-window.aiGrade=async id=>{await post('/api/admin',{code,action:'ai_grade',studentId:id});$('detail').close();await load();openDetail(id)};
+window.aiGrade=async id=>{await post('/api/admin',{code,action:'ai_grade',studentId:id});$('detail').close();await load();await openDetail(id)};
 window.saveGrade=async id=>{let rubric={};for(const k of ['economy','policy','organization','cooperation','completion','time'])rubric[k]=Number($('g_'+k).value||0);await post('/api/admin',{code,action:'grade',studentId:id,rubric,feedback:$('feedback').value});$('detail').close();await load()};
 window.extraApprove=async(id,min,exempt)=>{await post('/api/extra',{code,studentId:id,action:'approve',minutes:min,exempt});$('detail').close();await load()};
 setInterval(()=>{if(code)load().catch(()=>{})},10000);
