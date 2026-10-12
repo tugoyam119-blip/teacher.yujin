@@ -713,6 +713,54 @@ button{cursor:pointer}
 @media (max-width:1079px) {
   #setup .setupPane::before{background-size:contain!important;background-position:top center!important}
 }
+
+/* V8 — enlarge usable paper content while keeping the approved frame PNGs and aspect ratios.
+   At wide viewports scale the entire paired stage, not individual images.
+   Intermediate viewports stack large undistorted panels. */
+@media (min-width:1500px) {
+ #setup{padding:8px 12px!important}
+ #setup .setupGrid{
+   width:min(1632px,calc(100vw - 24px),calc((100vh - 22px)*2.04))!important;
+   grid-template-columns:minmax(0,23fr) minmax(0,14fr)!important;
+   gap:clamp(8px,.7vw,14px)!important;
+ }
+ #setup .setupPane--left{padding-left:6.7%!important;padding-right:6.7%!important;padding-top:clamp(140px,9.2vw,168px)!important;padding-bottom:42px!important}
+ #setup .setupPane--right{padding-left:8.4%!important;padding-right:8.4%!important;padding-top:clamp(108px,7.5vw,133px)!important;padding-bottom:39px!important}
+ #setup .setupPane--left .mp-pack-card{height:83px!important;gap:12px!important;padding:7px 12px!important}
+ #setup .setupPane--left .mp-choice-row{margin-top:7px!important}
+ #setup .setupPane--left .mp-choice-row .segment button{min-height:44px!important}
+ #setup .setupPane--left .mp-segment-time button{min-height:47px!important}
+ #setup .setupPane--left .mp-team-settings{gap:20px!important;margin:10px 0 7px!important}
+ #setup .setupPane--right .mp-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #setup .setupPane--right .mp-repeat-info{min-height:93px!important}
+ #setup .setupPane--right .mp-instructions{min-height:87px!important}
+ #setup .setupPane--right .metric>b{font-size:clamp(19px,1.35vw,25px)!important}
+ #setup .setupPane--right .mp-metric-heading{font-size:clamp(12px,.85vw,15px)!important}
+ #setup .setupPane--right .mp-panel-title{font-size:clamp(27px,1.85vw,33px)!important}
+ #setup .setupPane--left .mp-panel-title{font-size:clamp(27px,1.85vw,33px)!important}
+ #setup #sumQuestions{font-size:clamp(18px,1.2vw,22px)!important}
+}
+@media (min-width:1080px) and (max-width:1499px) {
+ #setup .setupGrid{width:min(1010px,calc(100vw - 32px))!important}
+ #setup .setupPane--left{width:100%!important;padding-left:7%!important;padding-right:7%!important}
+ #setup .setupPane--right{width:min(620px,100%)!important;padding-left:9%!important;padding-right:9%!important}
+ #setup .setupPane--left .mp-pack-card{height:85px!important}
+ #setup .setupPane--right .mp-metric-heading{font-size:14px!important}
+ #setup #sumQuestions{font-size:clamp(19px,1.6vw,23px)!important}
+}
+@media (max-width:1079px) {
+ /* keep original frame proportions on tablets/phones; allow content outside image bounds
+    to scroll if it cannot fit, rather than deforming approved pixels */
+ #setup .setupPane::before{background-size:100% auto!important;background-position:center top!important}
+ #setup .setupPane--left{padding-left:9%!important;padding-right:9%!important}
+ #setup .setupPane--right{padding-left:11%!important;padding-right:11%!important}
+}
+@media (max-width:560px){
+ #setup .setupPane--left{padding-left:8%!important;padding-right:8%!important}
+ #setup .setupPane--right{padding-left:9%!important;padding-right:9%!important}
+ #setup .setupPane--right .metric>b{font-size:clamp(17px,4vw,21px)!important}
+ #setup #sumQuestions{font-size:clamp(16px,3.7vw,20px)!important}
+}
 </style>
 </head>
 <body>
