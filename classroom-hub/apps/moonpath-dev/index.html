@@ -1015,19 +1015,13 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
     if(slot<1||slot>3)return;
     location.assign("expedition.html?mode="+encodeURIComponent(mode)+"&slot="+slot);
   }
-  // New exploration bypasses the slot-selection popup. Never overwrite a saved slot.
+  // Always allow the approved slot popup to open, even when all slots contain saves.
+  // The existing popup requires explicit confirmation before overwriting a filled slot.
   if(window.HomeButtonSystem&&window.HomeButtonSystem.setActionHandler){
     window.HomeButtonSystem.setActionHandler("new",function(){
-      const snapshot=window.GameHomeV41&&window.GameHomeV41.getData&&window.GameHomeV41.getData();
-      const slots=snapshot&&Array.isArray(snapshot.slots)?snapshot.slots:[null,null,null];
-      const slot=[0,1,2].find(function(i){
-        return !slots[i]&&!localStorage.getItem("moonpath.expedition.slot"+(i+1)+".run.v12");
-      });
-      if(slot===undefined){
-        alert("저장 슬롯 I·II·III가 모두 사용 중입니다. 기존 기록은 덮어쓰지 않습니다. 저장 슬롯 관리는 이어하기 화면에서 확인해 주세요.");
-        return;
+      if(window.GameHomeV41&&typeof window.GameHomeV41.open==="function"){
+        window.GameHomeV41.open("new");
       }
-      location.assign("expedition.html?mode=new&slot="+(slot+1));
     });
   }
   document.addEventListener("game-start",function(e){enter(e,"new")});
