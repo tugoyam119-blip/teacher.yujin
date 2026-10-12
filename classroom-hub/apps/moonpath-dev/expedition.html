@@ -402,7 +402,8 @@ button{cursor:pointer}
 #setup .mp-pack-emblem>span{position:absolute;font-size:21px;color:#f7d07a;top:17px}
 #setup .mp-pack-copy{min-width:0;flex:1 1 auto}
 #setup .mp-pack-copy b{display:block;font-weight:900;line-height:1.33;
- font-size:clamp(15px,1.12vw,20px);white-space:normal;color:#27204c}
+ font-size:clamp(15px,1.12vw,20px);white-space:nowrap;overflow:hidden;
+ text-overflow:ellipsis;max-width:100%;color:#27204c}
 #setup .setupPane .mp-pack-copy .small{margin-top:4px;font-size:16px;opacity:.8}
 #setup .mp-pack-upload{
   display:flex;align-items:center;justify-content:center;gap:8px;
@@ -913,6 +914,16 @@ function continueRun(){
 }
 function historyCount(){return getHistory().length}
 
+// Keep long question-pack titles on one line; show the full title on hover.
+function setPackTitle(text){
+  const el=document.getElementById("packTitle");
+  if(!el)return;
+  const full=String(text??"");
+  el.textContent=full;
+  el.title=full;
+}
+setPackTitle(document.getElementById("packTitle").textContent);
+
 document.getElementById("packFile").addEventListener("change", e=>{
   const f=e.target.files[0]; if(!f)return;
   const rd=new FileReader();
@@ -921,12 +932,12 @@ document.getElementById("packFile").addEventListener("change", e=>{
       const p=JSON.parse(rd.result);
       if(!Array.isArray(p.questions)||!p.questions.length)throw new Error("questions 없음");
       PACK=p; localStorage.setItem(STORAGE_PACK,JSON.stringify(PACK));
-      document.getElementById("packTitle").textContent=PACK.pack?.title||f.name;
+      setPackTitle(PACK.pack?.title||f.name);
       document.getElementById("packMeta").textContent=`${PACK.questions.length}문항 · YQBank`;
     }catch(err){alert("문제팩을 읽을 수 없습니다: "+err.message)}
   };rd.readAsText(f,"utf-8");
 });
-try{const p=JSON.parse(localStorage.getItem(STORAGE_PACK)||"null");if(p?.questions?.length){PACK=p;document.getElementById("packTitle").textContent=PACK.pack?.title||"문제팩";document.getElementById("packMeta").textContent=`${PACK.questions.length}문항 · YQBank`}}catch{}
+try{const p=JSON.parse(localStorage.getItem(STORAGE_PACK)||"null");if(p?.questions?.length){PACK=p;setPackTitle(PACK.pack?.title||"문제팩");document.getElementById("packMeta").textContent=`${PACK.questions.length}문항 · YQBank`}}catch{}
 
 document.querySelectorAll("#modeSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#modeSeg button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");
