@@ -339,154 +339,323 @@ button{cursor:pointer}
  .resultBody{grid-template-columns:1fr}
 }
 
-/* MOONPATH SETUP V5 | Thin Frame, 2300x1800 + 1400x1800
-   Images: decorative only; HTML remains interactive.
-   The two PNG aspect ratios determine the 23:14 grid at desktop widths. */
-#setup {
-  position:relative; isolation:isolate; display:none;
-  overflow-x:hidden;overflow-y:auto;
-  background-image:linear-gradient(rgba(10,9,32,.12),rgba(10,9,32,.20)),
-    url('./assets/MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png');
-  background-position:center;background-size:cover;background-repeat:no-repeat;
-  padding:12px 12px;align-items:center;justify-content:center;color:#282450;
+/* MOONPATH SETUP V6 — Screenshot-aligned functional HTML, 2026-10-12.
+   The approved PNGs are decorative layers ONLY; interactive content remains DOM. */
+#setup{
+  position:relative;isolation:isolate;display:none;overflow-y:auto;overflow-x:hidden;
+  justify-content:center;align-items:center;padding:12px;
+  background:linear-gradient(rgba(10,9,32,.08),rgba(10,9,32,.14)),
+    url('./assets/MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png') center/cover no-repeat;
+  color:#28234d;
 }
-#setup.active {display:flex}
-#setup .setupGrid {
-  display:grid;
-  width:min(1660px,calc(100vw - 32px));
-  max-width:none;
-  height:min(800px,calc(100vh - 24px));
-  min-height:720px;
-  grid-template-columns:minmax(0,23fr) minmax(0,14fr);
-  gap:12px; margin:auto;align-items:stretch;
+#setup.active{display:flex}
+#setup .setupGrid{
+  width:min(1244px,calc(100vw - 48px));height:min(818px,calc(100vh - 32px));
+  min-height:770px;max-width:none;display:grid;
+  grid-template-columns:minmax(0,1.72fr) minmax(0,1fr);gap:14px;
+  align-items:stretch;margin:auto;position:relative;
 }
-#setup .setupPane {
-  position:relative;isolation:isolate;box-sizing:border-box;
-  min-width:0; min-height:0; height:100%;overflow:visible;
-  padding:188px 8.7% 66px!important;
-  border:none!important;border-radius:0!important;box-shadow:none!important;
-  background:transparent!important;color:#30264f;
+#setup .mp-icon-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+#setup .setupPane{
+  position:relative;isolation:isolate;box-sizing:border-box;min-width:0;
+  height:100%;min-height:0;overflow:visible;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;padding:125px 8.5% 50px!important;
+  color:#2c254d;
 }
-#setup .setupPane:nth-child(2){padding:141px 10% 69px!important}
-#setup .setupPane::before {
-  position:absolute;content:"";inset:0;z-index:-1;display:block;
-  pointer-events:none;opacity:1;
-  background-image:url('./assets/MP_SETUP_FRAME_LEFT_2300x1800_THIN_BORDER_v2.png');
-  background-size:100% 100%; background-repeat:no-repeat;background-position:center;
+#setup .setupPane:nth-of-type(2){padding:126px 11.4% 47px!important}
+#setup .setupPane::before{
+  content:"";position:absolute;inset:0;z-index:-1;display:block;pointer-events:none;
+  background:url('./assets/MP_SETUP_FRAME_LEFT_2300x1800_THIN_BORDER_v2.png') center/100% 100% no-repeat;
 }
-#setup .setupPane:nth-child(2)::before {
+#setup .setupPane:nth-of-type(2)::before{
   background-image:url('./assets/MP_SETUP_FRAME_RIGHT_1400x1800_THIN_BORDER_v2.png');
 }
 #setup .setupPane>*{position:relative;z-index:1;box-sizing:border-box;min-width:0;max-width:100%}
-#setup .setupPane h2 {
-  margin:0 0 10px; font-size:clamp(27px,2.18vw,38px);line-height:1.15;
-  color:#292253;letter-spacing:0;text-align:center;font-weight:900;text-shadow:none;
+#setup .mp-panel-title{
+  color:#211b4d;font-family:'NanumMyeongjo','Noto Serif KR','Malgun Gothic',serif;
+  text-align:center;font-size:clamp(28px,2.2vw,38px);font-weight:900;
+  line-height:1.16;letter-spacing:0;text-shadow:none;
+  margin:0 0 15px;
 }
-#setup .setupPane h2::after{display:none}
-#setup .setupPane .packBox {
-  padding:8px 13px;border:1px solid #dac9af;border-radius:8px;
-  background:rgba(255,250,238,.87);color:#2b264b;
-  width:100%;max-width:100%;overflow-wrap:anywhere;
+#setup .setupPane .mp-panel-title::before,#setup .setupPane .mp-panel-title::after{
+  content:'✧ ─';font:700 .46em/1 'NanumMyeongjo',serif;
+  color:#222052;display:inline-block;vertical-align:middle;margin-right:14px;
 }
-#setup .setupPane .packBox b{color:#292251;font-size:clamp(16px,1.12vw,20px)}
-#setup .setupPane .small{font-size:clamp(13px,.94vw,16px);line-height:1.35;color:#554e64;opacity:.91}
-#setup .setupPane .packBox .secondary {margin-top:0!important}
-#setup .setupPane .field {margin:10px 0;min-width:0}
-#setup .setupPane .field label {
-  font-size:clamp(17px,1.22vw,21px);font-weight:800;line-height:1.2;
-  color:#292352;margin:0 0 5px;min-width:0;
+#setup .setupPane .mp-panel-title::after{content:'─ ✧';margin-left:14px;margin-right:0}
+#setup .mp-icon{width:23px;height:23px;stroke:#1c1950;stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round;fill:none;flex:0 0 auto;vertical-align:middle}
+#setup .mp-fill-icon{fill:#19164d;stroke:#19164d}
+#setup .setupPane .packBox{border:1px solid #ddcaad;border-radius:10px;
+  background:rgba(255,251,244,.86);box-sizing:border-box;
+  color:#28244b;max-width:100%;min-width:0}
+#setup .mp-pack-card{
+  display:flex;align-items:center;gap:16px;padding:12px 16px;height:98px;
+  margin:0 0 14px;overflow:hidden;
 }
-#setup .setupPane:first-child>.field:not(.teamRow) {
-  display:grid;grid-template-columns:minmax(100px,20%) minmax(0,1fr);
-  align-items:center;column-gap:11px;margin:11px 0;
+#setup .mp-pack-emblem{
+  display:grid;place-items:center;flex:0 0 63px;width:63px;height:64px;
+  background:linear-gradient(145deg,#24347b,#141743);border:2px solid #e9c476;border-radius:7px;
+  box-shadow:inset 0 0 0 2px #534d92,0 2px 6px #20205040;color:#e9c878;position:relative;
 }
-#setup .setupPane:first-child>.field:not(.teamRow)>label {margin:0!important}
-#setup .setupPane:first-child>.field:not(.teamRow)>input {width:100%!important;max-width:100%!important}
-#setup .setupPane .segment {display:flex;gap:7px;flex-wrap:nowrap;min-width:0}
-#setup .setupPane .segment button {
-  box-sizing:border-box;flex:1 1 0;min-width:0;padding:9px 6px;
-  min-height:44px; font-size:clamp(14px,1.11vw,19px);
-  font-weight:800;line-height:1.2;border-radius:7px;white-space:normal;
-  background:rgba(255,252,246,.95);border:1px solid #cbb898;color:#2a2450;
+#setup .mp-book-mark{width:39px;height:42px;stroke:#efc974;stroke-width:1.6}
+#setup .mp-pack-emblem>span{position:absolute;font-size:21px;color:#f7d07a;top:17px}
+#setup .mp-pack-copy{min-width:0;flex:1 1 auto}
+#setup .mp-pack-copy b{display:block;font-weight:900;line-height:1.33;
+ font-size:clamp(15px,1.12vw,20px);white-space:normal;color:#27204c}
+#setup .setupPane .mp-pack-copy .small{margin-top:4px;font-size:16px;opacity:.8}
+#setup .mp-pack-upload{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  flex:0 0 auto;min-height:44px;margin:0!important;
+  padding:9px 12px;border-radius:8px;cursor:pointer;
+  color:#fff5d9!important;background:linear-gradient(120deg,#283774,#152363)!important;
+  border:2px solid #d2aa67!important;box-shadow:inset 0 0 0 1px #6e69a1;
+  font-size:clamp(13px,.94vw,17px);font-weight:800;white-space:nowrap;
 }
-#setup .setupPane .segment button.sel {
-  border:2px solid #ddb365;
-  background:linear-gradient(150deg,#323580,#202361);color:#fff4da;
-  box-shadow:inset 0 0 0 1px #6f69a7;
+#setup .mp-pack-upload .mp-icon{stroke:#f0c982;width:20px;height:20px}
+#setup .field{margin:0}
+#setup .mp-choice-row{margin:12px 0 0!important;display:block!important}
+#setup .mp-field-label{display:flex;align-items:center;gap:10px;
+ font-size:clamp(18px,1.2vw,22px);font-weight:900;line-height:1.3;
+ color:#24214d;margin:0 0 7px!important}
+#setup .mp-choice-row>.mp-field-label{display:flex!important}
+#setup .segment{display:flex;flex-wrap:nowrap;gap:9px;min-width:0}
+#setup .segment button{
+  min-width:0;min-height:52px;flex:1 1 0;display:flex;flex-direction:column;gap:2px;
+  justify-content:center;align-items:center;padding:7px 7px;
+  border:1px solid #c6bcb0;border-radius:9px;box-sizing:border-box;
+  color:#29234d;background:rgba(255,251,245,.96);font-weight:800;
+  font-family:'NanumMyeongjo','Malgun Gothic',serif;font-size:clamp(16px,1.07vw,20px);
+  line-height:1.12;box-shadow:0 2px 0 rgba(80,50,20,.04);
 }
-#setup .setupPane .teamRow {
-  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
-  margin:9px 0;min-width:0;
+#setup .segment button small{font:700 .8em/1.05 'Malgun Gothic',sans-serif;color:inherit}
+#setup .segment button.sel{
+  background:linear-gradient(135deg,#29367d,#192465);border:2px solid #d9b269;
+  color:#fff4dc;box-shadow:inset 0 0 0 1px #6d66aa;
 }
-#setup .setupPane .teamRow label {margin:0!important;white-space:nowrap}
-#setup .setupPane .teamRow input {
-  width:75px;min-width:0;max-width:75px;min-height:39px;
-  padding:5px 8px;border:1px solid #c6b092;
-  border-radius:7px;background:#fffaf3;color:#292352;
-  font-size:19px;
+#setup .mp-segment-time button{min-height:59px}
+#setup .mp-participation-row .segment button{min-height:51px}
+#setup .mp-team-settings{
+  display:flex!important;gap:28px!important;align-items:center;flex-wrap:nowrap;
+  margin:17px 0 11px!important;
 }
-#setup #seedInput {
-  width:100%!important;max-width:100%!important;
-  min-height:41px;padding:8px 10px!important;
-  font-size:18px;color:#282350;background:#fffaf3;
-  border:1px solid #bfa88b;border-radius:7px;
+#setup .mp-team-setting{display:flex;align-items:center;gap:13px;min-width:0}
+#setup .mp-team-setting label{display:flex;align-items:center;gap:10px;
+  margin:0!important;font-size:19px;font-weight:900;color:#22204a;white-space:nowrap}
+#setup .mp-team-setting label .mp-icon{width:25px;height:25px}
+#setup .mp-team-setting input{width:70px;min-width:0;min-height:43px;
+  padding:6px 10px;border:1px solid #c6bcb0;border-radius:9px;
+  background:#fffdfa;color:#29234f;font-weight:700;font-size:20px}
+#setup .mp-seed-setting{display:flex;align-items:center;gap:24px;margin:10px 0 0!important}
+#setup .mp-seed-setting .mp-field-label{min-width:105px;margin:0!important;white-space:nowrap}
+#setup .mp-seed-setting input{box-sizing:border-box;min-width:0;flex:1;
+  width:auto!important;max-width:100%!important;min-height:47px;padding:8px 15px!important;
+  background:#fffdfa;color:#302956;border:1px solid #c6bcb0;border-radius:9px;
+  font-size:17px}
+#setup .setupPane--right .mp-panel-title{margin-bottom:17px}
+#setup .mp-instructions{min-height:105px;padding:13px 14px;}
+#setup .mp-box-heading{display:flex;align-items:center;gap:12px;margin-bottom:8px;
+ font-size:20px;font-weight:900;color:#24204c}
+#setup .mp-box-heading .mp-icon{width:26px;height:26px}
+#setup .mp-instructions .small,#setup .mp-repeat-info .small{
+  opacity:1;color:#453f52;margin:0;font-size:clamp(13px,.85vw,15px);line-height:1.45}
+#setup .mp-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;margin:12px 0!important}
+#setup .metric{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 3px;min-width:0;min-height:90px;background:rgba(255,250,241,.9);
+  border:1px solid #dbc7aa;border-radius:10px;color:#26214a;text-align:center}
+#setup .mp-metric-heading{display:flex;align-items:center;justify-content:center;gap:6px;
+  line-height:1.15;font-size:clamp(13px,.85vw,17px);font-weight:900;white-space:nowrap}
+#setup .mp-metric-heading .mp-icon{width:23px;height:23px}
+#setup .metric>b{font:900 clamp(22px,1.65vw,29px)/1.14 'NanumMyeongjo','Malgun Gothic',serif;
+  color:#23204e;margin:8px 0 0;white-space:nowrap}
+#setup .mp-repeat-info{min-height:122px;padding:12px 13px;}
+#setup .mp-repeat-info .mp-box-heading{margin-bottom:8px}
+#setup .mp-repeat-info .mp-region-note{font-size:14px;line-height:1.35;
+ margin:9px 0 0; color:#29234f;font-weight:700}
+#setup .mp-repeat-info .mp-region-note b{font-size:14px;font-weight:900}
+#setup .setupPane--right>.mp-start-button,#setup .setupPane--right>.mp-back-button{
+ display:flex;align-items:center;justify-content:center;gap:10px;
+ margin-left:0!important;margin-right:0!important;width:100%;min-width:0;
+ cursor:pointer;text-align:center;border-radius:9px;
+ font-family:'NanumMyeongjo','Malgun Gothic',serif;box-sizing:border-box;
 }
-#setup .setupPane:nth-child(2) h2 {margin-bottom:7px}
-#setup .setupPane:nth-child(2) .packBox {padding:7px 12px}
-#setup .setupPane:nth-child(2) .packBox p {margin:4px 0;font-size:clamp(13px,.91vw,16px);line-height:1.34}
-#setup .setupPane .summaryBox {
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:7px;margin:8px 0;
+#setup .mp-start-button{
+ min-height:62px;margin-top:11px!important;
+ background:linear-gradient(135deg,#2b3a87,#1a276a);border:2px solid #e1bb70;
+ color:#fff4d3;font-size:clamp(24px,1.5vw,29px);font-weight:900;
+ box-shadow:inset 0 0 0 1px #7c70a7;
 }
-#setup .setupPane .metric {
-  padding:7px 5px;min-width:0;max-width:100%;
-  border:1px solid #d1b993;border-radius:9px;
-  background:rgba(255,248,233,.90);color:#2e2654;
-  font-size:clamp(14px,.97vw,17px);text-align:center;
+#setup .mp-start-button .mp-icon{width:29px;height:29px;stroke:#eeca7d}
+#setup .mp-back-button{
+ min-height:43px;margin-top:8px!important;background:rgba(255,252,246,.95);
+ border:1px solid #bdb1a3;color:#25214d;font-size:19px;font-weight:900;
 }
-#setup .setupPane .metric b {
-  display:block;line-height:1.13;margin-top:4px;
-  font-size:clamp(21px,1.5vw,27px);color:#282153;overflow-wrap:anywhere;
+#setup .mp-back-button .mp-icon{width:21px;height:21px}
+#setup button:focus-visible,#setup input:focus-visible,#setup .mp-pack-upload:focus-within{
+  outline:3px solid #906ac9;outline-offset:2px}
+@media(min-width:1080px) and (max-height:820px){
+  #setup .setupGrid{height:calc(100vh - 18px);min-height:730px}
+  #setup .setupPane{padding-top:105px!important;padding-bottom:42px!important}
+  #setup .setupPane:nth-of-type(2){padding-top:106px!important;padding-bottom:38px!important}
+  #setup .mp-panel-title{font-size:30px;margin-bottom:8px}
+  #setup .mp-pack-card{height:85px;margin-bottom:7px}
+  #setup .mp-choice-row{margin-top:7px!important}
+  #setup .segment button{min-height:45px}
+  #setup .mp-segment-time button{min-height:51px}
+  #setup .mp-team-settings{margin:10px 0 5px!important}
+  #setup .mp-seed-setting{margin-top:4px!important}
+  #setup .mp-instructions{min-height:86px;padding:9px 12px}
+  #setup .mp-summary-grid{gap:7px;margin:7px 0!important}
+  #setup .metric{min-height:76px;padding:4px}
+  #setup .metric>b{margin-top:5px;font-size:23px}
+  #setup .mp-repeat-info{min-height:100px;padding:8px 11px}
+  #setup .mp-repeat-info .small{line-height:1.25}
+  #setup .mp-repeat-info .mp-region-note{margin-top:5px}
+  #setup .mp-start-button{min-height:53px;margin-top:7px!important}
+  #setup .mp-back-button{min-height:38px;margin-top:5px!important}
 }
-#setup .setupPane .primary,
-#setup .setupPane .secondary {
-  box-sizing:border-box;max-width:100%;min-width:0;
-  font-weight:900;border-radius:8px;white-space:normal;
+@media(min-width:1080px) and (max-width:1450px){
+  #setup .setupGrid{width:min(1244px,calc(100vw - 36px))}
+  #setup .setupPane{padding-left:8%!important;padding-right:8%!important}
+  #setup .setupPane:nth-of-type(2){padding-left:10.6%!important;padding-right:10.6%!important}
+  #setup .mp-pack-card{gap:10px;padding:10px 12px}
+  #setup .mp-pack-emblem{flex-basis:53px;width:53px;height:55px}
+  #setup .mp-pack-upload{font-size:12px;padding:8px}
+  #setup .mp-team-settings{gap:10px!important}
+  #setup .mp-team-setting{gap:7px}
+  #setup .mp-team-setting label{gap:6px;font-size:16px}
+  #setup .mp-team-setting input{width:55px}
+  #setup .metric>b{font-size:21px}
 }
-#setup .setupPane .primary {
-  min-height:49px;margin-top:7px!important;padding:8px 12px;
-  border:2px solid #e1bd7b;
-  background:linear-gradient(135deg,#30377d,#191e5c);color:#fff3d0;
-  box-shadow:inset 0 0 0 1px #7973ad;
+@media(max-width:1079px){
+  #setup{align-items:flex-start;padding:12px}
+  #setup .setupGrid{width:min(720px,calc(100vw - 24px));height:auto;min-height:0;grid-template-columns:1fr;gap:16px}
+  #setup .setupPane{min-height:720px;height:auto;padding:118px 10% 55px!important}
+  #setup .setupPane:nth-of-type(2){min-height:720px;padding:118px 13% 60px!important}
+  #setup .mp-panel-title{font-size:clamp(25px,3.4vw,36px)}
+  #setup .mp-pack-upload{font-size:13px}
+  #setup .mp-choice-row{margin-top:10px!important}
+  #setup .mp-team-settings{gap:16px!important}
+  #setup .mp-instructions,.mp-repeat-info{min-height:auto}
+  #setup .metric{min-height:82px}
 }
-#setup .setupPane .secondary {
-  min-height:38px;margin-top:5px!important;padding:7px 11px;
-  border:1px solid #b89f80;
-  background:linear-gradient(#fffaf1,#e9d9bd);color:#29234e;
+@media(max-width:560px){
+  #setup{padding:8px 3px}
+  #setup .setupGrid{width:100%;gap:10px}
+  #setup .setupPane{min-height:650px;padding:104px 8% 57px!important}
+  #setup .setupPane:nth-of-type(2){min-height:650px;padding:105px 10% 58px!important}
+  #setup .mp-panel-title{font-size:25px}
+  #setup .mp-panel-title::before,#setup .mp-panel-title::after{display:none!important}
+  #setup .mp-pack-card{height:auto;min-height:95px;flex-wrap:wrap;gap:6px;padding:8px}
+  #setup .mp-pack-emblem{display:none}
+  #setup .mp-pack-copy b{font-size:14px}
+  #setup .mp-pack-upload{padding:7px 8px;min-height:34px;font-size:12px}
+  #setup .mp-field-label{font-size:15px}
+  #setup .segment{gap:4px}
+  #setup .segment button{font-size:12px;padding:7px 3px;min-height:40px}
+  #setup .mp-team-settings{gap:7px!important;flex-wrap:wrap}
+  #setup .mp-team-setting label{font-size:14px}
+  #setup .mp-team-setting input{width:55px;min-height:37px;font-size:16px}
+  #setup .mp-seed-setting{gap:9px}
+  #setup .mp-seed-setting .mp-field-label{min-width:60px}
+  #setup .mp-seed-setting input{min-height:39px;font-size:14px}
+  #setup .mp-box-heading{font-size:17px}
+  #setup .mp-instructions .small,#setup .mp-repeat-info .small{font-size:12px}
+  #setup .metric{min-height:77px}
+  #setup .mp-metric-heading{font-size:12px;white-space:normal}
+  #setup .metric>b{font-size:19px}
+  #setup .mp-repeat-info .mp-region-note{font-size:12px}
+  #setup .mp-start-button{font-size:20px;min-height:52px}
 }
-#setup .setupPane button:focus-visible,#setup .setupPane input:focus-visible {
-  outline:3px solid #8e63d9;outline-offset:2px;
+/* V6 placement correction after real screenshot: protect the moon crest and lower ornaments. */
+@media (min-width:1080px) and (min-height:821px){
+  #setup .setupPane--left{padding-top:180px!important}
+  #setup .setupPane--left .mp-panel-title{font-size:34px;line-height:1.15;margin-bottom:5px}
+  #setup .setupPane--left .mp-pack-card{height:80px;margin-bottom:3px;padding-top:5px;padding-bottom:5px}
+  #setup .setupPane--left .mp-pack-emblem{width:53px;height:53px;flex-basis:53px}
+  #setup .setupPane--left .mp-choice-row{margin-top:6px!important}
+  #setup .setupPane--left .mp-field-label{font-size:20px;line-height:1.1;margin-bottom:2px!important}
+  #setup .setupPane--left .mp-choice-row .segment button{min-height:44px;padding:5px 8px}
+  #setup .setupPane--left .mp-segment-time button{min-height:46px}
+  #setup .setupPane--left .mp-team-settings{margin:9px 0 6px!important}
+  #setup .setupPane--left .mp-team-setting input{min-height:40px}
+  #setup .setupPane--left .mp-seed-setting{margin-top:7px!important}
+  #setup .setupPane--left .mp-seed-setting input{min-height:43px}
+  #setup .setupPane--right .mp-panel-title{font-size:34px;line-height:1.15;margin-bottom:8px}
+  #setup .setupPane--right .mp-instructions{min-height:90px;padding:10px 13px}
+  #setup .setupPane--right .mp-box-heading{margin-bottom:4px;font-size:19px}
+  #setup .setupPane--right .mp-instructions .small{line-height:1.3;font-size:13px}
+  #setup .setupPane--right .mp-summary-grid{gap:8px;margin:8px 0!important}
+  #setup .setupPane--right .metric{min-height:80px;padding:5px 3px}
+  #setup .setupPane--right .metric>b{font-size:26px;margin-top:3px}
+  #setup .setupPane--right .mp-repeat-info{min-height:100px;padding:8px 12px}
+  #setup .setupPane--right .mp-repeat-info .mp-box-heading{margin-bottom:4px}
+  #setup .setupPane--right .mp-repeat-info .small{line-height:1.32;font-size:13px}
+  #setup .setupPane--right .mp-repeat-info .mp-region-note{margin-top:5px}
+  #setup .setupPane--right .mp-start-button{min-height:53px;margin-top:7px!important}
+  #setup .setupPane--right .mp-back-button{min-height:39px;margin-top:7px!important}
 }
-@media (min-width:851px) and (max-width:1399px) {
-  #setup .setupGrid{height:min(740px,calc(100vh - 16px));min-height:700px;gap:8px}
-  #setup .setupPane{padding:171px 8.5% 55px!important}
-  #setup .setupPane:nth-child(2){padding:146px 9.5% 57px!important}
-  #setup .setupPane .field label {font-size:15px}
-  #setup .setupPane .segment button {font-size:13px;min-height:41px}
-  #setup .setupPane .teamRow{gap:7px}
-  #setup .setupPane .teamRow input{width:60px}
+@media (min-width:1080px) and (max-height:820px){
+  #setup .setupPane--left{padding-top:155px!important}
+  #setup .setupPane--left .mp-panel-title{font-size:29px;margin-bottom:3px;line-height:1.12}
+  #setup .setupPane--left .mp-pack-card{height:73px;margin-bottom:3px;padding-top:4px;padding-bottom:4px}
+  #setup .setupPane--left .mp-pack-emblem{width:46px;height:46px;flex-basis:46px}
+  #setup .setupPane--left .mp-choice-row{margin-top:5px!important}
+  #setup .setupPane--left .mp-field-label{font-size:17px;line-height:1.1;margin-bottom:2px!important}
+  #setup .setupPane--left .mp-choice-row .segment button{min-height:39px;padding:4px 7px}
+  #setup .setupPane--left .mp-segment-time button{min-height:44px}
+  #setup .setupPane--left .mp-team-settings{margin:7px 0 5px!important}
+  #setup .setupPane--left .mp-team-setting input{min-height:37px}
+  #setup .setupPane--left .mp-seed-setting{margin-top:5px!important}
+  #setup .setupPane--left .mp-seed-setting input{min-height:38px}
+  #setup .setupPane--right{padding-top:122px!important}
+  #setup .setupPane--right .mp-panel-title{font-size:30px;line-height:1.1;margin-bottom:5px}
+  #setup .setupPane--right .mp-instructions{min-height:84px;padding:7px 10px}
+  #setup .setupPane--right .mp-box-heading{margin-bottom:3px;font-size:17px}
+  #setup .setupPane--right .mp-instructions .small{line-height:1.2;font-size:12px}
+  #setup .setupPane--right .mp-summary-grid{gap:7px;margin:6px 0!important}
+  #setup .setupPane--right .metric{min-height:72px;padding:4px 3px}
+  #setup .setupPane--right .metric>b{font-size:22px;margin-top:3px}
+  #setup .setupPane--right .mp-repeat-info{min-height:93px;padding:6px 9px}
+  #setup .setupPane--right .mp-repeat-info .mp-box-heading{margin-bottom:3px}
+  #setup .setupPane--right .mp-repeat-info .small{font-size:12px;line-height:1.2}
+  #setup .setupPane--right .mp-repeat-info .mp-region-note{font-size:12px;margin-top:3px}
+  #setup .setupPane--right .mp-start-button{min-height:49px;margin-top:6px!important}
+  #setup .setupPane--right .mp-back-button{min-height:36px;margin-top:5px!important}
 }
-@media(max-width:850px){
-  #setup{align-items:flex-start;padding:12px 8px}
-  #setup .setupGrid{display:grid;width:min(680px,100%);grid-template-columns:1fr;
-    height:auto;min-height:0;gap:14px}
-  #setup .setupPane{height:auto;min-height:670px;padding:161px 10.5% 75px!important}
-  #setup .setupPane:nth-child(2){min-height:740px;padding:155px 10.5% 87px!important}
-  #setup .setupPane .field label{font-size:clamp(14px,2.3vw,19px)}
-  #setup .setupPane .segment button{font-size:clamp(12px,2.2vw,17px);min-height:40px}
-  #setup .setupPane .teamRow{gap:7px}
-  #setup .setupPane .teamRow input{width:64px}
-  #setup .setupPane .metric b{font-size:clamp(19px,3vw,25px)}
+/* Keep the top celestial crest clear even at shorter desktop heights. */
+@media (min-width:1080px) and (min-height:821px){
+  #setup .setupPane--left{padding-top:188px!important}
+}
+@media (min-width:1080px) and (max-height:820px){
+  #setup .setupPane--left{padding-top:180px!important}
+}
+/* Stacked screens need more true height; otherwise the frame artwork, title,
+   group inputs and footer ornament overlap after being compressed to phone widths. */
+@media (max-width:1079px){
+  #setup .setupPane--left{min-height:875px;padding-top:201px!important;padding-bottom:90px!important}
+  #setup .setupPane--right{min-height:920px;padding-top:204px!important;padding-bottom:95px!important}
+}
+@media (max-width:560px){
+  #setup .setupPane--left{min-height:905px;padding-top:218px!important;padding-bottom:96px!important}
+  #setup .setupPane--right{min-height:975px;padding-top:235px!important;padding-bottom:104px!important}
+  #setup .mp-team-settings{flex-wrap:wrap!important}
+  #setup .mp-pack-upload{align-self:flex-start}
+}
+@media (min-width:561px) and (max-width:1079px){
+  #setup .setupPane--left .mp-pack-card{height:88px;margin-bottom:8px}
+  #setup .setupPane--left .mp-choice-row{margin-top:6px!important}
+  #setup .setupPane--left .mp-choice-row .segment button{min-height:46px}
+  #setup .setupPane--left .mp-segment-time button{min-height:50px}
+  #setup .setupPane--left .mp-team-settings{margin:10px 0 6px!important}
+  #setup .setupPane--left .mp-seed-setting{margin-top:5px!important}
+}
+@media(max-width:1079px){
+  #setup .setupPane--right:nth-of-type(2){min-height:920px}
+}
+@media(max-width:560px){
+  #setup .setupPane--right:nth-of-type(2){min-height:975px}
 }
 </style>
 </head>
@@ -508,66 +677,79 @@ button{cursor:pointer}
 
 <section id="setup" class="screen">
   <div class="setupGrid">
-    <div class="card setupPane">
-      <h2>새로운 탐험</h2>
-      <div class="packBox">
-        <b id="packTitle">통합사회2 1단원 · 인권 보장과 헌법</b>
-        <div class="small" id="packMeta">60문항 · YQBank</div>
-        <div style="margin-top:10px">
-          <label class="secondary" style="display:inline-block;cursor:pointer">문제팩 불러오기
-            <input id="packFile" type="file" accept=".json" hidden>
-          </label>
-        </div>
-      </div>
-      <div class="field">
-        <label>탐험 시간</label>
-        <div id="modeSeg" class="segment">
-          <button data-mode="quick">QUICK 25분</button>
-          <button data-mode="standard" class="sel">STANDARD 45분</button>
-          <button data-mode="long">LONG 60분</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>감독 강도</label>
-        <div id="directorSeg" class="segment">
-          <button data-director="balanced">균형 우선</button>
-          <button data-director="normal" class="sel">기본 탐험</button>
-          <button data-director="free">자유 탐험</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>학생 참여</label>
-        <div id="stealSeg" class="segment">
-          <button data-steal="on" class="sel">순환 + 가로채기</button>
-          <button data-steal="off">완전 협동</button>
-        </div>
-      </div>
-      <div class="field teamRow">
-        <label style="margin:0">모둠 수</label><input id="teamCount" type="number" value="6" min="2" max="8">
-        <label style="margin:0">모둠당 인원</label><input id="membersPerTeam" type="number" value="4" min="2" max="8">
-      </div>
-      <div class="field">
-        <label>Seed</label>
-        <input id="seedInput" style="width:220px;padding:10px" placeholder="비워두면 자동 생성">
+  <svg class="mp-icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="mp-book" viewBox="0 0 24 24"><path d="M12 6c-2.6-1.7-5.3-2.1-9-1.7v13.4c3.7-.4 6.4.1 9 1.8m0-13.5c2.6-1.7 5.3-2.1 9-1.7v13.4c-3.7-.4-6.4.1-9 1.8m0-13.5v13.5"/></symbol>
+      <symbol id="mp-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></symbol>
+      <symbol id="mp-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5.3-3.3 8.6-8 11-4.7-2.4-8-5.7-8-11V5z"/><path d="M9 11.2l2 2 4-4"/></symbol>
+      <symbol id="mp-users" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 21v-2c0-3 2.8-5 7-5s7 2 7 5v2M4 9a2.3 2.3 0 1 1 3-3.4M20 9a2.3 2.3 0 1 0-3-3.4M2 20v-2c0-1.7 1-2.8 3-3.5M22 20v-2c0-1.7-1-2.8-3-3.5"/></symbol>
+      <symbol id="mp-leaf" viewBox="0 0 24 24"><path d="M20 3C8 3 3 8 3 16c0 4 5 6 9 4 6-2 9-8 8-17z"/><path d="M3 21c3-7 9-11 15-14"/></symbol>
+      <symbol id="mp-folder" viewBox="0 0 24 24"><path d="M3 6h6l2 3h10v11H3z"/></symbol>
+      <symbol id="mp-target" viewBox="0 0 24 24"><circle cx="11" cy="13" r="8"/><circle cx="11" cy="13" r="4"/><path d="M11 13L21 3M17 3h4v4"/></symbol>
+      <symbol id="mp-key" viewBox="0 0 24 24"><circle cx="16.5" cy="7.5" r="4.5"/><path d="M13.3 10.7L3 21v-5h4v-3h3"/></symbol>
+      <symbol id="mp-heart" viewBox="0 0 24 24"><path d="M20.8 5.5a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.5a5.2 5.2 0 0 0-7.4 7.4L12 22l8.8-9.1a5.2 5.2 0 0 0 0-7.4z"/></symbol>
+      <symbol id="mp-refresh" viewBox="0 0 24 24"><path d="M3 11a9 9 0 0 1 15.4-6.4L21 7M21 3v4h-4M21 13a9 9 0 0 1-15.4 6.4L3 17M3 21v-4h4"/></symbol>
+      <symbol id="mp-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.8 8.2L14 14l-5.8 1.8L10 10zM12 1v5M12 18v5M1 12h5M18 12h5"/></symbol>
+      <symbol id="mp-back" viewBox="0 0 24 24"><path d="M20 12H4M11 5l-7 7 7 7"/></symbol>
+    </defs>
+  </svg>
+  <div class="card setupPane setupPane--left">
+    <h2 class="mp-panel-title">새로운 탐험</h2>
+    <div class="packBox mp-pack-card">
+      <div class="mp-pack-emblem" aria-hidden="true"><svg class="mp-icon mp-book-mark"><use href="#mp-book"/></svg><span>✧</span></div>
+      <div class="mp-pack-copy"><b id="packTitle">통합사회2 1단원 · 인권 보장과 헌법</b><div class="small" id="packMeta">60문항 · YQBank</div></div>
+      <label class="secondary mp-pack-upload" title="JSON 형식의 문제팩 선택"><svg class="mp-icon"><use href="#mp-folder"/></svg><span>문제팩 불러오기</span><input id="packFile" type="file" accept=".json" hidden></label>
+    </div>
+    <div class="field mp-choice-row mp-time-row">
+      <label class="mp-field-label"><svg class="mp-icon"><use href="#mp-clock"/></svg> 탐험 시간</label>
+      <div id="modeSeg" class="segment mp-segment-time">
+        <button data-mode="quick"><span>QUICK</span><small>25분</small></button>
+        <button data-mode="standard" class="sel"><span>STANDARD</span><small>45분</small></button>
+        <button data-mode="long"><span>LONG</span><small>60분</small></button>
       </div>
     </div>
-    <div class="card setupPane">
-      <h2>이번 탐험</h2><div class="packBox"><b>운영 방식</b><p class="small">반 전체는 FINAL 도달을 위해 함께 경로를 선택합니다. 문제는 모둠이 순환하며 도전하고, 정답 보상은 모둠 점수로 쌓여 가벼운 경쟁이 생깁니다.</p></div>
-      <div class="summaryBox">
-        <div class="metric"><span>예상 시간</span><b id="sumTime">45분</b></div>
-        <div class="metric"><span>본문 목표</span><b>9~11문제</b></div>
-        <div class="metric"><span>열쇠 목표</span><b id="sumKeys">◆3 ▲3 ✦2</b></div>
-        <div class="metric"><span>시작 탐험력</span><b>♥ 8</b></div>
+    <div class="field mp-choice-row mp-director-row">
+      <label class="mp-field-label"><svg class="mp-icon"><use href="#mp-shield"/></svg> 감독 강도</label>
+      <div id="directorSeg" class="segment">
+        <button data-director="balanced">균형 우선</button><button data-director="normal" class="sel">기본 탐험</button><button data-director="free">자유 탐험</button>
       </div>
-      <div class="packBox">
-        <b>반복 플레이</b>
-        <p class="small">첫 플레이는 기본 규칙. 2회차부터 ‘오늘의 탐험 규칙’이 자동 적용됩니다.</p>
-        <p><b>REGION 특성</b>은 각 지역에 1개씩 자동 부여됩니다.</p>
+    </div>
+    <div class="field mp-choice-row mp-participation-row">
+      <label class="mp-field-label"><svg class="mp-icon"><use href="#mp-users"/></svg> 학생 참여</label>
+      <div id="stealSeg" class="segment">
+        <button data-steal="on" class="sel">순환 + 가로채기</button><button data-steal="off">완전 협동</button>
       </div>
-      <button class="primary" style="width:100%;margin-top:24px;font-size:20px" onclick="startNewRun()">탐험 시작</button>
-      <button class="secondary" style="width:100%;margin-top:10px" onclick="showScreen('home')">돌아가기</button>
+    </div>
+    <div class="field teamRow mp-team-settings">
+      <div class="mp-team-setting"><label for="teamCount"><svg class="mp-icon"><use href="#mp-users"/></svg>모둠 수</label><input id="teamCount" type="number" value="6" min="2" max="8"></div>
+      <div class="mp-team-setting"><label for="membersPerTeam"><svg class="mp-icon"><use href="#mp-users"/></svg>모둠당 인원</label><input id="membersPerTeam" type="number" value="4" min="2" max="8"></div>
+    </div>
+    <div class="field mp-seed-setting">
+      <label for="seedInput" class="mp-field-label"><svg class="mp-icon"><use href="#mp-leaf"/></svg> Seed</label>
+      <input id="seedInput" placeholder="비워두면 자동 생성" autocomplete="off">
     </div>
   </div>
+  <div class="card setupPane setupPane--right">
+    <h2 class="mp-panel-title">이번 탐험</h2>
+    <div class="packBox mp-instructions">
+      <div class="mp-box-heading"><svg class="mp-icon"><use href="#mp-book"/></svg><b>운영 방식</b></div>
+      <p class="small">선택한 문제팩으로 모둠이 함께 탐험하는 협력형 학습입니다. 문제를 풀고, 열쇠를 모아 더 깊은 탐험지로 나아가세요.</p>
+    </div>
+    <div class="summaryBox mp-summary-grid">
+      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-clock"/></svg><span>예상 시간</span></div><b id="sumTime">45분</b></div>
+      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-target"/></svg><span>본문 목표</span></div><b>9~11문제</b></div>
+      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-key"/></svg><span>열쇠 목표</span></div><b id="sumKeys">◆3 ▲3 ✦2</b></div>
+      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon mp-fill-icon"><use href="#mp-heart"/></svg><span>시작 탐험력</span></div><b>♥ 8</b></div>
+    </div>
+    <div class="packBox mp-repeat-info">
+      <div class="mp-box-heading"><svg class="mp-icon"><use href="#mp-refresh"/></svg><b>반복 플레이</b></div>
+      <p class="small">같은 문제팩으로 여러 번 탐험할 수 있습니다. 매번 다른 문제와 이벤트로 새로운 경험을 제공합니다.</p>
+      <p class="mp-region-note"><b>REGION 특성</b>은 각 지역에 1개씩 자동 부여됩니다.</p>
+    </div>
+    <button class="primary mp-start-button" onclick="startNewRun()"><svg class="mp-icon"><use href="#mp-compass"/></svg> 탐험 시작</button>
+    <button class="secondary mp-back-button" onclick="showScreen('home')"><svg class="mp-icon"><use href="#mp-back"/></svg> 돌아가기</button>
+  </div>
+</div>
 </section>
 
 <section id="game" class="screen">
