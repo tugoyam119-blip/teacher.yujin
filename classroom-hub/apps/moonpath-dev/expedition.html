@@ -1468,7 +1468,7 @@ function renderQuestion(){
     <div class="small">획득 가능</div><div class="big">${keyLabel(q._key)}</div>
     <div style="margin-top:18px"><b>${esc(area)}</b></div>
     <div style="margin-top:18px" class="small">문제 시간</div><div id="qTimer" class="qTimer">${formatTime(qSeconds)}</div>
-    ${trialMode()&&state.pendingContext?.kind==="final"&&state.trialSupports?.includes("hint")&&!state.trialHintUsed?`<button class="secondary" style="margin-top:12px;width:100%" onclick="useTrialHint()">◆ 이해 열쇠: 보기 1개 제거</button>`:""}
+    ${trialMode()&&state.pendingContext?.kind==="final"&&["single_choice","true_false"].includes(q.type)&&state.trialSupports?.includes("hint")&&!state.trialHintUsed?`<button class="secondary" style="margin-top:12px;width:100%" onclick="useTrialHint()">◆ 이해 열쇠: 보기 1개 제거</button>`:""}
     ${q.type==="manual"?`<div class="teacherJudge"><button class="primary" onclick="judgeManual('correct')">성공</button><button class="secondary" onclick="judgeManual('partial')">부분 성공</button><button class="dangerBtn" onclick="judgeManual('wrong')">실패</button></div>`:""}
     <div style="margin-top:16px"><button class="secondary" onclick="useAnalysisSkill()" ${state.skills.includes("analysis")&&q.type==="single_choice"?"":"disabled"}>🔍 보기 제거</button></div>
     <div class="qCompetition"><b>경쟁 규칙</b><br>정답 보상은 현재 모둠 점수에 더해집니다. 오답이면 다른 모둠이 제한적으로 가로챌 수 있지만, 원래 오답 흔적은 남아 나중에 회수해야 합니다.</div>`;
@@ -1490,7 +1490,7 @@ function renderAnswerUI(q){
     return `<div class="options">${q.options.map(o=>`<button class="optBtn" data-k="${esc(o.key)}" onclick="pickOption(this,'${esc(o.key)}')"><b>${esc(o.key)}</b>. ${esc(o.text)}</button>`).join("")}</div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
   }
   if(q.type==="true_false"){
-    return `<div class="options"><button class="optBtn" onclick="pickOption(this,'O')">O · 맞음</button><button class="optBtn" onclick="pickOption(this,'X')">X · 틀림</button></div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
+    return `<div class="options"><button class="optBtn" data-k="O" onclick="pickOption(this,'O')">O · 맞음</button><button class="optBtn" data-k="X" onclick="pickOption(this,'X')">X · 틀림</button></div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
   }
   if(q.type==="short_text"){
     return `<div class="interactiveBox"><input id="shortInput" style="width:100%;padding:15px;font-size:24px;border-radius:10px;border:1px solid #99886a" placeholder="정답 입력"></div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
@@ -1538,7 +1538,7 @@ function finishQuestion(result){
   clearInterval(questionTimer);
   const q=questionById(state.pendingQuestion),ctx=state.pendingContext||{}, correct=result==="correct", partial=result==="partial";
   if(trialMode()&&ctx.kind==="final"&&!correct&&!partial&&state.trialSupports?.includes("retry")&&!state.trialRetryUsed&&state.remainingSec>0){
-    state.trialRetryUsed=true;saveRun();renderQuestion();toast("▲ 적용 열쇠: 한 번 더 도전합니다.");return;
+    state.trialRetryUsed=true;selectedAnswer=null;orderSelection=[];saveRun();renderQuestion();toast("▲ 적용 열쇠: 한 번 더 도전합니다.");return;
   }
   state.stats.total++; (correct?state.stats.correct++:partial?state.stats.partial++:state.stats.wrong++);
   const std=q.meta?.standards?.[0]||"";
@@ -1740,8 +1740,8 @@ function selectTrialSupport(id){
 function useTrialHint(){
   if(!trialMode()||state.trialHintUsed||!state.trialSupports?.includes("hint"))return;
   const q=questionById(state.pendingQuestion);
-  if(q?.type!=="single_choice")return toast("보기 제거는 객관식 문제에서 사용할 수 있습니다.");
-  const correct=q.answer.correct?.[0];
+  if(!["single_choice","true_false"].includes(q?.type))return toast("보기 제거는 객관식·O/X 문제에서 사용할 수 있습니다.");
+  const correct=q.type==="true_false"?(q.answer.correct?"O":"X"):q.answer.correct?.[0];
   const wrong=[...document.querySelectorAll(".optBtn")].find(x=>x.dataset.k!==correct&&!x.disabled);
   if(!wrong)return toast("제거할 보기가 없습니다.");
   wrong.disabled=true;wrong.style.opacity=".35";wrong.style.textDecoration="line-through";
