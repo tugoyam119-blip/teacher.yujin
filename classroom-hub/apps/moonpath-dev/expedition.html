@@ -538,7 +538,7 @@ min-height:43px;margin-top:8px!important;font-size:16px}
       <p class="mp-region-note"><b>REGION 특성</b>은 각 지역에 1개씩 자동 부여됩니다.</p>
     </div>
     <button class="primary mp-start-button" onclick="startNewRun()"><svg class="mp-icon"><use href="#mp-compass"/></svg> 탐험 시작</button>
-    <button class="secondary mp-back-button" onclick="showScreen('home')"><svg class="mp-icon"><use href="#mp-back"/></svg> 돌아가기</button>
+    <button class="secondary mp-back-button" onclick="location.assign('index.html')"><svg class="mp-icon"><use href="#mp-back"/></svg> 돌아가기</button>
   </div>
 </div>
 </section>
@@ -666,10 +666,25 @@ function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 function normalize(s){return String(s??"").replace(/\s+/g,"").toLowerCase()}
 function now(){return Date.now()}
 function getHistory(){try{return JSON.parse(localStorage.getItem(STORAGE_HISTORY)||"[]")}catch{return[]}}
-function saveHistory(h){localStorage.setItem(STORAGE_HISTORY,JSON.stringify(h))}
-function saveRun(){if(state){localStorage.setItem(STORAGE_RUN,JSON.stringify(state));updateContinueButton()}}
-function clearRun(){localStorage.removeItem(STORAGE_RUN);updateContinueButton()}
-function updateContinueButton(){document.getElementById("continueBtn").disabled=!localStorage.getItem(STORAGE_RUN)}
+let persistenceWarningShown=false;
+function notifyPersistenceError(err){
+  console.error("탐험 저장 오류",err);
+  if(!persistenceWarningShown){
+    persistenceWarningShown=true;
+    alert("탐험 데이터를 저장할 수 없습니다. 브라우저 저장 공간이나 권한을 확인해 주세요. 기존 저장 기록은 삭제하지 않았습니다.");
+  }
+}
+function saveHistory(h){try{localStorage.setItem(STORAGE_HISTORY,JSON.stringify(h));persistenceWarningShown=false;return true}catch(err){notifyPersistenceError(err);return false}}
+function saveRun(){
+  if(!state)return false;
+  try{localStorage.setItem(STORAGE_RUN,JSON.stringify(state));updateContinueButton();persistenceWarningShown=false;return true}
+  catch(err){notifyPersistenceError(err);return false}
+}
+function clearRun(){try{localStorage.removeItem(STORAGE_RUN);updateContinueButton();return true}catch(err){notifyPersistenceError(err);return false}}
+function updateContinueButton(){
+  try{document.getElementById("continueBtn").disabled=!localStorage.getItem(STORAGE_RUN)}
+  catch(err){document.getElementById("continueBtn").disabled=true;notifyPersistenceError(err)}
+}
 updateContinueButton();
 
 function showScreen(id){
@@ -741,7 +756,7 @@ function extendTrialTime(seconds){
 function goSetup(){showScreen("setup");}
 function continueRun(){
   const raw=localStorage.getItem(STORAGE_RUN); if(!raw)return;
-  state=JSON.parse(raw); PACK=state.pack||PACK; startTimer(); showScreen(state.screen||"game");
+  state=JSON.parse(raw); PACK=state.pack||PACK; paused=!!state.paused; startTimer(); showScreen(state.screen||"game");
   if(state.screen==="question") renderQuestion(); else if(state.screen==="growth") renderGrowth(); else if(state.screen==="gate") renderGate(); else if(state.screen==="final") renderFinal(); else {renderGame()}
 }
 function historyCount(){return getHistory().length}
@@ -828,6 +843,7 @@ function chooseDaily(rand){
   return sample(DAILY_RULES,rand);
 }
 function startNewRun(){
+  const previousState=state;
   const mode=segValue("modeSeg","mode"), director=segValue("directorSeg","director"), steal=segValue("stealSeg","steal")==="on";
   const seedText=document.getElementById("seedInput").value.trim()||String(Math.floor(Math.random()*900000+100000));
   const seed=hashSeed(seedText), rand=rng(seed);
@@ -851,7 +867,8 @@ function startNewRun(){
   };
   state.nodes=generateMap(rand);
   logDirector(`새 탐험 시작 seed=${seedText}, mode=${mode}, director=${director}`);
-  saveRun();
+  paused=false;
+  if(!saveRun()){state=previousState;paused=!!previousState?.paused;return;}
   // Commit the HOME slot summary only when the expedition is actually started.
   try{
     const key="moonpath-home-v3";
@@ -1384,8 +1401,8 @@ function resolveRecoverySuccess(traceId,q,lines){
   lines.push(`${keyLabel(t.keyType)} 회수`,`♥ 회복`,`+${50+(state.daily?.key==="recovery"?50:0)}P 복원 보상`);
 }
 function postQuestionFlow(result){
-  if(trialMode()&&state.remainingSec<=0){finishRun("time");return}
   const ctx=state.pendingContext||{};
+  if(trialMode()&&state.remainingSec<=0&&ctx.kind!=="final"){finishRun("time");return}
   if(!["mid","final","supplement","recovery"].includes(ctx.kind)){
     state.totalExploreSolved++;state.regionSolved[state.region]=(state.regionSolved[state.region]||0)+1;rotateParticipant();
   }
@@ -1393,10 +1410,10 @@ function postQuestionFlow(result){
   continueAfterQuestion(ctx,result);
 }
 function continueAfterQuestion(ctx,result){
+  if(ctx.kind==="final"){handleFinalProgress(result);return}
   if(trialMode()&&state.remainingSec<=0){finishRun("time");return}
   if(trialMode()&&trialShouldFinal()){trialAutoFinal();return}
   if(ctx.kind==="mid"){state.midGate.done++;if(result==="correct")state.midGate.success++; if(state.midGate.done<2){startQuestion(selectQuestion({}),{kind:"mid",risk:"normal"});return} if(state.midGate.success===0){state.hp=Math.max(1,state.hp-1);toast("관문 최소조건 미달: ♥ -1 후 통과")} state.region=3;showGrowth(2);return}
-  if(ctx.kind==="final"){handleFinalProgress(result);return}
   if(ctx.kind==="supplement"){state.supplementDone=(state.supplementDone||0)+1;if(keysReady()||state.supplementDone>=2){state.unstableFinal=!keysReady();showFinalReady()}else startSupplement();return}
   if(ctx.kind==="recovery"){afterNode(result==="correct");return}
   afterNode(result==="correct");
@@ -1572,7 +1589,10 @@ function finishRun(reason="final"){
     state.trialEndReason=reason;
   }
   const hist=getHistory(),record={date:new Date().toLocaleString("ko-KR"),pack:PACK.pack?.title||"문제팩",seed:state.seedText,correct:state.stats.correct,total:state.stats.total,recovered:state.stats.recovered,maxCombo:state.maxCombo||0,keys:state.keys,ending:state.trialEnding||null,teams:state.teams.map(t=>({name:t.name,score:t.score}))};
-  hist.unshift(record);saveHistory(hist.slice(0,30));clearRun();state.screen="result";showScreen("result");syncHuds();renderResult()
+  hist.unshift(record);
+  if(!saveHistory(hist.slice(0,30)))return;
+  if(!clearRun())return;
+  state.screen="result";showScreen("result");syncHuds();renderResult()
 }
 function renderResult(){
   const rate=state.stats.total?Math.round(state.stats.correct/state.stats.total*100):0;
