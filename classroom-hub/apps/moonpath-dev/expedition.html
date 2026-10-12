@@ -658,6 +658,61 @@ button{cursor:pointer}
 @media(max-width:560px){
   #setup .setupPane--right:nth-of-type(2){min-height:975px}
 }
+
+/* V7: approved setup frame aspect-ratio correction.
+   Original LEFT 2300x1800 (23:18), RIGHT 1400x1800 (7:9).
+   No PNG changes. Let the framed surfaces determine their size, not a stretched background. */
+@media (min-width:1500px) {
+  #setup .setupGrid{
+    width:min(1528px,calc(100vw - 44px))!important;
+    height:auto!important;min-height:0!important;
+    grid-template-columns:minmax(0,23fr) minmax(0,14fr)!important;
+    gap:14px!important;align-items:start!important;
+  }
+  #setup .setupPane,
+  #setup .setupPane:nth-of-type(2) {
+    height:auto!important;min-height:0!important;
+    aspect-ratio:23 / 18;
+  }
+  #setup .setupPane:nth-of-type(2){aspect-ratio:7 / 9}
+  #setup .setupPane::before{background-size:100% 100%!important}
+  /* Fit the approved 7xx-pixel-tall canvas without covering its ornaments. */
+  #setup .setupPane--left{padding-top:155px!important;padding-bottom:38px!important}
+  #setup .setupPane--right{padding-top:122px!important;padding-bottom:34px!important}
+  #setup .setupPane--left .mp-panel-title{font-size:31px!important;margin-bottom:5px!important}
+  #setup .setupPane--right .mp-panel-title{font-size:30px!important;margin-bottom:5px!important}
+  #setup .setupPane--left .mp-choice-row{margin-top:6px!important}
+  #setup .setupPane--left .mp-team-settings{margin:9px 0 6px!important}
+  #setup .setupPane--right .mp-summary-grid{gap:7px!important;margin:7px 0!important}
+  #setup .setupPane--right .metric{min-height:74px!important}
+  #setup .setupPane--right .mp-repeat-info{min-height:90px!important}
+  #setup .setupPane--right .mp-instructions{min-height:83px!important}
+  #setup .setupPane--right .mp-start-button{min-height:50px!important;margin-top:7px!important}
+  #setup .setupPane--right .mp-back-button{min-height:37px!important;margin-top:6px!important}
+  #setup .mp-metric-heading{font-size:14px!important}
+  #setup #sumQuestions{font-size:clamp(18px,1.3vw,23px)!important}
+}
+/* At mid-size windows, retain the source aspect ratio by stacking the frames
+   instead of squeezing both into the same tall row. */
+@media (min-width:1080px) and (max-width:1499px) {
+  #setup{align-items:flex-start!important}
+  #setup .setupGrid{
+    width:min(930px,calc(100vw - 40px))!important;
+    height:auto!important;min-height:0!important;
+    grid-template-columns:minmax(0,1fr)!important;gap:18px!important;
+    justify-items:center!important;
+  }
+  #setup .setupPane--left{width:min(920px,100%)!important;height:auto!important;min-height:0!important;aspect-ratio:23/18}
+  #setup .setupPane--right{width:min(568px,100%)!important;height:auto!important;min-height:0!important;aspect-ratio:7/9}
+  #setup .setupPane::before{background-size:100% 100%!important}
+  #setup .setupPane--left{padding-top:162px!important;padding-bottom:45px!important}
+  #setup .setupPane--right{padding-top:124px!important;padding-bottom:43px!important}
+}
+/* Smaller screens keep their established scrolling layout; never distort an
+   approved PNG when the content box needs extra height. */
+@media (max-width:1079px) {
+  #setup .setupPane::before{background-size:contain!important;background-position:top center!important}
+}
 </style>
 </head>
 <body>
