@@ -339,181 +339,155 @@ button{cursor:pointer}
  .resultBody{grid-template-columns:1fr}
 }
 
-/* MOONPATH SETUP V4 — one authoritative frame/content layout.
-   1672×941 reference; proportions are responsive, screen may scroll when short.
-   Decoration art uses ::before. All text, inputs and actions remain real HTML. */
-#setup{
-  position:relative;isolation:isolate;display:none;overflow-x:hidden;overflow-y:auto;
-  background-image:linear-gradient(rgba(8,8,27,.13),rgba(8,8,27,.22)),
-    url("./assets/MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png");
-  background-size:cover;background-position:center;background-repeat:no-repeat;
-  padding:12px 32px;align-items:center;justify-content:center;
-  color:#2e2950;
+/* MOONPATH SETUP V5 | Thin Frame, 2300x1800 + 1400x1800
+   Images: decorative only; HTML remains interactive.
+   The two PNG aspect ratios determine the 23:14 grid at desktop widths. */
+#setup {
+  position:relative; isolation:isolate; display:none;
+  overflow-x:hidden;overflow-y:auto;
+  background-image:linear-gradient(rgba(10,9,32,.12),rgba(10,9,32,.20)),
+    url('./assets/MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png');
+  background-position:center;background-size:cover;background-repeat:no-repeat;
+  padding:12px 12px;align-items:center;justify-content:center;color:#282450;
 }
-#setup.active{display:flex}
-#setup .setupGrid{
-  display:grid;width:min(1480px,calc(100vw - 100px));
-  height:min(760px,calc(100vh - 32px));min-height:720px;max-width:none;
-  margin:auto;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);
-  gap:20px;align-items:stretch;
+#setup.active {display:flex}
+#setup .setupGrid {
+  display:grid;
+  width:min(1660px,calc(100vw - 32px));
+  max-width:none;
+  height:min(800px,calc(100vh - 24px));
+  min-height:720px;
+  grid-template-columns:minmax(0,23fr) minmax(0,14fr);
+  gap:12px; margin:auto;align-items:stretch;
 }
-#setup .setupPane{
+#setup .setupPane {
   position:relative;isolation:isolate;box-sizing:border-box;
-  min-width:0;height:100%;min-height:0;overflow:visible;
-  padding:140px 72px 46px!important;
-  border:0!important;border-radius:0!important;box-shadow:none!important;
-  background:transparent!important;color:#302846;
+  min-width:0; min-height:0; height:100%;overflow:visible;
+  padding:188px 8.7% 66px!important;
+  border:none!important;border-radius:0!important;box-shadow:none!important;
+  background:transparent!important;color:#30264f;
 }
-#setup .setupPane:nth-child(2){padding:140px 60px 43px!important}
-#setup .setupPane::before{
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png");
-  background-repeat:no-repeat;background-size:100% 100%;background-position:center;
-  opacity:1;display:block;
+#setup .setupPane:nth-child(2){padding:141px 10% 69px!important}
+#setup .setupPane::before {
+  position:absolute;content:"";inset:0;z-index:-1;display:block;
+  pointer-events:none;opacity:1;
+  background-image:url('./assets/MP_SETUP_FRAME_LEFT_2300x1800_THIN_BORDER_v2.png');
+  background-size:100% 100%; background-repeat:no-repeat;background-position:center;
 }
-#setup .setupPane:nth-child(2)::before{
-  background-image:url("./assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png");
+#setup .setupPane:nth-child(2)::before {
+  background-image:url('./assets/MP_SETUP_FRAME_RIGHT_1400x1800_THIN_BORDER_v2.png');
 }
 #setup .setupPane>*{position:relative;z-index:1;box-sizing:border-box;min-width:0;max-width:100%}
-#setup .setupPane h2{
-  color:#282054;text-shadow:none;letter-spacing:0;
-  font-size:clamp(27px,2.1vw,36px);font-weight:900;line-height:1.15;
-  text-align:center;margin:0 0 12px;
+#setup .setupPane h2 {
+  margin:0 0 10px; font-size:clamp(27px,2.18vw,38px);line-height:1.15;
+  color:#292253;letter-spacing:0;text-align:center;font-weight:900;text-shadow:none;
 }
 #setup .setupPane h2::after{display:none}
-#setup .setupPane .packBox{
+#setup .setupPane .packBox {
+  padding:8px 13px;border:1px solid #dac9af;border-radius:8px;
+  background:rgba(255,250,238,.87);color:#2b264b;
   width:100%;max-width:100%;overflow-wrap:anywhere;
-  padding:11px 15px;border:1px solid #d0b78d;border-radius:9px;
-  background:rgba(255,250,239,.88);color:#302846;
 }
-#setup .setupPane .packBox b{color:#292354}
-#setup .setupPane .small{font-size:clamp(13px,.93vw,16px);color:#554d60;line-height:1.43}
-#setup .setupPane .field{margin:10px 0}
-#setup .setupPane .field label{
-  color:#292354;font-size:clamp(16px,1.1vw,19px);
-  font-weight:800;margin:0 0 5px;line-height:1.22;
+#setup .setupPane .packBox b{color:#292251;font-size:clamp(16px,1.12vw,20px)}
+#setup .setupPane .small{font-size:clamp(13px,.94vw,16px);line-height:1.35;color:#554e64;opacity:.91}
+#setup .setupPane .packBox .secondary {margin-top:0!important}
+#setup .setupPane .field {margin:10px 0;min-width:0}
+#setup .setupPane .field label {
+  font-size:clamp(17px,1.22vw,21px);font-weight:800;line-height:1.2;
+  color:#292352;margin:0 0 5px;min-width:0;
 }
-#setup .setupPane .segment{display:flex;gap:8px;flex-wrap:nowrap;min-width:0}
-#setup .setupPane .segment button{
-  flex:1 1 0;min-width:0;max-width:100%;
-  padding:9px 7px;min-height:42px;
-  font-size:clamp(13px,1.03vw,18px);font-weight:800;
-  line-height:1.18;white-space:normal;
-  background:#fffaf1;color:#302854;
-  border:1px solid #c9b69b;border-radius:8px;
+#setup .setupPane:first-child>.field:not(.teamRow) {
+  display:grid;grid-template-columns:minmax(100px,20%) minmax(0,1fr);
+  align-items:center;column-gap:11px;margin:11px 0;
 }
-#setup .setupPane .segment button.sel{
-  background:linear-gradient(145deg,#29377c,#172260);color:#fff1d0;
-  border:2px solid #d3ad65;box-shadow:inset 0 0 0 1px #7263a8;
+#setup .setupPane:first-child>.field:not(.teamRow)>label {margin:0!important}
+#setup .setupPane:first-child>.field:not(.teamRow)>input {width:100%!important;max-width:100%!important}
+#setup .setupPane .segment {display:flex;gap:7px;flex-wrap:nowrap;min-width:0}
+#setup .setupPane .segment button {
+  box-sizing:border-box;flex:1 1 0;min-width:0;padding:9px 6px;
+  min-height:44px; font-size:clamp(14px,1.11vw,19px);
+  font-weight:800;line-height:1.2;border-radius:7px;white-space:normal;
+  background:rgba(255,252,246,.95);border:1px solid #cbb898;color:#2a2450;
 }
-#setup .setupPane .teamRow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:8px 0}
-#setup .setupPane .teamRow label{margin:0!important;white-space:nowrap}
-#setup .setupPane .teamRow input{
-  width:66px;max-width:66px;min-width:0;min-height:39px;padding:6px;
-  background:#fffaf3;border:1px solid #bfa987;border-radius:7px;
-  font-size:18px;color:#25224a;
+#setup .setupPane .segment button.sel {
+  border:2px solid #ddb365;
+  background:linear-gradient(150deg,#323580,#202361);color:#fff4da;
+  box-shadow:inset 0 0 0 1px #6f69a7;
 }
-#setup #seedInput{
-  box-sizing:border-box;width:min(100%,360px)!important;max-width:100%;
-  padding:9px!important;min-height:40px;font-size:17px;
-  border:1px solid #bfa987;border-radius:7px;background:#fffaf3;color:#25224a;
+#setup .setupPane .teamRow {
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  margin:9px 0;min-width:0;
 }
-#setup .setupPane:nth-child(2) .packBox{padding:11px 14px}
-#setup .setupPane:nth-child(2) .packBox p{margin:7px 0;line-height:1.45}
-#setup .setupPane .summaryBox{
+#setup .setupPane .teamRow label {margin:0!important;white-space:nowrap}
+#setup .setupPane .teamRow input {
+  width:75px;min-width:0;max-width:75px;min-height:39px;
+  padding:5px 8px;border:1px solid #c6b092;
+  border-radius:7px;background:#fffaf3;color:#292352;
+  font-size:19px;
+}
+#setup #seedInput {
+  width:100%!important;max-width:100%!important;
+  min-height:41px;padding:8px 10px!important;
+  font-size:18px;color:#282350;background:#fffaf3;
+  border:1px solid #bfa88b;border-radius:7px;
+}
+#setup .setupPane:nth-child(2) h2 {margin-bottom:7px}
+#setup .setupPane:nth-child(2) .packBox {padding:7px 12px}
+#setup .setupPane:nth-child(2) .packBox p {margin:4px 0;font-size:clamp(13px,.91vw,16px);line-height:1.34}
+#setup .setupPane .summaryBox {
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:9px;margin:12px 0;
+  gap:7px;margin:8px 0;
 }
-#setup .setupPane .metric{
-  box-sizing:border-box;min-width:0;max-width:100%;
-  padding:10px 5px;border:1px solid #d2b896;border-radius:9px;
-  background:rgba(255,246,228,.91);color:#292354;
-  font-size:clamp(14px,.96vw,17px);text-align:center;
+#setup .setupPane .metric {
+  padding:7px 5px;min-width:0;max-width:100%;
+  border:1px solid #d1b993;border-radius:9px;
+  background:rgba(255,248,233,.90);color:#2e2654;
+  font-size:clamp(14px,.97vw,17px);text-align:center;
 }
-#setup .setupPane .metric b{
-  display:block;margin-top:3px;font-size:clamp(19px,1.45vw,27px);
-  line-height:1.14;color:#252051;overflow-wrap:anywhere;
+#setup .setupPane .metric b {
+  display:block;line-height:1.13;margin-top:4px;
+  font-size:clamp(21px,1.5vw,27px);color:#282153;overflow-wrap:anywhere;
 }
 #setup .setupPane .primary,
-#setup .setupPane .secondary{
+#setup .setupPane .secondary {
   box-sizing:border-box;max-width:100%;min-width:0;
   font-weight:900;border-radius:8px;white-space:normal;
 }
-#setup .setupPane .primary{
-  min-height:53px;margin-top:13px!important;padding:10px 12px;
-  background:linear-gradient(135deg,#29377c,#1c1d5d);color:#fff4d1;
-  border:2px solid #ddb96b;box-shadow:inset 0 0 0 1px #756bae;
+#setup .setupPane .primary {
+  min-height:49px;margin-top:7px!important;padding:8px 12px;
+  border:2px solid #e1bd7b;
+  background:linear-gradient(135deg,#30377d,#191e5c);color:#fff3d0;
+  box-shadow:inset 0 0 0 1px #7973ad;
 }
-#setup .setupPane .secondary{
-  min-height:40px;margin-top:8px!important;padding:8px 12px;
-  background:linear-gradient(#fff9ec,#eadbc0);color:#2a2752;
-  border:1px solid #bfa582;
+#setup .setupPane .secondary {
+  min-height:38px;margin-top:5px!important;padding:7px 11px;
+  border:1px solid #b89f80;
+  background:linear-gradient(#fffaf1,#e9d9bd);color:#29234e;
 }
-#setup .setupPane .packBox .secondary{margin-top:0!important}
-#setup .setupPane button:focus-visible,#setup .setupPane input:focus-visible{
- outline:3px solid #8562d0;outline-offset:2px;
+#setup .setupPane button:focus-visible,#setup .setupPane input:focus-visible {
+  outline:3px solid #8e63d9;outline-offset:2px;
 }
-@media(max-width:1170px){
-  #setup{padding:12px 15px}
-  #setup .setupGrid{width:calc(100vw - 42px);gap:8px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
-  #setup .setupPane{padding-left:10%!important;padding-right:10%!important}
-  #setup .setupPane:nth-child(2){padding-left:11%!important;padding-right:11%!important}
-  #setup .setupPane .segment{gap:5px}
-  #setup .setupPane .segment button{font-size:13px;padding:8px 4px}
+@media (min-width:851px) and (max-width:1399px) {
+  #setup .setupGrid{height:min(740px,calc(100vh - 16px));min-height:700px;gap:8px}
+  #setup .setupPane{padding:171px 8.5% 55px!important}
+  #setup .setupPane:nth-child(2){padding:146px 9.5% 57px!important}
+  #setup .setupPane .field label {font-size:15px}
+  #setup .setupPane .segment button {font-size:13px;min-height:41px}
+  #setup .setupPane .teamRow{gap:7px}
+  #setup .setupPane .teamRow input{width:60px}
 }
 @media(max-width:850px){
-  #setup{align-items:flex-start;padding:14px 10px}
-  #setup .setupGrid{display:grid;width:min(690px,100%);height:auto;min-height:0;grid-template-columns:1fr;gap:16px}
-  #setup .setupPane{height:auto;min-height:640px;padding:123px 12% 55px!important}
-  #setup .setupPane:nth-child(2){min-height:660px;padding:123px 13% 65px!important}
-  #setup .setupPane .segment button{font-size:clamp(13px,2.5vw,18px)}
-  #setup .setupPane h2{font-size:clamp(28px,4vw,36px)}
+  #setup{align-items:flex-start;padding:12px 8px}
+  #setup .setupGrid{display:grid;width:min(680px,100%);grid-template-columns:1fr;
+    height:auto;min-height:0;gap:14px}
+  #setup .setupPane{height:auto;min-height:670px;padding:161px 10.5% 75px!important}
+  #setup .setupPane:nth-child(2){min-height:740px;padding:155px 10.5% 87px!important}
+  #setup .setupPane .field label{font-size:clamp(14px,2.3vw,19px)}
+  #setup .setupPane .segment button{font-size:clamp(12px,2.2vw,17px);min-height:40px}
+  #setup .setupPane .teamRow{gap:7px}
+  #setup .setupPane .teamRow input{width:64px}
+  #setup .setupPane .metric b{font-size:clamp(19px,3vw,25px)}
 }
-
-
-/* MOONPATH VERIFIED FRAME 1900x1300 1400x1750 */
-@media(min-width:851px){
-  #setup{padding:8px 12px;overflow-x:hidden;}
-  #setup .setupGrid{
-    width:min(1600px,calc(100vw - 32px));
-    height:min(790px,calc(100vh - 24px));
-    min-height:690px;
-    grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);
-    gap:12px;
-  }
-  #setup .setupPane{padding:132px 8.4% 50px!important}
-  #setup .setupPane:nth-child(2){padding:132px 10.7% 49px!important}
-  #setup .setupPane h2{font-size:clamp(29px,2.1vw,37px);margin-bottom:12px}
-  #setup .setupPane:nth-child(2) .packBox{padding:9px 12px}
-  #setup .setupPane:nth-child(2) .packBox p{margin:5px 0}
-  #setup .setupPane:nth-child(2) .summaryBox{gap:7px;margin:10px 0}
-  #setup .setupPane:nth-child(2) .metric{padding:8px 3px}
-  #setup .setupPane:nth-child(2) .primary{margin-top:12px!important}
-}
-#setup .setupPane::before{
-  background-image:url("./assets/MP_SETUP_FRAME_LEFT_1900x1300_VERIFIED.png");
-  background-size:100% 100%;
-}
-#setup .setupPane:nth-child(2)::before{
-  background-image:url("./assets/MP_SETUP_FRAME_RIGHT_1400x1750_VERIFIED.png");
-}
-
-
-/* MOONPATH TITLE SAFE AREA PATCH */
-/* Lift only the left decorative artwork so its crescent and inner gold top edge
-   sit above the real HTML title; preserve all interactive element coordinates. */
-@media(min-width:851px){
- #setup .setupPane:first-child::before{
-   top:-52px;
-   bottom:-32px;
- }
- #setup .setupPane:first-child h2{
-   position:relative;
-   z-index:2;
-   text-shadow:0 1px 0 rgba(255,250,239,.85);
- }
-}
-
 </style>
 </head>
 <body>
