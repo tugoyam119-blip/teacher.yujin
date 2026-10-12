@@ -738,7 +738,7 @@ button{cursor:pointer}
     </div>
     <div class="summaryBox mp-summary-grid">
       <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-clock"/></svg><span>예상 시간</span></div><b id="sumTime">45분</b></div>
-      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-target"/></svg><span>탐험 진행</span></div><b>시간 맞춤</b></div>
+      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-target"/></svg><span>예상 문제 수</span></div><b id="sumQuestions" title="학급의 진행 속도, 갈림길 선택, FINAL 진입 시간에 따라 달라지는 예상치입니다.">약 10~15문제</b></div>
       <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-key"/></svg><span>열쇠 목표</span></div><b id="sumKeys">◆2 ▲2 ✦1</b></div>
       <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon mp-fill-icon"><use href="#mp-heart"/></svg><span>시작 탐험력</span></div><b>♥ 8</b></div>
     </div>
@@ -823,6 +823,8 @@ const MODE = {
 };
 // Time-led classroom trial: new runs only. Older saved runs keep legacy rules.
 const TRIAL_KEYS={blue:2,yellow:2,red:1};
+// Indicative range only: actual count varies with class pace, branching and FINAL time.
+const TRIAL_ESTIMATED_QUESTIONS={quick:"약 6~10문제",standard:"약 10~15문제",long:"약 13~20문제"};
 const TRIAL_TRAVEL_SECONDS={safe:45,normal:30,danger:15,unknown:25};
 const TRIAL_RESERVE_MINUTES={quick:7,standard:10,long:12};
 const TRIAL_ENDINGS={complete:"완전한 개방",partial:"불완전한 개방",return:"귀환과 재도전"};
@@ -982,6 +984,7 @@ try{const p=JSON.parse(localStorage.getItem(STORAGE_PACK)||"null");if(p?.questio
 document.querySelectorAll("#modeSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#modeSeg button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");
   const m=MODE[b.dataset.mode];document.getElementById("sumTime").textContent=m.minutes+"분";
+  document.getElementById("sumQuestions").textContent=TRIAL_ESTIMATED_QUESTIONS[b.dataset.mode];
   document.getElementById("sumKeys").textContent=`◆${TRIAL_KEYS.blue} ▲${TRIAL_KEYS.yellow} ✦${TRIAL_KEYS.red}`;
 });
 document.querySelectorAll("#directorSeg button").forEach(b=>b.onclick=()=>{
