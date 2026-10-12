@@ -1600,6 +1600,7 @@ function postQuestionFlow(result){
   continueAfterQuestion(ctx,result);
 }
 function continueAfterQuestion(ctx,result){
+  if(trialMode()&&state.remainingSec<=0){finishRun("time");return}
   if(trialMode()&&trialShouldFinal()){trialAutoFinal();return}
   if(ctx.kind==="mid"){state.midGate.done++;if(result==="correct")state.midGate.success++; if(state.midGate.done<2){startQuestion(selectQuestion({}),{kind:"mid",risk:"normal"});return} if(state.midGate.success===0){state.hp=Math.max(1,state.hp-1);toast("관문 최소조건 미달: ♥ -1 후 통과")} state.region=3;showGrowth(2);return}
   if(ctx.kind==="final"){handleFinalProgress(result);return}
@@ -1774,7 +1775,7 @@ function finishRun(reason="final"){
   if(trialMode()){
     const completed=state.final?.completed||0,passed=state.final?.success||0;
     const full=reason==="final"&&keysReady()&&passed>=Math.ceil((state.final.plan?.length||1)*.6);
-    state.trialEnding=full?"complete":reason==="final"&&(passed>0||keysReady())?"partial":"return";
+    state.trialEnding=full?"complete":(state.trialFinalTriggered&&(passed>0||completed>0||keysReady()))?"partial":"return";
     state.trialEndReason=reason;
   }
   const hist=getHistory(),record={date:new Date().toLocaleString("ko-KR"),pack:PACK.pack?.title||"문제팩",seed:state.seedText,correct:state.stats.correct,total:state.stats.total,recovered:state.stats.recovered,maxCombo:state.maxCombo||0,keys:state.keys,ending:state.trialEnding||null,teams:state.teams.map(t=>({name:t.name,score:t.score}))};
