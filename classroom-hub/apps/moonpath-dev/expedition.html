@@ -734,12 +734,12 @@ button{cursor:pointer}
     <h2 class="mp-panel-title">이번 탐험</h2>
     <div class="packBox mp-instructions">
       <div class="mp-box-heading"><svg class="mp-icon"><use href="#mp-book"/></svg><b>운영 방식</b></div>
-      <p class="small">선택한 문제팩으로 모둠이 함께 탐험하는 협력형 학습입니다. 문제를 풀고, 열쇠를 모아 더 깊은 탐험지로 나아가세요.</p>
+      <p class="small">갈림길의 위험·보상·이동 시간을 비교해 함께 선택합니다. 남은 시간에 맞춰 FINAL로 이동하며, 모은 열쇠는 최종 지원에 사용합니다.</p>
     </div>
     <div class="summaryBox mp-summary-grid">
       <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-clock"/></svg><span>예상 시간</span></div><b id="sumTime">45분</b></div>
-      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-target"/></svg><span>본문 목표</span></div><b>9~11문제</b></div>
-      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-key"/></svg><span>열쇠 목표</span></div><b id="sumKeys">◆3 ▲3 ✦2</b></div>
+      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-target"/></svg><span>탐험 진행</span></div><b>시간 맞춤</b></div>
+      <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon"><use href="#mp-key"/></svg><span>열쇠 목표</span></div><b id="sumKeys">◆2 ▲2 ✦1</b></div>
       <div class="metric"><div class="mp-metric-heading"><svg class="mp-icon mp-fill-icon"><use href="#mp-heart"/></svg><span>시작 탐험력</span></div><b>♥ 8</b></div>
     </div>
     <div class="packBox mp-repeat-info">
@@ -821,6 +821,11 @@ const MODE = {
   standard:{minutes:45,keyReq:{blue:3,yellow:3,red:2},targetNodes:10},
   long:{minutes:60,keyReq:{blue:4,yellow:4,red:3},targetNodes:14}
 };
+// Time-led classroom trial: new runs only. Older saved runs keep legacy rules.
+const TRIAL_KEYS={blue:2,yellow:2,red:1};
+const TRIAL_TRAVEL_SECONDS={safe:45,normal:30,danger:15,unknown:25};
+const TRIAL_RESERVE_MINUTES={quick:7,standard:10,long:12};
+const TRIAL_ENDINGS={complete:"완전한 개방",partial:"불완전한 개방",return:"귀환과 재도전"};
 const RISKS = {
   safe:{label:"🛡 안전",reward:0.8},
   normal:{label:"◇ 보통",reward:1.0},
@@ -906,6 +911,41 @@ function showExpeditionBrief(){
   <button class="primary" style="width:100%" onclick="document.getElementById('overlayRoot').innerHTML='';renderGame()">원정 시작</button></div></div>`;
 }
 
+function trialMode(){return !!(state&&state.trialRules==="time-led-v1")}
+function currentKeyReq(){return trialMode()?TRIAL_KEYS:MODE[state.mode].keyReq}
+function trialReserveSeconds(){return (TRIAL_RESERVE_MINUTES[state?.mode]||10)*60}
+function trialShouldFinal(){return trialMode()&&state.remainingSec<=trialReserveSeconds()&&!state.trialFinalTriggered}
+function trialAutoFinal(){
+  if(!trialMode()||state.trialFinalTriggered||["final","result"].includes(state.screen))return false;
+  state.trialFinalTriggered=true;
+  state.unstableFinal=!keysReady();
+  document.getElementById("overlayRoot").innerHTML="";
+  showFinalReady();return true;
+}
+function trialExtraChoice(){
+  if(!trialMode())return prepareFinal();
+  if(trialShouldFinal())return trialAutoFinal();
+  state.screen="game";showScreen("game");syncHuds();renderMap();renderSide();renderTeamRail();saveRun();
+  const root=document.getElementById("overlayRoot");
+  root.innerHTML=`<div class="overlay"><div class="modal card"><h2>✦ 추가 탐험 기회</h2>
+    <p>세 지역의 기본 탐험을 마쳤습니다. 아직 시간이 남았습니다.</p>
+    <p>추가 문제를 풀어 열쇠와 정찰자원을 얻거나, 지금까지 모은 열쇠로 FINAL에 도전하세요.</p>
+    <p><b>남은 시간 ${formatTime(state.remainingSec)}</b> · FINAL 확보 시간 ${TRIAL_RESERVE_MINUTES[state.mode]}분</p>
+    <button class="primary" style="width:100%;margin:7px 0" onclick="trialExtraQuestion()">추가 도전 (문제 1개)</button>
+    <button class="secondary" style="width:100%" onclick="trialAutoFinal()">지금 FINAL 도전</button>
+  </div></div>`;
+}
+function trialExtraQuestion(){
+  if(trialShouldFinal())return trialAutoFinal();
+  document.getElementById("overlayRoot").innerHTML="";
+  startQuestion(selectQuestion({}),{kind:"bonus",risk:"normal"});
+}
+function extendTrialTime(seconds){
+  if(!trialMode()||!state)return;
+  state.remainingSec+=seconds;
+  document.getElementById("overlayRoot").innerHTML="";
+  syncHuds();saveRun();toast(`교사 연장 +${Math.round(seconds/60)}분 · 남은 ${formatTime(state.remainingSec)}`);
+}
 function goSetup(){showScreen("setup");}
 function continueRun(){
   const raw=localStorage.getItem(STORAGE_RUN); if(!raw)return;
@@ -942,7 +982,7 @@ try{const p=JSON.parse(localStorage.getItem(STORAGE_PACK)||"null");if(p?.questio
 document.querySelectorAll("#modeSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#modeSeg button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");
   const m=MODE[b.dataset.mode];document.getElementById("sumTime").textContent=m.minutes+"분";
-  document.getElementById("sumKeys").textContent=`◆${m.keyReq.blue} ▲${m.keyReq.yellow} ✦${m.keyReq.red}`;
+  document.getElementById("sumKeys").textContent=`◆${TRIAL_KEYS.blue} ▲${TRIAL_KEYS.yellow} ✦${TRIAL_KEYS.red}`;
 });
 document.querySelectorAll("#directorSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#directorSeg button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");
@@ -1005,7 +1045,7 @@ function startNewRun(){
   const questions=PACK.questions.map(q=>({...q,_key:keyType(q)}));
   const byStd={}; for(const q of questions){const s=q.meta?.standards?.[0]||"";(byStd[s]??=[]).push(q.id)}
   state={
-    version:"1.2", pack:PACK, mode,director,steal,seedText,seed,screen:"game",
+    version:"1.2",trialRules:"time-led-v1", pack:PACK, mode,director,steal,seedText,seed,screen:"game",
     startedAt:now(),elapsed:0,paused:false,remainingSec:MODE[mode].minutes*60,
     hp:8,points:100,combo:0,maxCombo:0,keys:{blue:0,yellow:0,red:0},traces:[],skills:[],items:[],
     region:1,regionSolved:{1:0,2:0,3:0},totalExploreSolved:0,phase:"explore",regions,daily,
@@ -1089,7 +1129,7 @@ function revealFrontier(){
   for(const n of availableNodes())if(n.status==="hidden")n.status="scouted";
 }
 function hudHtml(){
-  const req=MODE[state.mode].keyReq;
+  const req=currentKeyReq();
   const t=state.teams[state.currentTeam],next=state.teams[(state.currentTeam+1)%state.teams.length];
   return `<div class="turnBox">
     <div class="turnDot">${state.currentTeam+1}</div>
@@ -1114,14 +1154,25 @@ function formatTime(s){s=Math.max(0,Math.floor(s));return `${String(Math.floor(s
 function startTimer(){
   clearInterval(timerHandle);
   timerHandle=setInterval(()=>{
-    if(!state||paused)return;
+    if(!state||paused||state.screen==="result")return;
     state.remainingSec=Math.max(0,state.remainingSec-1);state.elapsed=(state.elapsed||0)+1;
     document.querySelectorAll("#timeText").forEach(e=>e.textContent="⏱ "+formatTime(state.remainingSec));
-    if(state.remainingSec===8*60&&!state.paceWarned){state.paceWarned=true;showPaceWarning("남은 시간이 8분입니다. FINAL 준비 단계로 이동할 수 있습니다.")}
+    if(trialMode()){
+      // Never interrupt an active question or its answer explanation.
+      if(state.remainingSec===0){
+        if(state.screen==="question"){state.trialTimeoutPending=true}
+        else finishRun("time");
+        return;
+      }
+      if(trialShouldFinal()&&state.screen==="game"&&!document.getElementById("overlayRoot").innerHTML){trialAutoFinal();return}
+    }else if(state.remainingSec===8*60&&!state.paceWarned){
+      state.paceWarned=true;showPaceWarning("남은 시간이 8분입니다. FINAL 준비 단계로 이동할 수 있습니다.");
+    }
     saveRun();
   },1000)
 }
 function renderGame(){
+  if(trialShouldFinal()&&trialAutoFinal())return;
   state.screen="game";showScreen("game");syncHuds();revealFrontier();
   renderMap();renderSide();renderParticipation();renderTeamRail();saveRun();
 }
@@ -1248,7 +1299,7 @@ function routeCardHtml(n,i=0){
   const dangerClass=n.risk==="danger"?"danger":n.risk==="unknown"?"unknown":"";
   const scoutFields=[["difficulty","난이도",info.difficulty],["key","열쇠",info.key],["area","영역",info.area],["type","유형",info.type]];
   return `<div class="routeCard ${dangerClass}">
-    <div class="routeHead"><div><div class="routeName"><span style="font-size:13px;opacity:.62">선택지 ${String.fromCharCode(65+i)} · </span>${esc(f.name)}</div><div class="routeReward">예상 보상 ${rewardStars(n.risk)}</div></div><div class="routeRisk">${RISKS[n.risk].label}</div></div>
+    <div class="routeHead"><div><div class="routeName"><span style="font-size:13px;opacity:.62">선택지 ${String.fromCharCode(65+i)} · </span>${esc(f.name)}</div><div class="routeReward">예상 보상 ${rewardStars(n.risk)}${trialMode()?` · 이동 ${TRIAL_TRAVEL_SECONDS[n.risk]||30}초`:""}</div></div><div class="routeRisk">${RISKS[n.risk].label}</div></div>
     <div class="routeDesc">${esc(f.desc)}</div>
     <div class="routeKnown">
       ${infoTile("난이도",info.difficulty,n.scouted.includes("difficulty"))}
@@ -1326,6 +1377,7 @@ function clickNode(id){
 function travelTo(id){
   const n=nodeById(id); if(!availableNodes().some(x=>x.id===id))return;
   n.status="visited";n.visited=true;state.pathHistory??=["start"];state.pathHistory.push(id);state.currentNode=id;state.region=n.region;
+  if(trialMode())state.remainingSec=Math.max(0,state.remainingSec-(TRIAL_TRAVEL_SECONDS[n.risk]||30));
   ensurePreview(n);
   // recovery availability countdown
   state.traces.forEach(t=>{if(!t.ready){t.nodesLeft--;if(t.nodesLeft<=0)t.ready=true}});
@@ -1349,7 +1401,7 @@ function scoreQuestion(q,ctx={}){
   let score=0;const std=q.meta?.standards?.[0]||"";
   const counts=state.stats.byStd||{}, min=Math.min(...Object.values({"10통사2-01-01":counts["10통사2-01-01"]||0,"10통사2-01-02":counts["10통사2-01-02"]||0,"10통사2-01-03":counts["10통사2-01-03"]||0}));
   score+=(counts[std]||0)===min?30:8;
-  const req=MODE[state.mode].keyReq;const need={blue:req.blue-state.keys.blue,yellow:req.yellow-state.keys.yellow,red:req.red-state.keys.red};
+  const req=currentKeyReq();const need={blue:req.blue-state.keys.blue,yellow:req.yellow-state.keys.yellow,red:req.red-state.keys.red};
   score+=(need[q._key]>0?25:4);
   score+=state.recentTypes.includes(q.type)?2:10;
   const acc=recentAccuracy();const targetAdj=acc>.8?1:acc<.4?-1:0;
@@ -1398,6 +1450,7 @@ function selectQuestion(filter={}){
 }
 function startQuestion(q,ctx){
   if(!q){toast("출제 가능한 문제가 없습니다.");return}
+  if(trialMode()&&state.remainingSec<=0){finishRun("time");return}
   state.pendingQuestion=q.id;state.pendingContext=ctx;state.screen="question";selectedAnswer=null;orderSelection=[];
   showScreen("question");syncHuds();renderParticipation();renderQuestion();saveRun();
 }
@@ -1415,6 +1468,7 @@ function renderQuestion(){
     <div class="small">획득 가능</div><div class="big">${keyLabel(q._key)}</div>
     <div style="margin-top:18px"><b>${esc(area)}</b></div>
     <div style="margin-top:18px" class="small">문제 시간</div><div id="qTimer" class="qTimer">${formatTime(qSeconds)}</div>
+    ${trialMode()&&state.pendingContext?.kind==="final"&&["single_choice","true_false"].includes(q.type)&&state.trialSupports?.includes("hint")&&!state.trialHintUsed?`<button class="secondary" style="margin-top:12px;width:100%" onclick="useTrialHint()">◆ 이해 열쇠: 보기 1개 제거</button>`:""}
     ${q.type==="manual"?`<div class="teacherJudge"><button class="primary" onclick="judgeManual('correct')">성공</button><button class="secondary" onclick="judgeManual('partial')">부분 성공</button><button class="dangerBtn" onclick="judgeManual('wrong')">실패</button></div>`:""}
     <div style="margin-top:16px"><button class="secondary" onclick="useAnalysisSkill()" ${state.skills.includes("analysis")&&q.type==="single_choice"?"":"disabled"}>🔍 보기 제거</button></div>
     <div class="qCompetition"><b>경쟁 규칙</b><br>정답 보상은 현재 모둠 점수에 더해집니다. 오답이면 다른 모둠이 제한적으로 가로챌 수 있지만, 원래 오답 흔적은 남아 나중에 회수해야 합니다.</div>`;
@@ -1436,7 +1490,7 @@ function renderAnswerUI(q){
     return `<div class="options">${q.options.map(o=>`<button class="optBtn" data-k="${esc(o.key)}" onclick="pickOption(this,'${esc(o.key)}')"><b>${esc(o.key)}</b>. ${esc(o.text)}</button>`).join("")}</div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
   }
   if(q.type==="true_false"){
-    return `<div class="options"><button class="optBtn" onclick="pickOption(this,'O')">O · 맞음</button><button class="optBtn" onclick="pickOption(this,'X')">X · 틀림</button></div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
+    return `<div class="options"><button class="optBtn" data-k="O" onclick="pickOption(this,'O')">O · 맞음</button><button class="optBtn" data-k="X" onclick="pickOption(this,'X')">X · 틀림</button></div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
   }
   if(q.type==="short_text"){
     return `<div class="interactiveBox"><input id="shortInput" style="width:100%;padding:15px;font-size:24px;border-radius:10px;border:1px solid #99886a" placeholder="정답 입력"></div><button class="primary" style="margin-top:14px" onclick="submitCurrent()">정답 제출</button>`;
@@ -1483,6 +1537,9 @@ function useAnalysisSkill(){
 function finishQuestion(result){
   clearInterval(questionTimer);
   const q=questionById(state.pendingQuestion),ctx=state.pendingContext||{}, correct=result==="correct", partial=result==="partial";
+  if(trialMode()&&ctx.kind==="final"&&!correct&&!partial&&state.trialSupports?.includes("retry")&&!state.trialRetryUsed&&state.remainingSec>0){
+    state.trialRetryUsed=true;selectedAnswer=null;orderSelection=[];saveRun();renderQuestion();toast("▲ 적용 열쇠: 한 번 더 도전합니다.");return;
+  }
   state.stats.total++; (correct?state.stats.correct++:partial?state.stats.partial++:state.stats.wrong++);
   const std=q.meta?.standards?.[0]||"";
   state.stats.byStd[std]??={c:0,t:0};state.stats.byStd[std].t++;if(correct)state.stats.byStd[std].c++;
@@ -1534,6 +1591,7 @@ function resolveRecoverySuccess(traceId,q,lines){
   lines.push(`${keyLabel(t.keyType)} 회수`,`♥ 회복`,`+${50+(state.daily?.key==="recovery"?50:0)}P 복원 보상`);
 }
 function postQuestionFlow(result){
+  if(trialMode()&&state.remainingSec<=0){finishRun("time");return}
   const ctx=state.pendingContext||{};
   if(!["mid","final","supplement","recovery"].includes(ctx.kind)){
     state.totalExploreSolved++;state.regionSolved[state.region]=(state.regionSolved[state.region]||0)+1;rotateParticipant();
@@ -1542,6 +1600,8 @@ function postQuestionFlow(result){
   continueAfterQuestion(ctx,result);
 }
 function continueAfterQuestion(ctx,result){
+  if(trialMode()&&state.remainingSec<=0){finishRun("time");return}
+  if(trialMode()&&trialShouldFinal()){trialAutoFinal();return}
   if(ctx.kind==="mid"){state.midGate.done++;if(result==="correct")state.midGate.success++; if(state.midGate.done<2){startQuestion(selectQuestion({}),{kind:"mid",risk:"normal"});return} if(state.midGate.success===0){state.hp=Math.max(1,state.hp-1);toast("관문 최소조건 미달: ♥ -1 후 통과")} state.region=3;showGrowth(2);return}
   if(ctx.kind==="final"){handleFinalProgress(result);return}
   if(ctx.kind==="supplement"){state.supplementDone=(state.supplementDone||0)+1;if(keysReady()||state.supplementDone>=2){state.unstableFinal=!keysReady();showFinalReady()}else startSupplement();return}
@@ -1550,10 +1610,11 @@ function continueAfterQuestion(ctx,result){
 }
 function rotateParticipant(){const old=state.currentTeam;state.teams[old].rep=(state.teams[old].rep+1)%state.members;state.currentTeam=(state.currentTeam+1)%state.teams.length}
 function afterNode(){
+  if(trialMode()&&trialShouldFinal()){trialAutoFinal();return}
   const solved=state.regionSolved?.[state.region]||0;
   if(state.region===1&&solved>=3){showGrowth(1);return}
   if(state.region===2&&solved>=3){showMidGate();return}
-  if(state.region===3&&solved>=3){prepareFinal();return}
+  if(state.region===3&&solved>=3){if(trialMode())trialExtraChoice();else prepareFinal();return}
   revealFrontier();renderGame();
 }
 function showSteal(){
@@ -1592,9 +1653,10 @@ function renderGate(){
 }
 function startMidGate(){state.midGate={done:0,success:0};startQuestion(selectQuestion({}),{kind:"mid",risk:"normal"})}
 function keysReady(){
-  const r=MODE[state.mode].keyReq;return state.keys.blue>=r.blue&&state.keys.yellow>=r.yellow&&state.keys.red>=r.red
+  const r=currentKeyReq();return state.keys.blue>=r.blue&&state.keys.yellow>=r.yellow&&state.keys.red>=r.red
 }
 function prepareFinal(){
+  if(trialMode())return trialAutoFinal();
   if(state.traces.length>=3){
     state.traces.slice(0,2).forEach(t=>t.ready=true);toast("FINAL 전 회수 통로가 열렸습니다.");renderGame();return
   }
@@ -1610,12 +1672,14 @@ function startSupplement(){
   const q=selectQuestion({key:k});startQuestion(q,{kind:"supplement",risk:"normal"})
 }
 function excessKeys(){
-  const r=MODE[state.mode].keyReq;return Math.max(0,state.keys.blue-r.blue)+Math.max(0,state.keys.yellow-r.yellow)+Math.max(0,state.keys.red-r.red)
+  const r=currentKeyReq();return Math.max(0,state.keys.blue-r.blue)+Math.max(0,state.keys.yellow-r.yellow)+Math.max(0,state.keys.red-r.red)
 }
 function showFinalReady(){
+  if(trialMode()){state.trialFinalTriggered=true;state.unstableFinal=!keysReady()}
   state.screen="final";state.final={stage:0,f1done:0,f1success:0};state.finalHintUsed=false;state.finalShieldUsed=false;showScreen("final");syncHuds();renderFinal();saveRun();
 }
 function renderFinal(){
+  if(trialMode())return renderTrialFinal();
   const r=MODE[state.mode].keyReq,ex=excessKeys(),support=ex>=2;
   document.getElementById("finalContent").innerHTML=`<div class="card gateCard"><div class="gateIcon">🏛</div><h2>FINAL GATE</h2>
     <div class="keysBig">${keyHtml("blue",state.keys.blue,r.blue)}${keyHtml("yellow",state.keys.yellow,r.yellow)}${keyHtml("red",state.keys.red,r.red)}</div>
@@ -1624,11 +1688,12 @@ function renderFinal(){
     <button class="primary" style="margin-top:18px" onclick="enterFinal()">문을 연다</button></div>`;
 }
 function setSupport(s){state.support=s;toast("FINAL 지원 선택 완료")}
-function enterFinal(){state.final={stage:1,f1done:0,f1success:0};startFinalStage1()}
+function enterFinal(){if(trialMode())return enterTrialFinal();state.final={stage:1,f1done:0,f1success:0};startFinalStage1()}
 function startFinalStage1(){
   const q=selectQuestion({key:"blue"});startQuestion(q,{kind:"final",stage:1,risk:"normal"})
 }
 function handleFinalProgress(result){
+  if(trialMode())return trialFinalProgress(result);
   if(state.final.stage===1){
     state.final.f1done++;if(result==="correct")state.final.f1success++;
     if(state.final.f1done<3){startFinalStage1();return}
@@ -1639,15 +1704,88 @@ function handleFinalProgress(result){
   }
   finishRun()
 }
-function finishRun(){
+// Classroom time-led FINAL (new runs). One ability per qualified key type,
+// up to two total. No hidden penalty for taking longer to discuss.
+function trialSupportOptions(){
+  return [{id:"hint",key:"blue",icon:"◆",name:"보기 1개 제거"},
+    {id:"retry",key:"yellow",icon:"▲",name:"오답 1회 재도전"},
+    {id:"preview",key:"red",icon:"✦",name:"최종 분석 문제의 난이도·유형 미리보기"}]
+    .filter(x=>state.keys[x.key]>=TRIAL_KEYS[x.key]);
+}
+function renderTrialFinal(){
+  const r=currentKeyReq();state.trialSupports??=[];
+  const available=trialSupportOptions();
+  const analysis=selectQuestion({key:"red"});
+  const showPreview=state.trialSupports.includes("preview")&&analysis;
+  document.getElementById("finalContent").innerHTML=`<div class="card gateCard">
+    <div class="gateIcon">🏛</div><h2>FINAL GATE · 공동 도전</h2>
+    <div class="keysBig">${keyHtml("blue",state.keys.blue,r.blue)}${keyHtml("yellow",state.keys.yellow,r.yellow)}${keyHtml("red",state.keys.red,r.red)}</div>
+    <p>${state.unstableFinal?"⚠ 열쇠 일부 부족 · 불안정 관문":"✦ 필요한 열쇠를 모았습니다 · 안정적인 관문"}</p>
+    <p>열쇠를 충족한 종류마다 지원을 선택할 수 있습니다. <b>최대 2종류</b>.</p>
+    <div class="segment" style="justify-content:center;flex-wrap:wrap">
+      ${available.map(x=>`<button class="${state.trialSupports.includes(x.id)?"sel":""}" onclick="selectTrialSupport('${x.id}')">${x.icon} ${esc(x.name)} ${state.trialSupports.includes(x.id)?"✓":""}</button>`).join("")||"<span>지원 없이도 FINAL 도전이 가능합니다.</span>"}
+    </div>
+    ${showPreview?`<p style="text-align:left">✦ 분석 예고: <b>${esc(analysis.type_label||analysis.type)} · ${esc(analysis.difficulty_label||String(analysis.difficulty)+"단계")}</b></p>`:""}
+    <p>남은 ${formatTime(state.remainingSec)} · 시간이 적으면 FINAL 문항이 자동으로 줄어듭니다.</p>
+    <button class="primary" style="width:100%;margin-top:12px" onclick="enterFinal()">문을 연다</button>
+  </div>`;
+}
+function selectTrialSupport(id){
+  if(!trialMode()||!trialSupportOptions().some(x=>x.id===id))return;
+  const arr=state.trialSupports??(state.trialSupports=[]);
+  const at=arr.indexOf(id);
+  if(at>=0)arr.splice(at,1);else if(arr.length<2)arr.push(id);else return toast("FINAL 지원은 최대 2개입니다.");
+  renderTrialFinal();saveRun();
+}
+function useTrialHint(){
+  if(!trialMode()||state.trialHintUsed||!state.trialSupports?.includes("hint"))return;
+  const q=questionById(state.pendingQuestion);
+  if(!["single_choice","true_false"].includes(q?.type))return toast("보기 제거는 객관식·O/X 문제에서 사용할 수 있습니다.");
+  const correct=q.type==="true_false"?(q.answer.correct?"O":"X"):q.answer.correct?.[0];
+  const wrong=[...document.querySelectorAll(".optBtn")].find(x=>x.dataset.k!==correct&&!x.disabled);
+  if(!wrong)return toast("제거할 보기가 없습니다.");
+  wrong.disabled=true;wrong.style.opacity=".35";wrong.style.textDecoration="line-through";
+  state.trialHintUsed=true;saveRun();toast("◆ 이해 열쇠: 오답 보기 1개 제거");
+}
+function enterTrialFinal(){
+  if(state.remainingSec<=0)return finishRun("time");
+  const secs=state.remainingSec;
+  const plan=secs<=100?["red"]:secs<=220?["blue","red"]:secs<=380?["blue","yellow","red"]:secs<=540?["blue","blue","yellow","red"]:["blue","blue","blue","yellow","red"];
+  state.final={stage:1,plan,index:0,success:0,completed:0};
+  state.trialHintUsed=false;state.trialRetryUsed=false;
+  trialNextFinalQuestion();
+}
+function trialNextFinalQuestion(){
+  if(state.remainingSec<=0)return finishRun("time");
+  if(state.final.index>=state.final.plan.length)return finishRun("final");
+  const key=state.final.plan[state.final.index];
+  const q=selectQuestion({key});
+  startQuestion(q,{kind:"final",stage:state.final.index+1,risk:"normal"});
+}
+function trialFinalProgress(result){
+  state.final.completed++;
+  if(result==="correct")state.final.success++;
+  state.final.index++;
+  if(state.remainingSec<=0)return finishRun("time");
+  if(state.final.index>=state.final.plan.length)return finishRun("final");
+  trialNextFinalQuestion();
+}
+function finishRun(reason="final"){
   clearInterval(timerHandle);clearInterval(questionTimer);
-  const hist=getHistory(),record={date:new Date().toLocaleString("ko-KR"),pack:PACK.pack?.title||"문제팩",seed:state.seedText,correct:state.stats.correct,total:state.stats.total,recovered:state.stats.recovered,maxCombo:state.maxCombo||0,keys:state.keys,teams:state.teams.map(t=>({name:t.name,score:t.score}))};
+  if(trialMode()){
+    const completed=state.final?.completed||0,passed=state.final?.success||0;
+    const full=reason==="final"&&keysReady()&&passed>=Math.ceil((state.final.plan?.length||1)*.6);
+    state.trialEnding=full?"complete":(state.trialFinalTriggered&&(passed>0||completed>0||keysReady()))?"partial":"return";
+    state.trialEndReason=reason;
+  }
+  const hist=getHistory(),record={date:new Date().toLocaleString("ko-KR"),pack:PACK.pack?.title||"문제팩",seed:state.seedText,correct:state.stats.correct,total:state.stats.total,recovered:state.stats.recovered,maxCombo:state.maxCombo||0,keys:state.keys,ending:state.trialEnding||null,teams:state.teams.map(t=>({name:t.name,score:t.score}))};
   hist.unshift(record);saveHistory(hist.slice(0,30));clearRun();state.screen="result";showScreen("result");syncHuds();renderResult()
 }
 function renderResult(){
   const rate=state.stats.total?Math.round(state.stats.correct/state.stats.total*100):0;
   const standards=["10통사2-01-01","10통사2-01-02","10통사2-01-03"];
-  document.getElementById("resultContent").innerHTML=`<div class="card resultPanel"><h2>탐험 기록</h2><div class="resultHero">FINAL CLEAR</div>
+  document.getElementById("resultContent").innerHTML=`<div class="card resultPanel"><h2>탐험 기록</h2><div class="resultHero">${trialMode()?TRIAL_ENDINGS[state.trialEnding]||"귀환과 재도전":"FINAL CLEAR"}</div>
+    ${trialMode()?`<p>${state.trialEndReason==="time"?"수업 시간 종료 · 현재까지의 학습 성과를 기록했습니다.":"FINAL 도전 완료 · 학급 공동 성과입니다."}</p>`:""}
     <div class="historyRow"><span>정답률</span><b>${rate}%</b></div><div class="historyRow"><span>최고 콤보</span><b>×${state.maxCombo||state.combo}</b></div>
     <div class="historyRow"><span>흔적 생성</span><b>${state.stats.tracesCreated}</b></div><div class="historyRow"><span>흔적 회수</span><b>${state.stats.recovered}</b></div>
     <div class="historyRow"><span>최종 열쇠</span><b>◆${state.keys.blue} ▲${state.keys.yellow} ✦${state.keys.red}</b></div>
@@ -1682,6 +1820,7 @@ function openTeacher(){
     <button class="secondary" onclick="teacherAdjustHp(-1)">♥ -1</button>
     <button class="secondary" onclick="teacherAdjustPoints(50)">P +50</button>
     <button class="secondary" onclick="teacherAdjustPoints(-50)">P -50</button>
+    ${trialMode()?`<button class="secondary" onclick="extendTrialTime(180)">⏱ +3분 연장</button><button class="secondary" onclick="extendTrialTime(300)">⏱ +5분 연장</button>`:""}
     <button class="secondary" onclick="replaceQuestion()">문제 교체</button>
     <button class="secondary" onclick="invalidateQuestion()">현재 문제 무효</button>
     <button class="dangerBtn" onclick="document.getElementById('overlayRoot').innerHTML='';prepareFinal()">FINAL 이동</button>
