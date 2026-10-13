@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "node --test test/entry-paths.test.js"
+    "test": "node --test test/entry-paths.test.js test/teacher-review.test.js"
   }
 }
