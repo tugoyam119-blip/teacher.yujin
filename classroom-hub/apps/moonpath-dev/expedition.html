@@ -448,6 +448,68 @@ min-height:43px;margin-top:8px!important;font-size:16px}
 #setup .metric>b{font-size:18px}
 #setup #sumQuestions{font-size:15px}
 }
+
+/* V11 pixel-art ornamental layer: visual-only, no controls or game logic changed.
+   Ornament remains outside content safety boxes; existing approved background is retained. */
+#setup .setupGrid{
+ --mp-gold:#dfbb6b;
+ border:3px solid #d8af62;
+ box-shadow:0 0 0 4px #272052,0 0 0 7px #dfbd70,0 0 0 10px #1c173e,0 17px 46px #0c0922c9,
+ inset 0 0 0 3px #fff0ca;
+ background:
+ radial-gradient(circle at 70% 95%,#cbb89427,transparent 30%),
+ repeating-linear-gradient(0deg,#9d794705 0px,#9d794705 1px,transparent 1px,transparent 4px),
+ linear-gradient(115deg,#fff8e8,#f1e2ca);
+}
+#setup .setupGrid::before{
+ background:radial-gradient(ellipse at 50% 0,#4b397b 0%,transparent 59%),linear-gradient(90deg,#17163c,#2e265e 48%,#17163c);
+ border-bottom:3px double #f0d292;letter-spacing:.10em;
+ text-shadow:2px 2px #15102e,0 0 12px #ffda8988;
+}
+/* Outside-only crest and ornaments; pseudo layers cannot capture clicks. */
+#setup .setupGrid::after{
+ content:"☾";
+ position:absolute;top:-40px;left:50%;transform:translateX(-50%);
+ width:90px;height:56px;display:grid;place-items:center;
+ color:#f8d887;font:900 58px/1 Georgia,serif;
+ text-shadow:2px 2px #6d4688,-2px -1px #fff2ad,0 0 14px #f0b958;
+ z-index:2;pointer-events:none;
+}
+#setup .setupPane{background:
+ repeating-linear-gradient(90deg,#b99b6206 0px,#b99b6206 2px,transparent 2px,transparent 8px),
+ linear-gradient(135deg,#fffaf0e8,#f5e8d2d9)!important;
+ border:1px solid #cbaa72!important;box-shadow:inset 0 0 0 2px #fff5e3!important}
+#setup .setupPane--left{
+ background-image:
+ radial-gradient(ellipse at 64% 91%,#c7a66a22,transparent 40%),
+ repeating-linear-gradient(90deg,#b99b6206 0px,#b99b6206 2px,transparent 2px,transparent 8px),
+ linear-gradient(135deg,#fffaf0,#f3e8d5)!important
+}
+#setup .mp-panel-title{border-bottom:2px solid #d6b474;color:#241b55;text-shadow:1px 1px #fff}
+#setup .mp-panel-title::after{content:" ✦";color:#bf9b53;font-size:.72em;margin-left:12px}
+#setup .mp-pack-card,#setup .metric,#setup .mp-instructions,#setup .mp-repeat-info{
+ border-color:#caaa75!important;box-shadow:inset 0 0 0 1px #fff7e7,0 2px 0 #c8a36a19!important
+}
+#setup .segment button.sel,#setup .mp-start-button{
+ background:linear-gradient(#39478a,#222e73)!important;border:2px solid #edc47b!important;
+ box-shadow:inset 0 0 0 1px #7467b0,0 0 10px #dba94d45!important
+}
+#setup .mp-start-button{letter-spacing:.035em}
+#setup .setupPane--left::after{
+ content:"✧　✦　✧";position:absolute;right:24px;bottom:15px;
+ color:#c1a16d;opacity:.5;font:22px Georgia;pointer-events:none
+}
+#setup .setupPane--right::after{
+ content:"✦";position:absolute;right:13px;top:10px;color:#d3b16b;opacity:.6;pointer-events:none
+}
+/* Corner ornaments use 3D-free pixel-step polygons drawn by CSS, leaving original UI unobstructed. */
+#setup .setupGrid{outline:1px solid #f4dfaa;outline-offset:-13px}
+#setup .setupGrid .setupPane--left .mp-pack-emblem{box-shadow:inset 0 0 0 2px #8676b0,0 0 8px #d6b76c50}
+@media(max-width:640px){
+ #setup .setupGrid::after{top:-24px;width:46px;height:38px;font-size:34px}
+ #setup .setupGrid{outline-offset:-7px}
+ #setup .setupPane--left::after{font-size:14px;bottom:6px}
+}
 </style>
 </head>
 <body>
