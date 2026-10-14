@@ -117,7 +117,7 @@ test('정해진 시각 이전의 이벤트는 거부 (PC 시각 변경을 무시
 
 test('변조된 JSON 백업과 호환되지 않는 버전은 복원 전에 거부한다',async()=>{
  let s=boot();s=lesson(s);
- const ev=s.eventLog.map(e=>({...e,payload:{}}));
+ const ev=s.eventLog.map(e=>({...e}));
  const backup=await makeBackup({state:s,events:ev},{exportedAt:INITIAL+200});
  assert.equal((await verifyBackup(backup)).state.meta.revision,2);
  const changed=structuredClone(backup);changed.state.rewards.keys=999;

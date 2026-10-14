@@ -5,9 +5,10 @@
   "version": "0.1.0-phase1-in-progress",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check:phase1": "node --test tests/phase1-reducer.test.mjs",
+    "check:phase1": "node --test tests/phase1-*.test.mjs",
     "check:syntax": "node --check src/engine/model.js && node --check src/engine/reducer.js && node --check src/engine/session.js && node --check src/storage/indexeddb.js && node --check src/storage/backup.js",
-    "check:phase0": "node --test tests/phase0.test.mjs"
+    "check:phase0": "node --test tests/phase0.test.mjs",
+    "build:browser-probe": "node scripts/build-browser-probe.mjs"
   },
   "engines": {
     "node": ">=20"

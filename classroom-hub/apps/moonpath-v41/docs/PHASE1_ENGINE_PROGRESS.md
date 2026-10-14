@@ -28,8 +28,8 @@
 
 ## 3. 실행한 검사와 구분
 
-- Node.js v22.16.0, `node --test`: 신규 PHASE 1 테스트 30건 **PASS** (순수 reducer + 가상 IDB 거래 모형). 가상 DB는 `tests/support-fake-idb.mjs`가 제공하는 인메모리 시험 도구이며 실제 브라우저 IndexedDB 구현은 아님.
-- 기존 PHASE 0 문제은행 정적 검증 코드 `tests/phase0.test.mjs`는 유지함. 30건은 PHASE 1 신규 테스트 수치이며 이전 정적 검증 건수를 더한 수치라고 주장하지 않음.
+- Node.js v22.16.0, `node --test`: 신규 PHASE 1 테스트 47건 **PASS** (순수 reducer + 가상 IDB 거래 모형). 가상 DB는 `tests/support-fake-idb.mjs`가 제공하는 인메모리 시험 도구이며 실제 브라우저 IndexedDB 구현은 아님.
+- 기존 PHASE 0 문제은행 정적 검증 코드 `tests/phase0.test.mjs`는 유지함. PHASE 1 규칙·모의 저장 검사 47건과 원본 문제팩 정적 검사 PHASE 0 6건을 합친 로컬 전체 검증은 53/53 PASS. 실제 브라우저 저장 검증 PASS는 아님.
 - 실제 Windows Chrome/Edge, `file://`, 두 창 BroadcastChannel, PDF/CSV/JSON 파일 UI, 오프라인 단일 HTML 빌더, 풀게임 플레이는 **NOT_RUN**.
 - 원래 PHASE 0 브라우저 사전 프로브는 관리자 정책 때문에 **BLOCKED**. 이는 기능 자체 FAIL을 뜻하지 않음.
 - V09(타이머), V11(IndexedDB), V12(3슬롯/JSON), V14(단독 쓰기)에 대해 기초 모듈이 작성됐어도 통합 게이트 PASS는 아님.
