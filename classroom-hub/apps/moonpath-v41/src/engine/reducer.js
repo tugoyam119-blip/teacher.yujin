@@ -1,4 +1,4 @@
-import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_SAND_COST,TIME_SAND_EXTENSION_MS} from './model.js';
+import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_SAND_COST,TIME_SAND_EXTENSION_MS,canonicalJson} from './model.js';
 
 /** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
 export function reduceCommand(current,command){
@@ -7,7 +7,14 @@ export function reduceCommand(current,command){
   const {eventId,type,at}=command;
   requireId(eventId,'이벤트');validTimestamp(at);
   insist(typeof type==='string','COMMAND_INVALID','명령 유형이 없습니다.');
-  if(current.eventLog.some(e=>e.eventId===eventId)) return {duplicate:true,state:current,event:null};
+  const prior=current.eventLog.find(e=>e.eventId===eventId);
+  if(prior){
+    insist(prior.type===type,'EVENT_ID_CONFLICT','같은 이벤트 ID로 다른 명령을 제출할 수 없습니다.');
+    if(prior.payload!==undefined){
+      insist(canonicalJson(prior.payload)===canonicalJson(command.payload??{}),'EVENT_ID_CONFLICT','같은 이벤트 ID로 다른 내용의 명령을 제출할 수 없습니다.');
+    }
+    return {duplicate:true,state:current,event:null};
+  }
   insist(at>=current.meta.updatedAt,'CLOCK_BACKWARD','저장된 마지막 이벤트보다 앞선 시각입니다. PC 시각을 확인하세요.');
   const state=clone(current);
   const payload=clone(command.payload??{});
@@ -82,6 +89,7 @@ export function reduceCommand(current,command){
     case 'TIME_SAND_USED':{
       const a=last();insist(['RUNNING','PAUSED'].includes(a.timer.phase),'MAGIC_BAD_PHASE','진행/일시정지 문제에서만 사용할 수 있습니다.');
       ensureRunningNotExpired(a);
+      insist(state.settings.timerSeconds!==0,'TIMER_DISABLED','타이머 끔 설정에서는 시간을 연장할 수 없습니다.');
       insist(state.magic.unlocked.includes('TIME_SAND'),'MAGIC_LOCKED','시간의 모래 해금 조건이 충족되지 않았습니다.');
       insist(!a.timer.usedTimeSand,'MAGIC_DUPLICATE','한 문제에 시간의 모래를 중복 사용할 수 없습니다.');
       insist(!state.rewards.settlementRequired,'SETTLEMENT_REQUIRED','별빛 정산이 필요하여 추가 소비를 차단했습니다.');
@@ -122,7 +130,7 @@ export function reduceCommand(current,command){
   const seq=current.meta.revision+1;
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
-  state.eventLog.push({seq,eventId,type,at});
+  state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
   if(type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED') state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};

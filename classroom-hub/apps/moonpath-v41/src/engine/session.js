@@ -75,10 +75,13 @@ export class TeacherEngineSession {
   async dispatch(type,payload={},eventId=this.newId()){
     return this._enqueue(async()=>{
       insist(this.state&&this.lease,'SESSION_NOT_OPEN','교사용 원정 세션을 열어야 합니다.');
+      // Reject a backwards PC clock BEFORE refreshing the lease or touching the DB.
+      const at=this.clock();
+      insist(at>=this.state.meta.updatedAt,'CLOCK_BACKWARD','컴퓨터 시각이 이전 이벤트보다 뒤로 이동했습니다. 시계를 확인하세요.');
       // Refresh a lease before every teacher command, including after a long idle.
       // If another teacher window obtained the lease, this throws before any save.
       this.lease=await this.store.acquireWriter(this.slot,this.writerId);
-      const command={type,eventId,at:Math.max(this.clock(),this.state.meta.updatedAt),payload};
+      const command={type,eventId,at,payload};
       const result=await this.store.commit(this.slot,command,{expectedRevision:this.state.meta.revision,lease:this.lease});
       // Only mutate the in-memory teacher state AFTER the IndexedDB transaction completes.
       this.state=result.state;
@@ -99,14 +102,12 @@ export class TeacherEngineSession {
       insist(restored.state.meta.slot===slot,'SLOT_MISMATCH','백업과 대상 슬롯이 일치하지 않습니다.');
       const lease=await this.store.acquireWriter(slot,this.writerId);
       try{
-        const result=await this.store.restoreToEmptySlot(slot,restored,lease);
+        const result=await this.store.restoreToEmptySlot(slot,restored,lease,{
+          recoveryEventId:this.newId(),recoveryAt:Math.max(this.clock(),restored.state.meta.updatedAt)
+        });
         this.slot=slot;this.lease=lease;this.state=result.state;
-        const a=this.state.activeAttemptId&&this.state.attempts[this.state.activeAttemptId];
-        const lesson=this.state.activeSessionId&&this.state.sessions.find(x=>x.id===this.state.activeSessionId);
-        if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'){
-          const pause=await this.store.commit(slot,{type:'RECOVER_INTERRUPTED',eventId:this.newId(),at:Math.max(this.clock(),this.state.meta.updatedAt),payload:{reason:'BACKUP_IMPORT'}},{expectedRevision:this.state.meta.revision,lease});
-          if(pause.committed)this.state=pause.state;
-        }
+        // The imported snapshot and safety pause were committed in ONE transaction.
+        // A failing write never leaves a silently RUNNING restored slot.
         this._startHeartbeat();return clone(this.state);
       }
       catch(err){this.slot=null;this.lease=null;this.state=null;await this.store.releaseWriter(slot,lease).catch(()=>{});throw err;}

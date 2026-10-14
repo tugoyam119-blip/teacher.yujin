@@ -15,6 +15,15 @@ export class EngineError extends Error {
 }
 export function insist(test,code,message){if(!test)throw new EngineError(code,message);}
 export function clone(value){return structuredClone(value);}
+/** Deterministic object representation used ONLY for duplicate-command/evidence comparison. */
+export function canonicalJson(value){
+  return JSON.stringify(value,(k,v)=>{
+    if(v&&typeof v==='object'&&!Array.isArray(v)){
+      return Object.fromEntries(Object.keys(v).sort().map(key=>[key,v[key]]));
+    }
+    return v;
+  });
+}
 export function checkSlot(slot){insist(Number.isInteger(slot)&&slot>=MIN_SLOT&&slot<=MAX_SLOT,'SLOT_INVALID','슬롯은 I~III(1~3) 중 하나여야 합니다.');return slot;}
 export function requireId(str,label){insist(typeof str==='string'&&str.length>0&&str.length<=128,'INVALID_ID',`${label} ID가 올바르지 않습니다.`);return str;}
 export function validTimestamp(at){insist(Number.isSafeInteger(at)&&at>=0,'INVALID_TIME','이벤트 시각이 올바르지 않습니다.');return at;}
@@ -45,6 +54,9 @@ export function checkState(s){
   checkSlot(s.meta.slot);requireId(s.meta.expeditionId,'원정');
   insist(Number.isSafeInteger(s.meta.revision)&&s.meta.revision>=0,'INVALID_REVISION','revision이 올바르지 않습니다.');
   insist(Array.isArray(s.eventLog)&&s.eventLog.length===s.meta.revision,'EVENT_COUNT','이벤트 개수와 revision이 다릅니다.');
+  validTimestamp(s.meta.createdAt);validTimestamp(s.meta.updatedAt);
+  insist(s.meta.updatedAt>=s.meta.createdAt,'INVALID_TIME','최종 저장 시각이 생성 시각보다 빠릅니다.');
+  if(s.eventLog.length)insist(s.meta.updatedAt===s.eventLog.at(-1).at,'EVENT_TIME_MISMATCH','최종 수정 시각과 이벤트 시각이 다릅니다.');
   insist(Array.isArray(s.sessions)&&Array.isArray(s.teams)&&s.teams.length===s.settings.teamCount,'INVALID_STATE','필수 상태 데이터가 잘못되었습니다.');
   insist(Array.isArray(s.world?.themes)&&s.world.themes.length===6&&Object.keys(s.world.regions||{}).length===30,'INVALID_WORLD','30지역 구조가 일치하지 않습니다.');
   insist(Number.isInteger(s.rewards?.starlight)&&s.rewards.starlight>=0,'INVALID_REWARDS','음수 별빛은 허용하지 않습니다.');
