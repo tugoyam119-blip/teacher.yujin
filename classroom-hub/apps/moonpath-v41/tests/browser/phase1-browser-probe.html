@@ -1,0 +1,706 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>미지의 길 v4.1.1 공통 엔진 검증 전용</title><style>body{background:#121429;color:#eef0ff;font:16px/1.7 system-ui,'Malgun Gothic',sans-serif;max-width:900px;margin:auto;padding:24px}button{padding:12px 20px;font-size:16px;border-radius:9px;cursor:pointer}#result{background:#1d203f;border:1px solid #464773;border-radius:10px;padding:16px;margin-top:15px;min-height:200px}</style></head><body><h1>PHASE 1 공통 엔진 — 브라우저 시험</h1><p>기존 게임 및 저장 키와 분리된 단독 실험입니다. <b>실제 게임이 아니며 최종 검증 PASS가 아닙니다.</b> 인터넷 접속은 필요하지 않습니다.</p><button id="go">실제 저장 검사</button> <button id="clear">시험 데이터만 삭제</button><p>Windows Chrome과 Edge에서 각각 <code>file://</code>로 직접 열고, 완전 종료 후 다시 열어 확인해 주세요.</p><div id="result" role="log"></div><script type="module">
+/** The rules below are v4.1.1 design decisions; this file contains only PHASE 1 groundwork. */
+const ENGINE_VERSION = '4.1.1';
+const SCHEMA_VERSION = 1;
+const DB_NAME = 'moonpath-v411-engine-db'; // Deliberately never touch legacy localStorage keys.
+const MIN_SLOT = 1;
+const MAX_SLOT = 3;
+const TIMER_PHASES = Object.freeze(['PREPARED','RUNNING','PAUSED','EXPIRED_AWAITING_TEACHER','RESOLVED']);
+const TIMER_CHOICES_SEC = Object.freeze([0,45,60,90,120]);
+const DEFAULT_TIMER_SEC = 60;
+const TIME_SAND_COST = 4;
+const TIME_SAND_EXTENSION_MS = 20_000;
+
+class EngineError extends Error {
+  constructor(code,message){super(message);this.name='EngineError';this.code=code;}
+}
+function insist(test,code,message){if(!test)throw new EngineError(code,message);}
+function clone(value){return structuredClone(value);}
+/** Deterministic object representation used ONLY for duplicate-command/evidence comparison. */
+function canonicalJson(value){
+  return JSON.stringify(value,(k,v)=>{
+    if(v&&typeof v==='object'&&!Array.isArray(v)){
+      return Object.fromEntries(Object.keys(v).sort().map(key=>[key,v[key]]));
+    }
+    return v;
+  });
+}
+function checkSlot(slot){insist(Number.isInteger(slot)&&slot>=MIN_SLOT&&slot<=MAX_SLOT,'SLOT_INVALID','슬롯은 I~III(1~3) 중 하나여야 합니다.');return slot;}
+function requireId(str,label){insist(typeof str==='string'&&str.length>0&&str.length<=128,'INVALID_ID',`${label} ID가 올바르지 않습니다.`);return str;}
+function validTimestamp(at){insist(Number.isSafeInteger(at)&&at>=0,'INVALID_TIME','이벤트 시각이 올바르지 않습니다.');return at;}
+function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeconds=60,packId='KR-HS-IS2-U01',packVersion='1.0.0',world}){
+  checkSlot(slot);requireId(expeditionId,'원정');validTimestamp(createdAt);
+  insist(Number.isInteger(teamCount)&&teamCount>=2&&teamCount<=8,'INVALID_TEAM_COUNT','모둠은 2~8개여야 합니다.');
+  insist(TIMER_CHOICES_SEC.includes(timerSeconds),'INVALID_TIMER','타이머 값은 끔/45/60/90/120초 중 하나여야 합니다.');
+  insist(world?.themes?.length===6&&world.themes.every(t=>t.regions?.length===5),'INVALID_WORLD','공식 6테마 30지역 기준이 필요합니다.');
+  return {
+    meta:{schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,expeditionId,slot,revision:0,createdAt,updatedAt:createdAt,packId,packVersion},
+    screen:'HOME',
+    settings:{teamCount,timerSeconds,interception:true,lessonMinutes:45},
+    world:{currentRegionId:null,mainRouteChoice:{},additionalExplorationReturn:null,regions:Object.fromEntries(world.themes.flatMap(t=>t.regions).map(r=>[r.id,{status:'LOCKED',completedAt:null}])),themes:world.themes.map(t=>({id:t.id,name:t.name,regionIds:t.regions.map(r=>r.id)}))},
+    sessions:[],
+    activeSessionId:null,
+    questions:{packId,packVersion,issuedIds:[],recoveryOnlyIds:[],reviewEligibleIds:[]},
+    attempts:{},activeAttemptId:null,
+    teams:Array.from({length:teamCount},(_,i)=>({id:`TEAM_${String(i+1).padStart(2,'0')}`,name:`${i+1}모둠`,rosterVersion:1,members:[],representativeCursor:0,contribution:0})),
+    recovery:{pending:[],resolved:[]},
+    rewards:{keys:0,starlight:0,ledger:[],settlementRequired:false},
+    magic:{used:[],unlocked:[]},clues:{collected:[],combinations:[]},
+    eventLog:[],audit:[]
+  };
+}
+function checkState(s){
+  insist(s?.meta?.schemaVersion===SCHEMA_VERSION,'SCHEMA_MISMATCH','저장 파일 스키마가 호환되지 않습니다.');
+  insist(s.meta.engineVersion===ENGINE_VERSION,'ENGINE_MISMATCH','엔진 버전이 다릅니다.');
+  checkSlot(s.meta.slot);requireId(s.meta.expeditionId,'원정');
+  insist(Number.isSafeInteger(s.meta.revision)&&s.meta.revision>=0,'INVALID_REVISION','revision이 올바르지 않습니다.');
+  insist(Array.isArray(s.eventLog)&&s.eventLog.length===s.meta.revision,'EVENT_COUNT','이벤트 개수와 revision이 다릅니다.');
+  validTimestamp(s.meta.createdAt);validTimestamp(s.meta.updatedAt);
+  insist(s.meta.updatedAt>=s.meta.createdAt,'INVALID_TIME','최종 저장 시각이 생성 시각보다 빠릅니다.');
+  if(s.eventLog.length)insist(s.meta.updatedAt===s.eventLog.at(-1).at,'EVENT_TIME_MISMATCH','최종 수정 시각과 이벤트 시각이 다릅니다.');
+  insist(Array.isArray(s.sessions)&&Array.isArray(s.teams)&&s.teams.length===s.settings.teamCount,'INVALID_STATE','필수 상태 데이터가 잘못되었습니다.');
+  insist(Array.isArray(s.world?.themes)&&s.world.themes.length===6&&Object.keys(s.world.regions||{}).length===30,'INVALID_WORLD','30지역 구조가 일치하지 않습니다.');
+  insist(Number.isInteger(s.rewards?.starlight)&&s.rewards.starlight>=0,'INVALID_REWARDS','음수 별빛은 허용하지 않습니다.');
+  insist(Number.isInteger(s.rewards.keys)&&s.rewards.keys>=0,'INVALID_REWARDS','음수 열쇠는 허용하지 않습니다.');
+  const seen=new Set();let previousAt=-1;
+  for(let i=0;i<s.eventLog.length;i++){
+    const item=s.eventLog[i];
+    insist(item.seq===i+1,'BROKEN_SEQUENCE','이벤트 순번이 연속하지 않습니다.');
+    requireId(item.eventId,'이벤트');validTimestamp(item.at);
+    insist(!seen.has(item.eventId),'DUPLICATE_EVENT','이벤트 ID가 중복되었습니다.');
+    insist(item.at>=previousAt,'EVENT_CLOCK_BACKWARD','저장된 이벤트 시각이 역전되었습니다.');
+    seen.add(item.eventId);previousAt=item.at;
+  }
+  if(s.activeAttemptId){
+    const a=s.attempts[s.activeAttemptId];insist(a&&TIMER_PHASES.includes(a.timer.phase),'INVALID_ATTEMPT','활성 문제와 타이머 상태가 맞지 않습니다.');
+    insist(a.timer.remainingMs>=0&&Number.isFinite(a.timer.remainingMs),'INVALID_TIMER','음수 또는 유효하지 않은 잔여 시간입니다.');
+  }
+  return s;
+}
+function timerRemainingMs(attempt,at){
+  validTimestamp(at);
+  if(!attempt)return null;
+  const t=attempt.timer;
+  if(t.phase!=='RUNNING')return t.remainingMs;
+  return Math.max(0,t.remainingMs-Math.max(0,at-t.runningSince));
+}
+function publicProjection(s,at){
+  checkState(s);
+  const attempt=s.activeAttemptId?s.attempts[s.activeAttemptId]:null;
+  // Explicit public allowlist. Never serialize the full state into a student message.
+  return {
+    version:ENGINE_VERSION,revision:s.meta.revision,slot:s.meta.slot,expeditionId:s.meta.expeditionId,
+    screen:s.screen,regionId:s.world.currentRegionId,
+    teamNames:s.teams.map(({id,name})=>({id,name})),
+    resources:{keys:s.rewards.keys,starlight:s.rewards.starlight},
+    attempt:attempt?{id:attempt.id,phase:attempt.timer.phase,remainingMs:timerRemainingMs(attempt,at)}:null,
+    lesson:s.activeSessionId?{active:true}:null,
+  };
+}
+
+
+
+/** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
+function reduceCommand(current,command){
+  checkState(current);
+  insist(command&&typeof command==='object','COMMAND_INVALID','명령은 객체여야 합니다.');
+  const {eventId,type,at}=command;
+  requireId(eventId,'이벤트');validTimestamp(at);
+  insist(typeof type==='string','COMMAND_INVALID','명령 유형이 없습니다.');
+  const prior=current.eventLog.find(e=>e.eventId===eventId);
+  if(prior){
+    insist(prior.type===type,'EVENT_ID_CONFLICT','같은 이벤트 ID로 다른 명령을 제출할 수 없습니다.');
+    if(prior.payload!==undefined){
+      insist(canonicalJson(prior.payload)===canonicalJson(command.payload??{}),'EVENT_ID_CONFLICT','같은 이벤트 ID로 다른 내용의 명령을 제출할 수 없습니다.');
+    }
+    return {duplicate:true,state:current,event:null};
+  }
+  insist(at>=current.meta.updatedAt,'CLOCK_BACKWARD','저장된 마지막 이벤트보다 앞선 시각입니다. PC 시각을 확인하세요.');
+  const state=clone(current);
+  const payload=clone(command.payload??{});
+  const last=()=>{const a=state.activeAttemptId&&state.attempts[state.activeAttemptId];insist(a,'NO_ATTEMPT','활성 문제가 없습니다.');return a;};
+  const activeSession=()=>{const x=state.sessions.find(s=>s.id===state.activeSessionId);insist(x,'NO_SESSION','현재 차시가 없습니다.');return x;};
+  const finishActiveTime=s=>{if(s.phase==='ACTIVE'){s.activeMs+=Math.max(0,at-s.activeSince);s.activeSince=null;}};
+  const ensureRunningNotExpired=a=>insist(a.timer.phase!=='RUNNING'||timerRemainingMs(a,at)>0,'TIMER_DEADLINE','시각 만료가 도달했습니다. 만료 이벤트를 확정해야 합니다.');
+  switch(type){
+    case 'EXPEDITION_CREATED':
+      insist(current.meta.revision===0,'NOT_INITIAL','신규 원정 생성 명령은 최초에만 허용합니다.');
+      break;
+    case 'SCREEN_CHANGED':
+      insist(typeof payload.screen==='string'&&/^[A-Z_]+$/.test(payload.screen),'INVALID_SCREEN','화면 ID가 올바르지 않습니다.');
+      if(state.activeAttemptId){const a=last();insist(a.timer.phase==='RESOLVED','ATTEMPT_ACTIVE','문제 진행 중 일반 화면 이동을 할 수 없습니다.');}
+      state.screen=payload.screen;
+      break;
+    case 'SESSION_STARTED':{
+      insist(!state.activeSessionId,'SESSION_ACTIVE','이미 진행 중인 차시가 있습니다.');
+      requireId(payload.sessionId,'차시');
+      insist(!state.sessions.some(x=>x.id===payload.sessionId),'SESSION_EXISTS','이미 존재하는 차시 ID입니다.');
+      state.sessions.push({id:payload.sessionId,startedAt:at,endedAt:null,activeMs:0,activeSince:at,phase:'ACTIVE'});
+      state.activeSessionId=payload.sessionId;break;
+    }
+    case 'SESSION_PAUSED':{
+      const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','차시가 진행 중이 아닙니다.');
+      if(state.activeAttemptId){
+        const a=last();if(a.timer.phase==='RUNNING'){
+          a.timer.remainingMs=timerRemainingMs(a,at);
+          a.timer.phase=a.timer.remainingMs===0?'EXPIRED_AWAITING_TEACHER':'PAUSED';
+          a.timer.runningSince=null;
+        }
+      }
+      finishActiveTime(s);s.phase='PAUSED';break;
+    }
+    case 'SESSION_RESUMED':{
+      const s=activeSession();insist(s.phase==='PAUSED','SESSION_NOT_PAUSED','일시정지된 차시가 아닙니다.');s.phase='ACTIVE';s.activeSince=at;break;
+    }
+    case 'SESSION_ENDED':{
+      const s=activeSession();insist(state.activeAttemptId?last().timer.phase==='RESOLVED':true,'ATTEMPT_ACTIVE','진행 중인 문제를 먼저 처리해야 합니다.');
+      finishActiveTime(s);s.phase='ENDED';s.endedAt=at;state.activeSessionId=null;break;
+    }
+    case 'ATTEMPT_PREPARED':{
+      const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
+      insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
+      requireId(payload.attemptId,'문제 시도');requireId(payload.questionId,'문항');
+      insist(!state.attempts[payload.attemptId],'ATTEMPT_EXISTS','같은 문제 시도 ID가 존재합니다.');
+      insist(state.teams.some(t=>t.id===payload.teamId),'INVALID_TEAM','존재하지 않는 모둠입니다.');
+      const sec=state.settings.timerSeconds;
+      state.attempts[payload.attemptId]={id:payload.attemptId,questionId:payload.questionId,questionRevision:payload.questionRevision??null,teamId:payload.teamId,sessionId:s.id,preparedAt:at,resolvedAt:null,timer:{phase:'PREPARED',remainingMs:sec*1000,runningSince:null,usedTimeSand:false}};
+      state.activeAttemptId=payload.attemptId;break;
+    }
+    case 'TIMER_STARTED':{
+      const a=last();insist(a.timer.phase==='PREPARED','TIMER_NOT_PREPARED','준비된 문제가 아닙니다.');
+      insist(activeSession().phase==='ACTIVE','SESSION_NOT_ACTIVE','차시를 먼저 재개해야 합니다.');
+      a.timer.phase=state.settings.timerSeconds===0?'PAUSED':'RUNNING';
+      a.timer.runningSince=a.timer.phase==='RUNNING'?at:null;break;
+    }
+    case 'TIMER_PAUSED':{
+      const a=last();insist(a.timer.phase==='RUNNING','TIMER_NOT_RUNNING','타이머가 실행 중이 아닙니다.');ensureRunningNotExpired(a);
+      a.timer.remainingMs=timerRemainingMs(a,at);a.timer.phase='PAUSED';a.timer.runningSince=null;break;
+    }
+    case 'TIMER_RESUMED':{
+      const a=last();insist(a.timer.phase==='PAUSED','TIMER_NOT_PAUSED','타이머가 정지 상태가 아닙니다.');
+      insist(activeSession().phase==='ACTIVE','SESSION_NOT_ACTIVE','차시를 먼저 재개해야 합니다.');
+      insist(a.timer.remainingMs>0,'NO_REMAINING_TIME','잔여 시간이 없습니다.');
+      a.timer.phase='RUNNING';a.timer.runningSince=at;break;
+    }
+    case 'TIMER_EXPIRED':{
+      const a=last();insist(a.timer.phase==='RUNNING'&&timerRemainingMs(a,at)===0,'TIMER_NOT_EXPIRED','아직 만료되지 않은 타이머입니다.');
+      a.timer.remainingMs=0;a.timer.runningSince=null;a.timer.phase='EXPIRED_AWAITING_TEACHER';break;
+    }
+    case 'TIME_SAND_USED':{
+      const a=last();insist(['RUNNING','PAUSED'].includes(a.timer.phase),'MAGIC_BAD_PHASE','진행/일시정지 문제에서만 사용할 수 있습니다.');
+      ensureRunningNotExpired(a);
+      insist(state.settings.timerSeconds!==0,'TIMER_DISABLED','타이머 끔 설정에서는 시간을 연장할 수 없습니다.');
+      insist(state.magic.unlocked.includes('TIME_SAND'),'MAGIC_LOCKED','시간의 모래 해금 조건이 충족되지 않았습니다.');
+      insist(!a.timer.usedTimeSand,'MAGIC_DUPLICATE','한 문제에 시간의 모래를 중복 사용할 수 없습니다.');
+      insist(!state.rewards.settlementRequired,'SETTLEMENT_REQUIRED','별빛 정산이 필요하여 추가 소비를 차단했습니다.');
+      insist(state.rewards.starlight>=TIME_SAND_COST,'INSUFFICIENT_STARS','별빛이 부족합니다.');
+      const left=timerRemainingMs(a,at);
+      a.timer.remainingMs=left+TIME_SAND_EXTENSION_MS;
+      if(a.timer.phase==='RUNNING')a.timer.runningSince=at;
+      a.timer.usedTimeSand=true;
+      state.rewards.starlight-=TIME_SAND_COST;
+      state.rewards.ledger.push({eventId,type:'TIME_SAND_SPEND',amount:-TIME_SAND_COST,attemptId:a.id});
+      state.magic.used.push({eventId,magicId:'TIME_SAND',attemptId:a.id,at,cost:TIME_SAND_COST});break;
+    }
+    case 'CHECKPOINT_REPAIRED':{
+      insist(payload.teacherConfirmed===true&&['latest','previous'].includes(payload.source),'TEACHER_REQUIRED','체크포인트 복구에는 교사 명시 확인이 필요합니다.');
+      break;
+    }
+    case 'RECOVER_INTERRUPTED':{
+      const a=state.activeAttemptId?last():null;
+      const s=state.activeSessionId?activeSession():null;
+      insist((a?.timer.phase==='RUNNING')||(s?.phase==='ACTIVE'),'RECOVERY_NOT_NEEDED','복원으로 정지시킬 실행 상태가 없습니다.');
+      // Intentional: pause at the last persisted remaining time, never run/expire in the closed interval.
+      if(a?.timer.phase==='RUNNING'){a.timer.phase='PAUSED';a.timer.runningSince=null;}
+      if(s?.phase==='ACTIVE'){
+        // Active time between last persisted event and unexpected shutdown is unknown; do not invent it.
+        s.activeSince=null;s.phase='PAUSED';
+      }
+      break;
+    }
+    case 'ATTEMPT_RESOLVED':{
+      // PHASE 1 timer harness ONLY. Academic judgement and rewards are PHASE 2, never auto-credit.
+      const a=last();insist(a.timer.phase!=='RESOLVED','ALREADY_RESOLVED','이미 확정한 문제입니다.');
+      insist(payload.teacherConfirmed===true,'TEACHER_REQUIRED','문제 종료에는 교사 확인이 필요합니다.');
+      if(a.timer.phase==='RUNNING'){a.timer.remainingMs=timerRemainingMs(a,at);a.timer.runningSince=null;}
+      a.timer.phase='RESOLVED';a.resolvedAt=at;break;
+    }
+    default:throw new Error(`UNIMPLEMENTED_COMMAND: ${type}`);
+  }
+  const seq=current.meta.revision+1;
+  const event={seq,eventId,type,at,payload};
+  state.meta.revision=seq;state.meta.updatedAt=at;
+  state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
+  if(type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED') state.audit.push({seq,eventId,type,at});
+  checkState(state);
+  return {duplicate:false,state,event};
+}
+
+
+
+
+const DB_VERSION=1;
+const LEASE_TTL_MS=30_000;
+const STORES=Object.freeze({slots:'slots',events:'events',checkpoints:'checkpoints',leases:'leases',quarantine:'quarantine'});
+const cpKey=(slot,type)=>`${slot}:${type}`;
+const evKey=(slot,seq)=>`${slot}:${String(seq).padStart(12,'0')}`;
+
+function onTx(db,storeNames,mode,plan){
+  return new Promise((resolve,reject)=>{
+    let tx, outcome, problem;
+    try{tx=db.transaction(storeNames,mode)}catch(err){reject(err);return;}
+    const abort=(err)=>{problem=err;try{tx.abort();}catch{reject(err);}};
+    tx.oncomplete=()=>resolve(outcome);
+    tx.onabort=()=>reject(problem??tx.error??new EngineError('WRITE_ABORTED','데이터베이스 거래가 중단되었습니다.'));
+    tx.onerror=()=>{ /* onabort provides the definitive error */ };
+    try{plan(tx,{done(value){outcome=value;},fail:abort});}catch(e){abort(e);}
+  });
+}
+
+async function openEngineDatabase(factory=globalThis.indexedDB){
+  insist(factory&&typeof factory.open==='function','IDB_UNAVAILABLE','이 환경은 IndexedDB를 제공하지 않습니다.');
+  const db=await new Promise((resolve,reject)=>{
+    let req;try{req=factory.open(DB_NAME,DB_VERSION);}catch(e){reject(e);return;}
+    req.onupgradeneeded=()=>{
+      const d=req.result;
+      for(const name of Object.values(STORES))if(!d.objectStoreNames.contains(name)){
+        d.createObjectStore(name,{keyPath:'key'});
+      }
+    };
+    req.onerror=()=>reject(req.error||new EngineError('IDB_OPEN_FAILED','IndexedDB 열기 실패'));
+    req.onblocked=()=>reject(new EngineError('IDB_BLOCKED','다른 탭이 DB 버전 변경을 차단하고 있습니다.'));
+    req.onsuccess=()=>resolve(req.result);
+  });
+  db.onversionchange=()=>db.close();
+  return new IndexedDbExpeditionStore(db);
+}
+
+/** All mutating operations complete only after an IndexedDB readwrite transaction commits. */
+class IndexedDbExpeditionStore {
+  constructor(db,{clock=()=>Date.now()}={}){this.db=db;this.clock=clock;}
+  close(){this.db.close();}
+  async acquireWriter(slot,writerId){
+    checkSlot(slot);requireId(writerId,'작성자');
+    const now=validTimestamp(this.clock());
+    return onTx(this.db,[STORES.leases],'readwrite',(tx,{done,fail})=>{
+      const o=tx.objectStore(STORES.leases);
+      const req=o.get(slot);
+      req.onsuccess=()=>{
+        try{
+          const old=req.result;
+          insist(!old||old.writerId===writerId||old.expiresAt<=now,'WRITER_BUSY','다른 교사 창이 이 슬롯의 쓰기 권한을 사용 중입니다.');
+          const lease={key:slot,writerId,epoch:old?.writerId===writerId?old.epoch:(old?.epoch??0)+1,expiresAt:now+LEASE_TTL_MS};
+          o.put(lease);done(clone(lease));
+        }catch(e){fail(e);}
+      };
+    });
+  }
+  async releaseWriter(slot,{writerId,epoch}){
+    checkSlot(slot);requireId(writerId,'작성자');
+    return onTx(this.db,[STORES.leases],'readwrite',(tx,{done,fail})=>{
+      const o=tx.objectStore(STORES.leases),r=o.get(slot);
+      r.onsuccess=()=>{try{const old=r.result;if(old?.writerId===writerId&&old.epoch===epoch){o.delete(slot);done(true);}else done(false);}catch(e){fail(e);}};
+    });
+  }
+  _checkLease(stored,lease,now){
+    insist(!!stored&&stored.writerId===lease?.writerId&&stored.epoch===lease?.epoch&&stored.expiresAt>now,'WRITER_NOT_OWNED','쓰기 소유권이 만료되거나 다른 창으로 변경되었습니다.');
+  }
+  async createSlot(state,command,lease){
+    checkState(state);checkSlot(state.meta.slot);
+    const {slot}=state.meta,now=validTimestamp(this.clock());
+    insist(state.meta.revision===0,'NOT_EMPTY_EXPEDITION','새 원정 revision은 0이어야 합니다.');
+    const reduced=reduceCommand(state,command);
+    insist(!reduced.duplicate&&reduced.event.type==='EXPEDITION_CREATED','INITIAL_EVENT','최초 이벤트는 EXPEDITION_CREATED여야 합니다.');
+    return onTx(this.db,Object.values(STORES),'readwrite',(tx,{done,fail})=>{
+      const ls=tx.objectStore(STORES.leases), ss=tx.objectStore(STORES.slots),es=tx.objectStore(STORES.events),cs=tx.objectStore(STORES.checkpoints);
+      let l,s,loaded=0;
+      const ready=()=>{
+        if(++loaded!==2)return;
+        try{
+          this._checkLease(l,lease,now);
+          insist(!s,'SLOT_OCCUPIED','해당 슬롯에 저장된 게임이 있습니다. 백업 없이 덮어쓸 수 없습니다.');
+          ss.add({key:slot,state:reduced.state});
+          es.add({key:evKey(slot,reduced.event.seq),slot,event:reduced.event});
+          cs.put({key:cpKey(slot,'latest'),slot,revision:reduced.state.meta.revision,state:reduced.state});
+          ls.put({...l,expiresAt:now+LEASE_TTL_MS});
+          done({committed:true,state:clone(reduced.state),event:clone(reduced.event)});
+        }catch(e){fail(e);}
+      };
+      const lr=ls.get(slot),sr=ss.get(slot);
+      lr.onsuccess=()=>{l=lr.result;ready();};sr.onsuccess=()=>{s=sr.result;ready();};
+    });
+  }
+  async commit(slot,command,{expectedRevision,lease}){
+    checkSlot(slot);
+    insist(Number.isSafeInteger(expectedRevision)&&expectedRevision>=0,'REVISION_REQUIRED','저장 시 현재 revision이 필요합니다.');
+    const now=validTimestamp(this.clock());
+    return onTx(this.db,Object.values(STORES),'readwrite',(tx,{done,fail})=>{
+      const ls=tx.objectStore(STORES.leases),ss=tx.objectStore(STORES.slots),es=tx.objectStore(STORES.events),cs=tx.objectStore(STORES.checkpoints);
+      let l,s,loaded=0;
+      const ready=()=>{
+        if(++loaded!==2)return;
+        try{
+          this._checkLease(l,lease,now);
+          insist(s&&s.state,'SLOT_EMPTY','저장된 슬롯이 없습니다.');
+          checkState(s.state);
+          insist(s.state.meta.revision===expectedRevision,'REVISION_CONFLICT','다른 창 또는 명령이 이미 상태를 변경했습니다. 다시 불러오세요.');
+          const result=reduceCommand(s.state,command);
+          if(result.duplicate){done({committed:false,duplicate:true,state:clone(s.state)});return;}
+          // These three writes and the writer lease are inseparable by transaction design.
+          ss.put({key:slot,state:result.state});
+          es.add({key:evKey(slot,result.event.seq),slot,event:result.event});
+          cs.put({key:cpKey(slot,'previous'),slot,revision:s.state.meta.revision,state:s.state});
+          cs.put({key:cpKey(slot,'latest'),slot,revision:result.state.meta.revision,state:result.state});
+          ls.put({...l,expiresAt:now+LEASE_TTL_MS});
+          done({committed:true,duplicate:false,state:clone(result.state),event:clone(result.event)});
+        }catch(e){fail(e);}
+      };
+      const lr=ls.get(slot),sr=ss.get(slot);
+      lr.onsuccess=()=>{l=lr.result;ready();};sr.onsuccess=()=>{s=sr.result;ready();};
+    });
+  }
+  async read(slot){
+    checkSlot(slot);
+    return onTx(this.db,[STORES.slots,STORES.checkpoints],'readonly',(tx,{done,fail})=>{
+      let row,latest,prev,loaded=0;
+      const ready=()=>{
+        if(++loaded!==3)return;
+        const candidates=[['slot',row?.state],['latest',latest?.state],['previous',prev?.state]];
+        for(const [source,s] of candidates){
+          if(!s)continue;
+          try{
+            checkState(s);insist(s.meta.slot===slot,'SLOT_MISMATCH','복구용 슬롯이 다릅니다.');
+            // Two independently persisted views should be exactly the same after an atomic write.
+            if(source==='slot'&&latest?.state){
+              checkState(latest.state);
+              insist(JSON.stringify(s)===JSON.stringify(latest.state),'CHECKPOINT_DIVERGED','최신 체크포인트와 상태가 불일치합니다.');
+            }
+            done({state:clone(s),source,needsRepair:source!=='slot'});return;
+          }catch{/* seek a previous checkpoint */}
+        }
+        if(row||latest||prev)fail(new EngineError('ALL_CHECKPOINTS_INVALID','저장 데이터와 정상 체크포인트를 읽을 수 없습니다.'));
+        else done({state:null,source:null,needsRepair:false});
+      };
+      const sr=tx.objectStore(STORES.slots).get(slot),cr=tx.objectStore(STORES.checkpoints);
+      const lr=cr.get(cpKey(slot,'latest')),pr=cr.get(cpKey(slot,'previous'));
+      sr.onsuccess=()=>{row=sr.result;ready();};lr.onsuccess=()=>{latest=lr.result;ready();};pr.onsuccess=()=>{prev=pr.result;ready();};
+    });
+  }
+  async readConsistentForBackup(slot){
+    checkSlot(slot);
+    return onTx(this.db,[STORES.slots,STORES.events],'readonly',(tx,{done,fail})=>{
+      let row,items,loaded=0;
+      const ready=()=>{
+        if(++loaded!==2)return;
+        try{
+          insist(row?.state,'SLOT_EMPTY','비어 있는 슬롯은 백업할 수 없습니다.');checkState(row.state);
+          const ev=(items??[]).filter(x=>x.slot===slot).map(x=>x.event).sort((a,b)=>a.seq-b.seq);
+          insist(ev.length===row.state.meta.revision,'EVENT_COUNT','원본 이벤트 로그와 revision 불일치.');
+          ev.forEach((e,i)=>{const original=row.state.eventLog[i];
+            insist(e.seq===i+1&&e.eventId===original.eventId&&e.type===original.type&&e.at===original.at,'BROKEN_SEQUENCE','백업 로그 불일치');
+            if(original.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(original.payload),'BROKEN_SEQUENCE','백업 이벤트 내용이 상태와 다릅니다.');
+          });
+          done({state:clone(row.state),events:clone(ev)});
+        }catch(e){fail(e);}
+      };
+      const sr=tx.objectStore(STORES.slots).get(slot),er=tx.objectStore(STORES.events).getAll();
+      sr.onsuccess=()=>{row=sr.result;ready();};er.onsuccess=()=>{items=er.result;ready();};
+    });
+  }
+  async repairFromCheckpoint(slot,{source='latest',teacherConfirmed=false,eventId,at,lease}={}){
+    checkSlot(slot);requireId(eventId,'복구 이벤트');validTimestamp(at);
+    insist(teacherConfirmed===true,'TEACHER_REQUIRED','체크포인트 복구는 명시적인 교사 확인이 필요합니다.');
+    insist(['latest','previous'].includes(source),'CHECKPOINT_INVALID','최신 또는 직전 체크포인트만 선택할 수 있습니다.');
+    const now=validTimestamp(this.clock());
+    return onTx(this.db,Object.values(STORES),'readwrite',(tx,{done,fail})=>{
+      const ls=tx.objectStore(STORES.leases),ss=tx.objectStore(STORES.slots),es=tx.objectStore(STORES.events),cs=tx.objectStore(STORES.checkpoints),qs=tx.objectStore(STORES.quarantine);
+      let l,row,cp,events,loaded=0;
+      const ready=()=>{if(++loaded!==4)return;try{
+        this._checkLease(l,lease,now);
+        insist(cp?.state,'CHECKPOINT_MISSING','선택한 정상 체크포인트가 없습니다.');
+        const original=cp.state;checkState(original);
+        insist(original.meta.slot===slot,'SLOT_MISMATCH','체크포인트 슬롯이 올바르지 않습니다.');
+        // Don't overwrite an already valid slot, and never truncate an unexplained event chain.
+        if(row?.state){try{checkState(row.state);insist(JSON.stringify(row.state)!==JSON.stringify(original),'CHECKPOINT_REPAIR_UNNEEDED','정상 상태는 복구 대상으로 덮어쓸 수 없습니다.');}catch(e){if(e.code==='CHECKPOINT_REPAIR_UNNEEDED')throw e;}}
+        const stored=events.filter(x=>x.slot===slot).map(x=>x.event).sort((a,b)=>a.seq-b.seq);
+        insist(stored.length===original.meta.revision,'FORENSIC_REVIEW_REQUIRED','로그와 체크포인트의 revision이 달라 수동 정합성 검토가 필요합니다.');
+        stored.forEach((e,i)=>{const ref=original.eventLog[i];
+          insist(e.seq===i+1&&e.eventId===ref.eventId&&e.type===ref.type&&e.at===ref.at,'FORENSIC_REVIEW_REQUIRED','이벤트 로그 연쇄가 불일치합니다.');
+          if(ref.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(ref.payload),'FORENSIC_REVIEW_REQUIRED','이벤트 상세 내용이 불일치합니다.');
+        });
+        const result=reduceCommand(original,{type:'CHECKPOINT_REPAIRED',eventId,at,payload:{teacherConfirmed:true,source}});
+        const safetyKey=`${slot}:damaged:${result.event.seq}:${eventId}`;
+        qs.add({key:safetyKey,slot,original:row??null,at,repairedFrom:source});
+        ss.put({key:slot,state:result.state});
+        es.add({key:evKey(slot,result.event.seq),slot,event:result.event});
+        cs.put({key:cpKey(slot,'previous'),slot,revision:original.meta.revision,state:original});
+        cs.put({key:cpKey(slot,'latest'),slot,revision:result.state.meta.revision,state:result.state});
+        ls.put({...l,expiresAt:now+LEASE_TTL_MS});done({committed:true,state:clone(result.state),quarantineKey:safetyKey});
+      }catch(e){fail(e);}};
+      const lr=ls.get(slot),sr=ss.get(slot),cr=cs.get(cpKey(slot,source)),er=es.getAll();
+      lr.onsuccess=()=>{l=lr.result;ready();};sr.onsuccess=()=>{row=sr.result;ready();};cr.onsuccess=()=>{cp=cr.result;ready();};er.onsuccess=()=>{events=er.result;ready();};
+    });
+  }
+  async restoreToEmptySlot(slot,pack,lease,{recoveryEventId=null,recoveryAt=null}={}){
+    checkSlot(slot);checkState(pack.state);
+    insist(pack.state.meta.slot===slot,'SLOT_MISMATCH','슬롯 번호가 다른 백업은 무단 전환하지 않습니다.');
+    insist(Array.isArray(pack.events)&&pack.events.length===pack.state.meta.revision,'EVENT_COUNT','복구 로그 개수가 다릅니다.');
+    pack.events.forEach((e,i)=>{
+      const ref=pack.state.eventLog[i];
+      insist(e.seq===ref.seq&&e.eventId===ref.eventId&&e.type===ref.type&&e.at===ref.at,'BACKUP_EVENT_MISMATCH','백업의 이벤트 내용이 상태 기록과 일치하지 않습니다.');
+      if(ref.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(ref.payload),'BACKUP_EVENT_MISMATCH','백업의 이벤트 상세 내용이 일치하지 않습니다.');
+    });
+    let restoredState=pack.state,restoredEvents=pack.events;
+    const a=restoredState.activeAttemptId&&restoredState.attempts[restoredState.activeAttemptId];
+    const lesson=restoredState.activeSessionId&&restoredState.sessions.find(s=>s.id===restoredState.activeSessionId);
+    if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'){
+      requireId(recoveryEventId,'복원 중단 이벤트');validTimestamp(recoveryAt);
+      const stopped=reduceCommand(restoredState,{
+        type:'RECOVER_INTERRUPTED',eventId:recoveryEventId,at:Math.max(recoveryAt,restoredState.meta.updatedAt),
+        payload:{reason:'BACKUP_IMPORT'}
+      });
+      restoredState=stopped.state;restoredEvents=[...pack.events,stopped.event];
+    }
+    const now=validTimestamp(this.clock());
+    return onTx(this.db,Object.values(STORES),'readwrite',(tx,{done,fail})=>{
+      const ls=tx.objectStore(STORES.leases),ss=tx.objectStore(STORES.slots),es=tx.objectStore(STORES.events),cs=tx.objectStore(STORES.checkpoints);
+      let l,s,loaded=0;const ready=()=>{if(++loaded!==2)return;try{
+        this._checkLease(l,lease,now);insist(!s,'SLOT_OCCUPIED','기존 슬롯 저장이 있어 자동 덮어쓰기를 차단했습니다.');
+        ss.add({key:slot,state:restoredState});
+        for(const e of restoredEvents)es.add({key:evKey(slot,e.seq),slot,event:e});
+        cs.put({key:cpKey(slot,'latest'),slot,revision:restoredState.meta.revision,state:restoredState});
+        ls.put({...l,expiresAt:now+LEASE_TTL_MS});done({committed:true,state:clone(restoredState)});
+      }catch(e){fail(e);}};
+      const lr=ls.get(slot),sr=ss.get(slot);lr.onsuccess=()=>{l=lr.result;ready();};sr.onsuccess=()=>{s=sr.result;ready();};
+    });
+  }
+}
+
+
+
+const BACKUP_FORMAT='moonpath-v411-backup-v1';
+
+async function sha256(utf8){
+  insist(globalThis.crypto?.subtle,'CRYPTO_UNAVAILABLE','SHA-256 Web Crypto API가 필요합니다.');
+  const buf=await globalThis.crypto.subtle.digest('SHA-256',new TextEncoder().encode(utf8));
+  return [...new Uint8Array(buf)].map(n=>n.toString(16).padStart(2,'0')).join('');
+}
+async function makeBackup(stateAndEvents,{exportedAt=Date.now()}={}){
+  const {state,events}=stateAndEvents;checkState(state);
+  insist(Array.isArray(events)&&events.length===state.meta.revision,'EVENT_COUNT','이벤트 로그가 누락되었습니다.');
+  events.forEach((e,i)=>{const original=state.eventLog[i];
+    insist(e.seq===original.seq&&e.eventId===original.eventId&&e.type===original.type&&e.at===original.at,'BACKUP_EVENT_MISMATCH','이벤트 로그 내용이 상태와 다릅니다.');
+    if(original.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(original.payload),'BACKUP_EVENT_MISMATCH','이벤트 상세 내용이 상태와 다릅니다.');
+  });
+  const payload={format:BACKUP_FORMAT,schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,slot:state.meta.slot,expeditionId:state.meta.expeditionId,exportedAt,state:clone(state),events:clone(events)};
+  return {...payload,integrity:{algorithm:'SHA-256',hex:await sha256(JSON.stringify(payload))}};
+}
+async function verifyBackup(input){
+  const full=typeof input==='string'?JSON.parse(input):clone(input);
+  insist(full?.integrity?.algorithm==='SHA-256'&&/^[a-f0-9]{64}$/.test(full.integrity.hex),'BACKUP_INTEGRITY_MISSING','백업 무결성 정보가 없습니다.');
+  const {integrity,...payload}=full;
+  const actual=await sha256(JSON.stringify(payload));
+  insist(actual===integrity.hex,'BACKUP_CHECKSUM_INVALID','백업 파일이 변조 또는 손상되었습니다.');
+  insist(payload.format===BACKUP_FORMAT,'BACKUP_FORMAT','다른 종류의 백업 파일입니다.');
+  insist(payload.schemaVersion===SCHEMA_VERSION&&payload.engineVersion===ENGINE_VERSION,'BACKUP_VERSION','엔진 및 백업 스키마 버전이 호환되지 않습니다.');
+  checkState(payload.state);
+  insist(payload.slot===payload.state.meta.slot&&payload.expeditionId===payload.state.meta.expeditionId,'BACKUP_ID_MISMATCH','원정 ID/슬롯이 일치하지 않습니다.');
+  insist(Array.isArray(payload.events)&&payload.events.length===payload.state.meta.revision,'EVENT_COUNT','이벤트 로그의 개수가 다릅니다.');
+  payload.events.forEach((e,i)=>{
+    const original=payload.state.eventLog[i];
+    insist(e.seq===i+1&&e.eventId===original.eventId&&e.type===original.type&&e.at===original.at,'BROKEN_SEQUENCE','이벤트 ID·유형·시각 또는 순번이 일치하지 않습니다.');
+    if(original.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(original.payload),'BROKEN_SEQUENCE','이벤트 상세 내용이 일치하지 않습니다.');
+  });
+  return {state:payload.state,events:payload.events};
+}
+
+
+
+
+
+/** Only this teacher-side facade may send writes; publicProjection is an allowlist. */
+class TeacherEngineSession {
+  constructor(store,{clock=()=>Date.now(),newId=()=>crypto.randomUUID(),writerId=null,heartbeatMs=10_000,onLeaseLost=null}={}){
+    this.store=store;this.clock=clock;this.newId=newId;this.writerId=writerId??newId();
+    this.slot=null;this.lease=null;this.state=null;this.heartbeatMs=heartbeatMs;this.onLeaseLost=onLeaseLost;this.heartbeat=null;
+    this.queue=Promise.resolve();
+  }
+  static async openDatabase(opts){return new TeacherEngineSession(await openEngineDatabase(opts?.indexedDB),opts);}
+  _startHeartbeat(){
+    this._stopHeartbeat();if(!this.heartbeatMs)return;
+    this.heartbeat=setInterval(async()=>{
+      if(this.slot===null||!this.lease)return;
+      try{const fresh=await this.store.acquireWriter(this.slot,this.writerId);this.lease=fresh;}
+      catch(err){this._stopHeartbeat();this.onLeaseLost?.(err);}
+    },this.heartbeatMs);
+    this.heartbeat.unref?.(); // Avoid keeping Node-based tests/tools alive.
+  }
+  _stopHeartbeat(){if(this.heartbeat!==null){clearInterval(this.heartbeat);this.heartbeat=null;}}
+  _enqueue(action){const pending=this.queue.then(action);this.queue=pending.catch(()=>{});return pending;}
+  async create({slot,world,teamCount=4,timerSeconds=60,expeditionId=this.newId()}){
+    return this._enqueue(async()=>{
+      checkSlot(slot);insist(this.slot===null,'SESSION_BOUND','이미 열린 슬롯이 있습니다.');
+      const at=this.clock(),lease=await this.store.acquireWriter(slot,this.writerId);
+      try{
+        const blank=newExpedition({slot,world,teamCount,timerSeconds,createdAt:at,expeditionId});
+        const result=await this.store.createSlot(blank,{type:'EXPEDITION_CREATED',eventId:this.newId(),at,payload:{}},lease);
+        this.slot=slot;this.lease=lease;this.state=result.state;this._startHeartbeat();return clone(result.state);
+      }catch(err){await this.store.releaseWriter(slot,lease).catch(()=>{});throw err;}
+    });
+  }
+  async open(slot,{pauseRunning=true}={}){
+    return this._enqueue(async()=>{
+      checkSlot(slot);insist(this.slot===null,'SESSION_BOUND','이미 열린 슬롯이 있습니다.');
+      const lease=await this.store.acquireWriter(slot,this.writerId);
+      try{
+        const found=await this.store.read(slot);
+        insist(found.state,'SLOT_EMPTY','저장된 탐험이 없습니다.');
+        insist(!found.needsRepair,'CHECKPOINT_REPAIR_REQUIRED','최신 데이터에 이상이 있어 직전 정상 체크포인트가 발견되었습니다. 교사가 수동 복구를 확인해야 합니다.');
+        this.slot=slot;this.lease=lease;this.state=found.state;
+        const s=this.state;
+        const timer=s.activeAttemptId&&s.attempts[s.activeAttemptId]?.timer;
+        const session=s.activeSessionId&&s.sessions.find(x=>x.id===s.activeSessionId);
+        if(pauseRunning&&(timer?.phase==='RUNNING'||session?.phase==='ACTIVE')){
+          const at=Math.max(this.clock(),s.meta.updatedAt);
+          const command={type:'RECOVER_INTERRUPTED',eventId:this.newId(),at,payload:{reason:'REOPEN'}};
+          const result=await this.store.commit(slot,command,{expectedRevision:s.meta.revision,lease});
+          if(result.committed)this.state=result.state;
+        }
+        this._startHeartbeat();return clone(this.state);
+      }catch(err){this.slot=null;this.state=null;this.lease=null;await this.store.releaseWriter(slot,lease).catch(()=>{});throw err;}
+    });
+  }
+  async recoverCheckpoint(slot,{source='latest',confirmation}={}){
+    return this._enqueue(async()=>{
+      checkSlot(slot);insist(this.slot===null,'SESSION_BOUND','복구 전 기존 교사 세션을 닫아야 합니다.');
+      insist(confirmation===`RECOVER_SLOT_${slot}`,'TEACHER_REQUIRED','교사가 정확한 슬롯의 복구를 확인해야 합니다.');
+      const lease=await this.store.acquireWriter(slot,this.writerId);
+      try{
+        const result=await this.store.repairFromCheckpoint(slot,{source,teacherConfirmed:true,eventId:this.newId(),at:this.clock(),lease});
+        this.slot=slot;this.lease=lease;this.state=result.state;
+        const a=this.state.activeAttemptId&&this.state.attempts[this.state.activeAttemptId];
+        const lesson=this.state.activeSessionId&&this.state.sessions.find(x=>x.id===this.state.activeSessionId);
+        if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'){
+          const pause=await this.store.commit(slot,{type:'RECOVER_INTERRUPTED',eventId:this.newId(),at:Math.max(this.clock(),this.state.meta.updatedAt),payload:{reason:'CHECKPOINT_REPAIR'}},{expectedRevision:this.state.meta.revision,lease});
+          if(pause.committed)this.state=pause.state;
+        }
+        this._startHeartbeat();return clone(this.state);
+      }catch(err){this.slot=null;this.lease=null;this.state=null;await this.store.releaseWriter(slot,lease).catch(()=>{});throw err;}
+    });
+  }
+  async dispatch(type,payload={},eventId=this.newId()){
+    return this._enqueue(async()=>{
+      insist(this.state&&this.lease,'SESSION_NOT_OPEN','교사용 원정 세션을 열어야 합니다.');
+      // Reject a backwards PC clock BEFORE refreshing the lease or touching the DB.
+      const at=this.clock();
+      insist(at>=this.state.meta.updatedAt,'CLOCK_BACKWARD','컴퓨터 시각이 이전 이벤트보다 뒤로 이동했습니다. 시계를 확인하세요.');
+      // Refresh a lease before every teacher command, including after a long idle.
+      // If another teacher window obtained the lease, this throws before any save.
+      this.lease=await this.store.acquireWriter(this.slot,this.writerId);
+      const command={type,eventId,at,payload};
+      const result=await this.store.commit(this.slot,command,{expectedRevision:this.state.meta.revision,lease:this.lease});
+      // Only mutate the in-memory teacher state AFTER the IndexedDB transaction completes.
+      this.state=result.state;
+      return {committed:result.committed,duplicate:result.duplicate??false,state:clone(this.state)};
+    });
+  }
+  getState(){insist(this.state,'SESSION_NOT_OPEN','세션이 없습니다.');return clone(this.state);}
+  getStudentProjection(){return publicProjection(this.getState(),this.clock());}
+  async exportJSON(){
+    insist(this.state,'SESSION_NOT_OPEN','먼저 슬롯을 열어야 합니다.');
+    const data=await this.store.readConsistentForBackup(this.slot);
+    return JSON.stringify(await makeBackup(data,{exportedAt:this.clock()}),null,2);
+  }
+  async restoreJSONToEmptySlot(slot,json){
+    return this._enqueue(async()=>{
+      insist(this.slot===null,'SESSION_BOUND','복원하기 전에 현재 세션을 닫아야 합니다.');
+      const restored=await verifyBackup(json);
+      insist(restored.state.meta.slot===slot,'SLOT_MISMATCH','백업과 대상 슬롯이 일치하지 않습니다.');
+      const lease=await this.store.acquireWriter(slot,this.writerId);
+      try{
+        const result=await this.store.restoreToEmptySlot(slot,restored,lease,{
+          recoveryEventId:this.newId(),recoveryAt:Math.max(this.clock(),restored.state.meta.updatedAt)
+        });
+        this.slot=slot;this.lease=lease;this.state=result.state;
+        // The imported snapshot and safety pause were committed in ONE transaction.
+        // A failing write never leaves a silently RUNNING restored slot.
+        this._startHeartbeat();return clone(this.state);
+      }
+      catch(err){this.slot=null;this.lease=null;this.state=null;await this.store.releaseWriter(slot,lease).catch(()=>{});throw err;}
+    });
+  }
+  async close(){
+    return this._enqueue(async()=>{
+      const slot=this.slot,lease=this.lease;
+      this._stopHeartbeat();this.slot=null;this.lease=null;this.state=null;
+      if(slot!==null&&lease)await this.store.releaseWriter(slot,lease);
+    });
+  }
+}
+
+const PROBE_WORLD={"version":"4.1.1","masterResolution":{"width":960,"height":540},"themes":[{"id":"T1","name":"푸른 달빛의 숲","bookshelfColor":"짙은 파랑·청록","regions":[{"id":"T1-R1","name":"달빛 이끼길","role":"entry"},{"id":"T1-R2","name":"푸른 폭포길","role":"left"},{"id":"T1-R3","name":"잊힌 성벽길","role":"right"},{"id":"T1-R4","name":"고요한 호수","role":"merge"},{"id":"T1-R5","name":"숲의 고대문","role":"final"}]},{"id":"T2","name":"붉은 잿빛 성채","bookshelfColor":"진홍·구리","regions":[{"id":"T2-R1","name":"붉은 낙엽길","role":"entry"},{"id":"T2-R2","name":"불꽃 제련소","role":"left"},{"id":"T2-R3","name":"무너진 감시탑","role":"right"},{"id":"T2-R4","name":"재의 광장","role":"merge"},{"id":"T2-R5","name":"봉인된 성채","role":"final"}]},{"id":"T3","name":"황금빛 시간의 정원","bookshelfColor":"황금·호박","regions":[{"id":"T3-R1","name":"햇살의 계단","role":"entry"},{"id":"T3-R2","name":"황금 시계탑","role":"left"},{"id":"T3-R3","name":"바람의 회랑","role":"right"},{"id":"T3-R4","name":"시간의 정원","role":"merge"},{"id":"T3-R5","name":"태양의 제단","role":"final"}]},{"id":"T4","name":"보랏빛 별의 회랑","bookshelfColor":"보라·남색","regions":[{"id":"T4-R1","name":"별가루 산책로","role":"entry"},{"id":"T4-R2","name":"부유섬 다리","role":"left"},{"id":"T4-R3","name":"밤의 관측소","role":"right"},{"id":"T4-R4","name":"성운의 광장","role":"merge"},{"id":"T4-R5","name":"별의 대회랑","role":"final"}]},{"id":"T5","name":"초록빛 기억의 성역","bookshelfColor":"에메랄드·연두","regions":[{"id":"T5-R1","name":"이끼 낀 문","role":"entry"},{"id":"T5-R2","name":"속삭이는 정원","role":"left"},{"id":"T5-R3","name":"잊힌 기록실","role":"right"},{"id":"T5-R4","name":"생명의 샘","role":"merge"},{"id":"T5-R5","name":"기억의 성역","role":"final"}]},{"id":"T6","name":"푸른 은빛의 달의 궁전","bookshelfColor":"푸른 은빛·백색","regions":[{"id":"T6-R1","name":"은빛 수정길","role":"entry"},{"id":"T6-R2","name":"얼어붙은 서고","role":"left"},{"id":"T6-R3","name":"달빛 거울정원","role":"right"},{"id":"T6-R4","name":"별의 왕좌 앞","role":"merge"},{"id":"T6-R5","name":"달의 심장","role":"final"}]}],"mainRoute":["entry","left_or_right","merge","final"],"fullExplorationRequirement":"five_regions_per_theme","additionalExplorationReturnRequired":true};
+
+const result=document.getElementById('result');
+function say(label,ok,detail=''){const p=document.createElement('p');p.textContent=(ok?'[PASS] ':'[FAIL] ')+label+(detail?' : '+detail:'');p.style.color=ok?'#a7f6c7':'#ffa8a8';result.appendChild(p);}
+const PROBE_DB='moonpath-v411-browser-probe-db-v1';
+function openProbe(){return new Promise((resolve,reject)=>{
+ const r=indexedDB.open(PROBE_DB,1);
+ r.onupgradeneeded=()=>{for(const n of ['slots','events','checkpoints','leases','quarantine'])if(!r.result.objectStoreNames.contains(n))r.result.createObjectStore(n,{keyPath:'key'});};
+ r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(new Error('DB blocked by another tab'));
+});}
+function getValue(r){return new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function realAbort(db){
+ const key='aborted:'+Date.now();
+ const tx=db.transaction(['quarantine'],'readwrite');
+ const done=new Promise((res,rej)=>{tx.onabort=res;tx.oncomplete=()=>rej(new Error('abort unexpectedly committed'));});
+ tx.objectStore('quarantine').add({key,sample:true});tx.abort();await done;
+ const read=db.transaction(['quarantine'],'readonly');
+ if(await getValue(read.objectStore('quarantine').get(key)))throw new Error('Aborted write persisted');
+}
+document.getElementById('go').addEventListener('click',async()=>{
+ result.replaceChildren();document.getElementById('go').disabled=true;
+ let db,store,lease;
+ try{
+  if(!indexedDB)throw new Error('IndexedDB missing');
+  if(!crypto?.subtle)throw new Error('WebCrypto SHA-256 unavailable');
+  db=await openProbe();store=new IndexedDbExpeditionStore(db);
+  say('IndexedDB opened',true,location.protocol);
+  const writer='phase1-probe-'+crypto.randomUUID(),now=Date.now();
+  lease=await store.acquireWriter(1,writer);
+  let v=await store.read(1);
+  if(v.needsRepair)throw new Error('Probe data inconsistent; refuse silent overwrite');
+  let state;
+  if(!v.state){
+    const blank=newExpedition({slot:1,expeditionId:writer,createdAt:now,world:PROBE_WORLD});
+    const created=await store.createSlot(blank,{type:'EXPEDITION_CREATED',eventId:'start-'+writer,at:now,payload:{}},lease);
+    state=created.state;say('atomic new slot event/state/checkpoint',true);
+  }else{state=v.state;say('previous run state preserved',true,'revision='+state.meta.revision);}
+  const eventId='screen-'+writer,cmd={type:'SCREEN_CHANGED',eventId,at:Math.max(Date.now(),state.meta.updatedAt),payload:{screen:'BOOKSHELF'}};
+  const saved=await store.commit(1,cmd,{expectedRevision:state.meta.revision,lease});
+  const duplicate=await store.commit(1,cmd,{expectedRevision:saved.state.meta.revision,lease});
+  if(!saved.committed||!duplicate.duplicate||duplicate.committed)throw new Error('duplicate event failure');
+  state=saved.state;say('idempotent event and revision',true);
+  const data=await store.readConsistentForBackup(1);
+  const backup=await makeBackup(data);await verifyBackup(backup);
+  say('JSON backup SHA-256 and event sequence',true);
+  await realAbort(db);say('actual IDB abort rollback',true);
+  const student=JSON.stringify(publicProjection(state,Date.now()));
+  if(student.includes('"pin"')||student.includes('"answer"')||student.includes('"audit"'))throw new Error('student secrets leak');
+  say('public student projection allowlist',true);
+  await store.releaseWriter(1,lease);lease=null;store.close();db=null;
+  db=await openProbe();const read=new IndexedDbExpeditionStore(db),after=await read.read(1);
+  if(!after.state||after.state.meta.revision!==state.meta.revision||after.needsRepair)throw new Error('reopen persistence mismatch');
+  say('close and reopen DB revision preserved',true);
+  say('This smoke run PASS does not mean full PHASE 1/V15 pass',true);
+ }catch(e){say(e.code||'ERROR',false,e.message||String(e));}
+ finally{try{if(lease&&store)await store.releaseWriter(1,lease);}catch{}try{db?.close()}catch{}document.getElementById('go').disabled=false;}
+});
+document.getElementById('clear').addEventListener('click',()=>{
+ if(!confirm('게임 데이터와 관계없는 시험용 DB만 삭제할까요?'))return;
+ const req=indexedDB.deleteDatabase(PROBE_DB);
+ req.onsuccess=()=>say('probe-only DB removed',true);
+ req.onblocked=()=>say('close other probe window',false);
+ req.onerror=()=>say('probe-only DB removal',false,String(req.error));
+});
+
+</script></body></html>
