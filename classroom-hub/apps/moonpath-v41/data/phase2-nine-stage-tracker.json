@@ -2,6 +2,7 @@
   "masterVersion": "4.1.1",
   "phase": "PHASE2",
   "stageCount": 9,
+  "sourceOfTruth": "docs/PHASE2_9_STAGE_FIXED_PLAN.md",
   "stages": [
     {
       "id": "2-1",
@@ -20,12 +21,26 @@
     {
       "id": "2-2",
       "title": "무작위 출제·미출제/복습/회수",
-      "implementation": "NOT_STARTED",
-      "unitTest": "NOT_RUN",
-      "integrationTest": "NOT_RUN",
+      "implementation": "CODE_COMPLETE_UNIT_AND_MOCK_IDB_ONLY",
+      "unitTest": "PASS_NODE_34",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
       "browserTest": "NOT_RUN",
       "userApproval": "NOT_REQUESTED",
-      "evidence": []
+      "evidence": [
+        "src/questions/draw.js",
+        "src/engine/reducer.js",
+        "src/engine/model.js",
+        "src/engine/session.js",
+        "tests/phase2-2-2.test.mjs",
+        "docs/PHASE2_STEP2_2_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-2-20261015.summary.json"
+      ],
+      "limitations": [
+        "교사 판정 후 미회수/복습 분류 상태 자동 등록은 2-3에서 연결",
+        "회수 미션 호출/진행/보상은 2-5·2-6 책임",
+        "지역 간 실제 이동 기록은 2-8에서 확정",
+        "IndexedDB 실제 Chrome/Edge 및 file:// 미검증"
+      ]
     },
     {
       "id": "2-3",

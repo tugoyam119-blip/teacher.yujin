@@ -1,4 +1,5 @@
 import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_SAND_COST,TIME_SAND_EXTENSION_MS,canonicalJson} from './model.js';
+import {validateDrawCommand} from '../questions/draw.js';
 
 /** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
 export function reduceCommand(current,command){
@@ -65,6 +66,25 @@ export function reduceCommand(current,command){
       const sec=state.settings.timerSeconds;
       state.attempts[payload.attemptId]={id:payload.attemptId,questionId:payload.questionId,questionRevision:payload.questionRevision??null,teamId:payload.teamId,sessionId:s.id,preparedAt:at,resolvedAt:null,timer:{phase:'PREPARED',remainingMs:sec*1000,runningSince:null,usedTimeSand:false}};
       state.activeAttemptId=payload.attemptId;break;
+    }
+    case 'QUESTION_DRAWN':{
+      // PHASE 2-2. A selected question and its PREPARED attempt are committed in
+      // the SAME event/IndexedDB transaction. No grading or reward takes place.
+      const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
+      insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
+      validateDrawCommand(state,payload,at);
+      const sec=state.settings.timerSeconds;
+      const {attemptId,questionId,regionId,teamId,mode,questionSnapshot}=payload;
+      const row={attemptId,questionId,regionId,teamId,mode,issuedAt:at,questionRevision:questionSnapshot.questionRevision};
+      state.questions.draws??=[];
+      state.questions.draws.push(row);
+      if(mode==='NEW')state.questions.issuedIds.push(questionId);
+      if(state.world.currentRegionId===null)state.world.currentRegionId=regionId;
+      state.attempts[attemptId]={id:attemptId,questionId,questionRevision:questionSnapshot.questionRevision,
+        teamId,regionId,drawMode:mode,questionSnapshot:clone(questionSnapshot),sessionId:s.id,
+        preparedAt:at,resolvedAt:null,
+        timer:{phase:'PREPARED',remainingMs:sec*1000,runningSince:null,usedTimeSand:false}};
+      state.activeAttemptId=attemptId;break;
     }
     case 'TIMER_STARTED':{
       const a=last();insist(a.timer.phase==='PREPARED','TIMER_NOT_PREPARED','준비된 문제가 아닙니다.');

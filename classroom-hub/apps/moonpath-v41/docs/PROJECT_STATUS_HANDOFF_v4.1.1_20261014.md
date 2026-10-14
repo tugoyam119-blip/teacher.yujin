@@ -406,10 +406,24 @@
 
 ---
 
-## 2026-10-14 후속 진행 — PHASE 2 / 2-1
+## 2026-10-14 후속 진행 기록: PHASE 2 / 2-1
 
-- PHASE 2를 2-1~2-9 총 9단계로 고정함. `docs/PHASE2_9_STAGE_FIXED_PLAN.md` 참조.
-- 2-1 실제 60문항/7유형 통합 엔진 모듈 코드와 원본·발행 스냅샷 및 교사 확인 잠정판정을 추가함.
-- 신규 Node 77/77 PASS, 선행 검사 포함 총 **130/130 PASS**. 실브라우저·저장·UI 통합은 미검증.
-- 전체 검증 V02 `testStatus=NOT_RUN` 유지. 2-2~2-9 미착수, 운영 `main`/Railway 변경 금지.
-- 상세 기록은 `docs/PHASE2_STEP2_1_VERIFICATION_20261014.md` 참조.
+- **PHASE 2 개발 단계를 2-1~2-9, 총 9단계로 고정**한다. 전체 범위는 `docs/PHASE2_9_STAGE_FIXED_PLAN.md`를 참조한다.
+- **2-1 코드 구현:** `src/questions/engine.js`에서 원본 60문항/7개 유형의 통합 정규화, 원본/실제표시 스냅샷, 학생 정보 제한 투영, 자동/교사 확인 잠정 판정 구현. 원본 문제은행의 정답·해설 및 자체 SHA 유지.
+- **테스트:** Node v22.16.0 환경 신규 77건 PASS, 기존 53건 포함 총 **130/130 PASS**. `tests/phase2-2-1.test.mjs`, `test-logs/phase2-step2-1-20261014.log` 근거.
+- **구현 ≠ 출시 검증:** 실제 게임 입력/제출/판정 UI, 모둠/보상 반영, IndexedDB 저장 연동, Chrome/Edge `file://`·강제 종료·두 창 검증은 **NOT_RUN/BLOCKED**. V02 공식 `testStatus=NOT_RUN` 유지.
+- 원본 60문항에 별도 문항별 출처 필드가 없으므로 `source:null` 보존. 교과서 출처·정답 타당성은 추가 확인 대상.
+- 2-2~2-9는 **미착수**. 다음 단계는 ‘2-2 전체 60문항 무작위·미출제 우선·복습/오답 회수 분리’이나 별도 요청 또는 이어가기 지시 뒤 진행한다.
+- 자세한 검증 기록: `docs/PHASE2_STEP2_1_VERIFICATION_20261014.md`. 기존 운영 `main`·Railway·저장 키 변경 금지 유지.
+
+---
+
+## 13. 2026-10-15 / PHASE 2-2 추가 이력 (당일 후속 기록)
+
+- **신규 구현:** `src/questions/draw.js` 60문항 전역 출제·복습·미회수 분리 모듈. PHASE 1 `model.js` 출제 장부, `reducer.js`의 `QUESTION_DRAWN` 이벤트, 교사 `session.js`의 `drawQuestion()` 단일 거래 연동.
+- **핵심 규칙:** 미출제 우선, 60개 소진 뒤 복습 허용 정답만, 회수 전용 오답의 일반 출제 금지, 유형/난도 균형, 같은 지역 복습 중복 최소화, 보상 지급 0.
+- **검증:** 신규 34건 Node·가상 IDB PASS; 기존 130건 재실행 → 총 164/164 PASS, 0 FAIL. 저장 실패 후 이력 불변, 이벤트 멱등·동시 출제 방지, JSON 백업·복원 후 출제 기록 보존도 **가상 저장 모형에서만** 통과.
+- **미구현:** 최종 답변/교사 판정 후 복습·미회수 분류(2-3), 교사 회수 호출과 원모둠 우선(2-5), 보상 원장(2-6), 실제 지역 완주(2-8~9). 자연 회수 출현의 진짜 지역 방문 순서 확인도 후속 단계 책임.
+- **미실증:** Windows Chrome/Edge, `file://` IndexedDB, 강제 종료 후 복원, 무인터넷 이중빌드, BroadcastChannel 두 창. V03 `testStatus=NOT_RUN`, 최종 실증 0/22. PHASE 1 전체 완료 선언 금지.
+- **변경 격리:** 신규 개발 브랜치의 `classroom-hub/apps/moonpath-v41/`만 변경. 운영 `main`, `moonpath-dev`, Railway, 기존 저장키 미변경.
+- **상세 증거:** `docs/PHASE2_STEP2_2_VERIFICATION_20261015.md`, `tests/phase2-2-2.test.mjs`, `data/phase2-nine-stage-tracker.json`.

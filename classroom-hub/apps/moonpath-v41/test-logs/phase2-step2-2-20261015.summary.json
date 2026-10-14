@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-15",
+  "phase": "PHASE 2",
+  "stage": "2-2",
+  "baselineVersion": "v4.1.1",
+  "environment": {
+    "os": "Linux",
+    "runtime": "Node.js v22.16.0",
+    "mode": "Node test + FakeDatabase (NOT native browser IndexedDB)"
+  },
+  "command": "node --test tests/*.test.mjs",
+  "total": 164,
+  "pass": 164,
+  "fail": 0,
+  "newTests": 34,
+  "previousTests": 130,
+  "syntax": "node --check for all 7 modules: PASS",
+  "browser": "NOT_RUN (previous Chromium sandbox was BLOCKED)",
+  "prodDeploy": "NOT_RUN",
+  "sourceHashesSHA256": {
+    "src/questions/draw.js": "a6299e2496090d29fd52f89c51a801a459806e7f0ee8c07e45ef5054602a49e9",
+    "src/engine/model.js": "2309670cbc65697c76816dd790a73017ff1b7209deef9be77b84de20713401e7",
+    "src/engine/reducer.js": "d28e1de10066de4eeb8debb5eb7f07273227c3d36014e4e3b24a646341585c5c",
+    "src/engine/session.js": "035c5aba8535218ff609e669d1bc8f8d3a54ac7bc4b6ed83b44a57d83aaae3d3",
+    "tests/phase2-2-2.test.mjs": "3c4ac70684bec8d72622d35d202950572d08abbb2eb9e59d2568a8565ab73f3f"
+  },
+  "notes": [
+    "60문항 미출제 우선과 전역 출제 풀",
+    "모의 IDB 단일 출제 이벤트/시도/체크포인트",
+    "미회수 일반 출제 제외 / 복습 허용 문제만",
+    "출제 이벤트 중복·저장 실패·교사 인증 격리",
+    "자연 회수는 확인된 방문 순서가 없는 동안 보수적으로 보류, 2-5~2-8 연동 전"
+  ],
+  "gateStatus": {
+    "V03": "CODE_UNIT_AND_FAKE_IDB_PASSED__OVERALL_TEST_NOT_RUN",
+    "V09": "NOT_RUN_REAL_BROWSER",
+    "V11": "NOT_RUN_REAL_BROWSER",
+    "V12": "NOT_RUN_REAL_BROWSER",
+    "V15": "NOT_RUN_REAL_BROWSER"
+  },
+  "trackingEvidence": "tests/phase2-2-2.test.mjs; /tmp/moonpath_all_step22_final.log"
+}

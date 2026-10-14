@@ -39,7 +39,7 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
     world:{currentRegionId:null,mainRouteChoice:{},additionalExplorationReturn:null,regions:Object.fromEntries(world.themes.flatMap(t=>t.regions).map(r=>[r.id,{status:'LOCKED',completedAt:null}])),themes:world.themes.map(t=>({id:t.id,name:t.name,regionIds:t.regions.map(r=>r.id)}))},
     sessions:[],
     activeSessionId:null,
-    questions:{packId,packVersion,issuedIds:[],recoveryOnlyIds:[],reviewEligibleIds:[]},
+    questions:{packId,packVersion,issuedIds:[],recoveryOnlyIds:[],reviewEligibleIds:[],draws:[]},
     attempts:{},activeAttemptId:null,
     teams:Array.from({length:teamCount},(_,i)=>({id:`TEAM_${String(i+1).padStart(2,'0')}`,name:`${i+1}모둠`,rosterVersion:1,members:[],representativeCursor:0,contribution:0})),
     recovery:{pending:[],resolved:[]},
@@ -59,6 +59,41 @@ export function checkState(s){
   if(s.eventLog.length)insist(s.meta.updatedAt===s.eventLog.at(-1).at,'EVENT_TIME_MISMATCH','최종 수정 시각과 이벤트 시각이 다릅니다.');
   insist(Array.isArray(s.sessions)&&Array.isArray(s.teams)&&s.teams.length===s.settings.teamCount,'INVALID_STATE','필수 상태 데이터가 잘못되었습니다.');
   insist(Array.isArray(s.world?.themes)&&s.world.themes.length===6&&Object.keys(s.world.regions||{}).length===30,'INVALID_WORLD','30지역 구조가 일치하지 않습니다.');
+  // PHASE 2-2: a saved draw ledger cannot claim extra unseen questions or
+  // hide a first issuance. Legacy PHASE 1 timer-only attempts have no draw row.
+  const q=s.questions;
+  insist(q?.packId===s.meta.packId&&q?.packVersion===s.meta.packVersion,'PACK_MISMATCH','문항팩과 원정 정보가 다릅니다.');
+  insist(Array.isArray(q.issuedIds)&&Array.isArray(q.recoveryOnlyIds)&&Array.isArray(q.reviewEligibleIds),
+    'DRAW_HISTORY_INVALID','문항 이력 필수 배열이 없습니다.');
+  const unique=a=>new Set(a).size===a.length&&a.every(id=>typeof id==='string'&&id.length>0);
+  insist(unique(q.issuedIds)&&unique(q.recoveryOnlyIds)&&unique(q.reviewEligibleIds),
+    'DRAW_HISTORY_INVALID','문항 ID가 중복되거나 올바르지 않습니다.');
+  insist(q.issuedIds.length<=60,'DRAW_HISTORY_INVALID','원본 전체 문항 수를 넘었습니다.');
+  const issuedSet=new Set(q.issuedIds),recoverSet=new Set(q.recoveryOnlyIds);
+  insist(q.recoveryOnlyIds.every(id=>issuedSet.has(id)) && q.reviewEligibleIds.every(id=>issuedSet.has(id)&&!recoverSet.has(id)),
+    'DRAW_HISTORY_INVALID','미회수·복습 목록이 출제 이력과 충돌합니다.');
+  const draws=q.draws??[];
+  insist(Array.isArray(draws),'DRAW_HISTORY_INVALID','출제 상세 이력이 배열이 아닙니다.');
+  const issuedFromDraws=[],seenDrawAttempts=new Set(),seenNew=new Set();
+  for(const row of draws){
+    insist(row&&typeof row.attemptId==='string'&&typeof row.questionId==='string'&&
+      ['NEW','REVIEW'].includes(row.mode)&&typeof row.regionId==='string'&&typeof row.teamId==='string'&&
+      !seenDrawAttempts.has(row.attemptId),
+      'DRAW_HISTORY_INVALID','출제 이력의 ID 또는 모드가 올바르지 않습니다.');
+    seenDrawAttempts.add(row.attemptId);
+    const attempt=s.attempts[row.attemptId];
+    insist(attempt&&attempt.questionId===row.questionId&&attempt.drawMode===row.mode&&
+      attempt.questionSnapshot?.questionId===row.questionId,
+      'DRAW_HISTORY_INVALID','출제 이력과 문제 시도 스냅샷이 일치하지 않습니다.');
+    if(row.mode==='NEW'){
+      insist(!seenNew.has(row.questionId),'DRAW_HISTORY_INVALID','신규 발행 ID가 중복되었습니다.');
+      seenNew.add(row.questionId);issuedFromDraws.push(row.questionId);
+    }else{
+      insist(seenNew.has(row.questionId),'DRAW_HISTORY_INVALID','최초 출제 전에 복습 로그가 기록되었습니다.');
+    }
+  }
+  insist(q.issuedIds.length===issuedFromDraws.length && q.issuedIds.every((id,i)=>id===issuedFromDraws[i]),
+    'DRAW_HISTORY_INVALID','발행 ID 목록과 트랜잭션 출제 이력이 일치하지 않습니다.');
   insist(Number.isInteger(s.rewards?.starlight)&&s.rewards.starlight>=0,'INVALID_REWARDS','음수 별빛은 허용하지 않습니다.');
   insist(Number.isInteger(s.rewards.keys)&&s.rewards.keys>=0,'INVALID_REWARDS','음수 열쇠는 허용하지 않습니다.');
   const seen=new Set();let previousAt=-1;

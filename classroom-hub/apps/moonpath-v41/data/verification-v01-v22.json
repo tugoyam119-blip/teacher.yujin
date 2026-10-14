@@ -22,16 +22,25 @@
       "tests/phase2-2-1.test.mjs",
       "docs/PHASE2_STEP2_1_VERIFICATION_20261014.md"
     ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "integrationBrowserEvidence": "NOT_RUN",
+    "verificationScope": "actual 60-question source, seven types, normalization and preliminary assessment; no persisted attempt/teacher final scoring"
   },
   {
     "id": "V03",
     "target": "출제·복습·회수 분리",
     "acceptance": "미출제 우선, 60문항 소진 시 순환, 미회수 오답 분리, 중복 보상 0",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_34_AND_FAKE_IDB_2026-10-15",
+    "unitEvidence": [
+      "src/questions/draw.js",
+      "tests/phase2-2-2.test.mjs",
+      "docs/PHASE2_STEP2_2_VERIFICATION_20261015.md"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN",
+    "verificationScope": "전체 원본 60문항 미출제 우선, 난도/유형 분포, 복습 후보, 미회수 일반 제외, 출제/시도/이벤트/체크포인트 모의 거래. 실제 판정에 따른 목록 갱신·오프라인 브라우저는 미검증"
   },
   {
     "id": "V04",
@@ -67,13 +76,7 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
-    "unitEvidence": [
-      "src/engine/reducer.js",
-      "tests/phase1-reducer.test.mjs"
-    ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "evidence": []
   },
   {
     "id": "V08",
@@ -91,13 +94,7 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
-    "unitEvidence": [
-      "src/engine/reducer.js",
-      "tests/phase1-reducer.test.mjs"
-    ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "evidence": []
   },
   {
     "id": "V10",
@@ -106,13 +103,7 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
-    "unitEvidence": [
-      "src/engine/reducer.js",
-      "tests/phase1-reducer.test.mjs"
-    ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "evidence": []
   },
   {
     "id": "V11",
@@ -121,13 +112,7 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
-    "unitEvidence": [
-      "src/storage/indexeddb.js",
-      "tests/phase1-storage.test.mjs"
-    ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "evidence": []
   },
   {
     "id": "V12",
@@ -136,14 +121,7 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
-    "unitEvidence": [
-      "src/storage/indexeddb.js",
-      "src/storage/backup.js",
-      "tests/phase1-storage.test.mjs"
-    ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "evidence": []
   },
   {
     "id": "V13",
@@ -152,13 +130,7 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
-    "unitEvidence": [
-      "src/engine/model.js",
-      "tests/phase1-reducer.test.mjs"
-    ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "evidence": []
   },
   {
     "id": "V14",
@@ -167,13 +139,7 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
-    "unitEvidence": [
-      "src/engine/session.js",
-      "tests/phase1-storage.test.mjs"
-    ],
-    "integrationBrowserEvidence": "NOT_RUN"
+    "evidence": []
   },
   {
     "id": "V15",

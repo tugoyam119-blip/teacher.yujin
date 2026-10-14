@@ -1,6 +1,7 @@
 import {newExpedition,clone,checkSlot,checkState,publicProjection,insist} from './model.js';
 import {openEngineDatabase} from '../storage/indexeddb.js';
 import {makeBackup,verifyBackup} from '../storage/backup.js';
+import {planQuestionDraw} from '../questions/draw.js';
 
 /** Only this teacher-side facade may send writes; publicProjection is an allowlist. */
 export class TeacherEngineSession {
@@ -86,6 +87,35 @@ export class TeacherEngineSession {
       // Only mutate the in-memory teacher state AFTER the IndexedDB transaction completes.
       this.state=result.state;
       return {committed:result.committed,duplicate:result.duplicate??false,state:clone(this.state)};
+    });
+  }
+  /** Plans + persists the exact draw inside one teacher-side serialized operation. */
+  async drawQuestion(questionEngine,{regionId,teamId,attemptId=null,eventId=null,random=Math.random}={}){
+    return this._enqueue(async()=>{
+      insist(this.state&&this.lease,'SESSION_NOT_OPEN','교사 원정 세션을 먼저 열어야 합니다.');
+      // A double-click/retry with the SAME event ID returns its original issued
+      // attempt, not a fresh random draw. Never mutate state or reroll.
+      const issuingEventId=eventId??this.newId();
+      const prior=this.state.eventLog.find(e=>e.eventId===issuingEventId);
+      if(prior){
+        insist(prior.type==='QUESTION_DRAWN' && prior.payload?.regionId===regionId &&
+          prior.payload?.teamId===teamId && (attemptId===null||prior.payload?.attemptId===attemptId),
+          'EVENT_ID_CONFLICT','동일 출제 ID에 다른 요청이 접수되었습니다.');
+        return {committed:false,duplicate:true,state:clone(this.state),
+          attemptId:prior.payload.attemptId,questionId:prior.payload.questionId,mode:prior.payload.mode};
+      }
+      const at=this.clock();
+      insist(at>=this.state.meta.updatedAt,'CLOCK_BACKWARD','PC 시각 역행을 확인하세요.');
+      // Plan from a stable state in the same queue as all teacher commands.
+      const issuingAttemptId=attemptId??this.newId();
+      const payload=planQuestionDraw(this.state,questionEngine,{regionId,teamId,attemptId:issuingAttemptId,at,random});
+      this.lease=await this.store.acquireWriter(this.slot,this.writerId);
+      const result=await this.store.commit(this.slot,{type:'QUESTION_DRAWN',eventId:issuingEventId,at,payload},{
+        expectedRevision:this.state.meta.revision,lease:this.lease
+      });
+      this.state=result.state; // no in-memory commit before oncomplete
+      return {committed:result.committed,duplicate:result.duplicate??false,state:clone(this.state),
+        attemptId:issuingAttemptId,questionId:payload.questionId,mode:payload.mode};
     });
   }
   getState(){insist(this.state,'SESSION_NOT_OPEN','세션이 없습니다.');return clone(this.state);}
