@@ -35,3 +35,9 @@
 ## 게이트
 PHASE 0 원본 JSON 전문 60개 대조는 정적 검사 근거를 확보했으나 **V01~V22의 통합/브라우저 실행 PASS는 아직 0개**.
 PHASE 1은 새 저장소·기술 실험 코드 작성 준비 가능, **정상 저장·복구·출시 가능 판단은 차단**.
+
+## 추가 소스 분석 및 검증 장애
+- 기존 HOME `index.html`은 Git blob API로 본문 확인. 로컬 저장 키 `moonpath-home-v3`, 예외를 빈 `catch`로 숨기는 `save()` 경로 확인(신규 엔진에 이식 금지).
+- 기존 `expedition.html`은 `moonpath.expedition.slot{1..3}.run.v12`, `moonpath.expedition.slot{1..3}.history.v12`, `unknownPath.pack.v12` 키 사용. 신규 저장 영역과 전부 분리.
+- 원본별 60개 검사 기록: `docs/V01_60_QUESTION_COMPARE.md`.
+- 브라우저 사전 시험: `docs/PHASE0_BROWSER_FEASIBILITY.md`; 실행 환경 관리자 정책 차단으로 BLOCKED. Windows Chrome/Edge 실기기 재검증 필요.
