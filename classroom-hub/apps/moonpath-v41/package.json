@@ -1,0 +1,14 @@
+{
+  "name": "moonpath-v411",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0-phase0",
+  "scripts": {
+    "test": "node --test tests/phase0.test.mjs",
+    "check:phase0": "node --test tests/phase0.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "description": "Independent non-production PHASE 0 environment for moonpath v4.1.1"
+}

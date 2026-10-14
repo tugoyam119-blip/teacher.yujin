@@ -1,0 +1,200 @@
+[
+  {
+    "id": "V01",
+    "target": "60문항 실제 원문·정답·해설 대조",
+    "acceptance": "60개 고유 ID, 원본과 전문/정답 비교, 누락 내용 명시",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V02",
+    "target": "통합 문항 엔진",
+    "acceptance": "객관·진위·단답·서술형 각각 판정, 모호한 답변 교사 확인",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V03",
+    "target": "출제·복습·회수 분리",
+    "acceptance": "미출제 우선, 60문항 소진 시 순환, 미회수 오답 분리, 중복 보상 0",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V04",
+    "target": "세계·분기·추가 탐험",
+    "acceptance": "6테마·30지역, 주 경로→추가 탐험→원위치 복귀, 해금 검증",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V05",
+    "target": "탐색 사건·단서·엔딩",
+    "acceptance": "핵심/선택 사건, 단서 조합, 기본/확장 엔딩 조건 각각 확인",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V06",
+    "target": "모둠 변경·대표 순환·가로채기",
+    "acceptance": "2~8모둠, 결석·재편성 이력 보존, 문제당 가로채기 최대 1회",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V07",
+    "target": "열쇠·별빛·마법 5종",
+    "acceptance": "최초 정답·회수 +1별빛, 지역 최초 완료 +1열쇠, 사용·해금·중복 검증",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V08",
+    "target": "정답 정정 연쇄 재계산",
+    "acceptance": "가로채기·회수·공헌도·소비된 별빛의 정산 필요 상태까지 재검산",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V09",
+    "target": "타이머 이벤트 경계",
+    "acceptance": "만료 1초 전 제출·일시정지·마법, 중복 클릭·저장 후 복구",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V10",
+    "target": "차시 경과·활동시간",
+    "acceptance": "휴식·종료·재개·PC시각 변화 시 중복 계산 없고 표본 부족 예측 불가",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V11",
+    "target": "IndexedDB 트랜잭션",
+    "acceptance": "상태+이벤트 원자적 저장, 저장 거부·용량 초과 때 성공 메시지 금지",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V12",
+    "target": "3슬롯·체크포인트·JSON",
+    "acceptance": "슬롯 독립, 체크포인트 2세대, 파일 무결성·버전 확인 후 복원",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V13",
+    "target": "교사 PIN·비공개 정책",
+    "acceptance": "5분 잠금, 정답·해설·PIN·감사 기록 학생 화면 노출 방지",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V14",
+    "target": "두 창·단독 쓰기",
+    "acceptance": "확장 모드 읽기 전용 학생 창, 창 종료·중복 교사 창·재동기화 처리",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V15",
+    "target": "오프라인 file:// 호환성",
+    "acceptance": "Chrome/Edge 무인터넷 환경에서 IndexedDB·두 창 실제 시험",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V16",
+    "target": "온라인·오프라인 동등성",
+    "acceptance": "동일 엔진·문항·그래픽 빌드, 네트워크 없이 오프라인 1지역 완주",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V17",
+    "target": "PDF·CSV·JSON 출력",
+    "acceptance": "무인터넷 생성, 한글 깨짐 없음, 수업 통계 일치, 글꼴/라이브러리 적법성",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V18",
+    "target": "신규 그래픽 자산·시안 승인",
+    "acceptance": "HOME·설정·책장·갈림길·30지역·캐릭터 동작·팝업 실제 제작 및 개별 승인",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V19",
+    "target": "신규 PNG 전체 업로드",
+    "acceptance": "원본 1개 전체 GitHub 저장, 원본과 해시/바이트 일치, 브라우저 표시",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V20",
+    "target": "해상도·조작·접근성",
+    "acceptance": "960×540 contain, 1920/1600/1366/430 화면 잘림·겹침 검증",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V21",
+    "target": "완전한 플레이 시나리오",
+    "acceptance": "한 지역→테마→전체 기본 엔딩→확장 엔딩까지 저장·회수·분기 통과",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  },
+  {
+    "id": "V22",
+    "target": "GitHub·Railway 실제 배포",
+    "acceptance": "최종 승인→PR 병합→Railway SUCCESS→운영 URL 재접속·저장 확인",
+    "implementationStatus": "미착수",
+    "testStatus": "NOT_RUN",
+    "userApproval": "미승인",
+    "evidence": []
+  }
+]

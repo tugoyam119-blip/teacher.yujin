@@ -1,0 +1,13 @@
+{
+  "version": "4.1.1",
+  "status": "NO_NEW_ASSETS_YET",
+  "newAssets": [],
+  "approvedAssets": [],
+  "minimumAcceptance": [
+    "SHA256 verified for complete original",
+    "GitHub byte-identical",
+    "visible in real browser",
+    "user approved per screen"
+  ],
+  "oldAssetPolicy": "REFERENCE_ONLY_NO_REUSE"
+}
