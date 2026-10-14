@@ -1,0 +1,101 @@
+{
+  "masterVersion": "4.1.1",
+  "phase": "PHASE2",
+  "stageCount": 9,
+  "stages": [
+    {
+      "id": "2-1",
+      "title": "60문항 통합 문항 엔진",
+      "implementation": "CODE_COMPLETE_UNIT_ONLY",
+      "unitTest": "PASS_NODE_77",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/questions/engine.js",
+        "tests/phase2-2-1.test.mjs",
+        "docs/PHASE2_STEP2_1_VERIFICATION_20261014.md"
+      ]
+    },
+    {
+      "id": "2-2",
+      "title": "무작위 출제·미출제/복습/회수",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    },
+    {
+      "id": "2-3",
+      "title": "답변 접수·교사 판정·타이머",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    },
+    {
+      "id": "2-4",
+      "title": "모둠·대표 순환",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    },
+    {
+      "id": "2-5",
+      "title": "가로채기·회수",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    },
+    {
+      "id": "2-6",
+      "title": "별빛·열쇠·마법 장부",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    },
+    {
+      "id": "2-7",
+      "title": "판정 정정과 정산",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    },
+    {
+      "id": "2-8",
+      "title": "지역 완료/결과",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    },
+    {
+      "id": "2-9",
+      "title": "한 지역 완주 통합검증",
+      "implementation": "NOT_STARTED",
+      "unitTest": "NOT_RUN",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": []
+    }
+  ]
+}

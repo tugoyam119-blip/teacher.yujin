@@ -12,10 +12,17 @@
     "id": "V02",
     "target": "통합 문항 엔진",
     "acceptance": "객관·진위·단답·서술형 각각 판정, 모호한 답변 교사 확인",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/questions/engine.js",
+      "tests/phase2-2-1.test.mjs",
+      "docs/PHASE2_STEP2_1_VERIFICATION_20261014.md"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V03",
