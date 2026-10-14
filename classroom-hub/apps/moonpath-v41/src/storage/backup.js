@@ -1,4 +1,4 @@
-import {checkState,clone,EngineError,insist,ENGINE_VERSION,SCHEMA_VERSION} from '../engine/model.js';
+import {checkState,clone,EngineError,insist,ENGINE_VERSION,SCHEMA_VERSION,canonicalJson} from '../engine/model.js';
 export const BACKUP_FORMAT='moonpath-v411-backup-v1';
 
 export async function sha256(utf8){
@@ -9,6 +9,10 @@ export async function sha256(utf8){
 export async function makeBackup(stateAndEvents,{exportedAt=Date.now()}={}){
   const {state,events}=stateAndEvents;checkState(state);
   insist(Array.isArray(events)&&events.length===state.meta.revision,'EVENT_COUNT','이벤트 로그가 누락되었습니다.');
+  events.forEach((e,i)=>{const original=state.eventLog[i];
+    insist(e.seq===original.seq&&e.eventId===original.eventId&&e.type===original.type&&e.at===original.at,'BACKUP_EVENT_MISMATCH','이벤트 로그 내용이 상태와 다릅니다.');
+    if(original.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(original.payload),'BACKUP_EVENT_MISMATCH','이벤트 상세 내용이 상태와 다릅니다.');
+  });
   const payload={format:BACKUP_FORMAT,schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,slot:state.meta.slot,expeditionId:state.meta.expeditionId,exportedAt,state:clone(state),events:clone(events)};
   return {...payload,integrity:{algorithm:'SHA-256',hex:await sha256(JSON.stringify(payload))}};
 }
@@ -24,7 +28,9 @@ export async function verifyBackup(input){
   insist(payload.slot===payload.state.meta.slot&&payload.expeditionId===payload.state.meta.expeditionId,'BACKUP_ID_MISMATCH','원정 ID/슬롯이 일치하지 않습니다.');
   insist(Array.isArray(payload.events)&&payload.events.length===payload.state.meta.revision,'EVENT_COUNT','이벤트 로그의 개수가 다릅니다.');
   payload.events.forEach((e,i)=>{
-    insist(e.seq===i+1&&e.eventId===payload.state.eventLog[i].eventId,'BROKEN_SEQUENCE','이벤트 ID 또는 순번이 일치하지 않습니다.');
+    const original=payload.state.eventLog[i];
+    insist(e.seq===i+1&&e.eventId===original.eventId&&e.type===original.type&&e.at===original.at,'BROKEN_SEQUENCE','이벤트 ID·유형·시각 또는 순번이 일치하지 않습니다.');
+    if(original.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(original.payload),'BROKEN_SEQUENCE','이벤트 상세 내용이 일치하지 않습니다.');
   });
   return {state:payload.state,events:payload.events};
 }

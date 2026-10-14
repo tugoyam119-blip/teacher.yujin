@@ -1,4 +1,4 @@
-import {DB_NAME,EngineError,checkSlot,checkState,clone,insist,validTimestamp,requireId} from '../engine/model.js';
+import {DB_NAME,EngineError,checkSlot,checkState,clone,insist,validTimestamp,requireId,canonicalJson} from '../engine/model.js';
 import {reduceCommand} from '../engine/reducer.js';
 
 const DB_VERSION=1;
@@ -158,7 +158,10 @@ export class IndexedDbExpeditionStore {
           insist(row?.state,'SLOT_EMPTY','비어 있는 슬롯은 백업할 수 없습니다.');checkState(row.state);
           const ev=(items??[]).filter(x=>x.slot===slot).map(x=>x.event).sort((a,b)=>a.seq-b.seq);
           insist(ev.length===row.state.meta.revision,'EVENT_COUNT','원본 이벤트 로그와 revision 불일치.');
-          ev.forEach((e,i)=>insist(e.seq===i+1&&e.eventId===row.state.eventLog[i].eventId,'BROKEN_SEQUENCE','백업 로그 불일치'));
+          ev.forEach((e,i)=>{const original=row.state.eventLog[i];
+            insist(e.seq===i+1&&e.eventId===original.eventId&&e.type===original.type&&e.at===original.at,'BROKEN_SEQUENCE','백업 로그 불일치');
+            if(original.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(original.payload),'BROKEN_SEQUENCE','백업 이벤트 내용이 상태와 다릅니다.');
+          });
           done({state:clone(row.state),events:clone(ev)});
         }catch(e){fail(e);}
       };
@@ -183,7 +186,10 @@ export class IndexedDbExpeditionStore {
         if(row?.state){try{checkState(row.state);insist(JSON.stringify(row.state)!==JSON.stringify(original),'CHECKPOINT_REPAIR_UNNEEDED','정상 상태는 복구 대상으로 덮어쓸 수 없습니다.');}catch(e){if(e.code==='CHECKPOINT_REPAIR_UNNEEDED')throw e;}}
         const stored=events.filter(x=>x.slot===slot).map(x=>x.event).sort((a,b)=>a.seq-b.seq);
         insist(stored.length===original.meta.revision,'FORENSIC_REVIEW_REQUIRED','로그와 체크포인트의 revision이 달라 수동 정합성 검토가 필요합니다.');
-        stored.forEach((e,i)=>insist(e.seq===i+1&&e.eventId===original.eventLog[i].eventId,'FORENSIC_REVIEW_REQUIRED','이벤트 로그 연쇄가 불일치합니다.'));
+        stored.forEach((e,i)=>{const ref=original.eventLog[i];
+          insist(e.seq===i+1&&e.eventId===ref.eventId&&e.type===ref.type&&e.at===ref.at,'FORENSIC_REVIEW_REQUIRED','이벤트 로그 연쇄가 불일치합니다.');
+          if(ref.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(ref.payload),'FORENSIC_REVIEW_REQUIRED','이벤트 상세 내용이 불일치합니다.');
+        });
         const result=reduceCommand(original,{type:'CHECKPOINT_REPAIRED',eventId,at,payload:{teacherConfirmed:true,source}});
         const safetyKey=`${slot}:damaged:${result.event.seq}:${eventId}`;
         qs.add({key:safetyKey,slot,original:row??null,at,repairedFrom:source});
@@ -197,19 +203,35 @@ export class IndexedDbExpeditionStore {
       lr.onsuccess=()=>{l=lr.result;ready();};sr.onsuccess=()=>{row=sr.result;ready();};cr.onsuccess=()=>{cp=cr.result;ready();};er.onsuccess=()=>{events=er.result;ready();};
     });
   }
-  async restoreToEmptySlot(slot,pack,lease){
+  async restoreToEmptySlot(slot,pack,lease,{recoveryEventId=null,recoveryAt=null}={}){
     checkSlot(slot);checkState(pack.state);
     insist(pack.state.meta.slot===slot,'SLOT_MISMATCH','슬롯 번호가 다른 백업은 무단 전환하지 않습니다.');
-    insist(pack.events.length===pack.state.meta.revision,'EVENT_COUNT','복구 로그 개수가 다릅니다.');
+    insist(Array.isArray(pack.events)&&pack.events.length===pack.state.meta.revision,'EVENT_COUNT','복구 로그 개수가 다릅니다.');
+    pack.events.forEach((e,i)=>{
+      const ref=pack.state.eventLog[i];
+      insist(e.seq===ref.seq&&e.eventId===ref.eventId&&e.type===ref.type&&e.at===ref.at,'BACKUP_EVENT_MISMATCH','백업의 이벤트 내용이 상태 기록과 일치하지 않습니다.');
+      if(ref.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(ref.payload),'BACKUP_EVENT_MISMATCH','백업의 이벤트 상세 내용이 일치하지 않습니다.');
+    });
+    let restoredState=pack.state,restoredEvents=pack.events;
+    const a=restoredState.activeAttemptId&&restoredState.attempts[restoredState.activeAttemptId];
+    const lesson=restoredState.activeSessionId&&restoredState.sessions.find(s=>s.id===restoredState.activeSessionId);
+    if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'){
+      requireId(recoveryEventId,'복원 중단 이벤트');validTimestamp(recoveryAt);
+      const stopped=reduceCommand(restoredState,{
+        type:'RECOVER_INTERRUPTED',eventId:recoveryEventId,at:Math.max(recoveryAt,restoredState.meta.updatedAt),
+        payload:{reason:'BACKUP_IMPORT'}
+      });
+      restoredState=stopped.state;restoredEvents=[...pack.events,stopped.event];
+    }
     const now=validTimestamp(this.clock());
     return onTx(this.db,Object.values(STORES),'readwrite',(tx,{done,fail})=>{
       const ls=tx.objectStore(STORES.leases),ss=tx.objectStore(STORES.slots),es=tx.objectStore(STORES.events),cs=tx.objectStore(STORES.checkpoints);
       let l,s,loaded=0;const ready=()=>{if(++loaded!==2)return;try{
         this._checkLease(l,lease,now);insist(!s,'SLOT_OCCUPIED','기존 슬롯 저장이 있어 자동 덮어쓰기를 차단했습니다.');
-        ss.add({key:slot,state:pack.state});
-        for(const e of pack.events)es.add({key:evKey(slot,e.seq),slot,event:e});
-        cs.put({key:cpKey(slot,'latest'),slot,revision:pack.state.meta.revision,state:pack.state});
-        ls.put({...l,expiresAt:now+LEASE_TTL_MS});done({committed:true,state:clone(pack.state)});
+        ss.add({key:slot,state:restoredState});
+        for(const e of restoredEvents)es.add({key:evKey(slot,e.seq),slot,event:e});
+        cs.put({key:cpKey(slot,'latest'),slot,revision:restoredState.meta.revision,state:restoredState});
+        ls.put({...l,expiresAt:now+LEASE_TTL_MS});done({committed:true,state:clone(restoredState)});
       }catch(e){fail(e);}};
       const lr=ls.get(slot),sr=ss.get(slot);lr.onsuccess=()=>{l=lr.result;ready();};sr.onsuccess=()=>{s=sr.result;ready();};
     });
