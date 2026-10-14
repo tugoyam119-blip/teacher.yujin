@@ -129,13 +129,20 @@ export function normalizeQuestion(q,packMeta) {
   };
 }
 
-/** Public projection is an explicit allowlist, NEVER a spread of a teacher object. */
+/** Public projection is an explicit allowlist, including nested option keys. */
 export function publicQuestionView(questionOrSnapshot) {
   const q=questionOrSnapshot?.issuedSnapshot??questionOrSnapshot;
   insist(q && typeof q.questionId==='string' && TYPES.has(q.type) && q.choices!==undefined,'QUESTION_INVALID','공개할 문항이 없습니다.');
+  // Only key/text are public; future question packs may attach private metadata to options.
+  const option=({key,text})=>({key,text});
+  const choices=Array.isArray(q.choices)?q.choices.map(option)
+    :q.type==='matching'?{left:q.choices.left.map(option),right:q.choices.right.map(option)}
+    :q.type==='categorization'?{categories:q.choices.categories.map(option),items:q.choices.items.map(option)}
+    :null;
+  insist(choices!==null,'QUESTION_INVALID','공개용 선택지 구조가 올바르지 않습니다.');
   return {
     questionId:q.questionId,type:q.type,stem:q.stem,stimulus:q.stimulus,
-    choices:clone(q.choices),difficulty:q.difficulty,
+    choices,difficulty:q.difficulty,
     packId:q.packId,packVersion:q.packVersion,revision:q.revision
   };
 }

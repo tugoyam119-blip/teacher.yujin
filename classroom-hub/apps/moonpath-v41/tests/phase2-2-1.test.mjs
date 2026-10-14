@@ -87,6 +87,15 @@ test('학생 공개 문제에는 해설, 정답, 루브릭, 원문 메타 포함
     assert.equal(pub.source,undefined);
     assert.ok(!Object.keys(pub).some(x=>/answer|rubric|solution|audit|pin/i.test(x)));
   }
+  const teacher=get('IS2-U01-A01');
+  teacher.choices[0].internalAnswer='DO_NOT_EXPOSE';
+  assert.deepEqual(Object.keys(publicQuestionView(teacher).choices[0]).sort(),['key','text']);
+  const match=get('IS2-U01-A05');
+  match.choices.left[0].privateRubric='DO_NOT_EXPOSE';
+  assert.deepEqual(Object.keys(publicQuestionView(match).choices.left[0]).sort(),['key','text']);
+  const cat=get('IS2-U01-C05');
+  cat.choices.items[0].internalAnswer='DO_NOT_EXPOSE';
+  assert.deepEqual(Object.keys(publicQuestionView(cat).choices.items[0]).sort(),['key','text']);
 });
 
 test('발행 스냅샷은 원본/실제표시를 나누고 ID·버전·시각을 기록',()=>{
