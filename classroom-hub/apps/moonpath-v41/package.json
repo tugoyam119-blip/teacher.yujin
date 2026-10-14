@@ -2,13 +2,15 @@
   "name": "moonpath-v411",
   "private": true,
   "type": "module",
-  "version": "0.0.0-phase0",
+  "version": "0.1.0-phase1-in-progress",
   "scripts": {
-    "test": "node --test tests/phase0.test.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check:phase1": "node --test tests/phase1-reducer.test.mjs",
+    "check:syntax": "node --check src/engine/model.js && node --check src/engine/reducer.js && node --check src/engine/session.js && node --check src/storage/indexeddb.js && node --check src/storage/backup.js",
     "check:phase0": "node --test tests/phase0.test.mjs"
   },
   "engines": {
     "node": ">=20"
   },
-  "description": "Independent non-production PHASE 0 environment for moonpath v4.1.1"
+  "description": "Non-production common engine foundation; no deployment before all gates and approval"
 }

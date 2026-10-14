@@ -22,3 +22,10 @@ PHASE 0(원본·환경) → 1(상태/IndexedDB) → 2(1지역 완주) → 3(신�
 - 운영 변경, PR 병합, Railway 배포: **실행 금지, 수행 안 함**
 
 문서와 정적 검사 결과는 `docs/` 및 `data/verification-v01-v22.json`을 확인하십시오.
+
+## PHASE 1 — 신규 공통 엔진 착수 (2026-10-14)
+- 실제 모듈: `src/engine/`, `src/storage/` (이벤트 리듀서·차시/타이머·단독 writer·IndexedDB·백업).
+- **Node 신규 단위·모의 저장소 검사 30건 PASS**. 상세: `docs/PHASE1_ENGINE_PROGRESS.md`.
+- 원본 문제팩·30지역·기존 운영 경로 및 저장 키 수정하지 않음.
+- **브라우저 IndexedDB / file:// / 두 창 / 게임 1지역 플레이는 NOT_RUN**. 신규 PNG/화면 승인도 아직 0.
+- 운영 `main` 병합·PR 자동 병합·Railway 배포는 금지.

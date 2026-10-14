@@ -57,10 +57,16 @@
     "id": "V07",
     "target": "열쇠·별빛·마법 5종",
     "acceptance": "최초 정답·회수 +1별빛, 지역 최초 완료 +1열쇠, 사용·해금·중복 검증",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/engine/reducer.js",
+      "tests/phase1-reducer.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V08",
@@ -75,55 +81,92 @@
     "id": "V09",
     "target": "타이머 이벤트 경계",
     "acceptance": "만료 1초 전 제출·일시정지·마법, 중복 클릭·저장 후 복구",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/engine/reducer.js",
+      "tests/phase1-reducer.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V10",
     "target": "차시 경과·활동시간",
     "acceptance": "휴식·종료·재개·PC시각 변화 시 중복 계산 없고 표본 부족 예측 불가",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/engine/reducer.js",
+      "tests/phase1-reducer.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V11",
     "target": "IndexedDB 트랜잭션",
     "acceptance": "상태+이벤트 원자적 저장, 저장 거부·용량 초과 때 성공 메시지 금지",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/storage/indexeddb.js",
+      "tests/phase1-storage.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V12",
     "target": "3슬롯·체크포인트·JSON",
     "acceptance": "슬롯 독립, 체크포인트 2세대, 파일 무결성·버전 확인 후 복원",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/storage/indexeddb.js",
+      "src/storage/backup.js",
+      "tests/phase1-storage.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V13",
     "target": "교사 PIN·비공개 정책",
     "acceptance": "5분 잠금, 정답·해설·PIN·감사 기록 학생 화면 노출 방지",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/engine/model.js",
+      "tests/phase1-reducer.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V14",
     "target": "두 창·단독 쓰기",
     "acceptance": "확장 모드 읽기 전용 학생 창, 창 종료·중복 교사 창·재동기화 처리",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-14",
+    "unitEvidence": [
+      "src/engine/session.js",
+      "tests/phase1-storage.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V15",
