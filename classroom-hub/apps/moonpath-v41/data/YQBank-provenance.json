@@ -27,5 +27,9 @@
     "5": 6
   },
   "educationalCorrectnessReview": "NOT_PERFORMED",
-  "endToEndRuntimeTest": "NOT_RUN"
+  "endToEndRuntimeTest": "NOT_RUN",
+  "sourceSHA256": "3a2401498a73bf5afd7ed72329ef07d4dd742d58f5ab27ab966841cc67c5de7f",
+  "sourceRawByteCount": 147015,
+  "githubSourceBlobShaExpected": "74d2b5dabfcf6c309a217c26220c184dc4baaa8e",
+  "sourceByteIdenticalToBranchCopy": true
 }

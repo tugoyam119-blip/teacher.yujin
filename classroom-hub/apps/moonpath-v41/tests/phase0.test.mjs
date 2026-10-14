@@ -1,10 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 const json = path => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'));
 const pack = json('../data/YQBank_60_v1.0.0_source.json');
 const world = json('../config/world.json');
 const gates = json('../data/verification-v01-v22.json');
+test('원본 파일 자체 SHA-256 보존', () => {
+  const raw = readFileSync(new URL('../data/YQBank_60_v1.0.0_source.json', import.meta.url));
+  assert.equal(createHash('sha256').update(raw).digest('hex'),'3a2401498a73bf5afd7ed72329ef07d4dd742d58f5ab27ab966841cc67c5de7f');
+});
 test('원본 문제팩: 60문항과 고유 ID, 내용/정답/해설 누락 없음', () => {
   assert.equal(pack.pack.id, 'KR-HS-IS2-U01');
   assert.equal(pack.pack.pack_version, '1.0.0');
