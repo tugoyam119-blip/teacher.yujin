@@ -118,6 +118,14 @@ export class TeacherEngineSession {
         attemptId:issuingAttemptId,questionId:payload.questionId,mode:payload.mode};
     });
   }
+  /** Teacher-side answer intake. Never accept an externally supplied auto-score. */
+  async submitAnswer({attemptId,response,teacherConfirmed=false,lateReason=null},{eventId=this.newId()}={}){
+    return this.dispatch('ANSWER_SUBMITTED',{attemptId,response,teacherConfirmed,lateReason},eventId);
+  }
+  /** Irreversible within PHASE 2-3. Corrections use the future 2-7 audit engine. */
+  async judgeAnswer({attemptId,decision,teacherConfirmed,teacherReason=null,missingResponseConfirmed=false},{eventId=this.newId()}={}){
+    return this.dispatch('ANSWER_JUDGED',{attemptId,decision,teacherConfirmed,teacherReason,missingResponseConfirmed},eventId);
+  }
   getState(){insist(this.state,'SESSION_NOT_OPEN','세션이 없습니다.');return clone(this.state);}
   getStudentProjection(){return publicProjection(this.getState(),this.clock());}
   async exportJSON(){

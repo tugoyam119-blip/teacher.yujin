@@ -94,6 +94,34 @@ export function checkState(s){
   }
   insist(q.issuedIds.length===issuedFromDraws.length && q.issuedIds.every((id,i)=>id===issuedFromDraws[i]),
     'DRAW_HISTORY_INVALID','발행 ID 목록과 트랜잭션 출제 이력이 일치하지 않습니다.');
+  // PHASE 2-3: all academic evidence is attached to the original saved attempt.
+  // Do not derive a judgement from the current display or from a reloaded pack.
+  for(const attempt of Object.values(s.attempts)){
+    if(!attempt.questionSnapshot)continue; // PHASE 1 timer-only fixtures
+    if(attempt.answer){
+      insist(attempt.answer&&typeof attempt.answer==='object'&&
+        attempt.answer.suggestion?.questionId===attempt.questionId&&
+        ['correct','incorrect','needs_teacher'].includes(attempt.answer.suggestion?.status)&&
+        typeof attempt.answer.receivedEventId==='string'&&
+        s.eventLog.some(e=>e.eventId===attempt.answer.receivedEventId&&e.type==='ANSWER_SUBMITTED'),
+        'ANSWER_HISTORY_INVALID','접수 답변과 시도·이벤트 기록이 일치하지 않습니다.');
+      validTimestamp(attempt.answer.submittedAt);
+      insist(attempt.timer.phase!=='RUNNING','ANSWER_HISTORY_INVALID','답변 제출 뒤 타이머가 실행 중일 수 없습니다.');
+    }
+    if(attempt.judgement){
+      insist(['CORRECT','INCORRECT'].includes(attempt.judgement.decision)&&
+        attempt.judgement.teacherConfirmed===true&&attempt.timer.phase==='RESOLVED'&&
+        attempt.resolvedAt===attempt.judgement.judgedAt&&
+        s.eventLog.some(e=>e.eventId===attempt.judgement.eventId&&e.type==='ANSWER_JUDGED'),
+        'JUDGEMENT_HISTORY_INVALID','교사 판정과 문제/이벤트 기록이 일치하지 않습니다.');
+      if(!attempt.answer)insist(attempt.judgement.missingResponse===true,'JUDGEMENT_HISTORY_INVALID','미응답 판정 사유가 누락되었습니다.');
+    }
+    if(attempt.voided){
+      insist(!attempt.answer&&!attempt.judgement&&attempt.timer.phase==='RESOLVED'&&
+        typeof attempt.voided.reason==='string'&&attempt.voided.reason.length>0,
+        'ATTEMPT_VOID_INVALID','교사 무효 처리의 사유 또는 시도 상태가 올바르지 않습니다.');
+    }
+  }
   insist(Number.isInteger(s.rewards?.starlight)&&s.rewards.starlight>=0,'INVALID_REWARDS','음수 별빛은 허용하지 않습니다.');
   insist(Number.isInteger(s.rewards.keys)&&s.rewards.keys>=0,'INVALID_REWARDS','음수 열쇠는 허용하지 않습니다.');
   const seen=new Set();let previousAt=-1;

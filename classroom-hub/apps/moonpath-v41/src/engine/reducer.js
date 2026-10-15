@@ -1,5 +1,6 @@
 import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_SAND_COST,TIME_SAND_EXTENSION_MS,canonicalJson} from './model.js';
 import {validateDrawCommand} from '../questions/draw.js';
+import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.js';
 
 /** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
 export function reduceCommand(current,command){
@@ -90,7 +91,7 @@ export function reduceCommand(current,command){
       const a=last();insist(a.timer.phase==='PREPARED','TIMER_NOT_PREPARED','준비된 문제가 아닙니다.');
       insist(activeSession().phase==='ACTIVE','SESSION_NOT_ACTIVE','차시를 먼저 재개해야 합니다.');
       a.timer.phase=state.settings.timerSeconds===0?'PAUSED':'RUNNING';
-      a.timer.runningSince=a.timer.phase==='RUNNING'?at:null;break;
+      a.timer.runningSince=a.timer.phase==='RUNNING'?at:null;a.timer.startedAt=at;break;
     }
     case 'TIMER_PAUSED':{
       const a=last();insist(a.timer.phase==='RUNNING','TIMER_NOT_RUNNING','타이머가 실행 중이 아닙니다.');ensureRunningNotExpired(a);
@@ -99,6 +100,7 @@ export function reduceCommand(current,command){
     case 'TIMER_RESUMED':{
       const a=last();insist(a.timer.phase==='PAUSED','TIMER_NOT_PAUSED','타이머가 정지 상태가 아닙니다.');
       insist(activeSession().phase==='ACTIVE','SESSION_NOT_ACTIVE','차시를 먼저 재개해야 합니다.');
+      insist(!a.answer,'ANSWER_ALREADY_SUBMITTED','제출한 답변의 타이머는 다시 시작할 수 없습니다.');
       insist(a.timer.remainingMs>0,'NO_REMAINING_TIME','잔여 시간이 없습니다.');
       a.timer.phase='RUNNING';a.timer.runningSince=at;break;
     }
@@ -107,7 +109,8 @@ export function reduceCommand(current,command){
       a.timer.remainingMs=0;a.timer.runningSince=null;a.timer.phase='EXPIRED_AWAITING_TEACHER';break;
     }
     case 'TIME_SAND_USED':{
-      const a=last();insist(['RUNNING','PAUSED'].includes(a.timer.phase),'MAGIC_BAD_PHASE','진행/일시정지 문제에서만 사용할 수 있습니다.');
+      const a=last();insist(!a.answer,'ANSWER_ALREADY_SUBMITTED','제출한 답변에 시간 연장을 사용할 수 없습니다.');
+      insist(['RUNNING','PAUSED'].includes(a.timer.phase),'MAGIC_BAD_PHASE','진행/일시정지 문제에서만 사용할 수 있습니다.');
       ensureRunningNotExpired(a);
       insist(state.settings.timerSeconds!==0,'TIMER_DISABLED','타이머 끔 설정에서는 시간을 연장할 수 없습니다.');
       insist(state.magic.unlocked.includes('TIME_SAND'),'MAGIC_LOCKED','시간의 모래 해금 조건이 충족되지 않았습니다.');
@@ -121,6 +124,54 @@ export function reduceCommand(current,command){
       state.rewards.starlight-=TIME_SAND_COST;
       state.rewards.ledger.push({eventId,type:'TIME_SAND_SPEND',amount:-TIME_SAND_COST,attemptId:a.id});
       state.magic.used.push({eventId,magicId:'TIME_SAND',attemptId:a.id,at,cost:TIME_SAND_COST});break;
+    }
+    case 'ANSWER_SUBMITTED':{
+      const a=last();insist(a.questionSnapshot,'QUESTION_SNAPSHOT_MISSING','실제 원본으로 출제된 문항이 필요합니다.');
+      insist(payload.attemptId===a.id,'ATTEMPT_MISMATCH','진행 중인 문항 시도 ID와 다릅니다.');
+      insist(!a.answer&&!a.judgement,'ANSWER_ALREADY_SUBMITTED','이미 접수된 답안은 변경할 수 없습니다.');
+      insist(a.timer.startedAt!==undefined,'QUESTION_NOT_STARTED','교사가 먼저 문제를 시작해야 합니다.');
+      insist(activeSession().phase==='ACTIVE','SESSION_NOT_ACTIVE','차시가 진행 중이어야 답변을 접수할 수 있습니다.');
+      insist(['RUNNING','PAUSED','EXPIRED_AWAITING_TEACHER'].includes(a.timer.phase),
+        'ANSWER_BAD_PHASE','해당 타이머 단계에서 답변을 접수할 수 없습니다.');
+      const afterExpiry=a.timer.phase==='EXPIRED_AWAITING_TEACHER';
+      if(a.timer.phase==='RUNNING')ensureRunningNotExpired(a);
+      if(a.timer.phase==='PAUSED'||afterExpiry){
+        insist(payload.teacherConfirmed===true,'TEACHER_REQUIRED','일시정지·시간 만료 이후 답변 접수에는 교사 확인이 필요합니다.');
+      }
+      if(afterExpiry)insist(typeof payload.lateReason==='string'&&payload.lateReason.trim().length>0&&payload.lateReason.length<=1000,
+        'LATE_REASON_REQUIRED','시간 만료 후 답변을 받는 사유를 기록해야 합니다.');
+      const assessed=assessAnswer(a,payload.response);
+      a.answer={response:assessed.response,suggestion:assessed.suggestion,submittedAt:at,
+        receivedEventId:eventId,afterExpiry,lateReason:afterExpiry?payload.lateReason.trim():null};
+      if(a.timer.phase==='RUNNING'){
+        a.timer.remainingMs=timerRemainingMs(a,at);
+        a.timer.runningSince=null;
+        a.timer.phase='PAUSED';
+      }
+      break;
+    }
+    case 'ANSWER_JUDGED':{
+      const a=last();insist(payload.attemptId===a.id,'ATTEMPT_MISMATCH','활성 문항 시도 ID와 다릅니다.');
+      const evaluated=validateTeacherJudgement(a,payload,at);
+      // A confirmed teacher judgement and the review/recovery classification are
+      // ONE reducer event. Rewards (including first-answer stars) are PHASE 2-6.
+      const questionId=a.questionId,ids=state.questions;
+      if(evaluated.decision==='CORRECT'){
+        insist(!ids.recoveryOnlyIds.includes(questionId),'RECOVERY_REQUIRED','미회수 오답을 정답으로 조용히 덮어쓸 수 없습니다.');
+        if(!ids.reviewEligibleIds.includes(questionId))ids.reviewEligibleIds.push(questionId);
+      }else{
+        ids.reviewEligibleIds=ids.reviewEligibleIds.filter(id=>id!==questionId);
+        if(!ids.recoveryOnlyIds.includes(questionId))ids.recoveryOnlyIds.push(questionId);
+        const pending=state.recovery.pending;
+        insist(!pending.some(x=>x.questionId===questionId),
+          'RECOVERY_DUPLICATE','이미 미회수 목록에 있는 문제입니다.');
+        pending.push({id:a.id,sourceAttemptId:a.id,questionId,originTeamId:a.teamId,
+          originRegionId:a.regionId,status:'PENDING',createdAt:at,sourceEventId:eventId});
+      }
+      a.judgement={decision:evaluated.decision,teacherConfirmed:true,teacherReason:evaluated.teacherReason,
+        missingResponse:evaluated.missingResponse,judgedAt:at,eventId};
+      if(a.timer.phase==='RUNNING'){a.timer.remainingMs=timerRemainingMs(a,at);a.timer.runningSince=null;}
+      a.timer.phase='RESOLVED';a.resolvedAt=at;break;
     }
     case 'CHECKPOINT_REPAIRED':{
       insist(payload.teacherConfirmed===true&&['latest','previous'].includes(payload.source),'TEACHER_REQUIRED','체크포인트 복구에는 교사 명시 확인이 필요합니다.');
@@ -142,6 +193,12 @@ export function reduceCommand(current,command){
       // PHASE 1 timer harness ONLY. Academic judgement and rewards are PHASE 2, never auto-credit.
       const a=last();insist(a.timer.phase!=='RESOLVED','ALREADY_RESOLVED','이미 확정한 문제입니다.');
       insist(payload.teacherConfirmed===true,'TEACHER_REQUIRED','문제 종료에는 교사 확인이 필요합니다.');
+      if(a.questionSnapshot){
+        insist(!a.answer,'ANSWER_ALREADY_SUBMITTED','제출한 답변을 판정 없이 종료할 수 없습니다.');
+        insist(typeof payload.voidReason==='string'&&payload.voidReason.trim().length>0,
+          'JUDGEMENT_REQUIRED','출제된 문제를 판정 없이 종료할 때는 교사의 무효 처리 사유가 필요합니다.');
+        a.voided={reason:payload.voidReason.trim(),eventId,at};
+      }
       if(a.timer.phase==='RUNNING'){a.timer.remainingMs=timerRemainingMs(a,at);a.timer.runningSince=null;}
       a.timer.phase='RESOLVED';a.resolvedAt=at;break;
     }
@@ -151,7 +208,7 @@ export function reduceCommand(current,command){
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
   state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
-  if(type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED') state.audit.push({seq,eventId,type,at});
+  if(type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};
 }

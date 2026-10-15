@@ -427,3 +427,14 @@
 - **미실증:** Windows Chrome/Edge, `file://` IndexedDB, 강제 종료 후 복원, 무인터넷 이중빌드, BroadcastChannel 두 창. V03 `testStatus=NOT_RUN`, 최종 실증 0/22. PHASE 1 전체 완료 선언 금지.
 - **변경 격리:** 신규 개발 브랜치의 `classroom-hub/apps/moonpath-v41/`만 변경. 운영 `main`, `moonpath-dev`, Railway, 기존 저장키 미변경.
 - **상세 증거:** `docs/PHASE2_STEP2_2_VERIFICATION_20261015.md`, `tests/phase2-2-2.test.mjs`, `data/phase2-nine-stage-tracker.json`.
+
+
+---
+
+## 갱신 이력 — 2026-10-15 PHASE 2-3 (최상위 후속 상태 기록)
+- 고정 9단계 중 2-1, 2-2, 2-3의 핵심 모듈 작성 및 Node/모의 거래검사까지 진행. 이전 본문의 PHASE 2 미구현 설명은 **작성 당시 시점**이며 이 갱신을 최신 상태로 적용.
+- 신규 2-3 `src/questions/adjudication.js` + `ANSWER_SUBMITTED/ANSWER_JUDGED` 순수 이벤트. 실제 60문항, 교사 확정, 복습/미회수 구분, 시간 경계 및 저장 실패를 검사.
+- Node 회귀 **265/265 PASS** (기존 164, 신규 101); 실제 브라우저 `file://` 관리자 정책 차단 및 Windows Chrome/Edge 미실증. **V01~V22의 전체 통합 실증 PASS=0** 유지.
+- 보상 지급·정정 연쇄 재계산·회수 실제 수행·지역 완료·UI·PDF·CSV·온라인/오프라인 빌드는 여전히 미구현 또는 미검증.
+- 세부 증거: `docs/PHASE2_STEP2_3_VERIFICATION_20261015.md`; 9단계 추적표: `data/phase2-nine-stage-tracker.json`.
+- 브랜치 내부만 수정하며 운영 `main`·기존 저장 데이터·Railway 배포는 사용자 최종 승인 전 건드리지 않음.

@@ -1,0 +1,34 @@
+{
+  "project": "Moonpath v4.1.1",
+  "phase": "PHASE2",
+  "step": "2-3",
+  "dateLocal": "2026-10-15",
+  "environment": {
+    "os": "Linux x86_64",
+    "node": "v22.16.0",
+    "browser": "Chromium file:// access blocked: ERR_BLOCKED_BY_ADMINISTRATOR"
+  },
+  "command": "npm test",
+  "total": 265,
+  "passed": 265,
+  "failed": 0,
+  "breakdown": {
+    "phase0_1_existing": 53,
+    "step2_1_existing": 77,
+    "step2_2_existing": 34,
+    "step2_3_new": 101
+  },
+  "testMode": "NODE_UNIT_AND_FAKE_INDEXEDDB",
+  "nativeIndexedDB": "BLOCKED_NOT_RUN",
+  "browserRealWorld": "NOT_RUN",
+  "V01_V22_FINAL_GATE_PASS": 0,
+  "sourceOriginalSHA256": "3a2401498a73bf5afd7ed72329ef07d4dd742d58f5ab27ab966841cc67c5de7f",
+  "scriptSyntax": "PASS_NODE_CHECK",
+  "deployment": "NOT_PERFORMED",
+  "limitations": [
+    "no teacher/player live UI",
+    "no actual browser crash/reopen test",
+    "no reward grants",
+    "no correction/recalculation"
+  ]
+}

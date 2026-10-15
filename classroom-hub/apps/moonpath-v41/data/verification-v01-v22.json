@@ -16,11 +16,13 @@
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
     "evidence": [],
-    "unitTestStatus": "PASS_NODE_UNIT_ONLY_2026-10-14",
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
     "unitEvidence": [
+      "docs/PHASE2_STEP2_1_VERIFICATION_20261014.md",
+      "src/questions/adjudication.js",
       "src/questions/engine.js",
       "tests/phase2-2-1.test.mjs",
-      "docs/PHASE2_STEP2_1_VERIFICATION_20261014.md"
+      "tests/phase2-2-3.test.mjs"
     ],
     "integrationBrowserEvidence": "NOT_RUN",
     "verificationScope": "actual 60-question source, seven types, normalization and preliminary assessment; no persisted attempt/teacher final scoring"
@@ -33,11 +35,13 @@
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
     "evidence": [],
-    "unitTestStatus": "PASS_NODE_34_AND_FAKE_IDB_2026-10-15",
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
     "unitEvidence": [
+      "docs/PHASE2_STEP2_2_VERIFICATION_20261015.md",
+      "src/questions/adjudication.js",
       "src/questions/draw.js",
       "tests/phase2-2-2.test.mjs",
-      "docs/PHASE2_STEP2_2_VERIFICATION_20261015.md"
+      "tests/phase2-2-3.test.mjs"
     ],
     "integrationBrowserEvidence": "NOT_RUN",
     "verificationScope": "전체 원본 60문항 미출제 우선, 난도/유형 분포, 복습 후보, 미회수 일반 제외, 출제/시도/이벤트/체크포인트 모의 거래. 실제 판정에 따른 목록 갱신·오프라인 브라우저는 미검증"
@@ -94,7 +98,12 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
+    "unitEvidence": [
+      "tests/phase2-2-3.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V10",
@@ -112,7 +121,12 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
+    "unitEvidence": [
+      "tests/phase2-2-3.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V12",
@@ -121,7 +135,12 @@
     "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
+    "unitEvidence": [
+      "tests/phase2-2-3.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V13",

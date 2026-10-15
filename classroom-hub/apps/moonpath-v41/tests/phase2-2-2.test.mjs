@@ -29,7 +29,7 @@ function issue(state,{regionId='T1-R1',teamId='TEAM_01',random=seeded(13)}={}){
   const res=reduceCommand(state,cmd('QUESTION_DRAWN',at,payload));
   return {state:res.state,payload,event:res.event};
 }
-function resolve(state){return event(state,'ATTEMPT_RESOLVED',{teacherConfirmed:true});}
+function resolve(state){return event(state,'ATTEMPT_RESOLVED',{teacherConfirmed:true,voidReason:'2-2 출제 순서 검사용 교사 무효 처리'});}
 function exhausted({regionId='T1-R1',rng=seeded(19)}={}){
   let s=init();
   for(let i=0;i<60;i++){s=issue(s,{regionId,random:rng}).state;s=resolve(s);}
