@@ -471,3 +471,18 @@
 - `src/corrections/reconcile.js`, `tests/phase2-2-7.test.mjs`, `docs/PHASE2_STEP2_7_VERIFICATION_20261015.md` 참조.
 - **PHASE 1의 실 브라우저 IndexedDB/강제 종료 복원/file://는 미통과**. 2026-10-15 Chromium 사전 시험도 `ERR_BLOCKED_BY_ADMINISTRATOR`로 진입 차단. V08 공식 테스트도 `NOT_RUN` 유지.
 - 다음은 고정된 PHASE 2-8 지역 방문/지역 완료/열쇠 지급. 운영 `main`·기존 저장 데이터·Railway는 변경하지 않음.
+
+
+---
+
+## 후속 개발 진행 추가 기록 — PHASE 2-8 (2026-10-15)
+
+- 구현 경로: `src/world/regions.js` (지역 방문/분기/완료/차시/추가 탐험/지역 통계), `src/world/result-card.js` (문자형 지역 결과 마크업). `model.js`/`reducer.js`/`session.js`/`draw.js` 연동.
+- **엄격한 지역 방문 기록은 교사가 `REGION_ENTERED`를 확정한 EXPLICIT 모드에서만 활성화**합니다. 이전 PHASE 1/2의 시험 상태를 임의 방문했다고 거짓 추정하지 않습니다. 신규 앱 UI에서 명시적 진입을 의무화하는 최종 통합은 2-9에서 검증해야 합니다.
+- 기본 문제 수는 모둠 수(2~8), 교사가 근거를 남겨 조정 가능. 교사 최종 판정된 일반 문제 수가 기본 수에 도달한 뒤에만 `REGION_COMPLETED` 허용. 오답 미회수가 남아도 기본 지역 완료는 가능합니다.
+- `REGION_COMPLETED`와 열쇠+1·지역 별빛+0·결과 증거·감사 이벤트·체크포인트를 동일 저장 거래로 처리하도록 연결. 이벤트 ID와 지역 ID로 중복 완료/중복 열쇠 차단.
+- 6테마×5지역 주경로와 미방문 분기 추가 탐험·복귀 및 방문 순서에 기초한 NATURAL 회수 후보/호출 확인. 교사 판정 정정 뒤 지역 결과는 유효 판정을 다시 계산하며 원시 이벤트/학생 답안은 유지.
+- **기존 454건 + 신규 38건 = Node/모의 IndexedDB 492건 PASS, 실패 0** (2026-10-15). 30지역·60문항 완주는 상태전이 규칙 시뮬레이션이지 사용자가 브라우저에서 실제 플레이한 결과가 아닙니다.
+- 실제 Chromium file:// 검사 진입 `ERR_BLOCKED_BY_ADMINISTRATOR` → **BLOCKED**, IndexedDB/강제 종료/두 창/무인터넷 실증 PASS 아님. PHASE 1 완료 또는 PHASE 2 전체 완료 주장 불가.
+- V04 `구현 중`으로 표기, 공식 `testStatus=NOT_RUN`, V01~V22 최종 PASS 0 유지. 2-9 전체 게임 1지역 완주/저장/오프라인 검증 및 PHASE 3 신규 아트 화면 승인은 별도.
+- 상세 근거: `docs/PHASE2_STEP2_8_VERIFICATION_20261015.md`; 원본 문제팩, 기존 `moonpath-dev`, 운영 `main`/Railway/기존 저장 데이터 변경 없음.

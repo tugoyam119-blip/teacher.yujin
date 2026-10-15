@@ -1,0 +1,128 @@
+{
+  "stage": "PHASE2-2-8",
+  "date": "2026-10-15",
+  "basedOnCommit": "16735d9a5bc06fd69a04c3561477ef8aa6c8267d",
+  "files": [
+    {
+      "path": "src/world/regions.js",
+      "bytes": 17043,
+      "sha256": "aa2d006edfe0cec39f95072321fa95b8712b8aa79da3e1f15445eb3dd8344f9a",
+      "gitBlobSha": "cb0a67d113f19433fed133b337314b8c395fea7d"
+    },
+    {
+      "path": "src/world/result-card.js",
+      "bytes": 1602,
+      "sha256": "fa0a3b66ee8c4e92ab1912986b5cf727f0ce09e8852e4805424d7970290b22a1",
+      "gitBlobSha": "098595d37fa36404ebae981b584ac086f88be2cd"
+    },
+    {
+      "path": "src/engine/model.js",
+      "bytes": 30111,
+      "sha256": "4d05f863ef30616199f433238907850a278b736d651bbfabb645c72c78017a51",
+      "gitBlobSha": "47f73d31acaf5f84e6043d989546b1476239a791"
+    },
+    {
+      "path": "src/engine/reducer.js",
+      "bytes": 22313,
+      "sha256": "298564675c6a1b6fce5fe542cb9cb87c0cee936cada9c76470d969ac1c1ef6aa",
+      "gitBlobSha": "130edc8fe111b2e466db9032114f1d37cca1d38d"
+    },
+    {
+      "path": "src/engine/session.js",
+      "bytes": 16451,
+      "sha256": "e49853fc695fb8c605e07d958fde2dc14098f2ac0f381f8d6f92c8d8a5938e3b",
+      "gitBlobSha": "c8ecb6d0c6f84242eedcfdf2ba984d1328551ac0"
+    },
+    {
+      "path": "src/questions/draw.js",
+      "bytes": 13857,
+      "sha256": "53682dbbeb4bfe09bc6050b5fa691640a5e9cc81491be795bbec599b81b561d1",
+      "gitBlobSha": "a35047b53c3bbca0172ec5177b50c715e3964510"
+    },
+    {
+      "path": "tests/phase2-2-8.test.mjs",
+      "bytes": 26001,
+      "sha256": "203b3431afd9f3940136012a50d1c4d4159d521d890c3771cf355e215a93d620",
+      "gitBlobSha": "a5f20f92b164e66a6b65aab8bc74023a06aaa0f7"
+    },
+    {
+      "path": "tests/phase28-browser-preflight.html",
+      "bytes": 711,
+      "sha256": "09ac38fe8eb2a071ee9b257e9e6191fb0a691beb0fc362f2a43bad016438919b",
+      "gitBlobSha": "4913fce923e6047bba5705087a3c34c02da6de25"
+    },
+    {
+      "path": "docs/PHASE2_STEP2_8_VERIFICATION_20261015.md",
+      "bytes": 10426,
+      "sha256": "896fd1e3c3912abd4df0b2b704a3469265a5c63792386368ffcb424a3f1fdd8a",
+      "gitBlobSha": "653a00c60de661465c4a0df68000c61f50f95275"
+    },
+    {
+      "path": "docs/PHASE2_9_STAGE_FIXED_PLAN.md",
+      "bytes": 7754,
+      "sha256": "f1fe9d44e50fda4bab9817128685e7b8d0d60a9183ecbbc5333a2f06a9b57fd5",
+      "gitBlobSha": "50abfa327eca0d0af0b9e1c5c1aed592b1c001b7"
+    },
+    {
+      "path": "docs/PROJECT_STATUS_HANDOFF_v4.1.1_20261014.md",
+      "bytes": 59779,
+      "sha256": "e773c8d07cbd907f90aa4d7719fe4ad11e80066fc0d129011f94612e1779cced",
+      "gitBlobSha": "2905fbf697dd4860ea2ef94201db431be49a35b2"
+    },
+    {
+      "path": "data/phase2-nine-stage-tracker.json",
+      "bytes": 8641,
+      "sha256": "9e48e324bcaeccd46a1279470044b911614bf0c710b68c9db66d3f46f8c983ab",
+      "gitBlobSha": "6f003db8ea1e3b489cec6fa5790fd5495c1c142b"
+    },
+    {
+      "path": "data/verification-v01-v22.json",
+      "bytes": 10125,
+      "sha256": "c8d5e0c1868829883ace0d8f65e03fc5ab80a2b20bdbca9739f0974087a4ed4a",
+      "gitBlobSha": "ec7585237f6854890aa4f3c5a2d71bd1d6a8c74b"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1596,
+      "sha256": "e4e025af2c901bbc82799a7ebd6b9c050977ddebb633f392a91e4f6aceb31a11",
+      "gitBlobSha": "bb80fdd253d18fb8eeaa736f24e9331fbf831df4"
+    },
+    {
+      "path": "test-logs/phase2-step2-8-20261015.summary.json",
+      "bytes": 644,
+      "sha256": "3905d89e5317bac59e486ab629a0724679970f1152232633ffea9e2c52cce91c",
+      "gitBlobSha": "2cf6e5d5adbbe469fce2b0a6b17b039e196b152c"
+    },
+    {
+      "path": "test-logs/phase2-step2-8-20261015.full.log",
+      "bytes": 114824,
+      "sha256": "f639d553f4c1aac542c48ed80501c08133456d6b385450b2c47ea6d3df096b92",
+      "gitBlobSha": "c5e00a8dd3c8d88f48989c45a93f9cbde57d83e1"
+    },
+    {
+      "path": "test-logs/phase2-step2-8-only.log",
+      "bytes": 9882,
+      "sha256": "7c7b61b7f96f6f712db9da44d3f2363c22f4539e0d52412981060cea906804db",
+      "gitBlobSha": "2e1a60dd69ea25d4286cc7a93c78d2f5079d920a"
+    },
+    {
+      "path": "test-logs/phase2-step2-8-syntax.log",
+      "bytes": 611,
+      "sha256": "c4279e1f4a6c97a10fe999cac64ea441e1ca1159b218eea20192d16352432030",
+      "gitBlobSha": "090eb647641b79eeb65c3e4b98c79c91d06cb2cc"
+    },
+    {
+      "path": "test-logs/phase2-step2-8-browser-preflight.json",
+      "bytes": 522,
+      "sha256": "85a3b900bb08177f634d8bece514bf7ba12b86e5e24510c6d1d42ff780a488fc",
+      "gitBlobSha": "cddb96d7d5a08e3dd4322f4125cd27e8dff4d0fb"
+    }
+  ],
+  "originalQuestionsSha256": "3a2401498a73bf5afd7ed72329ef07d4dd742d58f5ab27ab966841cc67c5de7f",
+  "test": {
+    "pass": 492,
+    "fail": 0,
+    "new": 38,
+    "browser": "BLOCKED"
+  }
+}

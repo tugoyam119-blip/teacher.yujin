@@ -4,6 +4,7 @@ import {makeBackup,verifyBackup} from '../storage/backup.js';
 import {suggestNextTeam} from '../teams/roster.js';
 import {planQuestionDraw} from '../questions/draw.js';
 import {activeInterception,activeRecovery} from '../recovery/flows.js';
+import {regionResult,worldProgress} from '../world/regions.js';
 
 /** Only this teacher-side facade may send writes; publicProjection is an allowlist. */
 export class TeacherEngineSession {
@@ -173,6 +174,27 @@ export class TeacherEngineSession {
     const committedRunId=type==='RECOVERY_CALLED'?(runId??eventId):runId;
     return this.dispatch(type,{recoveryId,runId:committedRunId,teamId,regionId,mode,reason,response,solverMemberId,decision,teacherReason,lateReason,missingResponseConfirmed,teacherConfirmed:true},eventId);
   }
+  /** PHASE 2-8 explicit 6-theme region progression. */
+  async enterRegion(regionId,{mode='MAIN',eventId=this.newId()}={}){
+    return this.dispatch('REGION_ENTERED',{regionId,mode,teacherConfirmed:true},eventId);
+  }
+  async setRegionQuota(regionId,baseQuota,reason,{eventId=this.newId()}={}){
+    return this.dispatch('REGION_QUOTA_SET',{regionId,baseQuota,reason,teacherConfirmed:true},eventId);
+  }
+  async completeRegion(regionId,{eventId=this.newId()}={}){
+    return this.dispatch('REGION_COMPLETED',{regionId,teacherConfirmed:true},eventId);
+  }
+  async startAdditionalExploration(regionId,{eventId=this.newId()}={}){
+    return this.dispatch('EXTRA_EXPLORATION_STARTED',{regionId,teacherConfirmed:true},eventId);
+  }
+  async returnFromAdditionalExploration({eventId=this.newId()}={}){
+    return this.dispatch('EXTRA_EXPLORATION_RETURNED',{teacherConfirmed:true},eventId);
+  }
+  getRegionResult(regionId,{publicOnly=false}={}){
+    insist(this.state,'SESSION_NOT_OPEN','원정 세션을 열어야 합니다.');
+    return clone(regionResult(this.state,regionId,{publicOnly}));
+  }
+  getWorldProgress(){insist(this.state,'SESSION_NOT_OPEN','원정 세션을 열어야 합니다.');return clone(worldProgress(this.state));}
   /** Teacher approved magic purchase, with no immediate secret answer/hint in public projection. */
   async useMagic({magicId,attemptId=null,recoveryId=null,regionId=null},{eventId=this.newId()}={}){
     return this.dispatch('MAGIC_USED',{magicId,attemptId,recoveryId,regionId,teacherConfirmed:true},eventId);

@@ -2,11 +2,11 @@
   "name": "moonpath-v411",
   "private": true,
   "type": "module",
-  "version": "0.2.7-phase2-step7-unit-tested",
+  "version": "0.2.8-phase2-step8-unit-tested",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "check:phase1": "node --test tests/phase1-*.test.mjs",
-    "check:syntax": "node --check src/engine/model.js && node --check src/engine/reducer.js && node --check src/engine/session.js && node --check src/storage/indexeddb.js && node --check src/storage/backup.js && node --check src/questions/engine.js && node --check src/questions/draw.js && node --check src/questions/adjudication.js && node --check src/teams/roster.js && node --check src/recovery/flows.js && node --check src/rewards/ledger.js && node --check src/corrections/reconcile.js",
+    "check:syntax": "node --check src/engine/model.js && node --check src/engine/reducer.js && node --check src/engine/session.js && node --check src/storage/indexeddb.js && node --check src/storage/backup.js && node --check src/questions/engine.js && node --check src/questions/draw.js && node --check src/questions/adjudication.js && node --check src/teams/roster.js && node --check src/recovery/flows.js && node --check src/rewards/ledger.js && node --check src/corrections/reconcile.js && node --check src/world/regions.js && node --check src/world/result-card.js",
     "check:phase0": "node --test tests/phase0.test.mjs",
     "build:browser-probe": "node scripts/build-browser-probe.mjs",
     "check:phase2:2-1": "node --test tests/phase2-2-1.test.mjs",
@@ -15,7 +15,8 @@
     "check:phase2:2-4": "node --test tests/phase2-2-4.test.mjs",
     "check:phase2:2-5": "node --test tests/phase2-2-5.test.mjs",
     "check:phase2:2-6": "node --test tests/phase2-2-6.test.mjs",
-    "check:phase2:2-7": "node --test tests/phase2-2-7.test.mjs"
+    "check:phase2:2-7": "node --test tests/phase2-2-7.test.mjs",
+    "check:phase2:2-8": "node --test tests/phase2-2-8.test.mjs"
   },
   "engines": {
     "node": ">=20"

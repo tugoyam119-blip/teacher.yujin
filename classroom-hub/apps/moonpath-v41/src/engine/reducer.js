@@ -2,7 +2,8 @@ import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_S
 import {validateDrawCommand} from '../questions/draw.js';
 import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.js';
 import {ROSTER_COMMANDS,applyRosterCommand,assignRepresentative,validateSolverIdentity} from '../teams/roster.js';
-import {creditFirstCorrect,creditRecovery,useMagic} from '../rewards/ledger.js';
+import {creditFirstCorrect,creditRecovery,creditFirstRegionKey,useMagic} from '../rewards/ledger.js';
+import {REGION_COMMANDS,applyRegionCommand,processedRegionalAttempts} from '../world/regions.js';
 import {INTERCEPTION_COMMANDS,RECOVERY_COMMANDS,processInterception,processRecovery,extension,activeInterception,activeRecovery} from '../recovery/flows.js';
 import {applyJudgementCorrection,CORRECTION_EVENT,reconcileEntitlementLedger} from '../corrections/reconcile.js';
 
@@ -45,6 +46,15 @@ export function reduceCommand(current,command){
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','가로채기/회수미션 진행 중 화면 이동은 제한됩니다.');
       state.screen=payload.screen;
       break;
+    case 'REGION_ENTERED':
+    case 'REGION_QUOTA_SET':
+    case 'REGION_COMPLETED':
+    case 'EXTRA_EXPLORATION_STARTED':
+    case 'EXTRA_EXPLORATION_RETURNED':{
+      applyRegionCommand(state,type,payload,{eventId,at});
+      if(type==='REGION_COMPLETED')creditFirstRegionKey(state,{regionId:payload.regionId,eventId,at});
+      break;
+    }
     case 'TEAM_MEMBER_ADDED':
     case 'TEAM_ATTENDANCE_SET':
     case 'TEAM_MEMBER_MOVED':
@@ -100,6 +110,15 @@ export function reduceCommand(current,command){
       insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 가로채기/회수미션을 먼저 종료해야 합니다.');
       validateDrawCommand(state,payload,at);
+      // Explicit region navigation enables strict quota/route checks; older PHASE 1/2
+      // prototype fixture saves remain loadable until migration is approved.
+      if(state.world.progressionMode==='EXPLICIT'){
+        const reg=state.world.regions[payload.regionId];
+        insist(reg.status==='IN_PROGRESS'&&state.world.currentRegionId===payload.regionId,
+          'REGION_NOT_ENTERED','현재 지역 진입 이벤트를 먼저 확정하세요.');
+        insist(processedRegionalAttempts(state,payload.regionId).length<reg.baseQuota,
+          'REGION_QUOTA_REACHED','기본 문제를 모두 처리했습니다. 지역 완료를 확인하세요.');
+      }
       const assignment=assignRepresentative(state,{teamId:payload.teamId,attemptId:payload.attemptId,eventId,at,teamSelection:payload.teamSelection??'MANUAL'});
       const sec=state.settings.timerSeconds;
       const {attemptId,questionId,regionId,teamId,mode,questionSnapshot}=payload;
@@ -300,7 +319,7 @@ export function reduceCommand(current,command){
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
   state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
-  if(type===CORRECTION_EVENT||INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='MAGIC_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
+  if(type===CORRECTION_EVENT||REGION_COMMANDS.includes(type)||INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='MAGIC_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};
 }

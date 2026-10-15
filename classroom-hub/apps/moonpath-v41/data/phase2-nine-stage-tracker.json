@@ -170,12 +170,29 @@
     {
       "id": "2-8",
       "title": "지역 완료/결과",
-      "implementation": "NOT_STARTED",
-      "unitTest": "NOT_RUN",
-      "integrationTest": "NOT_RUN",
-      "browserTest": "NOT_RUN",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_38",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "BLOCKED_BY_ADMINISTRATOR",
       "userApproval": "NOT_REQUESTED",
-      "evidence": []
+      "evidence": [
+        "src/world/regions.js",
+        "src/world/result-card.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "src/questions/draw.js",
+        "tests/phase2-2-8.test.mjs",
+        "docs/PHASE2_STEP2_8_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-8-20261015.full.log"
+      ],
+      "limitations": [
+        "지역 이동은 REGION_ENTERED 명시 이벤트 이후의 EXPLICIT 모드에서만 엄격 검사. 2-1~2-7 기존 프로토타입 저장에 대한 자동 변환/강제 전환 미구현",
+        "회수 NATURAL 호출 자격은 실제 방문 이력으로 연결했으나 교사용 자동 표시/호출 UI 미구현",
+        "지역 완료 결과는 공개 요약 데이터 및 문자형 마크업만 구현. 신규 픽셀아트 결과 카드 최종 디자인·사용자 승인 전",
+        "지역 완료 열쇠 지급/별빛0은 Node·가상 IndexedDB에서만 검증. 실제 Chrome/Edge file:// 저장 실패/중단 복구 미검증",
+        "확장 엔딩/단서 조합/학생 창 두 창 동기화/PDF·CSV·JSON 파일 UI 미구현"
+      ]
     },
     {
       "id": "2-9",

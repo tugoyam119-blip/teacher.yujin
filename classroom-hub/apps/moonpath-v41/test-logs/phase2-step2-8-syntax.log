@@ -1,0 +1,4 @@
+
+> moonpath-v411@0.2.8-phase2-step8-unit-tested check:syntax
+> node --check src/engine/model.js && node --check src/engine/reducer.js && node --check src/engine/session.js && node --check src/storage/indexeddb.js && node --check src/storage/backup.js && node --check src/questions/engine.js && node --check src/questions/draw.js && node --check src/questions/adjudication.js && node --check src/teams/roster.js && node --check src/recovery/flows.js && node --check src/rewards/ledger.js && node --check src/corrections/reconcile.js && node --check src/world/regions.js && node --check src/world/result-card.js
+

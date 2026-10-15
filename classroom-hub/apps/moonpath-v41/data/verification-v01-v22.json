@@ -50,10 +50,16 @@
     "id": "V04",
     "target": "세계·분기·추가 탐험",
     "acceptance": "6테마·30지역, 주 경로→추가 탐험→원위치 복귀, 해금 검증",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
+    "unitEvidence": [
+      "src/world/regions.js",
+      "tests/phase2-2-8.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN"
   },
   {
     "id": "V05",

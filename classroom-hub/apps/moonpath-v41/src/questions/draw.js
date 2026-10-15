@@ -180,6 +180,8 @@ export function validateDrawCommand(state,payload,at){
   insist(firstIssue===(mode===MODE_NEW),'DRAW_INVALID','최초 출제 정보가 일치하지 않습니다.');
   insist(state.world.regions[regionId],'REGION_INVALID','지역 ID가 올바르지 않습니다.');
   insist(state.world.currentRegionId===null||state.world.currentRegionId===regionId,'REGION_CHANGED','현재 지역과 출제 지역이 다릅니다.');
+  if(state.world.progressionMode==='EXPLICIT')insist(state.world.regions[regionId].status==='IN_PROGRESS'&&
+    state.world.currentRegionId===regionId,'REGION_NOT_ENTERED','먼저 해당 지역에 교사가 진입해야 합니다.');
   insist(state.teams.some(t=>t.id===teamId),'INVALID_TEAM','존재하지 않는 모둠입니다.');
   insist(!state.attempts[attemptId],'ATTEMPT_EXISTS','시도 ID가 중복되었습니다.');
   const issued=new Set(state.questions.issuedIds),recovery=new Set(state.questions.recoveryOnlyIds);

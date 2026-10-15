@@ -1,0 +1,8 @@
+{
+  "dateTimeUTC": "2026-10-15T04:12:08.334966+00:00",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "test": "phase28 minimal file:// IndexedDB preflight",
+  "runtime": "chromium headless Playwright",
+  "status": "BLOCKED",
+  "error": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/moonpath_phase2_stage28_work/tests/phase28-browser-preflight.html\nCall log:\n  - navigating to \"file:///mnt/data/moonpath_phase2_stage28_work/tests/phase28-browser-preflight.html\", waiting until \"load\"\n"
+}

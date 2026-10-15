@@ -1,5 +1,6 @@
 /** The rules below are v4.1.1 design decisions; this file contains only PHASE 1 groundwork. */
 import {checkRewardHistory} from '../rewards/ledger.js';
+import {checkWorldHistory,regionResult,worldProgress} from '../world/regions.js';
 import {checkCorrectionHistory,effectiveOriginDecision,originIncorrectAtEvent} from '../corrections/reconcile.js';
 export const ENGINE_VERSION = '4.1.1';
 export const SCHEMA_VERSION = 1;
@@ -38,7 +39,7 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
     meta:{schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,expeditionId,slot,revision:0,createdAt,updatedAt:createdAt,packId,packVersion},
     screen:'HOME',
     settings:{teamCount,timerSeconds,interception:true,lessonMinutes:45},
-    world:{currentRegionId:null,mainRouteChoice:{},additionalExplorationReturn:null,regions:Object.fromEntries(world.themes.flatMap(t=>t.regions).map(r=>[r.id,{status:'LOCKED',completedAt:null}])),themes:world.themes.map(t=>({id:t.id,name:t.name,regionIds:t.regions.map(r=>r.id)}))},
+    world:{currentRegionId:null,mainRouteChoice:{},additionalExplorationReturn:null,regionEntryOrder:[],visitHistory:[],results:[],quotaHistory:[],progressionMode:null,regions:Object.fromEntries(world.themes.flatMap(t=>t.regions).map(r=>[r.id,{status:'LOCKED',completedAt:null}])),themes:world.themes.map(t=>({id:t.id,name:t.name,regionIds:t.regions.map(r=>r.id)}))},
     sessions:[],
     activeSessionId:null,
     questions:{packId,packVersion,issuedIds:[],recoveryOnlyIds:[],reviewEligibleIds:[],draws:[]},
@@ -150,6 +151,7 @@ export function checkState(s){
   }
   checkRewardHistory(s);
   checkCorrectionHistory(s);
+  checkWorldHistory(s);
   return s;
 }
 /**
@@ -414,6 +416,9 @@ export function publicProjection(s,at){
     resources:{keys:s.rewards.keys,starlight:s.rewards.starlight},
     attempt:attempt?{id:attempt.id,phase:attempt.timer.phase,remainingMs:timerRemainingMs(attempt,at)}:null,
     lesson:s.activeSessionId?{active:true}:null,
+    // Counts-only projection; never include original answers, roster or audit.
+    regionResult:s.world.currentRegionId?regionResult(s,s.world.currentRegionId,{publicOnly:true}):null,
+    worldProgress:s.world.progressionMode==='EXPLICIT'?worldProgress(s):null,
     mission,
   };
 }
