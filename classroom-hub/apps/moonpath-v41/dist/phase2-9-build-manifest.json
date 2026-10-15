@@ -1,0 +1,12 @@
+{
+  "builtAt": "2026-10-16",
+  "role": "PHASE2-9 TEACHER-ONLY TEST BUILD",
+  "buildSha256": "1b1ad7c94421600e2e3d11b247e37e3c634eb450dde237759548bbd21867acc3",
+  "htmlBytes": 335801,
+  "moduleCount": 15,
+  "questionCount": 60,
+  "testOnly": true,
+  "actualBrowserIdbStatus": "NOT_TESTED",
+  "offlineFileCompatibility": "NOT_TESTED",
+  "fullGameBuild": false
+}

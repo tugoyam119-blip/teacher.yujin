@@ -1,0 +1,162 @@
+{
+  "files": [
+    {
+      "path": "src/demo/one-region-smoke.js",
+      "size": 16937,
+      "gitBlobSha1": "7f7e81efb7660314eba0b4410991a4a69f3cba48",
+      "sha256": "ee2a01bb0cef0671ee954c7b64c59db9cce8e9ef1fc2cdb6452c5a00b6f4f373"
+    },
+    {
+      "path": "src/demo/one-region-template.html",
+      "size": 7543,
+      "gitBlobSha1": "c331047ea6db9e017ebdfb0f58cb1923a499417c",
+      "sha256": "2cc0d9abaa8927982c90fbc6bda7ca81c1a3851cd3bc32e1f47ddc342b4020e5"
+    },
+    {
+      "path": "scripts/build-one-region-smoke.mjs",
+      "size": 3792,
+      "gitBlobSha1": "896844a89e34e4765c493411377d217887f53113",
+      "sha256": "dfe4b4cff5f225302e471b06d593f8aebb7a6f0ff2331b3ab014ce3a4b62eda6"
+    },
+    {
+      "path": "tests/helpers/phase29.mjs",
+      "size": 5552,
+      "gitBlobSha1": "4c4051312113ea28c280fd4f4507d79de5ca33ec",
+      "sha256": "012ce7f988c17ae036eeb3b60679dbf2bc2c48a4c31f1fbb33ef780d2547ff6b"
+    },
+    {
+      "path": "tests/phase2-2-9.test.mjs",
+      "size": 11307,
+      "gitBlobSha1": "0f2996c3a384b6aabbce0f8756e7bc3736c9fc3e",
+      "sha256": "6528974160dbcb72185641eb7abe22e9b6a909df0cd3aefedeb9563e71c3de49"
+    },
+    {
+      "path": "tests/phase2-2-9-build.test.mjs",
+      "size": 3124,
+      "gitBlobSha1": "60602a3dba02200130c37c484bcccbd611d95eed",
+      "sha256": "9c8be43fb0ac41d3fa39269e3908b585588b752765f2003964c2f5e749cd6059"
+    },
+    {
+      "path": "tests/browser/mock-idb-browser.js",
+      "size": 2874,
+      "gitBlobSha1": "bfc2d8bd3fe65b9de72942ac36a34fe4f8421658",
+      "sha256": "e703647ca1a0cd2d35feeae1accb9680252c9b93f01f5c396bc82b827d3cd19e"
+    },
+    {
+      "path": "tests/browser/phase29-dom-smoke.py",
+      "size": 4521,
+      "gitBlobSha1": "00f8c2ba03ba855bfbc5fc8caaf5855b51574acf",
+      "sha256": "0a0ece295f8671a4be1098a75cf993b782872bfee769d566374a90177d5c8cda"
+    },
+    {
+      "path": "tests/browser/phase29-native-preflight.py",
+      "size": 2373,
+      "gitBlobSha1": "214ca560e58b9d1cef1b770460735a202c13fa15",
+      "sha256": "f7b4c22763ae3d6e7b7e0c323e2398a0264dbce3d4dc0af67116e976fe93462d"
+    },
+    {
+      "path": "dist/phase2-9-one-region-smoke.html",
+      "size": 335801,
+      "gitBlobSha1": "d531b57d864404a9c4b310a3bef0c5abcb38ebb7",
+      "sha256": "1b1ad7c94421600e2e3d11b247e37e3c634eb450dde237759548bbd21867acc3"
+    },
+    {
+      "path": "dist/phase2-9-build-manifest.json",
+      "size": 360,
+      "gitBlobSha1": "e0f0bbd087ede789ffe1c4396cf5f9f5fb1c1fc6",
+      "sha256": "a97cf84a109ca59994af17486b686b0b1cddc4eb4ffa507fe30cb1560d21b1f3"
+    },
+    {
+      "path": "docs/PHASE2_STEP2_9_VERIFICATION_20261016.md",
+      "size": 9586,
+      "gitBlobSha1": "bf71a04c4517e45f5a2bce55194bf8f154bd7097",
+      "sha256": "911e111664f57aefa18aa27ff823b73ca79b20262009931a838fd5158fef4234"
+    },
+    {
+      "path": "docs/PHASE2_STEP2_9_BROWSER_QA_20261016.md",
+      "size": 4775,
+      "gitBlobSha1": "0341f6785fc5722905f9fbb0448eab054a0d1656",
+      "sha256": "06c1bae2b9a4debcf963aafec976d1dbed544b307051198e6a8fbc87563fb1fb"
+    },
+    {
+      "path": "docs/PHASE2_STEP2_9_TESTER_README.md",
+      "size": 2725,
+      "gitBlobSha1": "db78e98b98701423c09c20a598b291873c8424bd",
+      "sha256": "c6ee18b6d9a198877ea76d0a3afbab92043ceadc947711e2882e8e9bbe9d9c62"
+    },
+    {
+      "path": "docs/PROJECT_STATUS_HANDOFF_v4.1.1_20261014.md",
+      "size": 61903,
+      "gitBlobSha1": "c13332fe060d71bc52f6c5bb6085013c2de9f4ae",
+      "sha256": "5f216c0e71b4541069328fd8b8cb2bc5d2e7cc037cb0e7a35b7773638a4737c7"
+    },
+    {
+      "path": "docs/PHASE2_9_STAGE_FIXED_PLAN.md",
+      "size": 9316,
+      "gitBlobSha1": "4608447453b69590bc5a938e1717f8fc1c2c9d33",
+      "sha256": "cd4e8905dfce1ca3b0dee31c2a4e43a38b14c422beeefcdf260e9f3b41f07904"
+    },
+    {
+      "path": "data/phase2-nine-stage-tracker.json",
+      "size": 9806,
+      "gitBlobSha1": "eac8c4a432f1de9f9b3d92d4fe737ea560e61bec",
+      "sha256": "e94ad6476b5e33eafc86c666eef206c4e5f6650197f9c7f1d6a0f6d23ab4a575"
+    },
+    {
+      "path": "data/verification-v01-v22.json",
+      "size": 10475,
+      "gitBlobSha1": "9c6e18a1979b9a30780ddcacdb52c984543e173c",
+      "sha256": "7fb1a99ca5d8481d1c2b01a7b09504963609442bd8c480370a649fc872e11255"
+    },
+    {
+      "path": "package.json",
+      "size": 1845,
+      "gitBlobSha1": "0a22bd5382f8a7ca615f10ee234bb6db1cc70ff4",
+      "sha256": "81368ed5d30106a615ffc024862a47990b0ab3aec290cbb0e85afaee7aba7e55"
+    },
+    {
+      "path": "test-logs/phase2-step2-9-20261016.full.log",
+      "size": 119872,
+      "gitBlobSha1": "28fc98ba0ec2c2010572f32260f3cc7fd6659fa2",
+      "sha256": "1afb8ead6e5039401b20908f5238fea4833e533a6291110df48a71443bf6aaae"
+    },
+    {
+      "path": "test-logs/phase2-step2-9-20261016.summary.json",
+      "size": 1111,
+      "gitBlobSha1": "767f90020a6dd670a2ed6e1f19fa7ea25af87027",
+      "sha256": "0de2282e121a8bdf968dbb357606133762c8bd55507de48f23e84fac0722074f"
+    },
+    {
+      "path": "test-logs/phase2-step2-9-syntax.log",
+      "size": 727,
+      "gitBlobSha1": "c0407b2f635be219ad4d1c22872748ccbed3e6f0",
+      "sha256": "51c999907524ecca639be7b0a47ac61d0c0f6ecf9584aec6bee89f9e47737a9c"
+    },
+    {
+      "path": "test-logs/phase2-step2-9-browser-dom-mock.log",
+      "size": 731,
+      "gitBlobSha1": "a760ea763cc42b2fe7b18d3e2a3a952597779edd",
+      "sha256": "a1610e7205ef9c8394e98049a6a66deeafef0ea13ba6ad6a9526dd05cabc1f2d"
+    },
+    {
+      "path": "test-logs/phase2-step2-9-native-preflight.json",
+      "size": 1064,
+      "gitBlobSha1": "3f0027872258df167debb97a62460580ff14fff5",
+      "sha256": "aa50ebb54a20386aa9e59ef5cbc653e538360940a4ef07f88e296d6741b57d65"
+    },
+    {
+      "path": "test-logs/phase2-step2-9-viewports.jsonl",
+      "size": 434,
+      "gitBlobSha1": "03ce3eb3f69b6ac286252c6710a09359ee429ea4",
+      "sha256": "11cb120c65043ea7a0c60b477eb5d14cc2e9ce3502d29b81e7aaa316d461f11a"
+    },
+    {
+      "path": "test-logs/phase2-step2-9-build.log",
+      "size": 319,
+      "gitBlobSha1": "f072d01d5b545a7f0f8950d3590c50c39061ecb2",
+      "sha256": "694c727a25f603a41637904d5fffa94505dcb699640e0a750580a0676173f033"
+    }
+  ],
+  "sourceBranch": "feat/moonpath-v411-rebuild-phase0-20261014",
+  "baselineMainSha": "16c5d7f9d929a06a35b47c8da410c7a73facdf20"
+}

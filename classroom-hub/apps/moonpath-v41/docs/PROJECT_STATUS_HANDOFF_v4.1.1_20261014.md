@@ -486,3 +486,17 @@
 - 실제 Chromium file:// 검사 진입 `ERR_BLOCKED_BY_ADMINISTRATOR` → **BLOCKED**, IndexedDB/강제 종료/두 창/무인터넷 실증 PASS 아님. PHASE 1 완료 또는 PHASE 2 전체 완료 주장 불가.
 - V04 `구현 중`으로 표기, 공식 `testStatus=NOT_RUN`, V01~V22 최종 PASS 0 유지. 2-9 전체 게임 1지역 완주/저장/오프라인 검증 및 PHASE 3 신규 아트 화면 승인은 별도.
 - 상세 근거: `docs/PHASE2_STEP2_8_VERIFICATION_20261015.md`; 원본 문제팩, 기존 `moonpath-dev`, 운영 `main`/Railway/기존 저장 데이터 변경 없음.
+
+
+---
+
+## 후속 개발 진행 추가 기록 — PHASE 2-9 (2026-10-16)
+
+- **최신 상태:** 확정된 2-1~2-9의 핵심 로직 및 1지역 교사용 최소 기능 시험 화면 작성. 실제 Chromium/Edge의 네이티브 IndexedDB·강제 종료·오프라인 무인터넷 실증과 최종 UI 사용자 승인은 미완료. 따라서 **PHASE 1/2 전체 완료 아님**.
+- 핵심 연동: 실제 `TeacherEngineSession` API로 T1-R1 달빛 이끼길 진입→모둠 출제·답안·교사 확정→가로채기→첫 완료 열쇠+1/별빛+0→T1-R2 방문 이후 원모둠 회수까지. 이력을 1개 이벤트/쓰기 트랜잭션과 체크포인트로 연결하며 중복·실패를 테스트.
+- 비운영 시험 화면: `src/demo/one-region-smoke.js` + `src/demo/one-region-template.html`; 제작 파일 `dist/phase2-9-one-region-smoke.html` (960×540 contain, 중앙 문제 팝업, 공식 60문항 원본 포함, 별도 `moonpath-v411-phase29-smoke-db-v1`). 학생용 PIN·두 창·신규 그래픽·실제 운영 연결 없음. 교사 시험 파일 공유 주의: **HTML 내부에 정답 원본이 포함**됩니다.
+- 이전 492건 검사에 신규 2-9 통합·빌드 21건을 추가해 **Node/모의 저장 총 513건**. Chromium DOM에서 실제 버튼으로 1지역 완주·다음 지역 회수까지 성공했으나 저장소는 모의 구현(브라우저 네이티브 IDB 아님).
+- 브라우저 네이티브 preflight: Chrome/Edge 최종 검증 대신 Linux Chromium 144에서 file://, localhost 모두 `ERR_BLOCKED_BY_ADMINISTRATOR`로 진입 차단; 기능 자체 FAIL 아님, **실증 BLOCKED**.
+- V21 구현 중·통합 최종 `NOT_RUN`, V01~V22 최종 PASS 0. Windows Chrome·Edge에서 같은 파일 경로 새로고침/강제 종료/복원, 트랜잭션 실패, JSON 백업, 두 창과 무인터넷을 증빙하기 전에는 완료 선언·병합·배포 금지.
+- 기록: `docs/PHASE2_STEP2_9_VERIFICATION_20261016.md`, `docs/PHASE2_STEP2_9_BROWSER_QA_20261016.md`, `data/phase2-nine-stage-tracker.json`.
+- 운영 `main`, 구 `moonpath-dev` 저장 영역·원본 60문항, Railway 미수정·미배포.

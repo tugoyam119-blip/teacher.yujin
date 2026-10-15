@@ -197,12 +197,30 @@
     {
       "id": "2-9",
       "title": "한 지역 완주 통합검증",
-      "implementation": "NOT_STARTED",
-      "unitTest": "NOT_RUN",
-      "integrationTest": "NOT_RUN",
-      "browserTest": "NOT_RUN",
+      "implementation": "CODE_COMPLETE_TEST_HARNESS_ONLY",
+      "unitTest": "PASS_NODE_21_INTEGRATION_AND_BUILD",
+      "integrationTest": "PASS_FAKE_IDB_AND_CHROMIUM_DOM_WITH_MOCK_IDB_ONLY",
+      "browserTest": "BLOCKED_NATIVE_FILE_AND_HTTP_BY_ADMIN_POLICY",
       "userApproval": "NOT_REQUESTED",
-      "evidence": []
+      "evidence": [
+        "src/demo/one-region-smoke.js",
+        "src/demo/one-region-template.html",
+        "scripts/build-one-region-smoke.mjs",
+        "dist/phase2-9-one-region-smoke.html",
+        "tests/phase2-2-9.test.mjs",
+        "tests/phase2-2-9-build.test.mjs",
+        "tests/browser/phase29-dom-smoke.py",
+        "tests/browser/phase29-native-preflight.py",
+        "docs/PHASE2_STEP2_9_VERIFICATION_20261016.md",
+        "test-logs/phase2-step2-9-20261016.full.log"
+      ],
+      "limitations": [
+        "기능 검증 화면은 최종 승인된 신규 픽셀아트 HOME/교사·학생 이중창이 아님",
+        "Node 및 Chromium DOM은 실제 IndexedDB가 아닌 메모리 모의 저장소로 검증",
+        "실제 Windows Chrome·Edge file:// IndexedDB·강제 종료 복원·무인터넷 재연결 미검증",
+        "브라우저 선행 진입 관리자 정책 차단; V09/V11/V12/V14/V15/V16/V21 최종 실증 게이트 PASS 아님",
+        "브라우저/화면 최종 승인 전 운영 main/Railway 배포 금지"
+      ]
     }
   ]
 }

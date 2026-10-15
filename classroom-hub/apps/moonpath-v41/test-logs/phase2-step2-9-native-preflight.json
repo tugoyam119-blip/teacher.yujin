@@ -1,0 +1,25 @@
+{
+  "dateKST": "2026-10-16",
+  "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "browser": "Chromium 144.0.7559.96 built on Debian GNU/Linux 13 (trixie)",
+  "headless": true,
+  "engine": "Chromium",
+  "testPurpose": "real file:// and localhost navigation preflight",
+  "schemes": {
+    "file": {
+      "navigation": "BLOCKED_ADMIN_POLICY",
+      "error": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/moonpath_phase2_stage29_work/dist/phase2-9-one-region-smoke.html",
+      "nativeIndexedDbTest": "NOT_EXECUTED"
+    },
+    "localhost": {
+      "navigation": "BLOCKED_ADMIN_POLICY",
+      "error": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:33975/phase2-9-one-region-smoke.html",
+      "nativeIndexedDbTest": "NOT_EXECUTED"
+    }
+  },
+  "nativeIndexedDbExecuted": false,
+  "environmentPolicyBypassAttempted": false,
+  "officialGatePASS": false,
+  "result": "BLOCKED",
+  "notes": "A blocked navigation is not evidence that native IndexedDB itself is defective. Windows Chrome/Edge actual offline tests are still required."
+}

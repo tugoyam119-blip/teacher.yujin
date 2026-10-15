@@ -260,10 +260,18 @@
     "id": "V21",
     "target": "완전한 플레이 시나리오",
     "acceptance": "한 지역→테마→전체 기본 엔딩→확장 엔딩까지 저장·회수·분기 통과",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_21_AND_CHROMIUM_DOM_WITH_MOCK_IDB_ONLY",
+    "unitEvidence": [
+      "tests/phase2-2-9.test.mjs",
+      "tests/phase2-2-9-build.test.mjs",
+      "tests/browser/phase29-dom-smoke.py",
+      "dist/phase2-9-one-region-smoke.html"
+    ],
+    "integrationBrowserEvidence": "NATIVE_IDB_BLOCKED_BY_ADMINISTRATOR_NOT_PASS"
   },
   {
     "id": "V22",
