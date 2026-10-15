@@ -143,12 +143,29 @@
     {
       "id": "2-7",
       "title": "판정 정정과 정산",
-      "implementation": "NOT_STARTED",
-      "unitTest": "NOT_RUN",
-      "integrationTest": "NOT_RUN",
-      "browserTest": "NOT_RUN",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_52",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "BLOCKED_ENV_POLICY_FILE_URL",
       "userApproval": "NOT_REQUESTED",
-      "evidence": []
+      "evidence": [
+        "src/corrections/reconcile.js",
+        "src/rewards/ledger.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "src/recovery/flows.js",
+        "src/questions/draw.js",
+        "tests/phase2-2-7.test.mjs",
+        "docs/PHASE2_STEP2_7_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-7-20261015.summary.json"
+      ],
+      "limitations": [
+        "정정 원본 답안·원판정·미션 시도는 삭제/수정하지 않고 append-only correction으로 보존",
+        "원모둠/실제 해결자 귀속 재계산과 음수 대신 별빛 정산 필요 금액 표현",
+        "실제 Windows Chrome/Edge IndexedDB·file://·강제 종료 복구 미검증",
+        "PHASE 2-8 지역 완료/열쇠 실제 이벤트 연동 및 PHASE 2-9 전체 1지역 완주 미검증"
+      ]
     },
     {
       "id": "2-8",

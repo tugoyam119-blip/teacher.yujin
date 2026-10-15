@@ -114,10 +114,18 @@
     "id": "V08",
     "target": "정답 정정 연쇄 재계산",
     "acceptance": "가로채기·회수·공헌도·소비된 별빛의 정산 필요 상태까지 재검산",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_52_AND_FAKE_IDB_ONLY_2026-10-15",
+    "unitEvidence": [
+      "src/corrections/reconcile.js",
+      "tests/phase2-2-7.test.mjs",
+      "docs/PHASE2_STEP2_7_VERIFICATION_20261015.md",
+      "test-logs/phase2-step2-7-20261015.summary.json"
+    ],
+    "integrationBrowserEvidence": "BLOCKED_ERR_BLOCKED_BY_ADMINISTRATOR"
   },
   {
     "id": "V09",

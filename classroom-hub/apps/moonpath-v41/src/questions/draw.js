@@ -90,6 +90,7 @@ export function listRecoveryCandidates(state,{inRegionId,force=false,teacherConf
   insist(Array.isArray(queued),'RECOVERY_INVALID','회수 대기열이 올바르지 않습니다.');
   const seen=new Set(),out=[];
   for(const x of queued){
+    if(x?.status==='INVALIDATED')continue; // historic invalidation is not an active recovery candidate.
     insist(x&&typeof x.id==='string'&&typeof x.questionId==='string'&&typeof x.originRegionId==='string'&&
       typeof x.originTeamId==='string'&&['PENDING','HELD','ACTIVE'].includes(x.status),
       'RECOVERY_INVALID','회수 대기 정보가 불완전합니다.');

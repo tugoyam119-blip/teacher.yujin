@@ -1,5 +1,6 @@
 /** The rules below are v4.1.1 design decisions; this file contains only PHASE 1 groundwork. */
 import {checkRewardHistory} from '../rewards/ledger.js';
+import {checkCorrectionHistory,effectiveOriginDecision,originIncorrectAtEvent} from '../corrections/reconcile.js';
 export const ENGINE_VERSION = '4.1.1';
 export const SCHEMA_VERSION = 1;
 export const DB_NAME = 'moonpath-v411-engine-db'; // Deliberately never touch legacy localStorage keys.
@@ -46,9 +47,9 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
     participation:{memberIds:[],rosterChanges:[],assignments:[],nextTeamIndex:0},
     recovery:{pending:[],resolved:[],activeId:null},
     interception:{records:[],activeId:null,lastTeamId:null},
-    rewards:{keys:0,starlight:0,ledger:[],settlementRequired:false},
+    rewards:{keys:0,starlight:0,ledger:[],settlementRequired:false,settlementDue:0},
     magic:{used:[],unlocked:['MOON_WHISPER','STAR_COMPASS']},clues:{collected:[],combinations:[]},
-    eventLog:[],audit:[]
+    eventLog:[],audit:[],corrections:{records:[]}
   };
 }
 export function checkState(s){
@@ -148,6 +149,7 @@ export function checkState(s){
     insist(a.timer.remainingMs>=0&&Number.isFinite(a.timer.remainingMs),'INVALID_TIMER','음수 또는 유효하지 않은 잔여 시간입니다.');
   }
   checkRewardHistory(s);
+  checkCorrectionHistory(s);
   return s;
 }
 /**
@@ -279,7 +281,7 @@ export function checkSideMissionHistory(s){
     for(const x of interceptions.records){
       requireId(x.id,'가로채기');
       const source=s.attempts[x.sourceAttemptId];
-      insist(!ids.has(x.id)&&!origins.has(x.sourceAttemptId)&&source?.judgement?.decision==='INCORRECT'&&
+      insist(!ids.has(x.id)&&!origins.has(x.sourceAttemptId)&&source?.judgement && originIncorrectAtEvent(s,source.id,x.openedEventId)&&
         source.questionId===x.questionId&&source.teamId===x.originTeamId&&
         x.originRosterVersion===(source.teamAssignment?.rosterVersion??null)&&
         x.originRepresentativeMemberId===(source.teamAssignment?.representativeMemberId??null)&&
@@ -325,7 +327,8 @@ export function checkSideMissionHistory(s){
   for(const row of [...r.pending,...r.resolved]){
     const origin=s.attempts[row.sourceAttemptId];
     insist(typeof row.id==='string'&&row.id===row.sourceAttemptId&&!used.has(row.id)&&
-      origin?.judgement?.decision==='INCORRECT'&&origin.teamId===row.originTeamId&&
+      origin?.judgement?.teacherConfirmed===true&&
+      (origin.judgement.decision==='INCORRECT'||row.createdByCorrectionEventId)&&origin.teamId===row.originTeamId&&
       origin.questionId===row.questionId&&origin.regionId===row.originRegionId&&
       row.originRosterVersion===(origin.teamAssignment?.rosterVersion??null)&&
       row.originRepresentativeMemberId===(origin.teamAssignment?.representativeMemberId??null)&&
@@ -333,13 +336,20 @@ export function checkSideMissionHistory(s){
       'RECOVERY_INVALID','회수 원문제/출처 기록이 유효하지 않습니다.');
     used.add(row.id);
     const resolved=row.status==='RESOLVED';
-    if(!resolved){
+    if(!resolved&&row.status!=='INVALIDATED'){
       insist(!pendingQuestions.has(row.questionId),'RECOVERY_INVALID','같은 문항에 미회수 대기가 중복되었습니다.');
       pendingQuestions.add(row.questionId);
     }
     insist((resolved?r.resolved:r.pending).includes(row),'RECOVERY_INVALID','회수 대기/완료 분류가 일치하지 않습니다.');
-    insist(resolved?true:recoverOnly.has(row.questionId),
+    insist(resolved||row.status==='INVALIDATED'?true:recoverOnly.has(row.questionId),
       'RECOVERY_INVALID','회수 완료 여부와 출제 전용 목록이 일치하지 않습니다.');
+    if(row.status==='INVALIDATED'){
+      insist(effectiveOriginDecision(s,row.sourceAttemptId)==='CORRECT' && !recoverOnly.has(row.questionId)&&
+        s.eventLog.some(e=>e.eventId===row.invalidatedByCorrectionId&&e.type==='JUDGEMENT_CORRECTED'),
+        'RECOVERY_INVALID','정정 무효화 기록이 올바르지 않습니다.');
+    }
+    if(row.createdByCorrectionEventId)insist(s.eventLog.some(e=>e.eventId===row.createdByCorrectionEventId&&e.type==='JUDGEMENT_CORRECTED'),
+      'RECOVERY_INVALID','정정으로 생성된 회수 기록의 근거가 없습니다.');
     insist((row.runs??[]).every(run=>run.sourceAttemptId===row.sourceAttemptId&&run.questionId===row.questionId),
       'RECOVERY_INVALID','회수 시도와 원문제 연결이 손상되었습니다.');
     const runIds=new Set();

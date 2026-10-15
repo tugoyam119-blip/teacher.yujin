@@ -1,0 +1,140 @@
+{
+  "status": "LOCAL_NODE_AND_FAKE_IDB_PASS_ONLY",
+  "baselineBranchHead": "e0ffdb0b45db29a047486c13016e5600ba29b7e0",
+  "branch": "feat/moonpath-v411-rebuild-phase0-20261014",
+  "modifiedPaths": [
+    {
+      "path": "classroom-hub/apps/moonpath-v41/src/corrections/reconcile.js",
+      "relativePath": "src/corrections/reconcile.js",
+      "bytes": 14396,
+      "sha256": "d4725383ddb91be15e2897e4ce3ab84c73f609b1050416b1e35ffdb2f93c1a1b",
+      "gitBlobSha": "2561b7d44d9e05370a93c613b7338176c6d1c47f"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/src/engine/model.js",
+      "relativePath": "src/engine/model.js",
+      "bytes": 29658,
+      "sha256": "5cf19c234141bae181e73a82bb8f8666431c3163cf61fba0ef156281fee0c620",
+      "gitBlobSha": "965d565080e1e4e103e304e2de845cd7b23f76d4"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/src/engine/reducer.js",
+      "relativePath": "src/engine/reducer.js",
+      "bytes": 21150,
+      "sha256": "a82b29c999acd365ce6b59645a97835791e691c958f7fbe824ae426100b1d35d",
+      "gitBlobSha": "009e812c9c81c2a1a6550efc7ca6a81cb605ad46"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/src/engine/session.js",
+      "relativePath": "src/engine/session.js",
+      "bytes": 15155,
+      "sha256": "9d0e4375d7d9cf8f68086fb18b6939e23e3bb8c041901844a42f9853fbf72ad8",
+      "gitBlobSha": "772fdfc16da7c78b9018b84aad1fbec1fe1f574b"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/src/rewards/ledger.js",
+      "relativePath": "src/rewards/ledger.js",
+      "bytes": 12372,
+      "sha256": "4d9c144912f8ed740e09075f4e6f582ac055d0518340db27899151455b0c2619",
+      "gitBlobSha": "5f95c1f7180187d0c2072cb419ec7f12c4e45e49"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/src/recovery/flows.js",
+      "relativePath": "src/recovery/flows.js",
+      "bytes": 15996,
+      "sha256": "784d37806fda7b19e3a27cbd8305b0113d559e86b793369de88f3befa59daa51",
+      "gitBlobSha": "1ce17b5f105a6d2e6fbc45ef7e7bac50cd7afa07"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/src/questions/draw.js",
+      "relativePath": "src/questions/draw.js",
+      "bytes": 13623,
+      "sha256": "3159ca75b3c7ec75d96a5b6a469bc19b3653eb34f55b73e8b7f7a089a3aa70b4",
+      "gitBlobSha": "6aca39d43f397c808e2b42e8383843fd539601a3"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/tests/phase2-2-7.test.mjs",
+      "relativePath": "tests/phase2-2-7.test.mjs",
+      "bytes": 24556,
+      "sha256": "65381e51b3821b2ae8ff6b464d3506ed8b79aaa6f4d6ca1562bcce2bf6ce34ad",
+      "gitBlobSha": "3ab3b9b232078f3d2f32e950e5b545a84eab1485"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/package.json",
+      "relativePath": "package.json",
+      "bytes": 1453,
+      "sha256": "767d6c0d0406d775e48b0eb47b5bde04a8ecb52a2d7e4aa1a87e56bdc2784928",
+      "gitBlobSha": "e6ea1defe117f02ad73c1a6252561b678303fbbd"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/data/phase2-nine-stage-tracker.json",
+      "relativePath": "data/phase2-nine-stage-tracker.json",
+      "bytes": 7450,
+      "sha256": "91f576fe67c0a0b47c4b1a15aec53727de28634bb59aa1f75259698fbe0e519c",
+      "gitBlobSha": "1c5b8a317437b74bb07eece1f4004590bc481c39"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/data/verification-v01-v22.json",
+      "relativePath": "data/verification-v01-v22.json",
+      "bytes": 9918,
+      "sha256": "63697d4eff711ad6c572cb9becd577949508e498e03a999dae4640f129dcb6b6",
+      "gitBlobSha": "06285ea9fac29df386dedda672d0b340ee4b540d"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/docs/PHASE2_9_STAGE_FIXED_PLAN.md",
+      "relativePath": "docs/PHASE2_9_STAGE_FIXED_PLAN.md",
+      "bytes": 7253,
+      "sha256": "7e3300a60e4d95bb9470cc1d46b40da64939170cd137711ec284a323dd22bcb3",
+      "gitBlobSha": "fdd6689ddc09a0564ee10e7f1f345bfe940e4585"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/docs/PHASE2_STEP2_7_VERIFICATION_20261015.md",
+      "relativePath": "docs/PHASE2_STEP2_7_VERIFICATION_20261015.md",
+      "bytes": 8267,
+      "sha256": "93b61496c2b96e8f6f273df822ab6bfcb9629559b4c985996d09f054bf27783e",
+      "gitBlobSha": "9443f2b0565f7db6687d5aba664624123e813a57"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/docs/PROJECT_STATUS_HANDOFF_v4.1.1_20261014.md",
+      "relativePath": "docs/PROJECT_STATUS_HANDOFF_v4.1.1_20261014.md",
+      "bytes": 57596,
+      "sha256": "a9818432ca60f6849112d53dac464b659a0bffdcfc7ac4be282abf1169bfeb70",
+      "gitBlobSha": "ae5379e8b827213d7f2b5220f56ac30100d94149"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/test-logs/phase2-step2-7-20261015.full.log",
+      "relativePath": "test-logs/phase2-step2-7-20261015.full.log",
+      "bytes": 105014,
+      "sha256": "03e466d2c066ab70910cd8ff64b798e539fddf19abab331a4ca60b0161707fb2",
+      "gitBlobSha": "aa4588992bbdb2545fd9c1e4ba8a46f5cb7b3d4d"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/test-logs/phase2-step2-7-only.log",
+      "relativePath": "test-logs/phase2-step2-7-only.log",
+      "bytes": 13933,
+      "sha256": "bcd3f80d04557d6a3cc14d1222bc9ef087074bc8c077a030b8b2ef22b0de7f46",
+      "gitBlobSha": "c9fec4f37b5f795b25c52a3bdf6996905944072f"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/test-logs/phase2-step2-7-syntax.log",
+      "relativePath": "test-logs/phase2-step2-7-syntax.log",
+      "bytes": 533,
+      "sha256": "f3376b0ed277d545c7d62c5b88d2abe082e78bd93a4b16959b8099dc9d87d19f",
+      "gitBlobSha": "3a9a5feedf4508d19d798b94e4cc1bce0907d125"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/test-logs/phase2-step2-7-20261015.summary.json",
+      "relativePath": "test-logs/phase2-step2-7-20261015.summary.json",
+      "bytes": 708,
+      "sha256": "74675a140dcbc8cefbfb9035483d5af2006a23e28e0f0217455a7d529179eeca",
+      "gitBlobSha": "8269a22c38fce031fdfd87b33564ea5b04664a76"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-v41/test-logs/phase2-step2-7-browser-preflight.json",
+      "relativePath": "test-logs/phase2-step2-7-browser-preflight.json",
+      "bytes": 645,
+      "sha256": "ad4dd9e26dc032301904051818368092b6a9f5e130af6b70aa1dd5f3f070570e",
+      "gitBlobSha": "0682714c7e74d8c9b4707b18dd24814c24844a23"
+    }
+  ]
+}

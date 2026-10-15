@@ -128,9 +128,18 @@ export function checkRewardHistory(s){
   const claims=new Set(),creditByTeam=new Map();
   for(const row of s.rewards.ledger){
     insist(typeof row?.eventId==='string'&&Number.isInteger(row.amount)&&
-      ['STAR_EARN','STAR_SPEND','KEY_EARN','TIME_SAND_SPEND'].includes(row.type),'REWARD_LEDGER_INVALID','장부 유형/수량이 유효하지 않습니다.');
+      ['STAR_EARN','STAR_SPEND','KEY_EARN','TIME_SAND_SPEND','STAR_ADJUST'].includes(row.type),'REWARD_LEDGER_INVALID','장부 유형/수량이 유효하지 않습니다.');
     if(row.claim){insist(!claims.has(row.claim),'REWARD_DUPLICATE','중복된 보상 청구가 있습니다.');claims.add(row.claim);}
-    if(row.type==='STAR_EARN'){
+    if(row.type==='STAR_ADJUST'){
+      const ev=byEvent.get(row.eventId);
+      insist((row.amount===1||row.amount===-1)&&row.contribution===row.amount&&
+        ['JUDGEMENT_CORRECTED','ANSWER_JUDGED','INTERCEPTION_JUDGED','RECOVERY_JUDGED'].includes(ev?.type)&&
+        s.corrections?.records?.length>0&&row.sourceClaim?.match(/^(FIRST_CORRECT|RECOVERY_CORRECT):/) &&
+        row.claim===`CORRECTION:${row.eventId}:${row.sourceClaim}:${row.teamId}`&&
+        s.teams.some(t=>t.id===row.teamId),
+        'REWARD_LEDGER_INVALID','정정 보상 조정의 근거가 잘못되었습니다.');
+      creditByTeam.set(row.teamId,(creditByTeam.get(row.teamId)||0)+row.amount);
+    }else if(row.type==='STAR_EARN'){
       const source=s.attempts[row.sourceAttemptId],e=byEvent.get(row.eventId);
       insist(row.amount===1&&source?.questionId===row.questionId&&row.contribution===1&&e,
         'REWARD_LEDGER_INVALID','보상 지급 근거가 올바르지 않습니다.');
@@ -140,8 +149,8 @@ export function checkRewardHistory(s){
       else if(row.kind==='INTERCEPTION')insist(e.type==='INTERCEPTION_JUDGED'&&s.interception.records.some(x=>
         x.sourceAttemptId===row.sourceAttemptId&&x.targetTeamId===row.teamId&&x.judgement?.eventId===row.eventId&&x.judgement.decision==='CORRECT'),
         'REWARD_LEDGER_INVALID','가로채기 성공 기록이 불일치합니다.');
-      else if(row.kind==='RECOVERY')insist(e.type==='RECOVERY_JUDGED'&&s.recovery.resolved.some(x=>x.id===row.recoveryId&&
-        x.solverTeamId===row.teamId&&x.sourceAttemptId===row.sourceAttemptId&&x.resolutionEventId===row.eventId),
+      else if(row.kind==='RECOVERY')insist(e.type==='RECOVERY_JUDGED'&&[...s.recovery.pending,...s.recovery.resolved].some(x=>x.id===row.recoveryId&&
+        x.sourceAttemptId===row.sourceAttemptId&&x.runs?.some(run=>run.teamId===row.teamId&&run.judgement?.eventId===row.eventId)),
         'REWARD_LEDGER_INVALID','회수 성공 기록이 불일치합니다.');
       else insist(false,'REWARD_LEDGER_INVALID','알 수 없는 별빛 지급입니다.');
       insist(row.claim===(row.kind==='RECOVERY'?`RECOVERY_CORRECT:${row.questionId}`:`FIRST_CORRECT:${row.questionId}`)&&

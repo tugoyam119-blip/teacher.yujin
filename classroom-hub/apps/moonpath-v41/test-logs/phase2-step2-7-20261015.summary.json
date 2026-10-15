@@ -1,0 +1,26 @@
+{
+  "phase": "2-7",
+  "masterVersion": "4.1.1",
+  "checkedAt": "2026-10-15T12:13:14+09:00",
+  "environment": {
+    "runtime": "Node.js v22.16.0",
+    "os": "Linux",
+    "testAdapter": "FakeDatabase in-memory, not real IndexedDB"
+  },
+  "originalPreviousTests": 402,
+  "newTests": 52,
+  "total": 454,
+  "passed": 454,
+  "failed": 0,
+  "syntax": "PASS",
+  "browser": {
+    "chromium": "file:// Page.goto net::ERR_BLOCKED_BY_ADMINISTRATOR",
+    "actualIndexedDB": "BLOCKED_NOT_TESTED",
+    "forceQuit": "NOT_RUN",
+    "offline": "NOT_RUN"
+  },
+  "sourcePackSHA256": "3a2401498a73bf5afd7ed72329ef07d4dd742d58f5ab27ab966841cc67c5de7f",
+  "v01_v22_actualPass": 0,
+  "updatedStage": "2-7",
+  "release": "BLOCKED"
+}

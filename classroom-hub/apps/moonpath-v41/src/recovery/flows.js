@@ -7,6 +7,7 @@
  */
 import {clone,insist,requireId,validTimestamp,timerRemainingMs} from '../engine/model.js';
 import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.js';
+import {effectiveOriginDecision} from '../corrections/reconcile.js';
 
 export const INTERCEPTION_COMMANDS=Object.freeze([
   'INTERCEPTION_OPENED','INTERCEPTION_SKIPPED',
@@ -40,7 +41,7 @@ const noParallel=s=>{
 };
 const source=s=>{
   const a=s.activeAttemptId&&s.attempts[s.activeAttemptId];
-  insist(a?.questionSnapshot && a.judgement?.decision==='INCORRECT' && a.timer.phase==='RESOLVED',
+  insist(a?.questionSnapshot && a.judgement && effectiveOriginDecision(s,a.id)==='INCORRECT' && a.timer.phase==='RESOLVED',
     'INTERCEPTION_NOT_ELIGIBLE','교사가 확정한 원모둠 오답 또는 포기 문제에만 가로채기가 가능합니다.');
   insist(a.sessionId===s.activeSessionId,'INTERCEPTION_NOT_ELIGIBLE',
     '가로채기는 해당 문제가 나온 차시에서만 바로 진행할 수 있습니다.');

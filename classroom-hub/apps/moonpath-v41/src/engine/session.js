@@ -152,6 +152,10 @@ export class TeacherEngineSession {
   async judgeAnswer({attemptId,decision,teacherConfirmed,teacherReason=null,missingResponseConfirmed=false,solverMemberId=null},{eventId=this.newId()}={}){
     return this.dispatch('ANSWER_JUDGED',{attemptId,decision,teacherConfirmed,teacherReason,missingResponseConfirmed,solverMemberId},eventId);
   }
+  /** PHASE 2-7: correction never overwrites an earlier judgement or student answer. */
+  async correctJudgement({scope='ANSWER',targetId,decision,reason},{eventId=this.newId()}={}){
+    return this.dispatch('JUDGEMENT_CORRECTED',{scope,targetId,decision,reason,teacherConfirmed:true},eventId);
+  }
   /** PHASE 2-5: teacher-only interception and recovery events. */
   async openInterception({sourceAttemptId,targetTeamId,interceptionId=null},{eventId=this.newId()}={}){
     // Stable default ID derived from the caller's idempotency key. Double-click

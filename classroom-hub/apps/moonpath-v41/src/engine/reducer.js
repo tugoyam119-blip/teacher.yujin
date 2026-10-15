@@ -4,6 +4,7 @@ import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.j
 import {ROSTER_COMMANDS,applyRosterCommand,assignRepresentative,validateSolverIdentity} from '../teams/roster.js';
 import {creditFirstCorrect,creditRecovery,useMagic} from '../rewards/ledger.js';
 import {INTERCEPTION_COMMANDS,RECOVERY_COMMANDS,processInterception,processRecovery,extension,activeInterception,activeRecovery} from '../recovery/flows.js';
+import {applyJudgementCorrection,CORRECTION_EVENT,reconcileEntitlementLedger} from '../corrections/reconcile.js';
 
 /** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
 export function reduceCommand(current,command){
@@ -209,6 +210,7 @@ export function reduceCommand(current,command){
       if(a.timer.phase==='RUNNING'){a.timer.remainingMs=timerRemainingMs(a,at);a.timer.runningSince=null;}
       a.timer.phase='RESOLVED';a.resolvedAt=at;
       if(evaluated.decision==='CORRECT')creditFirstCorrect(state,{attemptId:a.id,eventId,at,kind:'ANSWER'});
+      if(state.corrections?.records?.length)reconcileEntitlementLedger(state,{eventId,at});
       break;
     }
     case 'INTERCEPTION_OPENED':
@@ -224,6 +226,7 @@ export function reduceCommand(current,command){
       if(type==='INTERCEPTION_JUDGED'){
         const row=state.interception.records.find(x=>x.id===payload.interceptionId);
         if(row?.judgement?.decision==='CORRECT')creditFirstCorrect(state,{attemptId:row.sourceAttemptId,eventId,at,kind:'INTERCEPTION'});
+        if(state.corrections?.records?.length)reconcileEntitlementLedger(state,{eventId,at});
       }
       break;
     }
@@ -242,8 +245,12 @@ export function reduceCommand(current,command){
       if(type==='RECOVERY_JUDGED'){
         const row=state.recovery.resolved.find(x=>x.id===payload.recoveryId&&x.resolutionEventId===eventId);
         if(row)creditRecovery(state,{recoveryId:row.id,eventId,at});
+        if(state.corrections?.records?.length)reconcileEntitlementLedger(state,{eventId,at});
       }
       break;
+    }
+    case 'JUDGEMENT_CORRECTED':{
+      applyJudgementCorrection(state,payload,{eventId,at});break;
     }
     case 'CHECKPOINT_REPAIRED':{
       insist(payload.teacherConfirmed===true&&['latest','previous'].includes(payload.source),'TEACHER_REQUIRED','체크포인트 복구에는 교사 명시 확인이 필요합니다.');
@@ -293,7 +300,7 @@ export function reduceCommand(current,command){
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
   state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
-  if(INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='MAGIC_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
+  if(type===CORRECTION_EVENT||INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='MAGIC_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};
 }

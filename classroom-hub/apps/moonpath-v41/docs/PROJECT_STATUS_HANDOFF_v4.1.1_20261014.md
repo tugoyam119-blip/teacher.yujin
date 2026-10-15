@@ -463,3 +463,11 @@
 - 2-7 정정 연쇄 재계산·이미 소비한 별빛 정산은 아직 미구현. `V07` 구현 중/최종 실증 NOT_RUN.
 - 자세한 내용: `docs/PHASE2_STEP2_6_VERIFICATION_20261015.md`, 진행표 `data/phase2-nine-stage-tracker.json`, 검증 로그 `test-logs/phase2-step2-6-20261015.full.log`.
 - 운영 `main`·기존 저장/배포 변경 금지 유지.
+
+
+## 2026-10-15 업데이트 — PHASE 2-7 코드/모의 저장 검사 결과
+- 이전 누적 402건에 2-7 신규 52건을 더해 총 454건 Node/모의 IDB PASS, 실패 0건.
+- 판정 정정 이벤트·별빛/공헌도 보정 행·회수/가로채기 실효성 재계산·이미 소비한 별빛 부족액 기록을 구현. 원답안·원판정·활동 이벤트·마법 지출 이력을 삭제하지 않음.
+- `src/corrections/reconcile.js`, `tests/phase2-2-7.test.mjs`, `docs/PHASE2_STEP2_7_VERIFICATION_20261015.md` 참조.
+- **PHASE 1의 실 브라우저 IndexedDB/강제 종료 복원/file://는 미통과**. 2026-10-15 Chromium 사전 시험도 `ERR_BLOCKED_BY_ADMINISTRATOR`로 진입 차단. V08 공식 테스트도 `NOT_RUN` 유지.
+- 다음은 고정된 PHASE 2-8 지역 방문/지역 완료/열쇠 지급. 운영 `main`·기존 저장 데이터·Railway는 변경하지 않음.
