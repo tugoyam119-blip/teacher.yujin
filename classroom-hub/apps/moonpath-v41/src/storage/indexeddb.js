@@ -1,5 +1,6 @@
 import {DB_NAME,EngineError,checkSlot,checkState,clone,insist,validTimestamp,requireId,canonicalJson} from '../engine/model.js';
 import {reduceCommand} from '../engine/reducer.js';
+import {activeInterception,activeRecovery} from '../recovery/flows.js';
 
 const DB_VERSION=1;
 export const LEASE_TTL_MS=30_000;
@@ -215,7 +216,10 @@ export class IndexedDbExpeditionStore {
     let restoredState=pack.state,restoredEvents=pack.events;
     const a=restoredState.activeAttemptId&&restoredState.attempts[restoredState.activeAttemptId];
     const lesson=restoredState.activeSessionId&&restoredState.sessions.find(s=>s.id===restoredState.activeSessionId);
-    if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'){
+    const detachedRunning=[activeInterception(restoredState),
+      activeRecovery(restoredState)?.runs?.find(x=>x.id===activeRecovery(restoredState)?.activeRunId)]
+      .some(x=>x?.timer.phase==='RUNNING');
+    if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'||detachedRunning){
       requireId(recoveryEventId,'복원 중단 이벤트');validTimestamp(recoveryAt);
       const stopped=reduceCommand(restoredState,{
         type:'RECOVER_INTERRUPTED',eventId:recoveryEventId,at:Math.max(recoveryAt,restoredState.meta.updatedAt),

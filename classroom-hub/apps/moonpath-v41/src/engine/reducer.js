@@ -2,6 +2,7 @@ import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_S
 import {validateDrawCommand} from '../questions/draw.js';
 import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.js';
 import {ROSTER_COMMANDS,applyRosterCommand,assignRepresentative,validateSolverIdentity} from '../teams/roster.js';
+import {INTERCEPTION_COMMANDS,RECOVERY_COMMANDS,processInterception,processRecovery,extension,activeInterception,activeRecovery} from '../recovery/flows.js';
 
 /** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
 export function reduceCommand(current,command){
@@ -24,6 +25,13 @@ export function reduceCommand(current,command){
   const last=()=>{const a=state.activeAttemptId&&state.attempts[state.activeAttemptId];insist(a,'NO_ATTEMPT','활성 문제가 없습니다.');return a;};
   const activeSession=()=>{const x=state.sessions.find(s=>s.id===state.activeSessionId);insist(x,'NO_SESSION','현재 차시가 없습니다.');return x;};
   const finishActiveTime=s=>{if(s.phase==='ACTIVE'){s.activeMs+=Math.max(0,at-s.activeSince);s.activeSince=null;}};
+  extension(state);
+  const sideBusy=()=>!!(activeInterception(state)||activeRecovery(state));
+  const pauseSideMissions=()=>{
+    for(const row of [activeInterception(state),activeRecovery(state)?.runs?.find(x=>x.id===activeRecovery(state)?.activeRunId)]){
+      if(row?.timer?.phase==='RUNNING'){row.timer.remainingMs=timerRemainingMs(row,at);row.timer.runningSince=null;row.timer.phase=row.timer.remainingMs?'PAUSED':'EXPIRED_AWAITING_TEACHER';}
+    }
+  };
   const ensureRunningNotExpired=a=>insist(a.timer.phase!=='RUNNING'||timerRemainingMs(a,at)>0,'TIMER_DEADLINE','시각 만료가 도달했습니다. 만료 이벤트를 확정해야 합니다.');
   switch(type){
     case 'EXPEDITION_CREATED':
@@ -32,6 +40,7 @@ export function reduceCommand(current,command){
     case 'SCREEN_CHANGED':
       insist(typeof payload.screen==='string'&&/^[A-Z_]+$/.test(payload.screen),'INVALID_SCREEN','화면 ID가 올바르지 않습니다.');
       if(state.activeAttemptId){const a=last();insist(a.timer.phase==='RESOLVED','ATTEMPT_ACTIVE','문제 진행 중 일반 화면 이동을 할 수 없습니다.');}
+      insist(!sideBusy(),'SIDE_MISSION_ACTIVE','가로채기/회수미션 진행 중 화면 이동은 제한됩니다.');
       state.screen=payload.screen;
       break;
     case 'TEAM_MEMBER_ADDED':
@@ -58,18 +67,20 @@ export function reduceCommand(current,command){
           a.timer.runningSince=null;
         }
       }
-      finishActiveTime(s);s.phase='PAUSED';break;
+      pauseSideMissions();finishActiveTime(s);s.phase='PAUSED';break;
     }
     case 'SESSION_RESUMED':{
       const s=activeSession();insist(s.phase==='PAUSED','SESSION_NOT_PAUSED','일시정지된 차시가 아닙니다.');s.phase='ACTIVE';s.activeSince=at;break;
     }
     case 'SESSION_ENDED':{
       const s=activeSession();insist(state.activeAttemptId?last().timer.phase==='RESOLVED':true,'ATTEMPT_ACTIVE','진행 중인 문제를 먼저 처리해야 합니다.');
+      insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 회수/가로채기를 먼저 종료해야 합니다.');
       finishActiveTime(s);s.phase='ENDED';s.endedAt=at;state.activeSessionId=null;break;
     }
     case 'ATTEMPT_PREPARED':{
       const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
       insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
+      insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 가로채기/회수미션을 먼저 종료해야 합니다.');
       requireId(payload.attemptId,'문제 시도');requireId(payload.questionId,'문항');
       insist(!state.attempts[payload.attemptId],'ATTEMPT_EXISTS','같은 문제 시도 ID가 존재합니다.');
       insist(state.teams.some(t=>t.id===payload.teamId),'INVALID_TEAM','존재하지 않는 모둠입니다.');
@@ -85,6 +96,7 @@ export function reduceCommand(current,command){
       // the SAME event/IndexedDB transaction. No grading or reward takes place.
       const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
       insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
+      insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 가로채기/회수미션을 먼저 종료해야 합니다.');
       validateDrawCommand(state,payload,at);
       const assignment=assignRepresentative(state,{teamId:payload.teamId,attemptId:payload.attemptId,eventId,at,teamSelection:payload.teamSelection??'MANUAL'});
       const sec=state.settings.timerSeconds;
@@ -192,16 +204,53 @@ export function reduceCommand(current,command){
       if(a.timer.phase==='RUNNING'){a.timer.remainingMs=timerRemainingMs(a,at);a.timer.runningSince=null;}
       a.timer.phase='RESOLVED';a.resolvedAt=at;break;
     }
+    case 'INTERCEPTION_OPENED':
+    case 'INTERCEPTION_SKIPPED':
+    case 'INTERCEPTION_TIMER_STARTED':
+    case 'INTERCEPTION_TIMER_PAUSED':
+    case 'INTERCEPTION_TIMER_RESUMED':
+    case 'INTERCEPTION_TIMER_EXPIRED':
+    case 'INTERCEPTION_ANSWER_SUBMITTED':
+    case 'INTERCEPTION_JUDGED':
+    case 'INTERCEPTION_FORFEITED':{
+      processInterception(state,type,payload,{eventId,at});break;
+    }
+    case 'RECOVERY_DEFERRED':
+    case 'RECOVERY_RELEASED':
+    case 'RECOVERY_ORIGIN_FORFEITED':
+    case 'RECOVERY_CALLED':
+    case 'RECOVERY_TIMER_STARTED':
+    case 'RECOVERY_TIMER_PAUSED':
+    case 'RECOVERY_TIMER_RESUMED':
+    case 'RECOVERY_TIMER_EXPIRED':
+    case 'RECOVERY_ANSWER_SUBMITTED':
+    case 'RECOVERY_JUDGED':
+    case 'RECOVERY_FORFEITED':{
+      processRecovery(state,type,payload,{eventId,at});break;
+    }
     case 'CHECKPOINT_REPAIRED':{
       insist(payload.teacherConfirmed===true&&['latest','previous'].includes(payload.source),'TEACHER_REQUIRED','체크포인트 복구에는 교사 명시 확인이 필요합니다.');
+      // A repaired checkpoint MUST be safety-paused in this SAME transaction.
+      // Do not count unknown wall-clock time while the browser was closed.
+      const attempt=state.activeAttemptId?last():null;
+      if(attempt?.timer.phase==='RUNNING'){
+        attempt.timer.phase='PAUSED';attempt.timer.runningSince=null;
+      }
+      for(const item of [activeInterception(state),activeRecovery(state)?.runs?.find(x=>x.id===activeRecovery(state)?.activeRunId)]){
+        if(item?.timer.phase==='RUNNING'){item.timer.phase='PAUSED';item.timer.runningSince=null;}
+      }
+      const lesson=state.activeSessionId?activeSession():null;
+      if(lesson?.phase==='ACTIVE'){lesson.phase='PAUSED';lesson.activeSince=null;}
       break;
     }
     case 'RECOVER_INTERRUPTED':{
       const a=state.activeAttemptId?last():null;
       const s=state.activeSessionId?activeSession():null;
-      insist((a?.timer.phase==='RUNNING')||(s?.phase==='ACTIVE'),'RECOVERY_NOT_NEEDED','복원으로 정지시킬 실행 상태가 없습니다.');
+      const sideRunning=[activeInterception(state),activeRecovery(state)?.runs?.find(x=>x.id===activeRecovery(state)?.activeRunId)].some(x=>x?.timer.phase==='RUNNING');
+      insist((a?.timer.phase==='RUNNING')||(s?.phase==='ACTIVE')||sideRunning,'RECOVERY_NOT_NEEDED','복원으로 정지시킬 실행 상태가 없습니다.');
       // Intentional: pause at the last persisted remaining time, never run/expire in the closed interval.
       if(a?.timer.phase==='RUNNING'){a.timer.phase='PAUSED';a.timer.runningSince=null;}
+      pauseSideMissions();
       if(s?.phase==='ACTIVE'){
         // Active time between last persisted event and unexpected shutdown is unknown; do not invent it.
         s.activeSince=null;s.phase='PAUSED';
@@ -227,7 +276,7 @@ export function reduceCommand(current,command){
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
   state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
-  if(ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
+  if(INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};
 }

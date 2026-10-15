@@ -36,6 +36,8 @@ export function canEditRoster(state){
   checkState(state);
   const a=state.activeAttemptId?state.attempts[state.activeAttemptId]:null;
   insist(!a||a.timer.phase==='RESOLVED','ROSTER_CHANGE_DURING_ATTEMPT','문제 준비·진행·답변 제출·판정 대기 중에는 명단을 변경할 수 없습니다.');
+  insist(!state.interception?.activeId&&!state.recovery?.activeId,'ROSTER_CHANGE_DURING_ATTEMPT',
+    '가로채기·회수미션 진행 중에는 명단을 변경할 수 없습니다.');
   return true;
 }
 

@@ -35,6 +35,15 @@ function exhausted({regionId='T1-R1',rng=seeded(19)}={}){
   for(let i=0;i<60;i++){s=issue(s,{regionId,random:rng}).state;s=resolve(s);}
   return s;
 }
+/** Genuine adjudicated wrong question, replacing the old synthetic invalid recovery fixtures. */
+function pendingWrongRecovery({regionId='T1-R1',teamId='TEAM_01'}={}){
+  let state=issue(init(),{regionId,teamId}).state;
+  state=event(state,'TIMER_STARTED');
+  state=event(state,'TIMER_PAUSED');
+  state=event(state,'ANSWER_JUDGED',{attemptId:state.activeAttemptId,decision:'INCORRECT',teacherConfirmed:true,
+    missingResponseConfirmed:true,teacherReason:'기존 2-2 조회 회귀시험용 교사 확인 미응답'});
+  return state;
+}
 const checkReject=(fn,code)=>assert.throws(fn,e=>e.code===code);
 const checkAsync=async(p,code)=>assert.rejects(p,e=>e.code===code);
 
@@ -231,8 +240,7 @@ test('출제 시도 스냅샷과 학생용 공개 projection에 정답·해설�
 });
 
 test('회수 목록은 전용으로 유지, 다음 지역에 들어간 뒤에만 자연 등장',()=>{
-  const s=resolve(issue(init()).state);const questionId=s.questions.issuedIds[0];s.questions.recoveryOnlyIds.push(questionId);
-  s.recovery.pending.push({id:'REC-01',questionId,originTeamId:'TEAM_02',originRegionId:'T1-R1',status:'PENDING'});
+  const s=pendingWrongRecovery({teamId:'TEAM_02'});const questionId=s.questions.issuedIds[0];
   assert.equal(listRecoveryCandidates(s,{inRegionId:'T1-R1'}).length,0);
   assert.equal(listRecoveryCandidates(s,{inRegionId:'T1-R2'}).length,0); // 방문 순서 증거 없는 상황에서는 보수적으로 보류
   s.world.regionEntryOrder=['T1-R1','T1-R2'];
@@ -242,8 +250,8 @@ test('회수 목록은 전용으로 유지, 다음 지역에 들어간 뒤에만
 });
 
 test('회수 강제 호출에는 교사확인이 필요하고 HELD는 자연 등장하지 않음',()=>{
-  const s=resolve(issue(init()).state);const questionId=s.questions.issuedIds[0];s.questions.recoveryOnlyIds.push(questionId);
-  s.recovery.pending.push({id:'REC-2',questionId,originTeamId:'TEAM_02',originRegionId:'T1-R1',status:'HELD'});
+  let s=pendingWrongRecovery({teamId:'TEAM_02'});const questionId=s.questions.issuedIds[0];
+  s=event(s,'RECOVERY_DEFERRED',{recoveryId:s.recovery.pending[0].id,reason:'학급 상황에 따라 보류',teacherConfirmed:true});
   assert.equal(listRecoveryCandidates(s,{inRegionId:'T1-R2'}).length,0);
   checkReject(()=>listRecoveryCandidates(s,{inRegionId:'T1-R1',force:true}),'TEACHER_REQUIRED');
   assert.equal(listRecoveryCandidates(s,{inRegionId:'T1-R1',force:true,teacherConfirmed:true}).length,1);
@@ -362,9 +370,7 @@ test('출제 이벤트의 issuedAt을 변경해 재전송하면 검증 거부',(
 
 
 test('방문 순서 증거 없이 다른 지역이라는 이유만으로 자연 회수를 내보내지 않음',()=>{
-  const s=resolve(issue(init()).state),questionId=s.questions.issuedIds[0];
-  s.questions.recoveryOnlyIds.push(questionId);
-  s.recovery.pending.push({id:'REC-history',questionId,originTeamId:'TEAM_01',originRegionId:'T1-R2',status:'PENDING'});
+  const s=pendingWrongRecovery({regionId:'T1-R2'}),questionId=s.questions.issuedIds[0];
   assert.equal(listRecoveryCandidates(s,{inRegionId:'T1-R1'}).length,0);
   s.world.regionEntryOrder=['T1-R2','T1-R3'];
   assert.equal(listRecoveryCandidates(s,{inRegionId:'T1-R1'}).length,0);

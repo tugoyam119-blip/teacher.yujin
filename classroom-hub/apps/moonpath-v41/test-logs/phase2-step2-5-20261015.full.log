@@ -1,0 +1,2110 @@
+TAP version 13
+# Subtest: 원본 파일 자체 SHA-256 보존
+ok 1 - 원본 파일 자체 SHA-256 보존
+  ---
+  duration_ms: 1.197718
+  type: 'test'
+  ...
+# Subtest: 원본 문제팩: 60문항과 고유 ID, 내용/정답/해설 누락 없음
+ok 2 - 원본 문제팩: 60문항과 고유 ID, 내용/정답/해설 누락 없음
+  ---
+  duration_ms: 0.286813
+  type: 'test'
+  ...
+# Subtest: 실제 문제은행의 일곱 가지 원형을 삭제하지 않음
+ok 3 - 실제 문제은행의 일곱 가지 원형을 삭제하지 않음
+  ---
+  duration_ms: 0.592044
+  type: 'test'
+  ...
+# Subtest: 원본 정답 포맷 내부 참조 무결성
+ok 4 - 원본 정답 포맷 내부 참조 무결성
+  ---
+  duration_ms: 0.613456
+  type: 'test'
+  ...
+# Subtest: 30개 지역·6개 테마와 세계 이름 검증
+ok 5 - 30개 지역·6개 테마와 세계 이름 검증
+  ---
+  duration_ms: 0.318972
+  type: 'test'
+  ...
+# Subtest: 22개 필수 게이트의 미검증 상태를 그대로 유지
+ok 6 - 22개 필수 게이트의 미검증 상태를 그대로 유지
+  ---
+  duration_ms: 0.163997
+  type: 'test'
+  ...
+# Subtest: 재시도 이벤트 ID가 다른 명령으로 재활용되면 충돌 처리
+ok 7 - 재시도 이벤트 ID가 다른 명령으로 재활용되면 충돌 처리
+  ---
+  duration_ms: 3.341475
+  type: 'test'
+  ...
+# Subtest: 타이머 끔(0초) 상태에서는 별빛이 있어도 시간의 모래 금지
+ok 8 - 타이머 끔(0초) 상태에서는 별빛이 있어도 시간의 모래 금지
+  ---
+  duration_ms: 2.208364
+  type: 'test'
+  ...
+# Subtest: state 최종 수정 시각이 이벤트 순번과 모순되면 거부
+ok 9 - state 최종 수정 시각이 이벤트 순번과 모순되면 거부
+  ---
+  duration_ms: 0.271239
+  type: 'test'
+  ...
+# Subtest: SHA가 다시 계산되었어도 백업의 로그 타입 위조는 거부
+ok 10 - SHA가 다시 계산되었어도 백업의 로그 타입 위조는 거부
+  ---
+  duration_ms: 7.421314
+  type: 'test'
+  ...
+# Subtest: SHA가 다시 계산되어도 백업의 로그 시각 위조는 거부
+ok 11 - SHA가 다시 계산되어도 백업의 로그 시각 위조는 거부
+  ---
+  duration_ms: 3.270126
+  type: 'test'
+  ...
+# Subtest: 백업 생성 시 이벤트 타입 불일치를 먼저 거부
+ok 12 - 백업 생성 시 이벤트 타입 불일치를 먼저 거부
+  ---
+  duration_ms: 0.393174
+  type: 'test'
+  ...
+# Subtest: 복원 직후 중지 이벤트와 복원 상태가 동일한 거래로 확정
+ok 13 - 복원 직후 중지 이벤트와 복원 상태가 동일한 거래로 확정
+  ---
+  duration_ms: 9.269825
+  type: 'test'
+  ...
+# Subtest: 복원 트랜잭션의 강제 실패는 슬롯·이벤트·체크포인트를 모두 보존
+ok 14 - 복원 트랜잭션의 강제 실패는 슬롯·이벤트·체크포인트를 모두 보존
+  ---
+  duration_ms: 3.656049
+  type: 'test'
+  ...
+# Subtest: 작동 중 JSON 백업을 같은 슬롯에 덮어쓰지 못하게 차단
+ok 15 - 작동 중 JSON 백업을 같은 슬롯에 덮어쓰지 못하게 차단
+  ---
+  duration_ms: 2.335937
+  type: 'test'
+  ...
+# Subtest: 역행한 PC 시간은 DB 쓰기 전에 교사 명령 거부
+ok 16 - 역행한 PC 시간은 DB 쓰기 전에 교사 명령 거부
+  ---
+  duration_ms: 5.203796
+  type: 'test'
+  ...
+# Subtest: 버튼을 빠르게 30회 누른 교사 명령은 직렬화되고 유효 명령만 저장
+ok 17 - 버튼을 빠르게 30회 누른 교사 명령은 직렬화되고 유효 명령만 저장
+  ---
+  duration_ms: 14.633243
+  type: 'test'
+  ...
+# Subtest: 누적 100번 유효 전이의 revision·체크포인트·이벤트 연속성
+ok 18 - 누적 100번 유효 전이의 revision·체크포인트·이벤트 연속성
+  ---
+  duration_ms: 159.826084
+  type: 'test'
+  ...
+# Subtest: 손상된 최신 체크포인트가 있을 때 자동 덮어쓰기 금지
+ok 19 - 손상된 최신 체크포인트가 있을 때 자동 덮어쓰기 금지
+  ---
+  duration_ms: 2.500895
+  type: 'test'
+  ...
+# Subtest: 같은 eventId에서 명령 유형이 같아도 payload가 다르면 거부
+ok 20 - 같은 eventId에서 명령 유형이 같아도 payload가 다르면 거부
+  ---
+  duration_ms: 0.530221
+  type: 'test'
+  ...
+# Subtest: 같은 eventId·같은 payload는 키 순서와 실행 시각이 달라도 중복으로 처리
+ok 21 - 같은 eventId·같은 payload는 키 순서와 실행 시각이 달라도 중복으로 처리
+  ---
+  duration_ms: 0.273673
+  type: 'test'
+  ...
+# Subtest: 해시를 다시 계산한 JSON 백업의 가짜 이벤트 payload도 거부
+ok 22 - 해시를 다시 계산한 JSON 백업의 가짜 이벤트 payload도 거부
+  ---
+  duration_ms: 3.734087
+  type: 'test'
+  ...
+# Subtest: 세 슬롯 중 한 슬롯을 수정하더라도 다른 슬롯 JSON 원정 기록은 불변
+ok 23 - 세 슬롯 중 한 슬롯을 수정하더라도 다른 슬롯 JSON 원정 기록은 불변
+  ---
+  duration_ms: 5.45796
+  type: 'test'
+  ...
+# Subtest: 신규 원정은 3개 슬롯과 2~8개 모둠, 30지역 기준을 강제한다
+ok 24 - 신규 원정은 3개 슬롯과 2~8개 모둠, 30지역 기준을 강제한다
+  ---
+  duration_ms: 5.416287
+  type: 'test'
+  ...
+# Subtest: 같은 이벤트 ID를 재시도하면 revision·보상·이벤트가 늘지 않는다
+ok 25 - 같은 이벤트 ID를 재시도하면 revision·보상·이벤트가 늘지 않는다
+  ---
+  duration_ms: 0.568268
+  type: 'test'
+  ...
+# Subtest: 순수 상태 전이: 이미 저장된 상태를 직접 변경하지 않는다
+ok 26 - 순수 상태 전이: 이미 저장된 상태를 직접 변경하지 않는다
+  ---
+  duration_ms: 1.03326
+  type: 'test'
+  ...
+# Subtest: 교사 명령 전에는 타이머가 PREPARED이고 자동 시작하지 않는다
+ok 27 - 교사 명령 전에는 타이머가 PREPARED이고 자동 시작하지 않는다
+  ---
+  duration_ms: 0.889352
+  type: 'test'
+  ...
+# Subtest: 타이머는 실행·일시정지·재개 시각에 따라 잔여 시간을 정확히 계산한다
+ok 28 - 타이머는 실행·일시정지·재개 시각에 따라 잔여 시간을 정확히 계산한다
+  ---
+  duration_ms: 1.260533
+  type: 'test'
+  ...
+# Subtest: 만료 1ms 전 일시정지 허용, 정확히 만료되면 교사 확인 대기로 전이한다
+ok 29 - 만료 1ms 전 일시정지 허용, 정확히 만료되면 교사 확인 대기로 전이한다
+  ---
+  duration_ms: 0.998368
+  type: 'test'
+  ...
+# Subtest: 이미 실행/일시정지 중인 타이머의 중복 버튼을 거부한다
+ok 30 - 이미 실행/일시정지 중인 타이머의 중복 버튼을 거부한다
+  ---
+  duration_ms: 0.968973
+  type: 'test'
+  ...
+# Subtest: 시간의 모래는 별빛4개 차감과 20초 연장을 하나의 순수 이벤트로 정산한다
+ok 31 - 시간의 모래는 별빛4개 차감과 20초 연장을 하나의 순수 이벤트로 정산한다
+  ---
+  duration_ms: 0.929844
+  type: 'test'
+  ...
+# Subtest: 별빛 부족 또는 정산 필요 상태에서는 시간의 모래의 일부 효과도 발생하지 않는다
+ok 32 - 별빛 부족 또는 정산 필요 상태에서는 시간의 모래의 일부 효과도 발생하지 않는다
+  ---
+  duration_ms: 1.833839
+  type: 'test'
+  ...
+# Subtest: 재접속 시 진행 중 타이머와 차시는 정지하며 자동 시작하지 않는다
+ok 33 - 재접속 시 진행 중 타이머와 차시는 정지하며 자동 시작하지 않는다
+  ---
+  duration_ms: 1.297478
+  type: 'test'
+  ...
+# Subtest: 진행 중 문제에서 화면 이동을 차단, 교사 종료 확인 후 허용
+ok 34 - 진행 중 문제에서 화면 이동을 차단, 교사 종료 확인 후 허용
+  ---
+  duration_ms: 1.11237
+  type: 'test'
+  ...
+# Subtest: 학생 공개 상태는 화이트리스트이며 정답·PIN·해설·감사 기록이 없다
+ok 35 - 학생 공개 상태는 화이트리스트이며 정답·PIN·해설·감사 기록이 없다
+  ---
+  duration_ms: 0.894641
+  type: 'test'
+  ...
+# Subtest: 정해진 시각 이전의 이벤트는 거부 (PC 시각 변경을 무시하지 않음)
+ok 36 - 정해진 시각 이전의 이벤트는 거부 (PC 시각 변경을 무시하지 않음)
+  ---
+  duration_ms: 0.598784
+  type: 'test'
+  ...
+# Subtest: 변조된 JSON 백업과 호환되지 않는 버전은 복원 전에 거부한다
+ok 37 - 변조된 JSON 백업과 호환되지 않는 버전은 복원 전에 거부한다
+  ---
+  duration_ms: 11.66432
+  type: 'test'
+  ...
+# Subtest: 차시 일시정지는 실행 중 타이머까지 같은 이벤트로 정지, 재개는 교사 명령 두 번 필요
+ok 38 - 차시 일시정지는 실행 중 타이머까지 같은 이벤트로 정지, 재개는 교사 명령 두 번 필요
+  ---
+  duration_ms: 1.036315
+  type: 'test'
+  ...
+# Subtest: 해금되지 않은 시간의 모래는 별빛이 있어도 사용하지 못함
+ok 39 - 해금되지 않은 시간의 모래는 별빛이 있어도 사용하지 못함
+  ---
+  duration_ms: 0.744044
+  type: 'test'
+  ...
+# Subtest: 신규 슬롯 생성은 저장/이벤트/체크포인트까지 같은 거래를 사용
+ok 40 - 신규 슬롯 생성은 저장/이벤트/체크포인트까지 같은 거래를 사용
+  ---
+  duration_ms: 12.045425
+  type: 'test'
+  ...
+# Subtest: 쓰기 실패/용량 초과는 이벤트·상태·체크포인트를 절대 부분 확정하지 않는다
+ok 41 - 쓰기 실패/용량 초과는 이벤트·상태·체크포인트를 절대 부분 확정하지 않는다
+  ---
+  duration_ms: 4.201933
+  type: 'test'
+  ...
+# Subtest: 저장 실패 후에는 같은 이벤트 ID 재시도 가능하며 중복 보상 방지
+ok 42 - 저장 실패 후에는 같은 이벤트 ID 재시도 가능하며 중복 보상 방지
+  ---
+  duration_ms: 3.60323
+  type: 'test'
+  ...
+# Subtest: 작성자 한 명만 같은 슬롯에서 쓸 수 있다. 다른 창은 별도 슬롯에서 사용 가능
+ok 43 - 작성자 한 명만 같은 슬롯에서 쓸 수 있다. 다른 창은 별도 슬롯에서 사용 가능
+  ---
+  duration_ms: 1.226592
+  type: 'test'
+  ...
+# Subtest: lease 만료·다른 epoch·revision 충돌 시 쓰기 차단
+ok 44 - lease 만료·다른 epoch·revision 충돌 시 쓰기 차단
+  ---
+  duration_ms: 2.16588
+  type: 'test'
+  ...
+# Subtest: 세 슬롯의 이벤트와 체크포인트가 서로 오염되지 않음
+ok 45 - 세 슬롯의 이벤트와 체크포인트가 서로 오염되지 않음
+  ---
+  duration_ms: 6.946597
+  type: 'test'
+  ...
+# Subtest: 브라우저 재접속 모사 시 복원 직후 RUNNING 타이머 자동 재개 금지
+ok 46 - 브라우저 재접속 모사 시 복원 직후 RUNNING 타이머 자동 재개 금지
+  ---
+  duration_ms: 8.386311
+  type: 'test'
+  ...
+# Subtest: JSON 백업은 동일 스냅샷과 로그로 생성, 빈 슬롯에만 안전 복구
+ok 47 - JSON 백업은 동일 스냅샷과 로그로 생성, 빈 슬롯에만 안전 복구
+  ---
+  duration_ms: 8.858905
+  type: 'test'
+  ...
+# Subtest: 체크포인트 유효성: 최신 상태 손상 시 직전 정상본 감지하되 자동 덮어쓰기 방지
+ok 48 - 체크포인트 유효성: 최신 상태 손상 시 직전 정상본 감지하되 자동 덮어쓰기 방지
+  ---
+  duration_ms: 3.624893
+  type: 'test'
+  ...
+# Subtest: 45분 수업 중 장시간 무입력 이후에도 원 소유자가 재인증 후 저장 가능
+ok 49 - 45분 수업 중 장시간 무입력 이후에도 원 소유자가 재인증 후 저장 가능
+  ---
+  duration_ms: 1.952147
+  type: 'test'
+  ...
+# Subtest: 소유권을 다른 창이 가져갔으면 기존 창은 저장 실패 (메모리 불변)
+ok 50 - 소유권을 다른 창이 가져갔으면 기존 창은 저장 실패 (메모리 불변)
+  ---
+  duration_ms: 1.314435
+  type: 'test'
+  ...
+# Subtest: 손상된 슬롯은 교사가 명시적으로 확인한 뒤만 체크포인트에서 복구하며 원본을 격리 보존
+ok 51 - 손상된 슬롯은 교사가 명시적으로 확인한 뒤만 체크포인트에서 복구하며 원본을 격리 보존
+  ---
+  duration_ms: 6.645082
+  type: 'test'
+  ...
+# Subtest: 손상 체크포인트와 로그 순번이 다르면 임의 삭제/복구하지 않고 차단
+ok 52 - 손상 체크포인트와 로그 순번이 다르면 임의 삭제/복구하지 않고 차단
+  ---
+  duration_ms: 3.027451
+  type: 'test'
+  ...
+# Subtest: RUNNING 시도에서 내보낸 JSON을 다른 DB에 복원하면 교사 재개 전 PAUSED
+ok 53 - RUNNING 시도에서 내보낸 JSON을 다른 DB에 복원하면 교사 재개 전 PAUSED
+  ---
+  duration_ms: 7.276576
+  type: 'test'
+  ...
+# Subtest: PHASE 2 계획과 공식 60문항 7종 원본 요약
+ok 54 - PHASE 2 계획과 공식 60문항 7종 원본 요약
+  ---
+  duration_ms: 3.076034
+  type: 'test'
+  ...
+# Subtest: 원본 pack은 엔진 생성, 정규화, 답안 판정으로 변경되지 않음
+ok 55 - 원본 pack은 엔진 생성, 정규화, 답안 판정으로 변경되지 않음
+  ---
+  duration_ms: 5.059008
+  type: 'test'
+  ...
+# Subtest: 반환한 문제 사본의 수정은 후속 원본 요청에 영향을 주지 않음
+ok 56 - 반환한 문제 사본의 수정은 후속 원본 요청에 영향을 주지 않음
+  ---
+  duration_ms: 1.110597
+  type: 'test'
+  ...
+# Subtest: 학생 공개 문제에는 해설, 정답, 루브릭, 원문 메타 포함 금지
+ok 57 - 학생 공개 문제에는 해설, 정답, 루브릭, 원문 메타 포함 금지
+  ---
+  duration_ms: 2.334885
+  type: 'test'
+  ...
+# Subtest: 발행 스냅샷은 원본/실제표시를 나누고 ID·버전·시각을 기록
+ok 58 - 발행 스냅샷은 원본/실제표시를 나누고 ID·버전·시각을 기록
+  ---
+  duration_ms: 0.60271
+  type: 'test'
+  ...
+# Subtest: 스냅샷 구조는 발행 이후 원본이나 다른 스냅샷 변경과 독립
+ok 59 - 스냅샷 구조는 발행 이후 원본이나 다른 스냅샷 변경과 독립
+  ---
+  duration_ms: 0.219351
+  type: 'test'
+  ...
+# Subtest: 스냅샷 표시 순서는 전체 키의 중복 없는 순열이어야 함
+ok 60 - 스냅샷 표시 순서는 전체 키의 중복 없는 순열이어야 함
+  ---
+  duration_ms: 0.738916
+  type: 'test'
+  ...
+# Subtest: 잘못된 팩/중복 ID/없는 정답 키/버전 필드 오류 차단
+ok 61 - 잘못된 팩/중복 ID/없는 정답 키/버전 필드 오류 차단
+  ---
+  duration_ms: 3.953749
+  type: 'test'
+  ...
+# Subtest: 부분 연결형은 교사 확인, 잘못된 키는 입력 거부
+ok 62 - 부분 연결형은 교사 확인, 잘못된 키는 입력 거부
+  ---
+  duration_ms: 0.461066
+  type: 'test'
+  ...
+# Subtest: 부분 분류·순서형은 자동 오답 단정 금지
+ok 63 - 부분 분류·순서형은 자동 오답 단정 금지
+  ---
+  duration_ms: 0.796673
+  type: 'test'
+  ...
+# Subtest: 단답형 원본의 허용 표기만 정확 일치 처리 (교과서 정답 임의 확대 없음)
+ok 64 - 단답형 원본의 허용 표기만 정확 일치 처리 (교과서 정답 임의 확대 없음)
+  ---
+  duration_ms: 0.873288
+  type: 'test'
+  ...
+# Subtest: 서술형은 단어 존재만으로 자동 정답 처리하지 않음
+ok 65 - 서술형은 단어 존재만으로 자동 정답 처리하지 않음
+  ---
+  duration_ms: 0.17183
+  type: 'test'
+  ...
+# Subtest: 정답 포함 교사용 원본 또는 snapshot 없이는 채점 차단
+ok 66 - 정답 포함 교사용 원본 또는 snapshot 없이는 채점 차단
+  ---
+  duration_ms: 0.139831
+  type: 'test'
+  ...
+# Subtest: 진위형은 boolean/O/X만 허용, 다른 암묵적 변환 금지
+ok 67 - 진위형은 boolean/O/X만 허용, 다른 암묵적 변환 금지
+  ---
+  duration_ms: 0.13875
+  type: 'test'
+  ...
+# Subtest: 정답 판정 결과는 보상·점수·열쇠를 임의 지급하지 않음
+ok 68 - 정답 판정 결과는 보상·점수·열쇠를 임의 지급하지 않음
+  ---
+  duration_ms: 2.015313
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-A01 single_choice: 정규화·원본보존·정답 판정
+ok 69 - 실제 문항 IS2-U01-A01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.369688
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-A02 single_choice: 정규화·원본보존·정답 판정
+ok 70 - 실제 문항 IS2-U01-A02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.150137
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-A03 single_choice: 정규화·원본보존·정답 판정
+ok 71 - 실제 문항 IS2-U01-A03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.136956
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-A04 true_false: 정규화·원본보존·정답 판정
+ok 72 - 실제 문항 IS2-U01-A04 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.116626
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-A05 matching: 정규화·원본보존·정답 판정
+ok 73 - 실제 문항 IS2-U01-A05 matching: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.206632
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B01 single_choice: 정규화·원본보존·정답 판정
+ok 74 - 실제 문항 IS2-U01-B01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.142385
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B02 single_choice: 정규화·원본보존·정답 판정
+ok 75 - 실제 문항 IS2-U01-B02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.611003
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B03 single_choice: 정규화·원본보존·정답 판정
+ok 76 - 실제 문항 IS2-U01-B03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.319383
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B04 ordering: 정규화·원본보존·정답 판정
+ok 77 - 실제 문항 IS2-U01-B04 ordering: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.254284
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B05 ordering: 정규화·원본보존·정답 판정
+ok 78 - 실제 문항 IS2-U01-B05 ordering: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.215436
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B06 ordering: 정규화·원본보존·정답 판정
+ok 79 - 실제 문항 IS2-U01-B06 ordering: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.235275
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B07 matching: 정규화·원본보존·정답 판정
+ok 80 - 실제 문항 IS2-U01-B07 matching: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.232511
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-B08 manual: 정규화·원본보존·정답 판정
+ok 81 - 실제 문항 IS2-U01-B08 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.124047
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-C01 single_choice: 정규화·원본보존·정답 판정
+ok 82 - 실제 문항 IS2-U01-C01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.240653
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-C02 single_choice: 정규화·원본보존·정답 판정
+ok 83 - 실제 문항 IS2-U01-C02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.130177
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-C03 single_choice: 정규화·원본보존·정답 판정
+ok 84 - 실제 문항 IS2-U01-C03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.129475
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-C04 true_false: 정규화·원본보존·정답 판정
+ok 85 - 실제 문항 IS2-U01-C04 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.102645
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-C05 categorization: 정규화·원본보존·정답 판정
+ok 86 - 실제 문항 IS2-U01-C05 categorization: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.260664
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-C06 matching: 정규화·원본보존·정답 판정
+ok 87 - 실제 문항 IS2-U01-C06 matching: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.323107
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-C07 manual: 정규화·원본보존·정답 판정
+ok 88 - 실제 문항 IS2-U01-C07 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.148905
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-D01 single_choice: 정규화·원본보존·정답 판정
+ok 89 - 실제 문항 IS2-U01-D01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.319853
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-D02 single_choice: 정규화·원본보존·정답 판정
+ok 90 - 실제 문항 IS2-U01-D02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.148414
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-D03 single_choice: 정규화·원본보존·정답 판정
+ok 91 - 실제 문항 IS2-U01-D03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.119571
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-D04 true_false: 정규화·원본보존·정답 판정
+ok 92 - 실제 문항 IS2-U01-D04 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.156146
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-D05 matching: 정규화·원본보존·정답 판정
+ok 93 - 실제 문항 IS2-U01-D05 matching: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.228535
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-D06 manual: 정규화·원본보존·정답 판정
+ok 94 - 실제 문항 IS2-U01-D06 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.233543
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-E01 single_choice: 정규화·원본보존·정답 판정
+ok 95 - 실제 문항 IS2-U01-E01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.124648
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-E02 single_choice: 정규화·원본보존·정답 판정
+ok 96 - 실제 문항 IS2-U01-E02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.119691
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-E03 single_choice: 정규화·원본보존·정답 판정
+ok 97 - 실제 문항 IS2-U01-E03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.142074
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-E04 true_false: 정규화·원본보존·정답 판정
+ok 98 - 실제 문항 IS2-U01-E04 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.108564
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-E05 categorization: 정규화·원본보존·정답 판정
+ok 99 - 실제 문항 IS2-U01-E05 categorization: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.176897
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-E06 matching: 정규화·원본보존·정답 판정
+ok 100 - 실제 문항 IS2-U01-E06 matching: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.269757
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-E07 manual: 정규화·원본보존·정답 판정
+ok 101 - 실제 문항 IS2-U01-E07 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.1065
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-F01 single_choice: 정규화·원본보존·정답 판정
+ok 102 - 실제 문항 IS2-U01-F01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.113121
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-F02 single_choice: 정규화·원본보존·정답 판정
+ok 103 - 실제 문항 IS2-U01-F02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.115514
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-F03 true_false: 정규화·원본보존·정답 판정
+ok 104 - 실제 문항 IS2-U01-F03 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.099751
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-F04 categorization: 정규화·원본보존·정답 판정
+ok 105 - 실제 문항 IS2-U01-F04 categorization: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.150286
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-F05 matching: 정규화·원본보존·정답 판정
+ok 106 - 실제 문항 IS2-U01-F05 matching: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.688499
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-F06 short_text: 정규화·원본보존·정답 판정
+ok 107 - 실제 문항 IS2-U01-F06 short_text: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.187383
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-F07 manual: 정규화·원본보존·정답 판정
+ok 108 - 실제 문항 IS2-U01-F07 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.114853
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-G01 single_choice: 정규화·원본보존·정답 판정
+ok 109 - 실제 문항 IS2-U01-G01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.116406
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-G02 single_choice: 정규화·원본보존·정답 판정
+ok 110 - 실제 문항 IS2-U01-G02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.150978
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-G03 single_choice: 정규화·원본보존·정답 판정
+ok 111 - 실제 문항 IS2-U01-G03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.115505
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-G04 true_false: 정규화·원본보존·정답 판정
+ok 112 - 실제 문항 IS2-U01-G04 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.097267
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-G05 categorization: 정규화·원본보존·정답 판정
+ok 113 - 실제 문항 IS2-U01-G05 categorization: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.154363
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-G06 matching: 정규화·원본보존·정답 판정
+ok 114 - 실제 문항 IS2-U01-G06 matching: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.17173
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-G07 manual: 정규화·원본보존·정답 판정
+ok 115 - 실제 문항 IS2-U01-G07 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.105779
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-H01 single_choice: 정규화·원본보존·정답 판정
+ok 116 - 실제 문항 IS2-U01-H01 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.177408
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-H02 single_choice: 정규화·원본보존·정답 판정
+ok 117 - 실제 문항 IS2-U01-H02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.12622
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-H03 single_choice: 정규화·원본보존·정답 판정
+ok 118 - 실제 문항 IS2-U01-H03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.243578
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-H04 true_false: 정규화·원본보존·정답 판정
+ok 119 - 실제 문항 IS2-U01-H04 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.13232
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-H05 categorization: 정규화·원본보존·정답 판정
+ok 120 - 실제 문항 IS2-U01-H05 categorization: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.155475
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-H06 short_text: 정규화·원본보존·정답 판정
+ok 121 - 실제 문항 IS2-U01-H06 short_text: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.155104
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-H07 manual: 정규화·원본보존·정답 판정
+ok 122 - 실제 문항 IS2-U01-H07 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.160652
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-I01 short_text: 정규화·원본보존·정답 판정
+ok 123 - 실제 문항 IS2-U01-I01 short_text: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.134944
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-I02 single_choice: 정규화·원본보존·정답 판정
+ok 124 - 실제 문항 IS2-U01-I02 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.118178
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-I03 single_choice: 정규화·원본보존·정답 판정
+ok 125 - 실제 문항 IS2-U01-I03 single_choice: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.111368
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-I04 true_false: 정규화·원본보존·정답 판정
+ok 126 - 실제 문항 IS2-U01-I04 true_false: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.094252
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-I05 categorization: 정규화·원본보존·정답 판정
+ok 127 - 실제 문항 IS2-U01-I05 categorization: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.144378
+  type: 'test'
+  ...
+# Subtest: 실제 문항 IS2-U01-I06 manual: 정규화·원본보존·정답 판정
+ok 128 - 실제 문항 IS2-U01-I06 manual: 정규화·원본보존·정답 판정
+  ---
+  duration_ms: 0.101683
+  type: 'test'
+  ...
+# Subtest: 선택지 셔플 25개 객관식 및 11개 진위·순서형에서 정답 키 불변
+ok 129 - 선택지 셔플 25개 객관식 및 11개 진위·순서형에서 정답 키 불변
+  ---
+  duration_ms: 3.200442
+  type: 'test'
+  ...
+# Subtest: 학생 공개 발행 화면 변조는 내부 스냅샷과 정답에 영향 없음
+ok 130 - 학생 공개 발행 화면 변조는 내부 스냅샷과 정답에 영향 없음
+  ---
+  duration_ms: 4.454695
+  type: 'test'
+  ...
+# Subtest: 공식 전체 60문항을 지역별 고정팩 없이 공유, 처음에는 미출제 60개
+ok 131 - 공식 전체 60문항을 지역별 고정팩 없이 공유, 처음에는 미출제 60개
+  ---
+  duration_ms: 5.287693
+  type: 'test'
+  ...
+# Subtest: 한 번 발행된 질문은 NEW 후보에서 사라짐, 이력/스냅샷은 동시 저장
+ok 132 - 한 번 발행된 질문은 NEW 후보에서 사라짐, 이력/스냅샷은 동시 저장
+  ---
+  duration_ms: 8.005737
+  type: 'test'
+  ...
+# Subtest: 기존 시도가 남아 있으면 중복 출제 차단
+ok 133 - 기존 시도가 남아 있으면 중복 출제 차단
+  ---
+  duration_ms: 5.933809
+  type: 'test'
+  ...
+# Subtest: 시도 교사 종료 뒤에만 새 문항 준비 허용; 자동 보상 지급 없음
+ok 134 - 시도 교사 종료 뒤에만 새 문항 준비 허용; 자동 보상 지급 없음
+  ---
+  duration_ms: 13.588875
+  type: 'test'
+  ...
+# Subtest: 60회 발행해도 처음 60회는 고유 ID 60개, 전부 NEW
+ok 135 - 60회 발행해도 처음 60회는 고유 ID 60개, 전부 NEW
+  ---
+  duration_ms: 769.416633
+  type: 'test'
+  ...
+# Subtest: 60개 소진 후 정답으로 확인된 문항이 없으면 무단 재출제하지 않음
+ok 136 - 60개 소진 후 정답으로 확인된 문항이 없으면 무단 재출제하지 않음
+  ---
+  duration_ms: 836.940951
+  type: 'test'
+  ...
+# Subtest: 60문항 소진 후 기존 정답 문제만 REVIEW 후보, 리뷰는 최초 보상 대상 아님
+ok 137 - 60문항 소진 후 기존 정답 문제만 REVIEW 후보, 리뷰는 최초 보상 대상 아님
+  ---
+  duration_ms: 647.166748
+  type: 'test'
+  ...
+# Subtest: 미출제 1문항이라도 남아 있으면 기존 정답 복습보다 NEW 우선
+ok 138 - 미출제 1문항이라도 남아 있으면 기존 정답 복습보다 NEW 우선
+  ---
+  duration_ms: 627.294407
+  type: 'test'
+  ...
+# Subtest: 기존 오답은 미회수 상태에서 일반 신규/복습 후보 제외
+ok 139 - 기존 오답은 미회수 상태에서 일반 신규/복습 후보 제외
+  ---
+  duration_ms: 660.390855
+  type: 'test'
+  ...
+# Subtest: 미회수/복습이 같은 ID를 공유하는 잘못된 상태는 차단
+ok 140 - 미회수/복습이 같은 ID를 공유하는 잘못된 상태는 차단
+  ---
+  duration_ms: 646.217319
+  type: 'test'
+  ...
+# Subtest: 원본 문제은행의 ID를 변조하거나 빈 집합을 넘기면 출제 중단
+ok 141 - 원본 문제은행의 ID를 변조하거나 빈 집합을 넘기면 출제 중단
+  ---
+  duration_ms: 4.38663
+  type: 'test'
+  ...
+# Subtest: 문제팩 ID/버전이 다른 원정에 기존 문항 무단 출제 금지
+ok 142 - 문제팩 ID/버전이 다른 원정에 기존 문항 무단 출제 금지
+  ---
+  duration_ms: 0.29147
+  type: 'test'
+  ...
+# Subtest: 난수 주입값 NaN/음수/1/문자열을 모두 거부
+ok 143 - 난수 주입값 NaN/음수/1/문자열을 모두 거부
+  ---
+  duration_ms: 23.907084
+  type: 'test'
+  ...
+# Subtest: 동일 시드면 발행 ID 시퀀스가 같고 시드를 바꾸면 달라짐
+ok 144 - 동일 시드면 발행 ID 시퀀스가 같고 시드를 바꾸면 달라짐
+  ---
+  duration_ms: 369.731289
+  type: 'test'
+  ...
+# Subtest: 유형/난도 비율 균형: 60회 전부 출제하면 정확히 원본 유형 비율
+ok 145 - 유형/난도 비율 균형: 60회 전부 출제하면 정확히 원본 유형 비율
+  ---
+  duration_ms: 651.833386
+  type: 'test'
+  ...
+# Subtest: 유형·난도 균형: 최초 20회는 원본 비율과 유사하게 분포
+ok 146 - 유형·난도 균형: 최초 20회는 원본 비율과 유사하게 분포
+  ---
+  duration_ms: 585.800293
+  type: 'test'
+  ...
+# Subtest: 같은 지역·같은 문항의 REVIEW 반복을 다른 선택지가 있을 때 회피
+ok 147 - 같은 지역·같은 문항의 REVIEW 반복을 다른 선택지가 있을 때 회피
+  ---
+  duration_ms: 604.108608
+  type: 'test'
+  ...
+# Subtest: 잘못된 지역·모둠·차시 상태에서는 출제를 허용하지 않음
+ok 148 - 잘못된 지역·모둠·차시 상태에서는 출제를 허용하지 않음
+  ---
+  duration_ms: 0.742342
+  type: 'test'
+  ...
+# Subtest: 문항 스냅샷 변조·팩 버전 불일치 이벤트는 기록 전 차단
+ok 149 - 문항 스냅샷 변조·팩 버전 불일치 이벤트는 기록 전 차단
+  ---
+  duration_ms: 3.831711
+  type: 'test'
+  ...
+# Subtest: 직접 조작한 REVIEW 이벤트는 60개 소진 전/복습 미승인 시 거부
+ok 150 - 직접 조작한 REVIEW 이벤트는 60개 소진 전/복습 미승인 시 거부
+  ---
+  duration_ms: 4.182412
+  type: 'test'
+  ...
+# Subtest: 같은 이벤트 ID 반복은 멱등 처리, 다른 payload는 충돌 차단
+ok 151 - 같은 이벤트 ID 반복은 멱등 처리, 다른 payload는 충돌 차단
+  ---
+  duration_ms: 7.232281
+  type: 'test'
+  ...
+# Subtest: 출제 시도 스냅샷과 학생용 공개 projection에 정답·해설을 넣지 않음
+ok 152 - 출제 시도 스냅샷과 학생용 공개 projection에 정답·해설을 넣지 않음
+  ---
+  duration_ms: 4.416055
+  type: 'test'
+  ...
+# Subtest: 회수 목록은 전용으로 유지, 다음 지역에 들어간 뒤에만 자연 등장
+ok 153 - 회수 목록은 전용으로 유지, 다음 지역에 들어간 뒤에만 자연 등장
+  ---
+  duration_ms: 5.748129
+  type: 'test'
+  ...
+# Subtest: 회수 강제 호출에는 교사확인이 필요하고 HELD는 자연 등장하지 않음
+ok 154 - 회수 강제 호출에는 교사확인이 필요하고 HELD는 자연 등장하지 않음
+  ---
+  duration_ms: 4.967969
+  type: 'test'
+  ...
+# Subtest: 출제 하나의 IDB 거래에 시도·문항 ID·이벤트·체크포인트를 기록
+ok 155 - 출제 하나의 IDB 거래에 시도·문항 ID·이벤트·체크포인트를 기록
+  ---
+  duration_ms: 26.307642
+  type: 'test'
+  ...
+# Subtest: IDB 쓰기 실패 시 출제 이력·시도·이벤트 전부 유지, 재시도 가능
+ok 156 - IDB 쓰기 실패 시 출제 이력·시도·이벤트 전부 유지, 재시도 가능
+  ---
+  duration_ms: 12.119528
+  type: 'test'
+  ...
+# Subtest: 同슬롯 동시 draw 호출은 직렬 실행되어 같은 문항을 중복 배정하지 않음
+ok 157 - 同슬롯 동시 draw 호출은 직렬 실행되어 같은 문항을 중복 배정하지 않음
+  ---
+  duration_ms: 6.707628
+  type: 'test'
+  ...
+# Subtest: 출제 후 JSON 백업과 독립 DB 복원에 원본/발행 스냅샷과 이력 유지
+ok 158 - 출제 후 JSON 백업과 독립 DB 복원에 원본/발행 스냅샷과 이력 유지
+  ---
+  duration_ms: 20.056635
+  type: 'test'
+  ...
+# Subtest: 3슬롯 문제 출제 이력은 독립, 기존 운영 저장키 접근 없음
+ok 159 - 3슬롯 문제 출제 이력은 독립, 기존 운영 저장키 접근 없음
+  ---
+  duration_ms: 21.82091
+  type: 'test'
+  ...
+# Subtest: 동일한 새 문항을 REVIEW로 위장하거나 recoveryOnly를 신규로 위장하는 직접 명령 거부
+ok 160 - 동일한 새 문항을 REVIEW로 위장하거나 recoveryOnly를 신규로 위장하는 직접 명령 거부
+  ---
+  duration_ms: 4.828068
+  type: 'test'
+  ...
+# Subtest: 교사 창 이벤트 ID 중복 클릭 시 추첨하지 않고 같은 출제 기록 반환
+ok 161 - 교사 창 이벤트 ID 중복 클릭 시 추첨하지 않고 같은 출제 기록 반환
+  ---
+  duration_ms: 9.671017
+  type: 'test'
+  ...
+# Subtest: 저장된 신규 발행 목록이 로그와 다르면 무결성 검사를 통과하지 못함
+ok 162 - 저장된 신규 발행 목록이 로그와 다르면 무결성 검사를 통과하지 못함
+  ---
+  duration_ms: 5.77518
+  type: 'test'
+  ...
+# Subtest: 출제 이벤트의 issuedAt을 변경해 재전송하면 검증 거부
+ok 163 - 출제 이벤트의 issuedAt을 변경해 재전송하면 검증 거부
+  ---
+  duration_ms: 4.069701
+  type: 'test'
+  ...
+# Subtest: 방문 순서 증거 없이 다른 지역이라는 이유만으로 자연 회수를 내보내지 않음
+ok 164 - 방문 순서 증거 없이 다른 지역이라는 이유만으로 자연 회수를 내보내지 않음
+  ---
+  duration_ms: 5.601256
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-A01 (single_choice)
+ok 165 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-A01 (single_choice)
+  ---
+  duration_ms: 7.938214
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-A02 (single_choice)
+ok 166 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-A02 (single_choice)
+  ---
+  duration_ms: 3.604161
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-A03 (single_choice)
+ok 167 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-A03 (single_choice)
+  ---
+  duration_ms: 1.48403
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-A04 (true_false)
+ok 168 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-A04 (true_false)
+  ---
+  duration_ms: 1.313393
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-A05 (matching)
+ok 169 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-A05 (matching)
+  ---
+  duration_ms: 2.50337
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B01 (single_choice)
+ok 170 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B01 (single_choice)
+  ---
+  duration_ms: 1.380313
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B02 (single_choice)
+ok 171 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B02 (single_choice)
+  ---
+  duration_ms: 1.212691
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B03 (single_choice)
+ok 172 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B03 (single_choice)
+  ---
+  duration_ms: 1.879618
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B04 (ordering)
+ok 173 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B04 (ordering)
+  ---
+  duration_ms: 6.554235
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B05 (ordering)
+ok 174 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B05 (ordering)
+  ---
+  duration_ms: 1.439203
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B06 (ordering)
+ok 175 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B06 (ordering)
+  ---
+  duration_ms: 1.150127
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B07 (matching)
+ok 176 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B07 (matching)
+  ---
+  duration_ms: 2.68285
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-B08 (manual)
+ok 177 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-B08 (manual)
+  ---
+  duration_ms: 1.674047
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-C01 (single_choice)
+ok 178 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-C01 (single_choice)
+  ---
+  duration_ms: 1.399113
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-C02 (single_choice)
+ok 179 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-C02 (single_choice)
+  ---
+  duration_ms: 1.047261
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-C03 (single_choice)
+ok 180 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-C03 (single_choice)
+  ---
+  duration_ms: 1.017426
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-C04 (true_false)
+ok 181 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-C04 (true_false)
+  ---
+  duration_ms: 1.155444
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-C05 (categorization)
+ok 182 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-C05 (categorization)
+  ---
+  duration_ms: 1.67602
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-C06 (matching)
+ok 183 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-C06 (matching)
+  ---
+  duration_ms: 1.582099
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-C07 (manual)
+ok 184 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-C07 (manual)
+  ---
+  duration_ms: 2.437395
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-D01 (single_choice)
+ok 185 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-D01 (single_choice)
+  ---
+  duration_ms: 1.926018
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-D02 (single_choice)
+ok 186 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-D02 (single_choice)
+  ---
+  duration_ms: 1.421596
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-D03 (single_choice)
+ok 187 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-D03 (single_choice)
+  ---
+  duration_ms: 1.33132
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-D04 (true_false)
+ok 188 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-D04 (true_false)
+  ---
+  duration_ms: 0.977396
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-D05 (matching)
+ok 189 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-D05 (matching)
+  ---
+  duration_ms: 1.890695
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-D06 (manual)
+ok 190 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-D06 (manual)
+  ---
+  duration_ms: 1.237188
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-E01 (single_choice)
+ok 191 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-E01 (single_choice)
+  ---
+  duration_ms: 1.423669
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-E02 (single_choice)
+ok 192 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-E02 (single_choice)
+  ---
+  duration_ms: 1.84129
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-E03 (single_choice)
+ok 193 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-E03 (single_choice)
+  ---
+  duration_ms: 1.071698
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-E04 (true_false)
+ok 194 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-E04 (true_false)
+  ---
+  duration_ms: 1.048823
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-E05 (categorization)
+ok 195 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-E05 (categorization)
+  ---
+  duration_ms: 1.2582
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-E06 (matching)
+ok 196 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-E06 (matching)
+  ---
+  duration_ms: 1.25191
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-E07 (manual)
+ok 197 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-E07 (manual)
+  ---
+  duration_ms: 1.282597
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-F01 (single_choice)
+ok 198 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-F01 (single_choice)
+  ---
+  duration_ms: 1.00032
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-F02 (single_choice)
+ok 199 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-F02 (single_choice)
+  ---
+  duration_ms: 0.965498
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-F03 (true_false)
+ok 200 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-F03 (true_false)
+  ---
+  duration_ms: 2.292631
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-F04 (categorization)
+ok 201 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-F04 (categorization)
+  ---
+  duration_ms: 1.188044
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-F05 (matching)
+ok 202 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-F05 (matching)
+  ---
+  duration_ms: 1.891025
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-F06 (short_text)
+ok 203 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-F06 (short_text)
+  ---
+  duration_ms: 1.465272
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-F07 (manual)
+ok 204 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-F07 (manual)
+  ---
+  duration_ms: 0.92728
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-G01 (single_choice)
+ok 205 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-G01 (single_choice)
+  ---
+  duration_ms: 0.962353
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-G02 (single_choice)
+ok 206 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-G02 (single_choice)
+  ---
+  duration_ms: 0.964156
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-G03 (single_choice)
+ok 207 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-G03 (single_choice)
+  ---
+  duration_ms: 1.028984
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-G04 (true_false)
+ok 208 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-G04 (true_false)
+  ---
+  duration_ms: 1.365862
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-G05 (categorization)
+ok 209 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-G05 (categorization)
+  ---
+  duration_ms: 1.131499
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-G06 (matching)
+ok 210 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-G06 (matching)
+  ---
+  duration_ms: 1.250428
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-G07 (manual)
+ok 211 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-G07 (manual)
+  ---
+  duration_ms: 0.912097
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-H01 (single_choice)
+ok 212 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-H01 (single_choice)
+  ---
+  duration_ms: 0.955132
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-H02 (single_choice)
+ok 213 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-H02 (single_choice)
+  ---
+  duration_ms: 1.063405
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-H03 (single_choice)
+ok 214 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-H03 (single_choice)
+  ---
+  duration_ms: 1.037417
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-H04 (true_false)
+ok 215 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-H04 (true_false)
+  ---
+  duration_ms: 0.975492
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-H05 (categorization)
+ok 216 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-H05 (categorization)
+  ---
+  duration_ms: 1.599204
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-H06 (short_text)
+ok 217 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-H06 (short_text)
+  ---
+  duration_ms: 1.050737
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-H07 (manual)
+ok 218 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-H07 (manual)
+  ---
+  duration_ms: 1.02055
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-I01 (short_text)
+ok 219 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-I01 (short_text)
+  ---
+  duration_ms: 0.938927
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-I02 (single_choice)
+ok 220 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-I02 (single_choice)
+  ---
+  duration_ms: 1.077887
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-I03 (single_choice)
+ok 221 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-I03 (single_choice)
+  ---
+  duration_ms: 1.25144
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-I04 (true_false)
+ok 222 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-I04 (true_false)
+  ---
+  duration_ms: 0.905587
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-I05 (categorization)
+ok 223 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-I05 (categorization)
+  ---
+  duration_ms: 1.090937
+  type: 'test'
+  ...
+# Subtest: 실제 60문항 전체 2-3 종단 판정: IS2-U01-I06 (manual)
+ok 224 - 실제 60문항 전체 2-3 종단 판정: IS2-U01-I06 (manual)
+  ---
+  duration_ms: 0.910975
+  type: 'test'
+  ...
+# Subtest: 실제 single_choice 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+ok 225 - 실제 single_choice 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+  ---
+  duration_ms: 1.732816
+  type: 'test'
+  ...
+# Subtest: 실제 true_false 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+ok 226 - 실제 true_false 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+  ---
+  duration_ms: 0.943654
+  type: 'test'
+  ...
+# Subtest: 실제 matching 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+ok 227 - 실제 matching 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+  ---
+  duration_ms: 1.235645
+  type: 'test'
+  ...
+# Subtest: 실제 ordering 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+ok 228 - 실제 ordering 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+  ---
+  duration_ms: 1.071348
+  type: 'test'
+  ...
+# Subtest: 실제 categorization 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+ok 229 - 실제 categorization 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+  ---
+  duration_ms: 1.182154
+  type: 'test'
+  ...
+# Subtest: 실제 short_text 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+ok 230 - 실제 short_text 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+  ---
+  duration_ms: 0.948201
+  type: 'test'
+  ...
+# Subtest: 실제 manual 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+ok 231 - 실제 manual 오답/검토 필요 후 교사 오답 확정·회수 전용 등록
+  ---
+  duration_ms: 0.910435
+  type: 'test'
+  ...
+# Subtest: 교사 시작 전 답안 수신 및 존재하지 않는 시도 ID 차단
+ok 232 - 교사 시작 전 답안 수신 및 존재하지 않는 시도 ID 차단
+  ---
+  duration_ms: 1.422958
+  type: 'test'
+  ...
+# Subtest: 문제 시계가 1ms 남았을 때 답변 허용, 정확한 만료 시각은 접수 차단
+ok 233 - 문제 시계가 1ms 남았을 때 답변 허용, 정확한 만료 시각은 접수 차단
+  ---
+  duration_ms: 1.551723
+  type: 'test'
+  ...
+# Subtest: 만료 후 답변은 교사 승인+사유가 모두 필요한 예외 접수
+ok 234 - 만료 후 답변은 교사 승인+사유가 모두 필요한 예외 접수
+  ---
+  duration_ms: 1.522268
+  type: 'test'
+  ...
+# Subtest: 교사가 정지한 타이머는 승인 없이는 답안 접수 불가, 미제출 시험도 보존
+ok 235 - 교사가 정지한 타이머는 승인 없이는 답안 접수 불가, 미제출 시험도 보존
+  ---
+  duration_ms: 1.158459
+  type: 'test'
+  ...
+# Subtest: 타이머 끔에서도 교사 START 후 명시 확인으로 답변 접수
+ok 236 - 타이머 끔에서도 교사 START 후 명시 확인으로 답변 접수
+  ---
+  duration_ms: 1.882232
+  type: 'test'
+  ...
+# Subtest: 답안은 한 번만 수신, 재제출·타이머 재개·추가 연장 차단
+ok 237 - 답안은 한 번만 수신, 재제출·타이머 재개·추가 연장 차단
+  ---
+  duration_ms: 1.624473
+  type: 'test'
+  ...
+# Subtest: 자동 권고는 최종판정 아님, 교사 확인 없는 판정은 원천 차단
+ok 238 - 자동 권고는 최종판정 아님, 교사 확인 없는 판정은 원천 차단
+  ---
+  duration_ms: 1.042694
+  type: 'test'
+  ...
+# Subtest: 자동 권고와 다른 판정에는 교사 입력 사유가 필수
+ok 239 - 자동 권고와 다른 판정에는 교사 입력 사유가 필수
+  ---
+  duration_ms: 1.191479
+  type: 'test'
+  ...
+# Subtest: 서술형·모호한 단답형은 자동 정답/오답 확정하지 않음
+ok 240 - 서술형·모호한 단답형은 자동 정답/오답 확정하지 않음
+  ---
+  duration_ms: 2.708369
+  type: 'test'
+  ...
+# Subtest: 교사가 만료 시점을 확인해도 자동 오답·회수 등록되지 않음
+ok 241 - 교사가 만료 시점을 확인해도 자동 오답·회수 등록되지 않음
+  ---
+  duration_ms: 2.793477
+  type: 'test'
+  ...
+# Subtest: 타이머 미시작 문제는 미응답 교사 오답 판정도 불허
+ok 242 - 타이머 미시작 문제는 미응답 교사 오답 판정도 불허
+  ---
+  duration_ms: 0.7884
+  type: 'test'
+  ...
+# Subtest: 결과 확인 후 새로운 이벤트 ID로 재판정하는 행위 차단
+ok 243 - 결과 확인 후 새로운 이벤트 ID로 재판정하는 행위 차단
+  ---
+  duration_ms: 1.220402
+  type: 'test'
+  ...
+# Subtest: 같은 eventId 재시도는 제출·판정 두 번 처리하지 않고 내용 변경은 거절
+ok 244 - 같은 eventId 재시도는 제출·판정 두 번 처리하지 않고 내용 변경은 거절
+  ---
+  duration_ms: 1.590882
+  type: 'test'
+  ...
+# Subtest: 기존 타이머 시험용 교사 종료는 실제 출제 문제에서 사유 없는 판정 우회 불가
+ok 245 - 기존 타이머 시험용 교사 종료는 실제 출제 문제에서 사유 없는 판정 우회 불가
+  ---
+  duration_ms: 1.142726
+  type: 'test'
+  ...
+# Subtest: 학생 공개 상태에는 답변·교사 판정·정답·해설·PIN·루브릭 노출 없음
+ok 246 - 학생 공개 상태에는 답변·교사 판정·정답·해설·PIN·루브릭 노출 없음
+  ---
+  duration_ms: 1.232681
+  type: 'test'
+  ...
+# Subtest: 교사 답변 UI가 제출 대신 결과를 위조하려 해도 무시하고 발행 스냅샷으로 채점
+ok 247 - 교사 답변 UI가 제출 대신 결과를 위조하려 해도 무시하고 발행 스냅샷으로 채점
+  ---
+  duration_ms: 0.929113
+  type: 'test'
+  ...
+# Subtest: 빈 응답·없는 선택지·초대형 답안은 저장 전 검증 실패
+ok 248 - 빈 응답·없는 선택지·초대형 답안은 저장 전 검증 실패
+  ---
+  duration_ms: 1.714058
+  type: 'test'
+  ...
+# Subtest: 문항 처리 후 신규 출제는 교사 확정이 끝난 다음만 가능
+ok 249 - 문항 처리 후 신규 출제는 교사 확정이 끝난 다음만 가능
+  ---
+  duration_ms: 1.615469
+  type: 'test'
+  ...
+# Subtest: 문항 제출·교사 판정·회수 장부·타이머를 Fake IDB 이벤트 단일 거래에 확정
+ok 250 - 문항 제출·교사 판정·회수 장부·타이머를 Fake IDB 이벤트 단일 거래에 확정
+  ---
+  duration_ms: 46.093878
+  type: 'test'
+  ...
+# Subtest: 실패한 제출 거래는 메모리·저장소·체크포인트의 답변 변경 0건
+ok 251 - 실패한 제출 거래는 메모리·저장소·체크포인트의 답변 변경 0건
+  ---
+  duration_ms: 12.931202
+  type: 'test'
+  ...
+# Subtest: 실패한 교사 최종 판정 거래는 회수/복습 기록·감사 로그 모두 롤백
+ok 252 - 실패한 교사 최종 판정 거래는 회수/복습 기록·감사 로그 모두 롤백
+  ---
+  duration_ms: 12.51844
+  type: 'test'
+  ...
+# Subtest: 답변 접수 후 백업·새 DB 복원은 원문·응답·잠정 판정과 안전 정지를 보존
+ok 253 - 답변 접수 후 백업·새 DB 복원은 원문·응답·잠정 판정과 안전 정지를 보존
+  ---
+  duration_ms: 24.960994
+  type: 'test'
+  ...
+# Subtest: 개인 오답·판정은 학생 공개 화면이 아닌 교사 전용 상태/감사에만 저장
+ok 254 - 개인 오답·판정은 학생 공개 화면이 아닌 교사 전용 상태/감사에만 저장
+  ---
+  duration_ms: 1.284279
+  type: 'test'
+  ...
+# Subtest: 교사 판정 확정 후 시간의 모래·답변 재접수는 불가능
+ok 255 - 교사 판정 확정 후 시간의 모래·답변 재접수는 불가능
+  ---
+  duration_ms: 1.413454
+  type: 'test'
+  ...
+# Subtest: 신규 60문항 소진 후 REVIEW 정답을 오답으로 판정하면 회수 전용으로만 이동
+ok 256 - 신규 60문항 소진 후 REVIEW 정답을 오답으로 판정하면 회수 전용으로만 이동
+  ---
+  duration_ms: 560.041154
+  type: 'test'
+  ...
+# Subtest: 복습 재정답은 추가 보상 지급 없이 복습 자격 유지
+ok 257 - 복습 재정답은 추가 보상 지급 없이 복습 자격 유지
+  ---
+  duration_ms: 541.005233
+  type: 'test'
+  ...
+# Subtest: 부분 연결 답변은 제출은 유지하되 교사 검토 필요 상태로 유지
+ok 258 - 부분 연결 답변은 제출은 유지하되 교사 검토 필요 상태로 유지
+  ---
+  duration_ms: 2.056034
+  type: 'test'
+  ...
+# Subtest: 타이머 만료 1초 전 제출은 남은 1000ms를 확정하고 멈춤
+ok 259 - 타이머 만료 1초 전 제출은 남은 1000ms를 확정하고 멈춤
+  ---
+  duration_ms: 0.774228
+  type: 'test'
+  ...
+# Subtest: 차시 일시정지 중 신규 제출 금지 및 회복 후 교사 승인하에 접수
+ok 260 - 차시 일시정지 중 신규 제출 금지 및 회복 후 교사 승인하에 접수
+  ---
+  duration_ms: 1.370008
+  type: 'test'
+  ...
+# Subtest: 잘못된 원문 스냅샷을 가진 제출은 교사 판정 전 차단
+ok 261 - 잘못된 원문 스냅샷을 가진 제출은 교사 판정 전 차단
+  ---
+  duration_ms: 1.032879
+  type: 'test'
+  ...
+# Subtest: 교사 판정 대상 attemptId 변조·잘못된 상태는 장부를 변경하지 않음
+ok 262 - 교사 판정 대상 attemptId 변조·잘못된 상태는 장부를 변경하지 않음
+  ---
+  duration_ms: 1.260102
+  type: 'test'
+  ...
+# Subtest: 상태 임의 변조로 교사 판정 이벤트만 제거하면 정합성 검사에서 거부
+ok 263 - 상태 임의 변조로 교사 판정 이벤트만 제거하면 정합성 검사에서 거부
+  ---
+  duration_ms: 1.408297
+  type: 'test'
+  ...
+# Subtest: 학생 답변 자동판정 이벤트를 제거하면 불일치로 판정
+ok 264 - 학생 답변 자동판정 이벤트를 제거하면 불일치로 판정
+  ---
+  duration_ms: 1.343819
+  type: 'test'
+  ...
+# Subtest: 동시 제출 중 첫 번째만 거래 확정되고 두 번째는 저장 변경 없이 거부
+ok 265 - 동시 제출 중 첫 번째만 거래 확정되고 두 번째는 저장 변경 없이 거부
+  ---
+  duration_ms: 13.230916
+  type: 'test'
+  ...
+# Subtest: 2~8모둠 공식 고유 ID와 자동 순환: 2개
+ok 266 - 2~8모둠 공식 고유 ID와 자동 순환: 2개
+  ---
+  duration_ms: 30.347417
+  type: 'test'
+  ...
+# Subtest: 2~8모둠 공식 고유 ID와 자동 순환: 3개
+ok 267 - 2~8모둠 공식 고유 ID와 자동 순환: 3개
+  ---
+  duration_ms: 29.307727
+  type: 'test'
+  ...
+# Subtest: 2~8모둠 공식 고유 ID와 자동 순환: 4개
+ok 268 - 2~8모둠 공식 고유 ID와 자동 순환: 4개
+  ---
+  duration_ms: 42.159589
+  type: 'test'
+  ...
+# Subtest: 2~8모둠 공식 고유 ID와 자동 순환: 5개
+ok 269 - 2~8모둠 공식 고유 ID와 자동 순환: 5개
+  ---
+  duration_ms: 47.920878
+  type: 'test'
+  ...
+# Subtest: 2~8모둠 공식 고유 ID와 자동 순환: 6개
+ok 270 - 2~8모둠 공식 고유 ID와 자동 순환: 6개
+  ---
+  duration_ms: 68.279253
+  type: 'test'
+  ...
+# Subtest: 2~8모둠 공식 고유 ID와 자동 순환: 7개
+ok 271 - 2~8모둠 공식 고유 ID와 자동 순환: 7개
+  ---
+  duration_ms: 81.47122
+  type: 'test'
+  ...
+# Subtest: 2~8모둠 공식 고유 ID와 자동 순환: 8개
+ok 272 - 2~8모둠 공식 고유 ID와 자동 순환: 8개
+  ---
+  duration_ms: 115.967575
+  type: 'test'
+  ...
+# Subtest: 명단 추가: UUID식 독립 ID·이름·상태·버전·감사 이벤트
+ok 273 - 명단 추가: UUID식 독립 ID·이름·상태·버전·감사 이벤트
+  ---
+  duration_ms: 1.054182
+  type: 'test'
+  ...
+# Subtest: 교사 미확인 명단·이동·출석 변경은 기록 전에 차단
+ok 274 - 교사 미확인 명단·이동·출석 변경은 기록 전에 차단
+  ---
+  duration_ms: 1.330859
+  type: 'test'
+  ...
+# Subtest: 출결: PRESENT·ABSENT·LATE·LEFT_EARLY·INACTIVE와 복귀
+ok 275 - 출결: PRESENT·ABSENT·LATE·LEFT_EARLY·INACTIVE와 복귀
+  ---
+  duration_ms: 3.567977
+  type: 'test'
+  ...
+# Subtest: 유효하지 않은 출석·빈 이름·80자 초과·중복 ID 차단
+ok 276 - 유효하지 않은 출석·빈 이름·80자 초과·중복 ID 차단
+  ---
+  duration_ms: 3.976233
+  type: 'test'
+  ...
+# Subtest: 교사 수정: 모둠·학생 이름 변경에도 과거 스냅샷 유지
+ok 277 - 교사 수정: 모둠·학생 이름 변경에도 과거 스냅샷 유지
+  ---
+  duration_ms: 6.160831
+  type: 'test'
+  ...
+# Subtest: 학생 ID 이동: 현재 모둠만 이동하고 원래 답안의 소속·명단·대표 ID 불변
+ok 278 - 학생 ID 이동: 현재 모둠만 이동하고 원래 답안의 소속·명단·대표 ID 불변
+  ---
+  duration_ms: 8.327722
+  type: 'test'
+  ...
+# Subtest: 모둠 이동 전/후 버전·출석 그대로 유지, 잘못된 이동 차단
+ok 279 - 모둠 이동 전/후 버전·출석 그대로 유지, 잘못된 이동 차단
+  ---
+  duration_ms: 1.851345
+  type: 'test'
+  ...
+# Subtest: 문제 PREPARED 중에는 출석·명단·이동·이름 변경 전부 차단
+ok 280 - 문제 PREPARED 중에는 출석·명단·이동·이름 변경 전부 차단
+  ---
+  duration_ms: 5.659654
+  type: 'test'
+  ...
+# Subtest: 문제 RUNNING 중에는 출석·명단·이동·이름 변경 전부 차단
+ok 281 - 문제 RUNNING 중에는 출석·명단·이동·이름 변경 전부 차단
+  ---
+  duration_ms: 5.062513
+  type: 'test'
+  ...
+# Subtest: 문제 PAUSED 중에는 출석·명단·이동·이름 변경 전부 차단
+ok 282 - 문제 PAUSED 중에는 출석·명단·이동·이름 변경 전부 차단
+  ---
+  duration_ms: 6.58377
+  type: 'test'
+  ...
+# Subtest: 문제 EXPIRED_AWAITING_TEACHER 중에는 출석·명단·이동·이름 변경 전부 차단
+ok 283 - 문제 EXPIRED_AWAITING_TEACHER 중에는 출석·명단·이동·이름 변경 전부 차단
+  ---
+  duration_ms: 5.92776
+  type: 'test'
+  ...
+# Subtest: 교사 판정으로 RESOLVED 후에만 다음 차시 명단 변경
+ok 284 - 교사 판정으로 RESOLVED 후에만 다음 차시 명단 변경
+  ---
+  duration_ms: 6.749825
+  type: 'test'
+  ...
+# Subtest: 대표 자동 순환은 한 모둠에서 순차 지정 후 처음으로 돌아간다
+ok 285 - 대표 자동 순환은 한 모둠에서 순차 지정 후 처음으로 돌아간다
+  ---
+  duration_ms: 77.498231
+  type: 'test'
+  ...
+# Subtest: 결석·지각·조퇴 인원은 대표 선발에서 건너뛰며 출석 전환 후 다시 참여
+ok 286 - 결석·지각·조퇴 인원은 대표 선발에서 건너뛰며 출석 전환 후 다시 참여
+  ---
+  duration_ms: 30.472515
+  type: 'test'
+  ...
+# Subtest: 모두 결석·지각이면 수동 해당 모둠 출제도 안전 차단
+ok 287 - 모두 결석·지각이면 수동 해당 모둠 출제도 안전 차단
+  ---
+  duration_ms: 10.075591
+  type: 'test'
+  ...
+# Subtest: 자동 모둠 순서는 출석자 없는 명단 보유 모둠을 건너뛴다
+ok 288 - 자동 모둠 순서는 출석자 없는 명단 보유 모둠을 건너뛴다
+  ---
+  duration_ms: 12.646282
+  type: 'test'
+  ...
+# Subtest: 모든 모둠 명단이 있어도 전원 미출석이라면 자동 순환 차단
+ok 289 - 모든 모둠 명단이 있어도 전원 미출석이라면 자동 순환 차단
+  ---
+  duration_ms: 0.56943
+  type: 'test'
+  ...
+# Subtest: 수동 선택은 다음 자동 선택 위치만 조정, 대표 선발 이력은 보존
+ok 290 - 수동 선택은 다음 자동 선택 위치만 조정, 대표 선발 이력은 보존
+  ---
+  duration_ms: 8.899896
+  type: 'test'
+  ...
+# Subtest: 잘못된 자동 모둠 강제는 출제 승인 전 차단
+ok 291 - 잘못된 자동 모둠 강제는 출제 승인 전 차단
+  ---
+  duration_ms: 3.588928
+  type: 'test'
+  ...
+# Subtest: 대표자·원모둠과 별개로 실제 해결 학생을 기록하고 위조 ID는 차단
+ok 292 - 대표자·원모둠과 별개로 실제 해결 학생을 기록하고 위조 ID는 차단
+  ---
+  duration_ms: 6.767648
+  type: 'test'
+  ...
+# Subtest: 실제 해결자 미지정 시 특정 학생을 임의 추정하지 않음
+ok 293 - 실제 해결자 미지정 시 특정 학생을 임의 추정하지 않음
+  ---
+  duration_ms: 5.349146
+  type: 'test'
+  ...
+# Subtest: 미응답 원오답 회수의 원 모둠·대표 버전이 이후 전출돼도 고정
+ok 294 - 미응답 원오답 회수의 원 모둠·대표 버전이 이후 전출돼도 고정
+  ---
+  duration_ms: 6.422337
+  type: 'test'
+  ...
+# Subtest: 누적 공헌도, 별빛은 명단 수정 시 변하지 않음
+ok 295 - 누적 공헌도, 별빛은 명단 수정 시 변하지 않음
+  ---
+  duration_ms: 1.002613
+  type: 'test'
+  ...
+# Subtest: 명단 변경 audit와 이벤트는 현재 출제 스냅샷과 일치
+ok 296 - 명단 변경 audit와 이벤트는 현재 출제 스냅샷과 일치
+  ---
+  duration_ms: 0.842963
+  type: 'test'
+  ...
+# Subtest: 같은 이벤트 ID 반복은 모둠/버전 증가 한 번, 다른 요청은 차단
+ok 297 - 같은 이벤트 ID 반복은 모둠/버전 증가 한 번, 다른 요청은 차단
+  ---
+  duration_ms: 0.627327
+  type: 'test'
+  ...
+# Subtest: 명단 ID/현재 버전/대표 기록을 변조하면 checkState가 거부
+ok 298 - 명단 ID/현재 버전/대표 기록을 변조하면 checkState가 거부
+  ---
+  duration_ms: 5.256546
+  type: 'test'
+  ...
+# Subtest: PHASE 1/2-3 저장 구조에 participation 없더라도 구 상태 그대로 읽을 수 있음
+ok 299 - PHASE 1/2-3 저장 구조에 participation 없더라도 구 상태 그대로 읽을 수 있음
+  ---
+  duration_ms: 1.196386
+  type: 'test'
+  ...
+# Subtest: 모의 IndexedDB 저장 실패는 roster·rotation·이벤트 전체 롤백
+ok 300 - 모의 IndexedDB 저장 실패는 roster·rotation·이벤트 전체 롤백
+  ---
+  duration_ms: 15.825111
+  type: 'test'
+  ...
+# Subtest: 모의 IndexedDB 동시 출석 변경은 순서대로 직렬 확정
+ok 301 - 모의 IndexedDB 동시 출석 변경은 순서대로 직렬 확정
+  ---
+  duration_ms: 4.675128
+  type: 'test'
+  ...
+# Subtest: 모의 DB 저장·재접속 후 명단·출석·대표 순서 복원
+ok 302 - 모의 DB 저장·재접속 후 명단·출석·대표 순서 복원
+  ---
+  duration_ms: 25.459767
+  type: 'test'
+  ...
+# Subtest: 모의 DB JSON 백업·복원 후 이동한 학생 ID와 과거 원본 그대로 보존
+ok 303 - 모의 DB JSON 백업·복원 후 이동한 학생 ID와 과거 원본 그대로 보존
+  ---
+  duration_ms: 25.685027
+  type: 'test'
+  ...
+# Subtest: 세 슬롯의 명단 ID는 각각 독립, 교사창 동시저장 혼합 없음
+ok 304 - 세 슬롯의 명단 ID는 각각 독립, 교사창 동시저장 혼합 없음
+  ---
+  duration_ms: 8.488746
+  type: 'test'
+  ...
+# Subtest: 학생 공개 데이터에는 실명·명단·출석·실제 해결자·감사 이력 노출 없음
+ok 305 - 학생 공개 데이터에는 실명·명단·출석·실제 해결자·감사 이력 노출 없음
+  ---
+  duration_ms: 4.742069
+  type: 'test'
+  ...
+# Subtest: 수동 명단 편집 80명 정원까지 허용, 초과는 불변
+ok 306 - 수동 명단 편집 80명 정원까지 허용, 초과는 불변
+  ---
+  duration_ms: 1223.239231
+  type: 'test'
+  ...
+# Subtest: 모의 저장 실패 직후 대표 순서·출제 이력은 변경되지 않으며 재시도는 한 번만 소비
+ok 307 - 모의 저장 실패 직후 대표 순서·출제 이력은 변경되지 않으며 재시도는 한 번만 소비
+  ---
+  duration_ms: 19.93749
+  type: 'test'
+  ...
+# Subtest: 자동 모둠 중복 이벤트를 수동 모둠 이벤트로 재사용하면 충돌 처리
+ok 308 - 자동 모둠 중복 이벤트를 수동 모둠 이벤트로 재사용하면 충돌 처리
+  ---
+  duration_ms: 10.4457
+  type: 'test'
+  ...
+# Subtest: 교사 창 소유권이 다른 창으로 이동한 뒤에는 명단 변경 불가
+ok 309 - 교사 창 소유권이 다른 창으로 이동한 뒤에는 명단 변경 불가
+  ---
+  duration_ms: 1.990696
+  type: 'test'
+  ...
+# Subtest: 학생 실명/출결을 수정했는데 명단 버전이 증가하지 않으면 스냅샷 불일치로 검출
+ok 310 - 학생 실명/출결을 수정했는데 명단 버전이 증가하지 않으면 스냅샷 불일치로 검출
+  ---
+  duration_ms: 0.900579
+  type: 'test'
+  ...
+# Subtest: 팀 이전과 재복귀를 반복해도 최초 시도의 대표/원모둠 불변
+ok 311 - 팀 이전과 재복귀를 반복해도 최초 시도의 대표/원모둠 불변
+  ---
+  duration_ms: 8.35314
+  type: 'test'
+  ...
+# Subtest: 대표가 아닌 학생이 제출한 뒤 원 모둠이 이동해도 해결자 스냅샷 유지
+ok 312 - 대표가 아닌 학생이 제출한 뒤 원 모둠이 이동해도 해결자 스냅샷 유지
+  ---
+  duration_ms: 9.031746
+  type: 'test'
+  ...
+# Subtest: 기본 오답: 회수 대기, 원문제 신분·원모둠·지역 보존
+ok 313 - 기본 오답: 회수 대기, 원문제 신분·원모둠·지역 보존
+  ---
+  duration_ms: 14.656217
+  type: 'test'
+  ...
+# Subtest: 가로채기 생성: 원모둠 제외, 교사 확인, 미확정 시도 거부
+ok 314 - 가로채기 생성: 원모둠 제외, 교사 확인, 미확정 시도 거부
+  ---
+  duration_ms: 9.080999
+  type: 'test'
+  ...
+# Subtest: 가로채기 정답 성공해도 원모둠 오답 회수 대기·별빛0
+ok 315 - 가로채기 정답 성공해도 원모둠 오답 회수 대기·별빛0
+  ---
+  duration_ms: 7.950674
+  type: 'test'
+  ...
+# Subtest: 동일 원문제는 두 번째 가로채기·생략 추가 불가
+ok 316 - 동일 원문제는 두 번째 가로채기·생략 추가 불가
+  ---
+  duration_ms: 8.607445
+  type: 'test'
+  ...
+# Subtest: 교사가 가로채기 생략하면 감사 기록 및 원모둠 회수만 유지
+ok 317 - 교사가 가로채기 생략하면 감사 기록 및 원모둠 회수만 유지
+  ---
+  duration_ms: 6.552523
+  type: 'test'
+  ...
+# Subtest: 교사의 원답 판정 전에는 가로채기 불가
+ok 318 - 교사의 원답 판정 전에는 가로채기 불가
+  ---
+  duration_ms: 4.703751
+  type: 'test'
+  ...
+# Subtest: 동일 모둠 연속 가로채기 제한
+ok 319 - 동일 모둠 연속 가로채기 제한
+  ---
+  duration_ms: 15.25018
+  type: 'test'
+  ...
+# Subtest: 가로채기 중 새 출제·명단 수정·차시 종료·화면 이동 모두 차단
+ok 320 - 가로채기 중 새 출제·명단 수정·차시 종료·화면 이동 모두 차단
+  ---
+  duration_ms: 7.415746
+  type: 'test'
+  ...
+# Subtest: 가로채기 시간 1ms 전 접수 허용, 0ms 거절, 자동 오답 없음
+ok 321 - 가로채기 시간 1ms 전 접수 허용, 0ms 거절, 자동 오답 없음
+  ---
+  duration_ms: 7.275384
+  type: 'test'
+  ...
+# Subtest: 가로채기 만료 후 답변은 교사 사유를 요구
+ok 322 - 가로채기 만료 후 답변은 교사 사유를 요구
+  ---
+  duration_ms: 6.772234
+  type: 'test'
+  ...
+# Subtest: 가로채기 타이머 일시정지/재개/다시 접수
+ok 323 - 가로채기 타이머 일시정지/재개/다시 접수
+  ---
+  duration_ms: 7.217516
+  type: 'test'
+  ...
+# Subtest: 가로채기 학생은 대상 모둠의 해당 시점 출석자만 허용
+ok 324 - 가로채기 학생은 대상 모둠의 해당 시점 출석자만 허용
+  ---
+  duration_ms: 8.785133
+  type: 'test'
+  ...
+# Subtest: 가로채기 성공 이후 명단 이동에도 해결자/원모둠 이력 불변
+ok 325 - 가로채기 성공 이후 명단 이동에도 해결자/원모둠 이력 불변
+  ---
+  duration_ms: 11.745162
+  type: 'test'
+  ...
+# Subtest: 오답 회수 자연 호출: 지역 방문 순서가 없으면 보류, 강제 호출만 허용
+ok 326 - 오답 회수 자연 호출: 지역 방문 순서가 없으면 보류, 강제 호출만 허용
+  ---
+  duration_ms: 9.905895
+  type: 'test'
+  ...
+# Subtest: 지역 방문 이력이 확인되어야 다음 지역 자연 회수 호출 가능
+ok 327 - 지역 방문 이력이 확인되어야 다음 지역 자연 회수 호출 가능
+  ---
+  duration_ms: 8.169554
+  type: 'test'
+  ...
+# Subtest: 원모둠 우선: 첫 회수에서 타모둠 호출 차단
+ok 328 - 원모둠 우선: 첫 회수에서 타모둠 호출 차단
+  ---
+  duration_ms: 8.174992
+  type: 'test'
+  ...
+# Subtest: 원모둠 포기 사유 기록 후에만 첫 타모둠 회수 허용
+ok 329 - 원모둠 포기 사유 기록 후에만 첫 타모둠 회수 허용
+  ---
+  duration_ms: 9.277181
+  type: 'test'
+  ...
+# Subtest: 교사 보류·해제·강제 호출, 보류 중 자연 호출 차단
+ok 330 - 교사 보류·해제·강제 호출, 보류 중 자연 호출 차단
+  ---
+  duration_ms: 5.481385
+  type: 'test'
+  ...
+# Subtest: 보류된 회수는 강제 호출 사유가 있어야 진행
+ok 331 - 보류된 회수는 강제 호출 사유가 있어야 진행
+  ---
+  duration_ms: 6.401044
+  type: 'test'
+  ...
+# Subtest: 원모둠 회수 정답: 회수 전용 제거/복습 등록/별빛 0
+ok 332 - 원모둠 회수 정답: 회수 전용 제거/복습 등록/별빛 0
+  ---
+  duration_ms: 5.708138
+  type: 'test'
+  ...
+# Subtest: 회수 첫 실패 후 원모둠 재회수 차단, 타모둠 재시도
+ok 333 - 회수 첫 실패 후 원모둠 재회수 차단, 타모둠 재시도
+  ---
+  duration_ms: 6.546263
+  type: 'test'
+  ...
+# Subtest: 회수 첫 포기 -> 타모둠 해결 시 원래 회수 주체 보존
+ok 334 - 회수 첫 포기 -> 타모둠 해결 시 원래 회수 주체 보존
+  ---
+  duration_ms: 7.512922
+  type: 'test'
+  ...
+# Subtest: 회수 타이머 1ms 잔여 제출/0ms 만료 처리
+ok 335 - 회수 타이머 1ms 잔여 제출/0ms 만료 처리
+  ---
+  duration_ms: 5.989543
+  type: 'test'
+  ...
+# Subtest: 회수 진행 중 새 일반 출제·명단 변경·다른 회수 호출 금지
+ok 336 - 회수 진행 중 새 일반 출제·명단 변경·다른 회수 호출 금지
+  ---
+  duration_ms: 8.89921
+  type: 'test'
+  ...
+# Subtest: 교사 차시 일시정지 및 복원 이벤트는 회수 타이머를 정지
+ok 337 - 교사 차시 일시정지 및 복원 이벤트는 회수 타이머를 정지
+  ---
+  duration_ms: 10.473502
+  type: 'test'
+  ...
+# Subtest: 학생 공개 데이터에는 원문제 정답·회수 대상·학생 고유ID·교사 판정 없음
+ok 338 - 학생 공개 데이터에는 원문제 정답·회수 대상·학생 고유ID·교사 판정 없음
+  ---
+  duration_ms: 9.621585
+  type: 'test'
+  ...
+# Subtest: 가로채기 장부 변조: 원모둠/활성 포인터 검출
+ok 339 - 가로채기 장부 변조: 원모둠/활성 포인터 검출
+  ---
+  duration_ms: 8.841007
+  type: 'test'
+  ...
+# Subtest: 회수 장부 변조: 원모둠/질문ID/활성 포인터 검출
+ok 340 - 회수 장부 변조: 원모둠/질문ID/활성 포인터 검출
+  ---
+  duration_ms: 9.325008
+  type: 'test'
+  ...
+# Subtest: 동일 이벤트 ID 동일 payload 멱등, 다른 payload 차단
+ok 341 - 동일 이벤트 ID 동일 payload 멱등, 다른 payload 차단
+  ---
+  duration_ms: 8.834668
+  type: 'test'
+  ...
+# Subtest: 모의 IndexedDB: 3슬롯 저장 실패 뒤 회수 시작·판정 전체 롤백
+ok 342 - 모의 IndexedDB: 3슬롯 저장 실패 뒤 회수 시작·판정 전체 롤백
+  ---
+  duration_ms: 23.791148
+  type: 'test'
+  ...
+# Subtest: 모의 DB 원시 거래: 가로채기·회수 강제 호출 모두 실패 시 원자 롤백 후 동일 ID 재시도
+ok 343 - 모의 DB 원시 거래: 가로채기·회수 강제 호출 모두 실패 시 원자 롤백 후 동일 ID 재시도
+  ---
+  duration_ms: 46.980438
+  type: 'test'
+  ...
+# Subtest: 모의 저장·내보내기·복원 후 활성 가로채기는 자동 재개 없이 정지
+ok 344 - 모의 저장·내보내기·복원 후 활성 가로채기는 자동 재개 없이 정지
+  ---
+  duration_ms: 41.550439
+  type: 'test'
+  ...
+# Subtest: 모의 DB 재접속: 실행 중 회수미션 타이머를 교사 재개 전 정지
+ok 345 - 모의 DB 재접속: 실행 중 회수미션 타이머를 교사 재개 전 정지
+  ---
+  duration_ms: 36.652495
+  type: 'test'
+  ...
+# Subtest: 가로채기·회수 시도에서 중복 판정 및 이벤트 변조를 차단
+ok 346 - 가로채기·회수 시도에서 중복 판정 및 이벤트 변조를 차단
+  ---
+  duration_ms: 12.779293
+  type: 'test'
+  ...
+# Subtest: 학생 화면에는 미션 종류/대상 모둠/시간만 공개되고 정답·원오답 주체는 노출되지 않음
+ok 347 - 학생 화면에는 미션 종류/대상 모둠/시간만 공개되고 정답·원오답 주체는 노출되지 않음
+  ---
+  duration_ms: 9.520703
+  type: 'test'
+  ...
+# Subtest: CHECKPOINT_REPAIRED 한 이벤트에서 회수 타이머/차시를 안전 정지
+ok 348 - CHECKPOINT_REPAIRED 한 이벤트에서 회수 타이머/차시를 안전 정지
+  ---
+  duration_ms: 8.768408
+  type: 'test'
+  ...
+# Subtest: 강제 호출 교사 미확인, 원모둠 미응답 판정 무단 우회 차단
+ok 349 - 강제 호출 교사 미확인, 원모둠 미응답 판정 무단 우회 차단
+  ---
+  duration_ms: 6.451425
+  type: 'test'
+  ...
+# Subtest: 회수의 첫 성공 후 같은 recoveryId로 중복 호출 불가
+ok 350 - 회수의 첫 성공 후 같은 recoveryId로 중복 호출 불가
+  ---
+  duration_ms: 6.164456
+  type: 'test'
+  ...
+1..350
+# tests 350
+# suites 0
+# pass 350
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6870.146016

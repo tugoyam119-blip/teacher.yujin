@@ -91,7 +91,7 @@ export function listRecoveryCandidates(state,{inRegionId,force=false,teacherConf
   const seen=new Set(),out=[];
   for(const x of queued){
     insist(x&&typeof x.id==='string'&&typeof x.questionId==='string'&&typeof x.originRegionId==='string'&&
-      typeof x.originTeamId==='string'&&['PENDING','HELD'].includes(x.status),
+      typeof x.originTeamId==='string'&&['PENDING','HELD','ACTIVE'].includes(x.status),
       'RECOVERY_INVALID','회수 대기 정보가 불완전합니다.');
     insist(!seen.has(x.id),'RECOVERY_DUPLICATE','회수 대상 ID가 중복되었습니다.');seen.add(x.id);
     insist(only.has(x.questionId),'RECOVERY_INVALID','미회수 전용 목록에 없는 문항입니다.');
@@ -99,7 +99,7 @@ export function listRecoveryCandidates(state,{inRegionId,force=false,teacherConf
     const presentIndex=visited.lastIndexOf(inRegionId);
     const laterVerified=originIndex>=0&&presentIndex>originIndex&&
       visited.at(-1)===inRegionId&&x.originRegionId!==inRegionId;
-    if((x.status==='PENDING'||force) && (force || laterVerified))out.push(clone(x));
+    if(x.status!=='ACTIVE' && (x.status==='PENDING'||force) && (force || laterVerified))out.push(clone(x));
   }
   return out;
 }

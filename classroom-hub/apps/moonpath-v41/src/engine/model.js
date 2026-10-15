@@ -43,7 +43,8 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
     attempts:{},activeAttemptId:null,
     teams:Array.from({length:teamCount},(_,i)=>({id:`TEAM_${String(i+1).padStart(2,'0')}`,name:`${i+1}모둠`,rosterVersion:1,members:[],representativeCursor:0,contribution:0})),
     participation:{memberIds:[],rosterChanges:[],assignments:[],nextTeamIndex:0},
-    recovery:{pending:[],resolved:[]},
+    recovery:{pending:[],resolved:[],activeId:null},
+    interception:{records:[],activeId:null,lastTeamId:null},
     rewards:{keys:0,starlight:0,ledger:[],settlementRequired:false},
     magic:{used:[],unlocked:[]},clues:{collected:[],combinations:[]},
     eventLog:[],audit:[]
@@ -61,6 +62,7 @@ export function checkState(s){
   insist(Array.isArray(s.sessions)&&Array.isArray(s.teams)&&s.teams.length===s.settings.teamCount,'INVALID_STATE','필수 상태 데이터가 잘못되었습니다.');
   insist(Array.isArray(s.world?.themes)&&s.world.themes.length===6&&Object.keys(s.world.regions||{}).length===30,'INVALID_WORLD','30지역 구조가 일치하지 않습니다.');
   checkParticipationHistory(s);
+  checkSideMissionHistory(s);
   // PHASE 2-2: a saved draw ledger cannot claim extra unseen questions or
   // hide a first issuance. Legacy PHASE 1 timer-only attempts have no draw row.
   const q=s.questions;
@@ -232,6 +234,147 @@ export function checkParticipationHistory(s){
   return s;
 }
 
+/** Check origins, recovery identity, timer and resolved history after any event. */
+export function checkSideMissionHistory(s){
+  const history=new Map(s.eventLog.map(e=>[e.eventId,e]));
+  const checkTimer=t=>insist(t&&TIMER_PHASES.includes(t.phase)&&Number.isFinite(t.remainingMs)&&
+    t.remainingMs>=0&& (t.phase!=='RUNNING'||Number.isSafeInteger(t.runningSince)),
+    'SIDE_MISSION_INVALID','미션 타이머 상태가 올바르지 않습니다.');
+  const checkRoster=x=>insist(x?.teamId&&Number.isInteger(x.rosterVersion)&&x.rosterVersion>=1&&
+    Array.isArray(x.members)&&x.members.every(m=>typeof m.id==='string'),
+    'SIDE_MISSION_INVALID','미션 참여 당시 명단 스냅샷이 없습니다.');
+  const checkFlow=(flow,sourceId,sourceQuestion)=>{
+    checkTimer(flow.timer);checkRoster(flow.targetRoster);
+    insist(flow.questionId===sourceQuestion&&flow.questionSnapshot?.questionId===sourceQuestion&&
+      flow.targetRoster.teamId===flow.teamId,
+      'SIDE_MISSION_INVALID','미션 원문항/대상 스냅샷이 일치하지 않습니다.');
+    if(flow.answer){
+      const e=history.get(flow.answer.receivedEventId);
+      insist(e&&e.type.endsWith('_ANSWER_SUBMITTED')&&flow.answer.suggestion?.questionId===sourceQuestion&&
+        flow.timer.phase!=='RUNNING', 'SIDE_MISSION_INVALID','미션 답안/이벤트 이력이 유효하지 않습니다.');
+      if(flow.answer.solverMemberId)insist(flow.targetRoster.members.some(m=>m.id===flow.answer.solverMemberId&&m.status==='PRESENT'),
+        'SIDE_MISSION_INVALID','미션 실제 제출 학생이 당시 출석 명단에 없습니다.');
+    }
+    if(flow.judgement){
+      const e=history.get(flow.judgement.eventId);
+      insist(e&&e.type.endsWith('_JUDGED')&&flow.judgement.teacherConfirmed===true&&
+        ['CORRECT','INCORRECT'].includes(flow.judgement.decision)&&flow.judgement.solverTeamId===flow.teamId&&
+        flow.timer.phase==='RESOLVED'&&flow.resolvedAt===flow.judgement.judgedAt,
+        'SIDE_MISSION_INVALID','미션 교사 판정/해결 모둠 기록이 유효하지 않습니다.');
+      if(flow.judgement.solverMemberId)insist(flow.targetRoster.members.some(m=>m.id===flow.judgement.solverMemberId&&m.status==='PRESENT'),
+        'SIDE_MISSION_INVALID','미션 실제 해결 학생이 출제 당시 대상 모둠에 없습니다.');
+    }
+    if(flow.forfeited)insist(flow.timer.phase==='RESOLVED'&&!flow.judgement&&!flow.answer&&
+      history.get(flow.forfeited.eventId)?.type.endsWith('_FORFEITED'),
+      'SIDE_MISSION_INVALID','미션 포기 근거가 일치하지 않습니다.');
+  };
+  const interceptions=s.interception;
+  if(interceptions){
+    insist(Array.isArray(interceptions.records)&&
+      (interceptions.activeId===null||typeof interceptions.activeId==='string'),
+      'SIDE_MISSION_INVALID','가로채기 장부가 손상되었습니다.');
+    const ids=new Set(),origins=new Set();let live=0,previousTeamId=null;
+    for(const x of interceptions.records){
+      requireId(x.id,'가로채기');
+      const source=s.attempts[x.sourceAttemptId];
+      insist(!ids.has(x.id)&&!origins.has(x.sourceAttemptId)&&source?.judgement?.decision==='INCORRECT'&&
+        source.questionId===x.questionId&&source.teamId===x.originTeamId&&
+        x.originRosterVersion===(source.teamAssignment?.rosterVersion??null)&&
+        x.originRepresentativeMemberId===(source.teamAssignment?.representativeMemberId??null)&&
+        history.get(x.openedEventId)?.type.startsWith('INTERCEPTION_'),
+        'SIDE_MISSION_INVALID','원본 없는 가로채기나 중복 기록이 존재합니다.');
+      ids.add(x.id);origins.add(x.sourceAttemptId);
+      if(x.status==='SKIPPED'){
+        insist(x.targetTeamId===null&&typeof x.reason==='string'&&x.reason.length>0,
+          'SIDE_MISSION_INVALID','생략 근거가 누락되었습니다.');
+        previousTeamId=null;continue;
+      }
+      insist(x.targetTeamId!==x.originTeamId&&x.teamId===undefined&&
+        ['ACTIVE','RESOLVED'].includes(x.status)&&previousTeamId!==x.targetTeamId,
+        'SIDE_MISSION_INVALID','가로채기 대상·순환·상태가 잘못되었습니다.');
+      const opening=history.get(x.openedEventId);
+      insist(opening?.payload?.sourceAttemptId===x.sourceAttemptId&&
+        opening?.payload?.interceptionId===x.id&&opening?.payload?.targetTeamId===x.targetTeamId,
+        'SIDE_MISSION_INVALID','가로채기 생성 이벤트와 현재 기록이 다릅니다.');
+      for(const [evId,expected] of [[x.answer?.receivedEventId,'INTERCEPTION_ANSWER_SUBMITTED'],
+        [x.judgement?.eventId,'INTERCEPTION_JUDGED'],[x.forfeited?.eventId,'INTERCEPTION_FORFEITED']]){
+        if(evId)insist(history.get(evId)?.type===expected&&history.get(evId).payload?.interceptionId===x.id,
+          'SIDE_MISSION_INVALID','가로채기 이벤트의 대상 ID가 불일치합니다.');
+      }
+      checkTimer(x.timer);checkRoster(x.targetRoster);
+      insist(x.questionSnapshot?.questionId===x.questionId&&x.targetRoster.teamId===x.targetTeamId,
+        'SIDE_MISSION_INVALID','가로채기 질문과 참여 명단이 일치하지 않습니다.');
+      // Side mission stores teamId in targetTeamId to avoid changing origin team attribution.
+      checkFlow({...x,teamId:x.targetTeamId},x.sourceAttemptId,x.questionId);
+      previousTeamId=x.targetTeamId;
+      if(x.status==='ACTIVE'){
+        live++;insist(interceptions.activeId===x.id&&x.timer.phase!=='RESOLVED',
+          'SIDE_MISSION_INVALID','활성 가로채기 연결 정보가 손상되었습니다.');
+      }else insist(x.timer.phase==='RESOLVED'&&(x.judgement||x.forfeited),
+        'SIDE_MISSION_INVALID','종료 가로채기 판정이 없습니다.');
+    }
+    insist(live===(interceptions.activeId?1:0)&&interceptions.lastTeamId===previousTeamId,
+      'SIDE_MISSION_INVALID','가로채기 활성/연속 이력이 일치하지 않습니다.');
+  }
+  const r=s.recovery;
+  insist(r&&Array.isArray(r.pending)&&Array.isArray(r.resolved),'RECOVERY_INVALID','회수 장부가 누락되었습니다.');
+  if(r.activeId!==undefined)insist(r.activeId===null||typeof r.activeId==='string','RECOVERY_INVALID','회수 활성 ID가 올바르지 않습니다.');
+  const used=new Set(),pendingQuestions=new Set(),recoverOnly=new Set(s.questions.recoveryOnlyIds);let active=0;
+  for(const row of [...r.pending,...r.resolved]){
+    const origin=s.attempts[row.sourceAttemptId];
+    insist(typeof row.id==='string'&&row.id===row.sourceAttemptId&&!used.has(row.id)&&
+      origin?.judgement?.decision==='INCORRECT'&&origin.teamId===row.originTeamId&&
+      origin.questionId===row.questionId&&origin.regionId===row.originRegionId&&
+      row.originRosterVersion===(origin.teamAssignment?.rosterVersion??null)&&
+      row.originRepresentativeMemberId===(origin.teamAssignment?.representativeMemberId??null)&&
+      history.get(row.sourceEventId)?.type==='ANSWER_JUDGED',
+      'RECOVERY_INVALID','회수 원문제/출처 기록이 유효하지 않습니다.');
+    used.add(row.id);
+    const resolved=row.status==='RESOLVED';
+    if(!resolved){
+      insist(!pendingQuestions.has(row.questionId),'RECOVERY_INVALID','같은 문항에 미회수 대기가 중복되었습니다.');
+      pendingQuestions.add(row.questionId);
+    }
+    insist((resolved?r.resolved:r.pending).includes(row),'RECOVERY_INVALID','회수 대기/완료 분류가 일치하지 않습니다.');
+    insist(resolved?true:recoverOnly.has(row.questionId),
+      'RECOVERY_INVALID','회수 완료 여부와 출제 전용 목록이 일치하지 않습니다.');
+    insist((row.runs??[]).every(run=>run.sourceAttemptId===row.sourceAttemptId&&run.questionId===row.questionId),
+      'RECOVERY_INVALID','회수 시도와 원문제 연결이 손상되었습니다.');
+    const runIds=new Set();
+    for(const [i,run] of (row.runs??[]).entries()){
+      insist(!runIds.has(run.id)&&history.get(run.calledEventId)?.type==='RECOVERY_CALLED'&&
+        (i===0&&!row.originForfeited?run.teamId===row.originTeamId:run.teamId!==row.originTeamId),
+        'RECOVERY_INVALID','회수 시도의 순번·원모둠 우선권이 손상되었습니다.');
+      const opened=history.get(run.calledEventId);
+      insist(opened.payload?.recoveryId===row.id&&opened.payload?.runId===run.id&&
+        opened.payload?.teamId===run.teamId&&opened.payload?.regionId===run.regionId,
+        'RECOVERY_INVALID','회수 호출 이벤트와 실제 대상이 불일치합니다.');
+      for(const [evId,expected] of [[run.answer?.receivedEventId,'RECOVERY_ANSWER_SUBMITTED'],
+        [run.judgement?.eventId,'RECOVERY_JUDGED'],[run.forfeited?.eventId,'RECOVERY_FORFEITED']]){
+        if(evId)insist(history.get(evId)?.type===expected&&history.get(evId).payload?.recoveryId===row.id&&
+          history.get(evId).payload?.runId===run.id,'RECOVERY_INVALID','회수 이벤트의 시도 ID가 불일치합니다.');
+      }
+      runIds.add(run.id);checkFlow(run,row.sourceAttemptId,row.questionId);
+      if(i<(row.runs.length-1))insist(run.timer.phase==='RESOLVED',
+        'RECOVERY_INVALID','이전 회수 시도가 종료되지 않았습니다.');
+    }
+    if(row.status==='ACTIVE'){
+      active++;
+      insist(r.activeId===row.id&&row.runs?.some(x=>x.id===row.activeRunId&&x.timer.phase!=='RESOLVED'),
+        'RECOVERY_INVALID','활성 회수 시도와 장부가 일치하지 않습니다.');
+    }else insist(row.activeRunId===undefined||row.activeRunId===null,
+      'RECOVERY_INVALID','종료/보류 회수에서 활성 시도 ID가 남아 있습니다.');
+    if(resolved){
+      const win=row.runs?.at(-1);
+      insist(win?.judgement?.decision==='CORRECT'&&row.solverTeamId===win.teamId&&
+        row.solverMemberId===win.judgement.solverMemberId&&row.resolvedAt===win.resolvedAt,
+        'RECOVERY_INVALID','회수 성공 기록과 실제 해결자/이력이 일치하지 않습니다.');
+    }
+  }
+  insist(active===(r.activeId?1:0),'RECOVERY_INVALID','활성 회수 ID의 수가 잘못되었습니다.');
+  return s;
+}
+
 export function timerRemainingMs(attempt,at){
   validTimestamp(at);
   if(!attempt)return null;
@@ -242,6 +385,15 @@ export function timerRemainingMs(attempt,at){
 export function publicProjection(s,at){
   checkState(s);
   const attempt=s.activeAttemptId?s.attempts[s.activeAttemptId]:null;
+  // PHASE 2-5 public mission progress is a narrow allowlist: NO question ID,
+  // student identity, source team, original wrong response or correction history.
+  const interception=s.interception?.records?.find(x=>x.id===s.interception.activeId);
+  const recovering=s.recovery?.pending?.find(x=>x.id===s.recovery.activeId);
+  const recoveryRun=recovering?.runs?.find(x=>x.id===recovering.activeRunId);
+  const mission=interception?{kind:'INTERCEPTION',teamId:interception.targetTeamId,
+    phase:interception.timer.phase,remainingMs:timerRemainingMs(interception,at)}:
+    recoveryRun?{kind:'RECOVERY',teamId:recoveryRun.teamId,
+      phase:recoveryRun.timer.phase,remainingMs:timerRemainingMs(recoveryRun,at)}:null;
   // Explicit public allowlist. Never serialize the full state into a student message.
   return {
     version:ENGINE_VERSION,revision:s.meta.revision,slot:s.meta.slot,expeditionId:s.meta.expeditionId,
@@ -250,5 +402,6 @@ export function publicProjection(s,at){
     resources:{keys:s.rewards.keys,starlight:s.rewards.starlight},
     attempt:attempt?{id:attempt.id,phase:attempt.timer.phase,remainingMs:timerRemainingMs(attempt,at)}:null,
     lesson:s.activeSessionId?{active:true}:null,
+    mission,
   };
 }

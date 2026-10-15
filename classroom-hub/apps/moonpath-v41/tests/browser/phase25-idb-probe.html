@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8"><title>Moonpath isolated IDB probe - non-production</title>
+<script>
+window.__probe={state:'PENDING'};
+const req=indexedDB.open('moonpath-v411-phase25-temporary-probe',1);
+req.onupgradeneeded=()=>{req.result.createObjectStore('kv');};
+req.onerror=()=>window.__probe={state:'FAIL',error:String(req.error)};
+req.onsuccess=()=>{
+ const db=req.result, tx=db.transaction('kv','readwrite');tx.objectStore('kv').put('ok','probe');
+ tx.oncomplete=()=>{const r=db.transaction('kv').objectStore('kv').get('probe');r.onsuccess=()=>window.__probe={state:r.result==='ok'?'PASS':'FAIL',value:r.result};};
+ tx.onabort=()=>window.__probe={state:'FAIL',error:String(tx.error)};
+};
+</script>

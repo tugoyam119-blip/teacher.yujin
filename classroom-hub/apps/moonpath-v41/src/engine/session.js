@@ -3,6 +3,7 @@ import {openEngineDatabase} from '../storage/indexeddb.js';
 import {makeBackup,verifyBackup} from '../storage/backup.js';
 import {suggestNextTeam} from '../teams/roster.js';
 import {planQuestionDraw} from '../questions/draw.js';
+import {activeInterception,activeRecovery} from '../recovery/flows.js';
 
 /** Only this teacher-side facade may send writes; publicProjection is an allowlist. */
 export class TeacherEngineSession {
@@ -46,7 +47,8 @@ export class TeacherEngineSession {
         const s=this.state;
         const timer=s.activeAttemptId&&s.attempts[s.activeAttemptId]?.timer;
         const session=s.activeSessionId&&s.sessions.find(x=>x.id===s.activeSessionId);
-        if(pauseRunning&&(timer?.phase==='RUNNING'||session?.phase==='ACTIVE')){
+        const sideRunning=[activeInterception(s),activeRecovery(s)?.runs?.find(x=>x.id===activeRecovery(s)?.activeRunId)].some(x=>x?.timer.phase==='RUNNING');
+        if(pauseRunning&&(timer?.phase==='RUNNING'||session?.phase==='ACTIVE'||sideRunning)){
           const at=Math.max(this.clock(),s.meta.updatedAt);
           const command={type:'RECOVER_INTERRUPTED',eventId:this.newId(),at,payload:{reason:'REOPEN'}};
           const result=await this.store.commit(slot,command,{expectedRevision:s.meta.revision,lease});
@@ -66,7 +68,8 @@ export class TeacherEngineSession {
         this.slot=slot;this.lease=lease;this.state=result.state;
         const a=this.state.activeAttemptId&&this.state.attempts[this.state.activeAttemptId];
         const lesson=this.state.activeSessionId&&this.state.sessions.find(x=>x.id===this.state.activeSessionId);
-        if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'){
+        const sideRunning=[activeInterception(this.state),activeRecovery(this.state)?.runs?.find(x=>x.id===activeRecovery(this.state)?.activeRunId)].some(x=>x?.timer.phase==='RUNNING');
+        if(a?.timer.phase==='RUNNING'||lesson?.phase==='ACTIVE'||sideRunning){
           const pause=await this.store.commit(slot,{type:'RECOVER_INTERRUPTED',eventId:this.newId(),at:Math.max(this.clock(),this.state.meta.updatedAt),payload:{reason:'CHECKPOINT_REPAIR'}},{expectedRevision:this.state.meta.revision,lease});
           if(pause.committed)this.state=pause.state;
         }
@@ -148,6 +151,23 @@ export class TeacherEngineSession {
   /** Corrections are deferred to STEP 2-7; actual solver is independent of representative. */
   async judgeAnswer({attemptId,decision,teacherConfirmed,teacherReason=null,missingResponseConfirmed=false,solverMemberId=null},{eventId=this.newId()}={}){
     return this.dispatch('ANSWER_JUDGED',{attemptId,decision,teacherConfirmed,teacherReason,missingResponseConfirmed,solverMemberId},eventId);
+  }
+  /** PHASE 2-5: teacher-only interception and recovery events. */
+  async openInterception({sourceAttemptId,targetTeamId,interceptionId=null},{eventId=this.newId()}={}){
+    // Stable default ID derived from the caller's idempotency key. Double-click
+    // retry with the same eventId must not silently create a new attempt ID.
+    return this.dispatch('INTERCEPTION_OPENED',{sourceAttemptId,targetTeamId,
+      interceptionId:interceptionId??eventId,teacherConfirmed:true},eventId);
+  }
+  async skipInterception({sourceAttemptId,reason},{eventId=this.newId()}={}){
+    return this.dispatch('INTERCEPTION_SKIPPED',{sourceAttemptId,reason,teacherConfirmed:true},eventId);
+  }
+  async controlInterception(type,{interceptionId,response,solverMemberId=null,decision,teacherReason=null,reason=null,lateReason=null,missingResponseConfirmed=false},{eventId=this.newId()}={}){
+    return this.dispatch(type,{interceptionId,response,solverMemberId,decision,teacherReason,reason,lateReason,missingResponseConfirmed,teacherConfirmed:true},eventId);
+  }
+  async controlRecovery(type,{recoveryId,runId=null,teamId,regionId,mode,reason,response,solverMemberId=null,decision,teacherReason=null,lateReason=null,missingResponseConfirmed=false},{eventId=this.newId()}={}){
+    const committedRunId=type==='RECOVERY_CALLED'?(runId??eventId):runId;
+    return this.dispatch(type,{recoveryId,runId:committedRunId,teamId,regionId,mode,reason,response,solverMemberId,decision,teacherReason,lateReason,missingResponseConfirmed,teacherConfirmed:true},eventId);
   }
   getState(){insist(this.state,'SESSION_NOT_OPEN','세션이 없습니다.');return clone(this.state);}
   getStudentProjection(){return publicProjection(this.getState(),this.clock());}

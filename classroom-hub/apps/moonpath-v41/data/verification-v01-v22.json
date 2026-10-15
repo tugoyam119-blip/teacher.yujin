@@ -75,16 +75,14 @@
     "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
     "unitEvidence": [
       "src/teams/roster.js",
-      "src/engine/model.js",
-      "src/engine/reducer.js",
-      "src/engine/session.js",
-      "tests/phase2-2-4.test.mjs"
+      "src/recovery/flows.js",
+      "tests/phase2-2-4.test.mjs",
+      "tests/phase2-2-5.test.mjs"
     ],
-    "integrationBrowserEvidence": "NOT_RUN",
+    "integrationBrowserEvidence": "NOT_RUN_OR_BROWSER_ENTRY_BLOCKED",
     "limitations": [
-      "모둠·출결·전출·대표 순환 순수/모의 거래 검증만 완료",
-      "가로채기 후 실제 해결모둠·공헌도 정산은 2-5~2-7 검증",
-      "실제 Chrome·Edge 저장/복원/다중창 시험 필요"
+      "가로채기/회수·원모둠 우선 규칙은 Node/모의 DB에서만 확인",
+      "실제 확장 학생 창·브라우저 저장·장기 반복 수업 시나리오 미검증"
     ]
   },
   {

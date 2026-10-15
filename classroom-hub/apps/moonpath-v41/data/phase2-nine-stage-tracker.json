@@ -93,12 +93,27 @@
     {
       "id": "2-5",
       "title": "가로채기·회수",
-      "implementation": "NOT_STARTED",
-      "unitTest": "NOT_RUN",
-      "integrationTest": "NOT_RUN",
-      "browserTest": "NOT_RUN",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_38",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "BLOCKED_BY_ADMINISTRATOR",
       "userApproval": "NOT_REQUESTED",
-      "evidence": []
+      "evidence": [
+        "src/recovery/flows.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "src/storage/indexeddb.js",
+        "tests/phase2-2-5.test.mjs",
+        "docs/PHASE2_STEP2_5_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-5-20261015.summary.json"
+      ],
+      "limitations": [
+        "지역 방문 이벤트/경로 이동은 PHASE 2-8 미구현이므로 자연 회수는 실제 지역 방문 기록 연결 전이며 테스트는 방문 기록 모의만 통과",
+        "별빛·공헌도·열쇠 보상 및 이력 정산은 PHASE 2-6/2-7 미구현",
+        "교사/학생 실제 UI와 Native IndexedDB·file:// Chrome/Edge 강제 종료 복구 미검증",
+        "차시 재개/두 창 동기화/엔딩 30지역 실제 게임 통합 전"
+      ]
     },
     {
       "id": "2-6",
