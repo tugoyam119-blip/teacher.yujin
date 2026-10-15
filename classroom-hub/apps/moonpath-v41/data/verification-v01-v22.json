@@ -68,10 +68,24 @@
     "id": "V06",
     "target": "모둠 변경·대표 순환·가로채기",
     "acceptance": "2~8모둠, 결석·재편성 이력 보존, 문제당 가로채기 최대 1회",
-    "implementationStatus": "미착수",
+    "implementationStatus": "구현 중",
     "testStatus": "NOT_RUN",
     "userApproval": "미승인",
-    "evidence": []
+    "evidence": [],
+    "unitTestStatus": "PASS_NODE_UNIT_OR_FAKE_IDB_ONLY_2026-10-15",
+    "unitEvidence": [
+      "src/teams/roster.js",
+      "src/engine/model.js",
+      "src/engine/reducer.js",
+      "src/engine/session.js",
+      "tests/phase2-2-4.test.mjs"
+    ],
+    "integrationBrowserEvidence": "NOT_RUN",
+    "limitations": [
+      "모둠·출결·전출·대표 순환 순수/모의 거래 검증만 완료",
+      "가로채기 후 실제 해결모둠·공헌도 정산은 2-5~2-7 검증",
+      "실제 Chrome·Edge 저장/복원/다중창 시험 필요"
+    ]
   },
   {
     "id": "V07",

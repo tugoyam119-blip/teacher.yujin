@@ -42,6 +42,7 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
     questions:{packId,packVersion,issuedIds:[],recoveryOnlyIds:[],reviewEligibleIds:[],draws:[]},
     attempts:{},activeAttemptId:null,
     teams:Array.from({length:teamCount},(_,i)=>({id:`TEAM_${String(i+1).padStart(2,'0')}`,name:`${i+1}모둠`,rosterVersion:1,members:[],representativeCursor:0,contribution:0})),
+    participation:{memberIds:[],rosterChanges:[],assignments:[],nextTeamIndex:0},
     recovery:{pending:[],resolved:[]},
     rewards:{keys:0,starlight:0,ledger:[],settlementRequired:false},
     magic:{used:[],unlocked:[]},clues:{collected:[],combinations:[]},
@@ -59,6 +60,7 @@ export function checkState(s){
   if(s.eventLog.length)insist(s.meta.updatedAt===s.eventLog.at(-1).at,'EVENT_TIME_MISMATCH','최종 수정 시각과 이벤트 시각이 다릅니다.');
   insist(Array.isArray(s.sessions)&&Array.isArray(s.teams)&&s.teams.length===s.settings.teamCount,'INVALID_STATE','필수 상태 데이터가 잘못되었습니다.');
   insist(Array.isArray(s.world?.themes)&&s.world.themes.length===6&&Object.keys(s.world.regions||{}).length===30,'INVALID_WORLD','30지역 구조가 일치하지 않습니다.');
+  checkParticipationHistory(s);
   // PHASE 2-2: a saved draw ledger cannot claim extra unseen questions or
   // hide a first issuance. Legacy PHASE 1 timer-only attempts have no draw row.
   const q=s.questions;
@@ -85,6 +87,11 @@ export function checkState(s){
     insist(attempt&&attempt.questionId===row.questionId&&attempt.drawMode===row.mode&&
       attempt.questionSnapshot?.questionId===row.questionId,
       'DRAW_HISTORY_INVALID','출제 이력과 문제 시도 스냅샷이 일치하지 않습니다.');
+    if(attempt.teamAssignment){
+      insist(row.teamRosterVersion===attempt.teamAssignment.rosterVersion&&
+        row.representativeMemberId===attempt.teamAssignment.representativeMemberId,
+        'DRAW_HISTORY_INVALID','출제 장부와 명단 버전·대표 학생 스냅샷이 다릅니다.');
+    }
     if(row.mode==='NEW'){
       insist(!seenNew.has(row.questionId),'DRAW_HISTORY_INVALID','신규 발행 ID가 중복되었습니다.');
       seenNew.add(row.questionId);issuedFromDraws.push(row.questionId);
@@ -139,6 +146,92 @@ export function checkState(s){
   }
   return s;
 }
+/**
+ * Cross-check mutable rosters against immutable per-attempt snapshots.
+ * Optional participation object keeps old schema-v1 saves readable.
+ */
+export function checkParticipationHistory(s){
+  const validStatuses=new Set(['PRESENT','ABSENT','LATE','LEFT_EARLY','INACTIVE']);
+  const teamIds=new Set(),memberIds=new Set();
+  for(const team of s.teams){
+    requireId(team.id,'모둠');insist(!teamIds.has(team.id),'TEAM_DUPLICATE','모둠 고유 ID가 중복되었습니다.');teamIds.add(team.id);
+    insist(typeof team.name==='string'&&team.name.trim().length>0&&team.name.length<=80,
+      'TEAM_NAME_INVALID','모둠 이름 형식이 잘못되었습니다.');
+    insist(Number.isSafeInteger(team.rosterVersion)&&team.rosterVersion>=1,
+      'ROSTER_VERSION_INVALID','명단 버전이 올바르지 않습니다.');
+    insist(Array.isArray(team.members)&&team.members.length<=80,'ROSTER_INVALID','모둠 명단이 유효하지 않습니다.');
+    insist(Number.isSafeInteger(team.representativeCursor)&&team.representativeCursor>=0&&
+      (team.members.length?team.representativeCursor<team.members.length:team.representativeCursor===0),
+      'REPRESENTATIVE_CURSOR_INVALID','대표 순환 위치가 유효하지 않습니다.');
+    for(const m of team.members){
+      requireId(m.id,'학생');validTimestamp(m.joinedAt);
+      insist(!memberIds.has(m.id),'ROSTER_MEMBER_DUPLICATE','학생 고유 ID가 여러 모둠에 동시에 있습니다.');
+      memberIds.add(m.id);
+      insist(typeof m.name==='string'&&m.name.trim().length>0&&m.name.length<=80 && validStatuses.has(m.status),
+        'ROSTER_INVALID','학생 이름 또는 출결 상태가 유효하지 않습니다.');
+    }
+  }
+  const p=s.participation;
+  if(!p)return s;
+  insist(Array.isArray(p.memberIds)&&Array.isArray(p.rosterChanges)&&Array.isArray(p.assignments)&&
+    Number.isSafeInteger(p.nextTeamIndex)&&p.nextTeamIndex>=0&&p.nextTeamIndex<s.teams.length,
+    'PARTICIPATION_INVALID','참여 장부와 모둠 순환 위치가 유효하지 않습니다.');
+  const registry=new Set(p.memberIds);
+  insist(registry.size===p.memberIds.length&&p.memberIds.every(id=>typeof id==='string'&&id.length>0)&&
+    [...memberIds].every(id=>registry.has(id)), 'ROSTER_HISTORY_INVALID','학생 ID 등록부가 누락되거나 중복되었습니다.');
+  const events=new Map(s.eventLog.map(e=>[e.eventId,e]));
+  const lastByTeam=new Map(),lastSnapshots=new Map();
+  for(const record of p.rosterChanges){
+    const ev=events.get(record.eventId);
+    insist(ev&&ev.type===record.type&&ev.at===record.at && Array.isArray(record.before)&&
+      Array.isArray(record.after)&&record.before.length===record.after.length&&[1,2].includes(record.before.length),
+      'ROSTER_HISTORY_INVALID','명단 변경 기록과 이벤트 이력이 일치하지 않습니다.');
+    for(let i=0;i<record.before.length;i++){
+      const before=record.before[i],after=record.after[i];
+      insist(before.teamId===after.teamId&&after.rosterVersion===before.rosterVersion+1,
+        'ROSTER_HISTORY_INVALID','명단 버전 증가가 올바르지 않습니다.');
+      if(lastByTeam.has(before.teamId)){
+        insist(lastByTeam.get(before.teamId)===before.rosterVersion &&
+          canonicalJson(lastSnapshots.get(before.teamId).members)===canonicalJson(before.members) &&
+          lastSnapshots.get(before.teamId).teamName===before.teamName,
+          'ROSTER_HISTORY_INVALID','명단 변경 이력의 버전·구성이 이어지지 않습니다.');
+      }
+      lastByTeam.set(after.teamId,after.rosterVersion);
+      lastSnapshots.set(after.teamId,after);
+    }
+  }
+  for(const [id,v] of lastByTeam){
+    const current=s.teams.find(t=>t.id===id),saved=lastSnapshots.get(id);
+    insist(current?.rosterVersion===v && current.name===saved.teamName &&
+      canonicalJson(current.members)===canonicalJson(saved.members),
+      'ROSTER_HISTORY_INVALID','현재 명단의 내용 또는 버전이 마지막 감사 스냅샷과 다릅니다.');
+  }
+  const assigned=new Set();
+  for(const row of p.assignments){
+    const attempt=s.attempts[row.attemptId],ev=events.get(row.eventId),a=row.assignment;
+    insist(attempt&&ev&&ev.at===row.at&&['QUESTION_DRAWN','ATTEMPT_PREPARED'].includes(ev.type)&&
+      attempt.teamId===a?.teamId&&attempt.teamAssignment&&canonicalJson(attempt.teamAssignment)===canonicalJson(a)&&
+      !assigned.has(row.attemptId),'REPRESENTATIVE_HISTORY_INVALID','대표 배정 기록과 출제 시도가 일치하지 않습니다.');
+    assigned.add(row.attemptId);
+    insist(Number.isSafeInteger(a.rosterVersion)&&a.rosterVersion>=1&&Array.isArray(a.members)&&
+      ['AUTO','MANUAL'].includes(a.selectionMode)&&typeof a.teamName==='string',
+      'REPRESENTATIVE_HISTORY_INVALID','대표 배정 스냅샷이 불완전합니다.');
+    const representative=a.members.find(m=>m.id===a.representativeMemberId);
+    insist((a.representativeMemberId===null&&a.members.length===0)||
+      (representative&&representative.status==='PRESENT'&&representative.name===a.representativeName),
+      'REPRESENTATIVE_HISTORY_INVALID','대표는 당시 출석한 학생이어야 합니다.');
+  }
+  for(const attempt of Object.values(s.attempts)){
+    if(attempt.teamAssignment)insist(assigned.has(attempt.id),'REPRESENTATIVE_HISTORY_INVALID','문제별 대표 배정 이력이 누락되었습니다.');
+    if(attempt.answer?.submittedByMemberId)insist(attempt.teamAssignment?.members?.some(m=>m.id===attempt.answer.submittedByMemberId&&m.status==='PRESENT'),
+      'SOLVER_HISTORY_INVALID','답변 제출자가 출제 당시 출석 명단에 없습니다.');
+    if(attempt.judgement?.solverTeamId)insist(attempt.judgement.solverTeamId===attempt.teamId &&
+      (attempt.judgement.solverMemberId===null||attempt.teamAssignment?.members?.some(m=>m.id===attempt.judgement.solverMemberId&&m.status==='PRESENT')),
+      'SOLVER_HISTORY_INVALID','실제 해결자 기록이 출제 원본과 맞지 않습니다.');
+  }
+  return s;
+}
+
 export function timerRemainingMs(attempt,at){
   validTimestamp(at);
   if(!attempt)return null;

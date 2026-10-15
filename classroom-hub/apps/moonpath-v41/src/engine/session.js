@@ -1,6 +1,7 @@
 import {newExpedition,clone,checkSlot,checkState,publicProjection,insist} from './model.js';
 import {openEngineDatabase} from '../storage/indexeddb.js';
 import {makeBackup,verifyBackup} from '../storage/backup.js';
+import {suggestNextTeam} from '../teams/roster.js';
 import {planQuestionDraw} from '../questions/draw.js';
 
 /** Only this teacher-side facade may send writes; publicProjection is an allowlist. */
@@ -98,8 +99,10 @@ export class TeacherEngineSession {
       const issuingEventId=eventId??this.newId();
       const prior=this.state.eventLog.find(e=>e.eventId===issuingEventId);
       if(prior){
+        const requestedMode=teamId===null||teamId===undefined?'AUTO':'MANUAL';
         insist(prior.type==='QUESTION_DRAWN' && prior.payload?.regionId===regionId &&
-          prior.payload?.teamId===teamId && (attemptId===null||prior.payload?.attemptId===attemptId),
+          (prior.payload.teamSelection??'MANUAL')===requestedMode &&
+          (teamId===null||teamId===undefined||prior.payload?.teamId===teamId) && (attemptId===null||prior.payload?.attemptId===attemptId),
           'EVENT_ID_CONFLICT','동일 출제 ID에 다른 요청이 접수되었습니다.');
         return {committed:false,duplicate:true,state:clone(this.state),
           attemptId:prior.payload.attemptId,questionId:prior.payload.questionId,mode:prior.payload.mode};
@@ -108,7 +111,9 @@ export class TeacherEngineSession {
       insist(at>=this.state.meta.updatedAt,'CLOCK_BACKWARD','PC 시각 역행을 확인하세요.');
       // Plan from a stable state in the same queue as all teacher commands.
       const issuingAttemptId=attemptId??this.newId();
-      const payload=planQuestionDraw(this.state,questionEngine,{regionId,teamId,attemptId:issuingAttemptId,at,random});
+      const selectedTeamId=teamId??suggestNextTeam(this.state);
+      const payload=planQuestionDraw(this.state,questionEngine,{regionId,teamId:selectedTeamId,attemptId:issuingAttemptId,at,random});
+      payload.teamSelection=teamId===null||teamId===undefined?'AUTO':'MANUAL';
       this.lease=await this.store.acquireWriter(this.slot,this.writerId);
       const result=await this.store.commit(this.slot,{type:'QUESTION_DRAWN',eventId:issuingEventId,at,payload},{
         expectedRevision:this.state.meta.revision,lease:this.lease
@@ -118,13 +123,31 @@ export class TeacherEngineSession {
         attemptId:issuingAttemptId,questionId:payload.questionId,mode:payload.mode};
     });
   }
-  /** Teacher-side answer intake. Never accept an externally supplied auto-score. */
-  async submitAnswer({attemptId,response,teacherConfirmed=false,lateReason=null},{eventId=this.newId()}={}){
-    return this.dispatch('ANSWER_SUBMITTED',{attemptId,response,teacherConfirmed,lateReason},eventId);
+  /** PHASE 2-4 teacher-only roster changes. All are auditable events. */
+  async addTeamMember({teamId,name,status='PRESENT',memberId=this.newId(),reason=null},{eventId=this.newId()}={}){
+    return this.dispatch('TEAM_MEMBER_ADDED',{teamId,memberId,name,status,reason,teacherConfirmed:true},eventId);
   }
-  /** Irreversible within PHASE 2-3. Corrections use the future 2-7 audit engine. */
-  async judgeAnswer({attemptId,decision,teacherConfirmed,teacherReason=null,missingResponseConfirmed=false},{eventId=this.newId()}={}){
-    return this.dispatch('ANSWER_JUDGED',{attemptId,decision,teacherConfirmed,teacherReason,missingResponseConfirmed},eventId);
+  async setTeamAttendance({teamId,memberId,status,reason=null},{eventId=this.newId()}={}){
+    return this.dispatch('TEAM_ATTENDANCE_SET',{teamId,memberId,status,reason,teacherConfirmed:true},eventId);
+  }
+  async moveTeamMember({memberId,fromTeamId,toTeamId,reason=null},{eventId=this.newId()}={}){
+    return this.dispatch('TEAM_MEMBER_MOVED',{memberId,fromTeamId,toTeamId,reason,teacherConfirmed:true},eventId);
+  }
+  async renameTeamMember({teamId,memberId,name,reason=null},{eventId=this.newId()}={}){
+    return this.dispatch('TEAM_MEMBER_RENAMED',{teamId,memberId,name,reason,teacherConfirmed:true},eventId);
+  }
+  async renameTeam({teamId,name,reason=null},{eventId=this.newId()}={}){
+    return this.dispatch('TEAM_RENAMED',{teamId,name,reason,teacherConfirmed:true},eventId);
+  }
+  /** Suggests the team turn; drawQuestion() without teamId uses this automatically. */
+  nextTeam(){insist(this.state,'SESSION_NOT_OPEN','원정 세션을 열어야 합니다.');return suggestNextTeam(this.state);}
+  /** Teacher-side answer intake. Never accept an externally supplied auto-score. */
+  async submitAnswer({attemptId,response,teacherConfirmed=false,lateReason=null,submittedByMemberId=null},{eventId=this.newId()}={}){
+    return this.dispatch('ANSWER_SUBMITTED',{attemptId,response,teacherConfirmed,lateReason,submittedByMemberId},eventId);
+  }
+  /** Corrections are deferred to STEP 2-7; actual solver is independent of representative. */
+  async judgeAnswer({attemptId,decision,teacherConfirmed,teacherReason=null,missingResponseConfirmed=false,solverMemberId=null},{eventId=this.newId()}={}){
+    return this.dispatch('ANSWER_JUDGED',{attemptId,decision,teacherConfirmed,teacherReason,missingResponseConfirmed,solverMemberId},eventId);
   }
   getState(){insist(this.state,'SESSION_NOT_OPEN','세션이 없습니다.');return clone(this.state);}
   getStudentProjection(){return publicProjection(this.getState(),this.clock());}

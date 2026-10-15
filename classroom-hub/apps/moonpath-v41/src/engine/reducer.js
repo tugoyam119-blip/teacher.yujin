@@ -1,6 +1,7 @@
 import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_SAND_COST,TIME_SAND_EXTENSION_MS,canonicalJson} from './model.js';
 import {validateDrawCommand} from '../questions/draw.js';
 import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.js';
+import {ROSTER_COMMANDS,applyRosterCommand,assignRepresentative,validateSolverIdentity} from '../teams/roster.js';
 
 /** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
 export function reduceCommand(current,command){
@@ -33,6 +34,14 @@ export function reduceCommand(current,command){
       if(state.activeAttemptId){const a=last();insist(a.timer.phase==='RESOLVED','ATTEMPT_ACTIVE','문제 진행 중 일반 화면 이동을 할 수 없습니다.');}
       state.screen=payload.screen;
       break;
+    case 'TEAM_MEMBER_ADDED':
+    case 'TEAM_ATTENDANCE_SET':
+    case 'TEAM_MEMBER_MOVED':
+    case 'TEAM_MEMBER_RENAMED':
+    case 'TEAM_RENAMED':{
+      applyRosterCommand(state,type,payload,{eventId,at});
+      break;
+    }
     case 'SESSION_STARTED':{
       insist(!state.activeSessionId,'SESSION_ACTIVE','이미 진행 중인 차시가 있습니다.');
       requireId(payload.sessionId,'차시');
@@ -65,7 +74,10 @@ export function reduceCommand(current,command){
       insist(!state.attempts[payload.attemptId],'ATTEMPT_EXISTS','같은 문제 시도 ID가 존재합니다.');
       insist(state.teams.some(t=>t.id===payload.teamId),'INVALID_TEAM','존재하지 않는 모둠입니다.');
       const sec=state.settings.timerSeconds;
-      state.attempts[payload.attemptId]={id:payload.attemptId,questionId:payload.questionId,questionRevision:payload.questionRevision??null,teamId:payload.teamId,sessionId:s.id,preparedAt:at,resolvedAt:null,timer:{phase:'PREPARED',remainingMs:sec*1000,runningSince:null,usedTimeSand:false}};
+      const assignment=assignRepresentative(state,{teamId:payload.teamId,attemptId:payload.attemptId,eventId,at,teamSelection:payload.teamSelection??'MANUAL'});
+      state.attempts[payload.attemptId]={id:payload.attemptId,questionId:payload.questionId,questionRevision:payload.questionRevision??null,teamId:payload.teamId,
+        teamAssignment:assignment,sessionId:s.id,preparedAt:at,resolvedAt:null,
+        timer:{phase:'PREPARED',remainingMs:sec*1000,runningSince:null,usedTimeSand:false}};
       state.activeAttemptId=payload.attemptId;break;
     }
     case 'QUESTION_DRAWN':{
@@ -74,15 +86,18 @@ export function reduceCommand(current,command){
       const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
       insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
       validateDrawCommand(state,payload,at);
+      const assignment=assignRepresentative(state,{teamId:payload.teamId,attemptId:payload.attemptId,eventId,at,teamSelection:payload.teamSelection??'MANUAL'});
       const sec=state.settings.timerSeconds;
       const {attemptId,questionId,regionId,teamId,mode,questionSnapshot}=payload;
-      const row={attemptId,questionId,regionId,teamId,mode,issuedAt:at,questionRevision:questionSnapshot.questionRevision};
+      const row={attemptId,questionId,regionId,teamId,mode,issuedAt:at,questionRevision:questionSnapshot.questionRevision,
+        teamRosterVersion:assignment.rosterVersion,representativeMemberId:assignment.representativeMemberId};
       state.questions.draws??=[];
       state.questions.draws.push(row);
       if(mode==='NEW')state.questions.issuedIds.push(questionId);
       if(state.world.currentRegionId===null)state.world.currentRegionId=regionId;
       state.attempts[attemptId]={id:attemptId,questionId,questionRevision:questionSnapshot.questionRevision,
         teamId,regionId,drawMode:mode,questionSnapshot:clone(questionSnapshot),sessionId:s.id,
+        teamAssignment:assignment,
         preparedAt:at,resolvedAt:null,
         timer:{phase:'PREPARED',remainingMs:sec*1000,runningSince:null,usedTimeSand:false}};
       state.activeAttemptId=attemptId;break;
@@ -141,8 +156,9 @@ export function reduceCommand(current,command){
       if(afterExpiry)insist(typeof payload.lateReason==='string'&&payload.lateReason.trim().length>0&&payload.lateReason.length<=1000,
         'LATE_REASON_REQUIRED','시간 만료 후 답변을 받는 사유를 기록해야 합니다.');
       const assessed=assessAnswer(a,payload.response);
+      const submittedByMemberId=validateSolverIdentity(a,payload.submittedByMemberId);
       a.answer={response:assessed.response,suggestion:assessed.suggestion,submittedAt:at,
-        receivedEventId:eventId,afterExpiry,lateReason:afterExpiry?payload.lateReason.trim():null};
+        receivedEventId:eventId,submittedByMemberId,afterExpiry,lateReason:afterExpiry?payload.lateReason.trim():null};
       if(a.timer.phase==='RUNNING'){
         a.timer.remainingMs=timerRemainingMs(a,at);
         a.timer.runningSince=null;
@@ -166,10 +182,13 @@ export function reduceCommand(current,command){
         insist(!pending.some(x=>x.questionId===questionId),
           'RECOVERY_DUPLICATE','이미 미회수 목록에 있는 문제입니다.');
         pending.push({id:a.id,sourceAttemptId:a.id,questionId,originTeamId:a.teamId,
+          originRosterVersion:a.teamAssignment?.rosterVersion??null,
+          originRepresentativeMemberId:a.teamAssignment?.representativeMemberId??null,
           originRegionId:a.regionId,status:'PENDING',createdAt:at,sourceEventId:eventId});
       }
+      const solverMemberId=validateSolverIdentity(a,payload.solverMemberId??a.answer?.submittedByMemberId??null);
       a.judgement={decision:evaluated.decision,teacherConfirmed:true,teacherReason:evaluated.teacherReason,
-        missingResponse:evaluated.missingResponse,judgedAt:at,eventId};
+        missingResponse:evaluated.missingResponse,solverTeamId:a.teamId,solverMemberId,judgedAt:at,eventId};
       if(a.timer.phase==='RUNNING'){a.timer.remainingMs=timerRemainingMs(a,at);a.timer.runningSince=null;}
       a.timer.phase='RESOLVED';a.resolvedAt=at;break;
     }
@@ -208,7 +227,7 @@ export function reduceCommand(current,command){
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
   state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
-  if(type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
+  if(ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};
 }

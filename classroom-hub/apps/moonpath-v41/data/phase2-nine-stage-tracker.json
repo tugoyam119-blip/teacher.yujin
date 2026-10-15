@@ -69,12 +69,26 @@
     {
       "id": "2-4",
       "title": "모둠·대표 순환",
-      "implementation": "NOT_STARTED",
-      "unitTest": "NOT_RUN",
-      "integrationTest": "NOT_RUN",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_47",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
       "browserTest": "NOT_RUN",
       "userApproval": "NOT_REQUESTED",
-      "evidence": []
+      "evidence": [
+        "src/teams/roster.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "tests/phase2-2-4.test.mjs",
+        "docs/PHASE2_STEP2_4_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-4-20261015.summary.json"
+      ],
+      "limitations": [
+        "학생 명단 입력/출석 교사 UI, 파일 업로드는 아직 없음",
+        "가로채기 다른 모둠 실제 해결자 처리는 2-5에서 연결",
+        "지역 최초 완료 및 공헌·별빛 보상은 2-6/2-8에서 구현",
+        "실제 Windows Chrome/Edge 네이티브 IndexedDB·file:// 저장·강제 종료 복원 미검증"
+      ]
     },
     {
       "id": "2-5",
