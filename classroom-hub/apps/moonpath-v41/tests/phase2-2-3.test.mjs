@@ -64,7 +64,7 @@ for(const q of raw.questions){
     assert.deepEqual(s.questions.reviewEligibleIds,[q.id]);
     assert.deepEqual(s.questions.recoveryOnlyIds,[]);
     assert.deepEqual(attempt(s).questionSnapshot.originalSnapshot,original);
-    assert.equal(s.rewards.starlight,0);assert.equal(s.rewards.keys,0);
+    assert.equal(s.rewards.starlight,1);assert.equal(s.rewards.keys,0); // PHASE 2-6 최초 정답 보상
     checkState(s);
   });
 }
@@ -330,7 +330,7 @@ test('신규 60문항 소진 후 REVIEW 정답을 오답으로 판정하면 회�
   assert.equal(s.questions.reviewEligibleIds.includes(first),false);
   assert.equal(s.questions.recoveryOnlyIds.includes(first),true);
   assert.equal(s.recovery.pending.length,1);
-  assert.equal(s.rewards.starlight,0);
+  assert.equal(s.rewards.starlight,1); // 최초 정답으로 받은 1개 유지, 복습 오답은 차감/증가 없음
 });
 
 test('복습 재정답은 추가 보상 지급 없이 복습 자격 유지',()=>{
@@ -346,7 +346,7 @@ test('복습 재정답은 추가 보상 지급 없이 복습 자격 유지',()=>
   s=act(s,'TIMER_STARTED');s=submitted(s,correctFor(qe.getOriginal(first)));s=judged(s,'CORRECT');
   assert.deepEqual(s.questions.reviewEligibleIds,[first]);
   assert.deepEqual(s.questions.recoveryOnlyIds,[]);
-  assert.equal(s.rewards.ledger.length,0);
+  assert.equal(s.rewards.ledger.length,1); // 최초 정답 1회만, REVIEW 추가 보상 없음
 });
 
 test('부분 연결 답변은 제출은 유지하되 교사 검토 필요 상태로 유지',()=>{

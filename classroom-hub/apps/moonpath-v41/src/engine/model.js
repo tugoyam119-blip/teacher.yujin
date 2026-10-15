@@ -1,4 +1,5 @@
 /** The rules below are v4.1.1 design decisions; this file contains only PHASE 1 groundwork. */
+import {checkRewardHistory} from '../rewards/ledger.js';
 export const ENGINE_VERSION = '4.1.1';
 export const SCHEMA_VERSION = 1;
 export const DB_NAME = 'moonpath-v411-engine-db'; // Deliberately never touch legacy localStorage keys.
@@ -46,7 +47,7 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
     recovery:{pending:[],resolved:[],activeId:null},
     interception:{records:[],activeId:null,lastTeamId:null},
     rewards:{keys:0,starlight:0,ledger:[],settlementRequired:false},
-    magic:{used:[],unlocked:[]},clues:{collected:[],combinations:[]},
+    magic:{used:[],unlocked:['MOON_WHISPER','STAR_COMPASS']},clues:{collected:[],combinations:[]},
     eventLog:[],audit:[]
   };
 }
@@ -146,6 +147,7 @@ export function checkState(s){
     const a=s.attempts[s.activeAttemptId];insist(a&&TIMER_PHASES.includes(a.timer.phase),'INVALID_ATTEMPT','활성 문제와 타이머 상태가 맞지 않습니다.');
     insist(a.timer.remainingMs>=0&&Number.isFinite(a.timer.remainingMs),'INVALID_TIMER','음수 또는 유효하지 않은 잔여 시간입니다.');
   }
+  checkRewardHistory(s);
   return s;
 }
 /**

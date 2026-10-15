@@ -2,6 +2,7 @@ import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_S
 import {validateDrawCommand} from '../questions/draw.js';
 import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.js';
 import {ROSTER_COMMANDS,applyRosterCommand,assignRepresentative,validateSolverIdentity} from '../teams/roster.js';
+import {creditFirstCorrect,creditRecovery,useMagic} from '../rewards/ledger.js';
 import {INTERCEPTION_COMMANDS,RECOVERY_COMMANDS,processInterception,processRecovery,extension,activeInterception,activeRecovery} from '../recovery/flows.js';
 
 /** Pure event reducer: no DOM, network, localStorage, IndexedDB, Date.now or random IDs. */
@@ -144,13 +145,17 @@ export function reduceCommand(current,command){
       insist(!a.timer.usedTimeSand,'MAGIC_DUPLICATE','한 문제에 시간의 모래를 중복 사용할 수 없습니다.');
       insist(!state.rewards.settlementRequired,'SETTLEMENT_REQUIRED','별빛 정산이 필요하여 추가 소비를 차단했습니다.');
       insist(state.rewards.starlight>=TIME_SAND_COST,'INSUFFICIENT_STARS','별빛이 부족합니다.');
+      insist(payload.teacherConfirmed===true,'TEACHER_REQUIRED','시간의 모래 소비는 교사 확인이 필요합니다.');
       const left=timerRemainingMs(a,at);
       a.timer.remainingMs=left+TIME_SAND_EXTENSION_MS;
       if(a.timer.phase==='RUNNING')a.timer.runningSince=at;
       a.timer.usedTimeSand=true;
       state.rewards.starlight-=TIME_SAND_COST;
-      state.rewards.ledger.push({eventId,type:'TIME_SAND_SPEND',amount:-TIME_SAND_COST,attemptId:a.id});
-      state.magic.used.push({eventId,magicId:'TIME_SAND',attemptId:a.id,at,cost:TIME_SAND_COST});break;
+      state.rewards.ledger.push({eventId,at,type:'TIME_SAND_SPEND',amount:-TIME_SAND_COST,claim:`MAGIC_USE:${eventId}`,magicId:'TIME_SAND',scopeId:a.id,attemptId:a.id});
+      state.magic.used.push({eventId,magicId:'TIME_SAND',scopeId:a.id,attemptId:a.id,at,cost:TIME_SAND_COST});break;
+    }
+    case 'MAGIC_USED':{
+      useMagic(state,payload,{eventId,at});break;
     }
     case 'ANSWER_SUBMITTED':{
       const a=last();insist(a.questionSnapshot,'QUESTION_SNAPSHOT_MISSING','실제 원본으로 출제된 문항이 필요합니다.');
@@ -202,7 +207,9 @@ export function reduceCommand(current,command){
       a.judgement={decision:evaluated.decision,teacherConfirmed:true,teacherReason:evaluated.teacherReason,
         missingResponse:evaluated.missingResponse,solverTeamId:a.teamId,solverMemberId,judgedAt:at,eventId};
       if(a.timer.phase==='RUNNING'){a.timer.remainingMs=timerRemainingMs(a,at);a.timer.runningSince=null;}
-      a.timer.phase='RESOLVED';a.resolvedAt=at;break;
+      a.timer.phase='RESOLVED';a.resolvedAt=at;
+      if(evaluated.decision==='CORRECT')creditFirstCorrect(state,{attemptId:a.id,eventId,at,kind:'ANSWER'});
+      break;
     }
     case 'INTERCEPTION_OPENED':
     case 'INTERCEPTION_SKIPPED':
@@ -213,7 +220,12 @@ export function reduceCommand(current,command){
     case 'INTERCEPTION_ANSWER_SUBMITTED':
     case 'INTERCEPTION_JUDGED':
     case 'INTERCEPTION_FORFEITED':{
-      processInterception(state,type,payload,{eventId,at});break;
+      processInterception(state,type,payload,{eventId,at});
+      if(type==='INTERCEPTION_JUDGED'){
+        const row=state.interception.records.find(x=>x.id===payload.interceptionId);
+        if(row?.judgement?.decision==='CORRECT')creditFirstCorrect(state,{attemptId:row.sourceAttemptId,eventId,at,kind:'INTERCEPTION'});
+      }
+      break;
     }
     case 'RECOVERY_DEFERRED':
     case 'RECOVERY_RELEASED':
@@ -226,7 +238,12 @@ export function reduceCommand(current,command){
     case 'RECOVERY_ANSWER_SUBMITTED':
     case 'RECOVERY_JUDGED':
     case 'RECOVERY_FORFEITED':{
-      processRecovery(state,type,payload,{eventId,at});break;
+      processRecovery(state,type,payload,{eventId,at});
+      if(type==='RECOVERY_JUDGED'){
+        const row=state.recovery.resolved.find(x=>x.id===payload.recoveryId&&x.resolutionEventId===eventId);
+        if(row)creditRecovery(state,{recoveryId:row.id,eventId,at});
+      }
+      break;
     }
     case 'CHECKPOINT_REPAIRED':{
       insist(payload.teacherConfirmed===true&&['latest','previous'].includes(payload.source),'TEACHER_REQUIRED','체크포인트 복구에는 교사 명시 확인이 필요합니다.');
@@ -276,7 +293,7 @@ export function reduceCommand(current,command){
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
   state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
-  if(INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
+  if(INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='MAGIC_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};
 }

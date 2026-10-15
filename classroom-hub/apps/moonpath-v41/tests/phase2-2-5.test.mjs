@@ -77,7 +77,7 @@ test('가로채기 생성: 원모둠 제외, 교사 확인, 미확정 시도 거
   assert.equal(activeI(s).questionSnapshot.questionId,s.attempts[s.activeAttemptId].questionId);
   code(()=>intercept(s,'TEAM_03'),'SIDE_MISSION_ACTIVE');checkState(s);
 });
-test('가로채기 정답 성공해도 원모둠 오답 회수 대기·별빛0',()=>{
+test('가로채기 정답 성공해도 원모둠 회수 대기·최초 정답 별빛1',()=>{
   let s=wrong(init()).state;const before=copy(s.attempts[s.activeAttemptId]);s=intercept(s);
   s=iAct(s,'INTERCEPTION_TIMER_STARTED');
   s=iAct(s,'INTERCEPTION_ANSWER_SUBMITTED',{response:rightAnswer(s)});
@@ -88,7 +88,7 @@ test('가로채기 정답 성공해도 원모둠 오답 회수 대기·별빛0',
   assert.deepEqual(s.attempts[before.id],before);
   assert.equal(s.recovery.pending.length,1);assert.equal(first(s).originTeamId,'TEAM_01');
   assert.deepEqual(s.questions.recoveryOnlyIds,[before.questionId]);
-  assert.equal(s.rewards.starlight,0);assert.equal(s.rewards.keys,0);checkState(s);
+  assert.equal(s.rewards.starlight,1);assert.equal(s.rewards.keys,0);checkState(s);
 });
 test('동일 원문제는 두 번째 가로채기·생략 추가 불가',()=>{
   let s=wrong(init()).state;s=intercept(s);s=iAct(s,'INTERCEPTION_FORFEITED',{reason:'타모둠 포기'});
@@ -199,7 +199,7 @@ test('보류된 회수는 강제 호출 사유가 있어야 진행',()=>{
   code(()=>openRecovery(s,{reason:''}),'REASON_REQUIRED');
   s=openRecovery(s);assert.equal(activeR(s).status,'ACTIVE');
 });
-test('원모둠 회수 정답: 회수 전용 제거/복습 등록/별빛 0',()=>{
+test('원모둠 회수 정답: 회수 전용 제거/복습 등록/별빛 +1',()=>{
   let s=wrong(init()).state,questionId=first(s).questionId;
   s=openRecovery(s);s=rAct(s,'RECOVERY_TIMER_STARTED');
   s=rAct(s,'RECOVERY_ANSWER_SUBMITTED',{response:rightAnswer(s)});
@@ -209,7 +209,7 @@ test('원모둠 회수 정답: 회수 전용 제거/복습 등록/별빛 0',()=>
   assert.equal(success.originTeamId,'TEAM_01');assert.equal(success.questionId,questionId);
   assert.equal(s.questions.recoveryOnlyIds.includes(questionId),false);
   assert.equal(s.questions.reviewEligibleIds.includes(questionId),true);
-  assert.equal(s.rewards.starlight,0);assert.equal(s.rewards.keys,0);checkState(s);
+  assert.equal(s.rewards.starlight,1);assert.equal(s.rewards.keys,0);checkState(s);
 });
 test('회수 첫 실패 후 원모둠 재회수 차단, 타모둠 재시도',()=>{
   let s=wrong(init()).state;s=openRecovery(s);s=rAct(s,'RECOVERY_TIMER_STARTED');
@@ -383,7 +383,7 @@ test('가로채기·회수 시도에서 중복 판정 및 이벤트 변조를 �
   const altered=copy(r);altered.recovery.resolved[0].solverTeamId='TEAM_03';
   code(()=>checkState(altered),'RECOVERY_INVALID');
   assert.equal(record.runs.length,1);
-  assert.equal(r.rewards.starlight,0);
+  assert.equal(r.rewards.starlight,2); // 가로채기 최초 정답 1 + 회수 성공 1
 });
 
 test('학생 화면에는 미션 종류/대상 모둠/시간만 공개되고 정답·원오답 주체는 노출되지 않음',()=>{

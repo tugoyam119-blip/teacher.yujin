@@ -118,12 +118,27 @@
     {
       "id": "2-6",
       "title": "별빛·열쇠·마법 장부",
-      "implementation": "NOT_STARTED",
-      "unitTest": "NOT_RUN",
-      "integrationTest": "NOT_RUN",
+      "implementation": "CODE_CORE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_52",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
       "browserTest": "NOT_RUN",
       "userApproval": "NOT_REQUESTED",
-      "evidence": []
+      "evidence": [
+        "src/rewards/ledger.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "tests/phase2-2-6.test.mjs",
+        "docs/PHASE2_STEP2_6_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-6-20261015.summary.json"
+      ],
+      "limitations": [
+        "단계별 T2~T4 마법 해금 시점은 기준서에 구체적 완료 지역 수가 없어 미확정: 지역 진행 2-8 연결 후 확정",
+        "지역 완료 열쇠+1은 검증된 완료 상태를 요구하는 지급 함수만 있음: 실제 REGION_COMPLETED 이벤트 미구현",
+        "2-7 정정·연쇄 재계산·이미 소비한 별빛 정산 미구현",
+        "Chrome/Edge IndexedDB 및 오프라인 file:// 테스트 관리자 정책 차단",
+        "실제 교사·학생 화면 및 PDF/CSV 미구현"
+      ]
     },
     {
       "id": "2-7",

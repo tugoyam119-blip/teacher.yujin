@@ -169,6 +169,10 @@ export class TeacherEngineSession {
     const committedRunId=type==='RECOVERY_CALLED'?(runId??eventId):runId;
     return this.dispatch(type,{recoveryId,runId:committedRunId,teamId,regionId,mode,reason,response,solverMemberId,decision,teacherReason,lateReason,missingResponseConfirmed,teacherConfirmed:true},eventId);
   }
+  /** Teacher approved magic purchase, with no immediate secret answer/hint in public projection. */
+  async useMagic({magicId,attemptId=null,recoveryId=null,regionId=null},{eventId=this.newId()}={}){
+    return this.dispatch('MAGIC_USED',{magicId,attemptId,recoveryId,regionId,teacherConfirmed:true},eventId);
+  }
   getState(){insist(this.state,'SESSION_NOT_OPEN','세션이 없습니다.');return clone(this.state);}
   getStudentProjection(){return publicProjection(this.getState(),this.clock());}
   async exportJSON(){

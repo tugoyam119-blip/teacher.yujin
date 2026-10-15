@@ -1,0 +1,37 @@
+{
+  "asOf": "2026-10-15",
+  "phase": "PHASE2-2-6",
+  "environment": {
+    "os": "Linux",
+    "node": "v22.16.0",
+    "browser": "Chromium system headless Playwright"
+  },
+  "unitAndFakeIndexedDB": {
+    "priorTests": 350,
+    "newTests": 52,
+    "total": 402,
+    "pass": 402,
+    "fail": 0
+  },
+  "nativeBrowser": {
+    "attempt": "file:///mnt/data/work_p26/tests/browser/phase25-idb-probe.html",
+    "browser": "/usr/bin/chromium",
+    "result": "BLOCKED",
+    "error": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/work_p26/tests/browser/phase25-idb-probe.html\nCall log:\n  - navigating to \"file:///mnt/data/work_p26/tests/browser/phase25-idb-probe.html\", waiting until \"domcontentloaded\"\n"
+  },
+  "officialV01toV22IntegrationPassCount": 0,
+  "v07": {
+    "implementation": "IN_PROGRESS",
+    "formalTest": "NOT_RUN"
+  },
+  "sourcePackSHA256": "3a2401498a73bf5afd7ed72329ef07d4dd742d58f5ab27ab966841cc67c5de7f",
+  "sourcePackModified": false,
+  "limitations": [
+    "region key primitive only, no REGION_COMPLETED event",
+    "T2..T4 world unlock proof/event not implemented",
+    "2-7 corrections and settled spent-star replay not implemented",
+    "no native IndexedDB or file:// browser evidence",
+    "no actual teacher/student UI"
+  ],
+  "log": "test-logs/phase2-step2-6-20261015.full.log"
+}

@@ -1,0 +1,326 @@
+
+> moonpath-v411@0.2.6-phase2-step6-unit-tested check:phase2:2-6
+> node --test tests/phase2-2-6.test.mjs
+
+TAP version 13
+# Subtest: 마법 비용·등급·적용 범위 계약: MOON_WHISPER
+ok 1 - 마법 비용·등급·적용 범위 계약: MOON_WHISPER
+  ---
+  duration_ms: 2.122817
+  type: 'test'
+  ...
+# Subtest: 마법 비용·등급·적용 범위 계약: STAR_COMPASS
+ok 2 - 마법 비용·등급·적용 범위 계약: STAR_COMPASS
+  ---
+  duration_ms: 0.10659
+  type: 'test'
+  ...
+# Subtest: 마법 비용·등급·적용 범위 계약: MEMORY_CRYSTAL
+ok 3 - 마법 비용·등급·적용 범위 계약: MEMORY_CRYSTAL
+  ---
+  duration_ms: 0.102614
+  type: 'test'
+  ...
+# Subtest: 마법 비용·등급·적용 범위 계약: TIME_SAND
+ok 4 - 마법 비용·등급·적용 범위 계약: TIME_SAND
+  ---
+  duration_ms: 0.070426
+  type: 'test'
+  ...
+# Subtest: 마법 비용·등급·적용 범위 계약: HIDDEN_STAR_EYE
+ok 5 - 마법 비용·등급·적용 범위 계약: HIDDEN_STAR_EYE
+  ---
+  duration_ms: 0.255724
+  type: 'test'
+  ...
+# Subtest: 처음에는 T1 2종만 해금되어 있으며 T2~T4는 임의 해금하지 않는다
+ok 6 - 처음에는 T1 2종만 해금되어 있으며 T2~T4는 임의 해금하지 않는다
+  ---
+  duration_ms: 6.283205
+  type: 'test'
+  ...
+# Subtest: MEMORY_CRYSTAL: 테스트용 해금 플래그 없이는 별빛이 많아도 사용 불가
+ok 7 - MEMORY_CRYSTAL: 테스트용 해금 플래그 없이는 별빛이 많아도 사용 불가
+  ---
+  duration_ms: 44.806284
+  type: 'test'
+  ...
+# Subtest: TIME_SAND: 테스트용 해금 플래그 없이는 별빛이 많아도 사용 불가
+ok 8 - TIME_SAND: 테스트용 해금 플래그 없이는 별빛이 많아도 사용 불가
+  ---
+  duration_ms: 34.606785
+  type: 'test'
+  ...
+# Subtest: HIDDEN_STAR_EYE: 테스트용 해금 플래그 없이는 별빛이 많아도 사용 불가
+ok 9 - HIDDEN_STAR_EYE: 테스트용 해금 플래그 없이는 별빛이 많아도 사용 불가
+  ---
+  duration_ms: 31.391802
+  type: 'test'
+  ...
+# Subtest: 미출제 원문제 최초 교사 정답: 별빛1/실제 모둠 공헌1, 열쇠0
+ok 10 - 미출제 원문제 최초 교사 정답: 별빛1/실제 모둠 공헌1, 열쇠0
+  ---
+  duration_ms: 5.422091
+  type: 'test'
+  ...
+# Subtest: 답변만 제출·잠정 자동점수는 별빛을 지급하지 않는다
+ok 11 - 답변만 제출·잠정 자동점수는 별빛을 지급하지 않는다
+  ---
+  duration_ms: 5.678026
+  type: 'test'
+  ...
+# Subtest: 교사 오답 판정에는 별빛/공헌도 지급이 없다
+ok 12 - 교사 오답 판정에는 별빛/공헌도 지급이 없다
+  ---
+  duration_ms: 5.542101
+  type: 'test'
+  ...
+# Subtest: 가로채기 최초 성공 별빛/공헌은 실제 가로챈 TEAM_02에, 회수는 원모둠 그대로
+ok 13 - 가로채기 최초 성공 별빛/공헌은 실제 가로챈 TEAM_02에, 회수는 원모둠 그대로
+  ---
+  duration_ms: 7.855405
+  type: 'test'
+  ...
+# Subtest: 가로채기 성공 후 원모둠 회수: 서로 다른 유효 원천에 별빛 합계2, 두 모둠 기여 각1
+ok 14 - 가로채기 성공 후 원모둠 회수: 서로 다른 유효 원천에 별빛 합계2, 두 모둠 기여 각1
+  ---
+  duration_ms: 9.678803
+  type: 'test'
+  ...
+# Subtest: 단독 회수 정답: 별빛1/원모둠 기여1, 원래 오답 이력 불변
+ok 15 - 단독 회수 정답: 별빛1/원모둠 기여1, 원래 오답 이력 불변
+  ---
+  duration_ms: 7.481273
+  type: 'test'
+  ...
+# Subtest: 동일 교사 판정 eventId 멱등: 이력/별빛/공헌도 중복 0
+ok 16 - 동일 교사 판정 eventId 멱등: 이력/별빛/공헌도 중복 0
+  ---
+  duration_ms: 4.430333
+  type: 'test'
+  ...
+# Subtest: 복습 재정답은 최초 정답 별빛1만 유지, 공헌도 추가0
+ok 17 - 복습 재정답은 최초 정답 별빛1만 유지, 공헌도 추가0
+  ---
+  duration_ms: 724.324848
+  type: 'test'
+  ...
+# Subtest: 복습 오답 후 회수까지 별빛 반복 채굴 금지: 동일 문제 회수 1회당 최초 성공만 지급
+ok 18 - 복습 오답 후 회수까지 별빛 반복 채굴 금지: 동일 문제 회수 1회당 최초 성공만 지급
+  ---
+  duration_ms: 6.22067
+  type: 'test'
+  ...
+# Subtest: 마법 모르는 ID는 부정 처리, 상태 불변
+ok 19 - 마법 모르는 ID는 부정 처리, 상태 불변
+  ---
+  duration_ms: 5.019908
+  type: 'test'
+  ...
+# Subtest: T1 학습 힌트: 별빛 2개 원자 차감, 동일 문항 힌트 1회
+ok 20 - T1 학습 힌트: 별빛 2개 원자 차감, 동일 문항 힌트 1회
+  ---
+  duration_ms: 15.161506
+  type: 'test'
+  ...
+# Subtest: T1 힌트 교사 확인 필수, 확인 없이 자원·사용 기록 변경 불가
+ok 21 - T1 힌트 교사 확인 필수, 확인 없이 자원·사용 기록 변경 불가
+  ---
+  duration_ms: 13.753622
+  type: 'test'
+  ...
+# Subtest: T1 힌트 별빛 부족 시 남은 별빛 음수 불가, 스냅샷 불변
+ok 22 - T1 힌트 별빛 부족 시 남은 별빛 음수 불가, 스냅샷 불변
+  ---
+  duration_ms: 9.068637
+  type: 'test'
+  ...
+# Subtest: T1 별의 나침반: 문제 해결 후 현 지역 정보 비용3, 반복 비용 청구 차단
+ok 23 - T1 별의 나침반: 문제 해결 후 현 지역 정보 비용3, 반복 비용 청구 차단
+  ---
+  duration_ms: 16.051713
+  type: 'test'
+  ...
+# Subtest: 별의 나침반은 문제 진행 중 사용 불가, 다른 지역 ID 위조 차단
+ok 24 - 별의 나침반은 문제 진행 중 사용 불가, 다른 지역 ID 위조 차단
+  ---
+  duration_ms: 19.995234
+  type: 'test'
+  ...
+# Subtest: 기억의 수정: 회수 원문제에만 사용, 다른 회수 ID 위조 거부
+ok 25 - 기억의 수정: 회수 원문제에만 사용, 다른 회수 ID 위조 거부
+  ---
+  duration_ms: 21.973425
+  type: 'test'
+  ...
+# Subtest: 시간의 모래: 사용 직전 4별빛 차감과 +20초 연장을 한 이벤트로 확정
+ok 26 - 시간의 모래: 사용 직전 4별빛 차감과 +20초 연장을 한 이벤트로 확정
+  ---
+  duration_ms: 31.881828
+  type: 'test'
+  ...
+# Subtest: 시간의 모래: 시작 전·만료 후·타이머 끔에서 사용 금지
+ok 27 - 시간의 모래: 시작 전·만료 후·타이머 끔에서 사용 금지
+  ---
+  duration_ms: 59.367404
+  type: 'test'
+  ...
+# Subtest: T4 숨겨진 별의 눈: 지역 탐색 소비5, 추가 출제권·정답 자동 지급 없음
+ok 28 - T4 숨겨진 별의 눈: 지역 탐색 소비5, 추가 출제권·정답 자동 지급 없음
+  ---
+  duration_ms: 32.227332
+  type: 'test'
+  ...
+# Subtest: 별빛 정산 필요 상태는 5종 전부 소비 차단
+ok 29 - 별빛 정산 필요 상태는 5종 전부 소비 차단
+  ---
+  duration_ms: 36.743152
+  type: 'test'
+  ...
+# Subtest: 지출은 모둠의 누적 공헌도에서 차감하지 않는다
+ok 30 - 지출은 모둠의 누적 공헌도에서 차감하지 않는다
+  ---
+  duration_ms: 18.938597
+  type: 'test'
+  ...
+# Subtest: 지역 최초 완료 열쇠 보상 함수는 완료 증거 없이는 지급 불가
+ok 31 - 지역 최초 완료 열쇠 보상 함수는 완료 증거 없이는 지급 불가
+  ---
+  duration_ms: 5.492959
+  type: 'test'
+  ...
+# Subtest: 검증된 지역 완료 시뮬레이션: 열쇠+1, 지역/테마 별빛+0, 중복 키+0
+ok 32 - 검증된 지역 완료 시뮬레이션: 열쇠+1, 지역/테마 별빛+0, 중복 키+0
+  ---
+  duration_ms: 4.891716
+  type: 'test'
+  ...
+# Subtest: 동일 모둠의 여러 최초 정답: 별빛 누적과 기여 누적 정확
+ok 33 - 동일 모둠의 여러 최초 정답: 별빛 누적과 기여 누적 정확
+  ---
+  duration_ms: 24.929658
+  type: 'test'
+  ...
+# Subtest: 다른 모둠으로 원문제 성공: 기여는 원문제 실제 모둠에 누적
+ok 34 - 다른 모둠으로 원문제 성공: 기여는 원문제 실제 모둠에 누적
+  ---
+  duration_ms: 12.210941
+  type: 'test'
+  ...
+# Subtest: 별빛 지급 기록에서 출처 ID 변조 시 정합성 검사 거절
+ok 35 - 별빛 지급 기록에서 출처 ID 변조 시 정합성 검사 거절
+  ---
+  duration_ms: 4.895961
+  type: 'test'
+  ...
+# Subtest: 보상 근거의 지급 모둠을 다른 모둠으로 위조하면 검출
+ok 36 - 보상 근거의 지급 모둠을 다른 모둠으로 위조하면 검출
+  ---
+  duration_ms: 4.672596
+  type: 'test'
+  ...
+# Subtest: 중복 청구 claim 추가는 데이터 검사에서 거부
+ok 37 - 중복 청구 claim 추가는 데이터 검사에서 거부
+  ---
+  duration_ms: 5.591706
+  type: 'test'
+  ...
+# Subtest: 학생 공개 투영에는 원답·마법 구매 이력·기여 개인 정보가 없다
+ok 38 - 학생 공개 투영에는 원답·마법 구매 이력·기여 개인 정보가 없다
+  ---
+  duration_ms: 16.019734
+  type: 'test'
+  ...
+# Subtest: 세 슬롯 보상 장부는 원정별 독립
+ok 39 - 세 슬롯 보상 장부는 원정별 독립
+  ---
+  duration_ms: 4.368059
+  type: 'test'
+  ...
+# Subtest: 교사 세션 Fake IDB: 최초 정답/공헌 지급은 슬롯+이벤트+체크포인트 동시 확정
+ok 40 - 교사 세션 Fake IDB: 최초 정답/공헌 지급은 슬롯+이벤트+체크포인트 동시 확정
+  ---
+  duration_ms: 38.354913
+  type: 'test'
+  ...
+# Subtest: Fake IDB 저장소 용량실패: 보상/답변/모둠 점수 한 번에 롤백하고 재시도 성공
+ok 41 - Fake IDB 저장소 용량실패: 보상/답변/모둠 점수 한 번에 롤백하고 재시도 성공
+  ---
+  duration_ms: 18.795302
+  type: 'test'
+  ...
+# Subtest: Fake IDB 실제 교사 중복 판정: 동일 eventId로 별빛은 1회만
+ok 42 - Fake IDB 실제 교사 중복 판정: 동일 eventId로 별빛은 1회만
+  ---
+  duration_ms: 19.292369
+  type: 'test'
+  ...
+# Subtest: 마법 지출 장부의 비용을 바꿔 별빛 조작하면 탐지
+ok 43 - 마법 지출 장부의 비용을 바꿔 별빛 조작하면 탐지
+  ---
+  duration_ms: 20.644138
+  type: 'test'
+  ...
+# Subtest: 존재하지 않는 마법 해금 ID·중복된 해금은 상태 무결성에서 차단
+ok 44 - 존재하지 않는 마법 해금 ID·중복된 해금은 상태 무결성에서 차단
+  ---
+  duration_ms: 0.500582
+  type: 'test'
+  ...
+# Subtest: T1 힌트를 쓴 문항을 교사가 정답 처리해도 별빛 자동 환급 없음
+ok 45 - T1 힌트를 쓴 문항을 교사가 정답 처리해도 별빛 자동 환급 없음
+  ---
+  duration_ms: 17.784945
+  type: 'test'
+  ...
+# Subtest: 타이머 1밀리초 전 시간의 모래 사용, 정확히 만료시점 거부
+ok 46 - 타이머 1밀리초 전 시간의 모래 사용, 정확히 만료시점 거부
+  ---
+  duration_ms: 29.907238
+  type: 'test'
+  ...
+# Subtest: 모둠 누적 기여는 마법 소비 뒤에도 불변, 세션 중단 후에도 보존
+ok 47 - 모둠 누적 기여는 마법 소비 뒤에도 불변, 세션 중단 후에도 보존
+  ---
+  duration_ms: 16.726856
+  type: 'test'
+  ...
+# Subtest: 교사 이벤트 없이 별빛 소비 행만 삽입하면 위변조 차단
+ok 48 - 교사 이벤트 없이 별빛 소비 행만 삽입하면 위변조 차단
+  ---
+  duration_ms: 5.495012
+  type: 'test'
+  ...
+# Subtest: 별빛만 많아도 첫 출제 전에는 지역정보 대상이 없어 구입 거절
+ok 49 - 별빛만 많아도 첫 출제 전에는 지역정보 대상이 없어 구입 거절
+  ---
+  duration_ms: 0.350716
+  type: 'test'
+  ...
+# Subtest: 교사 JSON 백업 후 실제 별빛·기여도·마법 사용 청구 완전 일치
+ok 50 - 교사 JSON 백업 후 실제 별빛·기여도·마법 사용 청구 완전 일치
+  ---
+  duration_ms: 27.156217
+  type: 'test'
+  ...
+# Subtest: Fake IDB 교사 마법 소비 저장 실패 시 별빛·공헌도·사용 이력 전체 롤백
+ok 51 - Fake IDB 교사 마법 소비 저장 실패 시 별빛·공헌도·사용 이력 전체 롤백
+  ---
+  duration_ms: 66.654987
+  type: 'test'
+  ...
+# Subtest: 구형 TIME_SAND_USED 이벤트도 교사 확인 없이 소비할 수 없다
+ok 52 - 구형 TIME_SAND_USED 이벤트도 교사 확인 없이 소비할 수 없다
+  ---
+  duration_ms: 40.542958
+  type: 'test'
+  ...
+1..52
+# tests 52
+# suites 0
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1644.030001

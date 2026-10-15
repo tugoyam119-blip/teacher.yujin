@@ -72,7 +72,7 @@ test('이미 실행/일시정지 중인 타이머의 중복 버튼을 거부한�
 
 test('시간의 모래는 별빛4개 차감과 20초 연장을 하나의 순수 이벤트로 정산한다',()=>{
  let s=startTimer(boot());s.magic.unlocked.push('TIME_SAND');s.rewards.starlight=4;
- s=apply(s,'TIME_SAND_USED',INITIAL+10_300);
+ s=apply(s,'TIME_SAND_USED',INITIAL+10_300,{payload:{teacherConfirmed:true}});
  assert.equal(s.rewards.starlight,0);assert.equal(s.rewards.ledger.at(-1).amount,-4);
  assert.equal(s.attempts['attempt-01'].timer.remainingMs,70000);
  assert.equal(timerRemainingMs(s.attempts['attempt-01'],INITIAL+20_300),60000);
