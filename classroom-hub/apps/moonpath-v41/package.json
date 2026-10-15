@@ -2,7 +2,7 @@
   "name": "moonpath-v411",
   "private": true,
   "type": "module",
-  "version": "0.2.9-phase2-step9-integration-tested-not-released",
+  "version": "0.3.1-phase3-step1-reference-baseline",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "check:phase1": "node --test tests/phase1-*.test.mjs",
@@ -18,7 +18,9 @@
     "check:phase2:2-7": "node --test tests/phase2-2-7.test.mjs",
     "check:phase2:2-8": "node --test tests/phase2-2-8.test.mjs",
     "build:phase2:2-9": "node scripts/build-one-region-smoke.mjs",
-    "check:phase2:2-9": "node --test tests/phase2-2-9*.test.mjs"
+    "check:phase2:2-9": "node --test tests/phase2-2-9*.test.mjs",
+    "check:phase3:3-1": "node --test tests/phase3-3-1.test.mjs",
+    "check:phase3:refs": "node scripts/verify-phase3-reference-pngs.mjs"
   },
   "engines": {
     "node": ">=20"

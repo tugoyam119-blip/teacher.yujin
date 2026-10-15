@@ -1,0 +1,272 @@
+{
+  "project": "미지의 길 : 달빛 마도 탐험",
+  "version": "4.1.1",
+  "stage": {
+    "logicalWidth": 960,
+    "logicalHeight": 540,
+    "fit": "contain",
+    "scaleFormula": "min(viewportWidth/960, viewportHeight/540)",
+    "aspectRatio": "16:9",
+    "stretchOrCrop": false,
+    "coordinateOrigin": "top-left",
+    "layers": [
+      {
+        "id": "L0",
+        "name": "원경",
+        "purpose": "하늘·먼 세계·달"
+      },
+      {
+        "id": "L1",
+        "name": "지형·길",
+        "purpose": "석재·폭포·다리·전경 산책로"
+      },
+      {
+        "id": "L2",
+        "name": "마도사",
+        "purpose": "독립 스프라이트 및 포즈"
+      },
+      {
+        "id": "L3",
+        "name": "달빛·마법 효과",
+        "purpose": "선택적 효과·동작 감소"
+      },
+      {
+        "id": "L4",
+        "name": "공통 UI",
+        "purpose": "버튼/글자/상태는 실시간 DOM"
+      },
+      {
+        "id": "L5",
+        "name": "중앙 문제·결과 팝업",
+        "purpose": "문제/선택지/판정·결과 격리"
+      },
+      {
+        "id": "L6",
+        "name": "교사용 안전·확인",
+        "purpose": "PIN·위험변경·정산안내"
+      }
+    ],
+    "popupMax": {
+      "width": 820,
+      "height": 440
+    },
+    "viewportEvidenceRequired": [
+      [
+        1920,
+        1080
+      ],
+      [
+        1600,
+        900
+      ],
+      [
+        1366,
+        768
+      ],
+      [
+        430,
+        900
+      ]
+    ],
+    "viewportTestStatus": "NOT_RUN"
+  },
+  "status": "BASELINE_TECHNICAL_DRAFT_NOT_VISUAL_APPROVAL",
+  "precedence": [
+    "latest explicit user instruction",
+    "v4.1.1 master decisions 01-42",
+    "phase3 confirmed sixteen-stage plan",
+    "historically preferred visual references only"
+  ],
+  "nonnegotiables": {
+    "allNewGraphics": true,
+    "oldImageReferenceOnly": true,
+    "oldOperatingCodeAndDataUntouched": true,
+    "requirePerAssetUserVisualApproval": true,
+    "requireImplementedScreenClickQA": true,
+    "blockMainMergeBeforeFinalApproval": true,
+    "blockRailwayDeploymentBeforeFinalApproval": true,
+    "imageDecorativeVisualOnly": true,
+    "dynamicTextButtonsStatesInHTMLCSSJS": true,
+    "noPrintedTextOnNewDecorativePNG": true
+  },
+  "sprite": {
+    "baseWidth": 64,
+    "baseHeight": 64,
+    "largeVariantIfNecessary": 128,
+    "smallIconAllowed": [
+      24,
+      32
+    ],
+    "sourceIdentity": "CHAR_FIVE_BACKS option 1 selected back hair direction; redraw required",
+    "animationFrames": {
+      "IDLE": 4,
+      "WALK": 6,
+      "CAST": 6,
+      "SUCCESS": 4,
+      "THINK": 3
+    },
+    "frameAnchorsRequired": [
+      "feet",
+      "bodyCenter",
+      "screenRightHand",
+      "screenLeftHand",
+      "staffGripIfApplicableAfter3-3Approval"
+    ],
+    "characterDimensionsAndAnchorVerification": "PROTOTYPE_REQUIRED",
+    "doNotClaimExistingPhotoSheetAs64x64Master": true
+  },
+  "pixelDensityDecision": {
+    "approach": "C_REFERENCE_CONSISTENT_HYBRID",
+    "currentStatus": "PROPOSED_FOR_PROTOTYPE",
+    "rule": "960x540 stage coordinates and 64px sprites are fixed; art detail density is normalized by actual 960x540 side-by-side comparison and tested output, not assumed from unequal original file resolutions.",
+    "backgroundRendering": "compare native vs scaled in real browser; not automatically apply nearest-neighbor to high-detail scenes",
+    "spriteRendering": "nearest-neighbor when integer upscaling by purpose; verify antialias/fringing before final approval",
+    "doNotInferExistingGridSize": true
+  },
+  "palette": {
+    "referenceSamplesNotFinalLock": [
+      {
+        "token": "DEEP_NIGHT",
+        "sourceId": "HOME_STEP10",
+        "sampleHex": "#091142",
+        "role": "원경·암부 네이비"
+      },
+      {
+        "token": "MOON_BLUE",
+        "sourceId": "HOME_STEP10",
+        "sampleHex": "#3B418F",
+        "role": "달빛을 받은 중간 거리 블루"
+      },
+      {
+        "token": "VIOLET_DEPTH",
+        "sourceId": "HOME_STEP10",
+        "sampleHex": "#7C68AA",
+        "role": "구름·마법 반사 보라"
+      },
+      {
+        "token": "HAIR_LAVENDER",
+        "sourceId": "HOME_STEP10",
+        "sampleHex": "#A586BC",
+        "role": "머리카락 연보라 계열 참고"
+      },
+      {
+        "token": "MOON_HIGHLIGHT",
+        "sourceId": "HOME_STEP10",
+        "sampleHex": "#D3B8D4",
+        "role": "달·옅은 보라 빛"
+      },
+      {
+        "token": "PARCHMENT",
+        "sourceId": "BOOK_PAIR_COMPOSITE",
+        "sampleHex": "#F0DAC4",
+        "role": "책장 안쪽 양피지/텍스트 여백"
+      },
+      {
+        "token": "WATER_COOL",
+        "sourceId": "HOME_STEP10",
+        "sampleHex": "#4B6CF7",
+        "role": "폭포 지점에서 추출한 차가운 푸른 빛"
+      },
+      {
+        "token": "WARM_DETAIL",
+        "sourceId": "HOME_STEP10",
+        "sampleHex": "#FFC685",
+        "role": "마도사 의상 금빛 하이라이트에서 추출"
+      }
+    ],
+    "approvedPalette": "NOT_YET_LOCKED",
+    "themes": [
+      {
+        "id": "T1",
+        "name": "푸른 달빛의 숲",
+        "tone": "짙은 파랑·청록"
+      },
+      {
+        "id": "T2",
+        "name": "붉은 잿빛 성채",
+        "tone": "진홍·구리"
+      },
+      {
+        "id": "T3",
+        "name": "황금빛 시간의 정원",
+        "tone": "황금·호박"
+      },
+      {
+        "id": "T4",
+        "name": "보랏빛 별의 회랑",
+        "tone": "보라·남색"
+      },
+      {
+        "id": "T5",
+        "name": "초록빛 기억의 성역",
+        "tone": "에메랄드·연두"
+      },
+      {
+        "id": "T6",
+        "name": "푸른 은빛의 달의 궁전",
+        "tone": "푸른 은빛·백색"
+      }
+    ]
+  },
+  "sceneIdentity": {
+    "homeReference": "HOME_STEP10",
+    "characterBackReference": "CHAR_FIVE_BACKS",
+    "characterSelectedOption": 1,
+    "booksReference": "BOOK_PAIR_COMPOSITE",
+    "setupReference": [
+      "SETUP_BG",
+      "SETUP_LEFT",
+      "SETUP_RIGHT"
+    ],
+    "forkReference": "FORK_LAYOUT_QA",
+    "constraints": [
+      "do not redesign a flat card dashboard",
+      "keep Y-fork physically convincing with background+road",
+      "book interiors are blank for dynamic information",
+      "retain deep navy/lavender/moonlight/warm gold contrast",
+      "main character identity from chosen back pose but redesign all output pixels",
+      "do not force all old coordinates into the new scene"
+    ]
+  },
+  "fileRules": {
+    "draftPath": "assets/new/stage3-<step>/",
+    "draftNamePattern": "MP_<SCENE>_<PART>_<STATE>_v<VER>_CANDIDATE.png",
+    "mustRecord": [
+      "assetId",
+      "scene",
+      "part",
+      "layer",
+      "logicalCanvas",
+      "nativePixels",
+      "alpha",
+      "anchor",
+      "sha256",
+      "byteSize",
+      "gitBlobSha",
+      "referenceIds",
+      "designStatus",
+      "uploadStatus",
+      "renderStatus",
+      "functionQaStatus"
+    ],
+    "mustBeTrueBeforeAssetAccepted": [
+      "whole PNG present",
+      "byteSha256 matches source",
+      "GitHub blob bytes match uploaded PNG",
+      "real browser image renders at required layout",
+      "user approves actual new image",
+      "implemented screen function QA passes"
+    ],
+    "newPngCountNow": 0,
+    "userApprovedCountNow": 0,
+    "noLegacyReferenceIncludedInRuntime": true
+  },
+  "engineIntegration": {
+    "commonEngineUnchanged": true,
+    "onlineAndOfflineSameNewAssetManifest": true,
+    "offlineBundleMustEmbedApprovedPng": true,
+    "externalCDNDisallowed": true,
+    "fileUrlNativeTestsPending": true
+  },
+  "finalImplementationGate": "NOT_RUN"
+}

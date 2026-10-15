@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: 3-1 실제 참고 PNG 15개 메타·SHA 형식/중복 확인
+ok 1 - 3-1 실제 참고 PNG 15개 메타·SHA 형식/중복 확인
+  ---
+  duration_ms: 1.078377
+  type: 'test'
+  ...
+# Subtest: 참고 이미지와 신규 게임 자산 혼합 금지
+ok 2 - 참고 이미지와 신규 게임 자산 혼합 금지
+  ---
+  duration_ms: 0.155625
+  type: 'test'
+  ...
+# Subtest: 960×540 contain 비크롭 마스터
+ok 3 - 960×540 contain 비크롭 마스터
+  ---
+  duration_ms: 0.083816
+  type: 'test'
+  ...
+# Subtest: L0~L6 고유 7개 레이어
+ok 4 - L0~L6 고유 7개 레이어
+  ---
+  duration_ms: 0.512544
+  type: 'test'
+  ...
+# Subtest: 실문항 중앙 팝업 최대 820×440
+ok 5 - 실문항 중앙 팝업 최대 820×440
+  ---
+  duration_ms: 0.125109
+  type: 'test'
+  ...
+# Subtest: 캐릭터64/128 및 23프레임
+ok 6 - 캐릭터64/128 및 23프레임
+  ---
+  duration_ms: 0.108514
+  type: 'test'
+  ...
+# Subtest: 사용자 선택된 캐릭터 뒷모습은 첫 번째뿐
+ok 7 - 사용자 선택된 캐릭터 뒷모습은 첫 번째뿐
+  ---
+  duration_ms: 0.102825
+  type: 'test'
+  ...
+# Subtest: 6개 책장/세계 테마 정합성
+ok 8 - 6개 책장/세계 테마 정합성
+  ---
+  duration_ms: 0.112841
+  type: 'test'
+  ...
+# Subtest: PHASE 3 고정 16단계·3-1만 기술 기준 문서화
+ok 9 - PHASE 3 고정 16단계·3-1만 기술 기준 문서화
+  ---
+  duration_ms: 0.31123
+  type: 'test'
+  ...
+# Subtest: 브라우저/PDF/새 PNG 승인은 0건
+ok 10 - 브라우저/PDF/새 PNG 승인은 0건
+  ---
+  duration_ms: 0.396198
+  type: 'test'
+  ...
+# Subtest: 좌우 책장 원본은 RGB가 아니라 투명 RGBA 참고
+ok 11 - 좌우 책장 원본은 RGB가 아니라 투명 RGBA 참고
+  ---
+  duration_ms: 0.260112
+  type: 'test'
+  ...
+# Subtest: HOME 원본 960×540은 참고 이미지임
+ok 12 - HOME 원본 960×540은 참고 이미지임
+  ---
+  duration_ms: 0.13289
+  type: 'test'
+  ...
+# Subtest: 과거 설정 배경 1672×941을 신규 960×540 자산이라고 오인하지 않음
+ok 13 - 과거 설정 배경 1672×941을 신규 960×540 자산이라고 오인하지 않음
+  ---
+  duration_ms: 0.250208
+  type: 'test'
+  ...
+# Subtest: 색상 참고값은 별도 사용자 승인이 필요
+ok 14 - 색상 참고값은 별도 사용자 승인이 필요
+  ---
+  duration_ms: 0.128033
+  type: 'test'
+  ...
+# Subtest: 운영 병합/배포 차단과 외부 원격 호출 금지
+ok 15 - 운영 병합/배포 차단과 외부 원격 호출 금지
+  ---
+  duration_ms: 0.065319
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63.219838

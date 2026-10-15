@@ -1,8 +1,13 @@
 {
   "version": "4.1.1",
-  "status": "NO_NEW_ASSETS_YET",
   "newAssets": [],
   "approvedAssets": [],
+  "phase3": "3-1",
+  "referenceRegistry": "data/phase3-reference-registry.json",
+  "visualContract": "data/phase3-visual-contract.json",
+  "stageTracker": "data/phase3-sixteen-stage-tracker.json",
+  "referenceAssetsAreNotGameAssets": true,
+  "status": "NO_NEW_ASSETS_YET",
   "minimumAcceptance": [
     "SHA256 verified for complete original",
     "GitHub byte-identical",

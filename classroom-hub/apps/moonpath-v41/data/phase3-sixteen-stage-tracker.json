@@ -1,0 +1,197 @@
+{
+  "version": "4.1.1",
+  "phase": "PHASE3",
+  "stageCount": 16,
+  "createdAt": "2026-10-16",
+  "purpose": "track code vs actual PNG vs visual approval vs browser/function QA independently",
+  "productionMainProtected": true,
+  "actualNewPngAssets": 0,
+  "actualApprovedAssets": 0,
+  "stages": [
+    {
+      "id": "3-1",
+      "title": "픽셀아트 제작 환경·규격",
+      "scope": "Reference PNG audit, 960x540/L0-L6/palette candidates/registry",
+      "implementation": "TECHNICAL_BASELINE_DOCUMENTED",
+      "referenceInspection": "PASS_15_ACTUAL_PNGS",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED",
+      "testStatus": "PASS_NODE_15_CONTRACT_TESTS_AND_15_IMAGE_BYTE_CHECKS",
+      "regressionStatus": "PASS_NODE_528_INCLUDING_PREVIOUS_513",
+      "evidence": [
+        "docs/PHASE3_STEP3_1_REFERENCE_AND_STANDARD_20261016.md",
+        "data/phase3-reference-registry.json",
+        "data/phase3-visual-contract.json",
+        "test-logs/phase3-step3-1-references.log",
+        "test-logs/phase3-step3-1-all-tests.log"
+      ]
+    },
+    {
+      "id": "3-2",
+      "title": "신규 HOME 시안",
+      "scope": "new HOME visual directions + user direction approval",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-3",
+      "title": "신규 주인공 마도사",
+      "scope": "back/front identity and 23-frame animations",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-4",
+      "title": "HOME 신규 PNG 실제 구현",
+      "scope": "separated image layers + HTML controls + click QA",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-5",
+      "title": "새 탐험·이어하기·설정",
+      "scope": "3 slots, settings, popup and state handling",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-6",
+      "title": "마법 책장",
+      "scope": "six colors and common book regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-7",
+      "title": "갈림길 화면",
+      "scope": "realistic Y-fork, sign, back mage and perspective",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-8",
+      "title": "중앙 문제 팝업",
+      "scope": "7 question types; max 820x440; timer and teacher controls",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-9",
+      "title": "공통 HUD·결과·마법 UI",
+      "scope": "teacher/student separated HUD, magic, result, recovery",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-10",
+      "title": "푸른 달빛의 숲",
+      "scope": "new art for 5 T1 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-11",
+      "title": "붉은 잿빛 성채",
+      "scope": "new art for 5 T2 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-12",
+      "title": "황금빛 시간의 정원",
+      "scope": "new art for 5 T3 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-13",
+      "title": "보랏빛 별의 회랑",
+      "scope": "new art for 5 T4 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-14",
+      "title": "초록빛 기억의 성역",
+      "scope": "new art for 5 T5 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-15",
+      "title": "푸른 은빛의 달의 궁전",
+      "scope": "new art for 5 T6 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-16",
+      "title": "전체 신규 자산·화면 통합 QA",
+      "scope": "per-asset PNG bytes/upload/browser and V18~V20 evidence",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    }
+  ]
+}
