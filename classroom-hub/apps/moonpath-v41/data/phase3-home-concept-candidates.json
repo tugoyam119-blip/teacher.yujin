@@ -1,7 +1,7 @@
 {
   "version": "4.1.1",
   "phase": "3-2",
-  "status": "DIRECTION_CANDIDATES_ONLY",
+  "status": "B_DIRECTION_APPROVED_NOT_FINAL_GAME_ASSET",
   "reference": {
     "name": "HOME_STEP10_FINAL_NATIVE_960x540.png",
     "sha256": "0320fab633217ba23a9ca93c93bd11aa7d398ea104ccf41e1e316a823c8b972e",
@@ -21,7 +21,7 @@
         960,
         540
       ],
-      "approval": "WAITING_USER_DIRECTION",
+      "approval": "NOT_SELECTED",
       "gitOriginalBinaryUploaded": false,
       "browserRenderVerified": false,
       "containsBakedText": true,
@@ -40,7 +40,7 @@
         960,
         540
       ],
-      "approval": "WAITING_USER_DIRECTION",
+      "approval": "APPROVED_DIRECTION_ONLY",
       "gitOriginalBinaryUploaded": false,
       "browserRenderVerified": false,
       "containsBakedText": true,
@@ -59,14 +59,14 @@
         960,
         540
       ],
-      "approval": "WAITING_USER_DIRECTION",
+      "approval": "NOT_SELECTED",
       "gitOriginalBinaryUploaded": false,
       "browserRenderVerified": false,
       "containsBakedText": true,
       "usableAsFinalGameAsset": false
     }
   ],
-  "designApproval": "WAITING",
+  "designApproval": "B_DIRECTION_APPROVED",
   "newProductionAssets": 0,
   "assetApproval": 0,
   "websiteRealGameQA": "NOT_RUN",
@@ -77,5 +77,6 @@
     "A/B hats and C added staff/props are not the approved first back-view identity.",
     "Only four HOME actions allowed in implementation: 새로운 탐험 / 이어하기 / 탐험 일지 / 설정.",
     "The generated concepts do not imply an approved pixel master, game release or browser QA."
-  ]
+  ],
+  "selectedVariant": "B"
 }
