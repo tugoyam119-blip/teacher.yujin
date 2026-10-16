@@ -32,12 +32,19 @@
       "id": "3-2",
       "title": "신규 HOME 시안",
       "scope": "new HOME visual directions + user direction approval",
-      "implementation": "NOT_STARTED",
-      "referenceInspection": "NOT_RUN",
-      "userVisualApproval": "NOT_REQUESTED",
+      "implementation": "THREE_DIRECTION_CONCEPT_DRAFTS_ONLY",
+      "referenceInspection": "PASS_REAL_REFERENCE_HOME_AND_FIRST_BACK_IDENTITY_REVIEW",
+      "userVisualApproval": "AWAITING_USER_DIRECTION",
       "browserRenderQA": "NOT_RUN",
       "functionQA": "NOT_RUN",
-      "releaseStatus": "BLOCKED"
+      "releaseStatus": "BLOCKED",
+      "conceptCount": 3,
+      "newFinalPngUploadedToGithub": 0,
+      "statusDetail": "A/B/C composite previews created outside repo; baked text, extra menu actions and character props need redesign before independent game PNG assets. No full PNG upload, no UI integration, no production approval.",
+      "evidence": [
+        "docs/PHASE3_STEP3_2_HOME_CONCEPTS_20261016.md",
+        "data/phase3-home-concept-candidates.json"
+      ]
     },
     {
       "id": "3-3",

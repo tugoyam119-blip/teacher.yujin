@@ -2,17 +2,18 @@
   "version": "4.1.1",
   "newAssets": [],
   "approvedAssets": [],
-  "phase3": "3-1",
+  "phase3": "3-2",
   "referenceRegistry": "data/phase3-reference-registry.json",
   "visualContract": "data/phase3-visual-contract.json",
   "stageTracker": "data/phase3-sixteen-stage-tracker.json",
   "referenceAssetsAreNotGameAssets": true,
-  "status": "NO_NEW_ASSETS_YET",
+  "status": "CANDIDATE_CONCEPTS_ONLY_NO_FINAL_GAME_ASSETS",
   "minimumAcceptance": [
     "SHA256 verified for complete original",
     "GitHub byte-identical",
     "visible in real browser",
     "user approved per screen"
   ],
-  "oldAssetPolicy": "REFERENCE_ONLY_NO_REUSE"
+  "oldAssetPolicy": "REFERENCE_ONLY_NO_REUSE",
+  "homeConcepts": "data/phase3-home-concept-candidates.json"
 }
