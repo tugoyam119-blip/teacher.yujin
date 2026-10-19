@@ -7,7 +7,7 @@
   "visualContract": "data/phase3-visual-contract.json",
   "stageTracker": "data/phase3-sixteen-stage-tracker.json",
   "referenceAssetsAreNotGameAssets": true,
-  "status": "HOME_B_AND_CHARACTER_SHEET_DIRECTION_APPROVED_NO_PRODUCTION_PNG",
+  "status": "HOME_B_CHARACTER_DIRECTION_AND_HOME_LOGO_SLOGAN_DESIGN_APPROVED_BINARIES_NOT_UPLOADED_OR_RENDER_QA",
   "minimumAcceptance": [
     "SHA256 verified for complete original",
     "GitHub byte-identical",
@@ -20,5 +20,66 @@
     "home": "B_APPROVED_DIRECTION_ONLY",
     "character": "CHARACTER_SHEET_APPROVED_DIRECTION_ONLY",
     "characterDesignRecord": "data/phase3-character-design-sheet.json"
+  },
+  "approvedDesignReferences": [
+    {
+      "id": "home_logo_main_approved_design",
+      "fileName": "미지의_길_달빛_마도_탐험.png",
+      "expectedPath": "assets/home/logo/logo_main.png",
+      "sourcePixels": [
+        1584,
+        993
+      ],
+      "mode": "RGBA",
+      "bytes": 1653077,
+      "sha256": "2709003daaf25fd6124469d996fd78351b4f292a125d5f964f62733265c20094",
+      "display": {
+        "x": 122,
+        "y": 9,
+        "width": 244,
+        "height": 153
+      },
+      "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
+      "gitBinaryUploaded": false,
+      "gitByteMatchVerified": false,
+      "browserQA": "NOT_RUN",
+      "releaseReady": false
+    },
+    {
+      "id": "home_logo_slogan_approved_design",
+      "fileName": "문제를_넘어_더_넓은_세상으로.png",
+      "expectedPath": "assets/home/logo/logo_slogan.png",
+      "sourcePixels": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "bytes": 578942,
+      "sha256": "33444040bc68b92094a0a15375cdaf8b42926bd11dd746fa0c9f2b3aabfc35d7",
+      "display": {
+        "x": 134,
+        "y": 166,
+        "width": 232,
+        "height": 24
+      },
+      "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
+      "gitBinaryUploaded": false,
+      "gitByteMatchVerified": false,
+      "browserQA": "NOT_RUN",
+      "releaseReady": false,
+      "notes": "Source aspect ratio 3:1 differs from display 9.6667:1; never force anisotropic scaling; crop/resize new canvas or reauthor with verified aspect before runtime."
+    }
+  ],
+  "homeUiPolicy": {
+    "exception": "HOME logo_main and slogan are single-image typography+ornament approved by user",
+    "otherUi": "Frame PNG + Icon PNG + HTML text",
+    "layout": "960x540 contain",
+    "mainMenu": [
+      "새로운 탐험",
+      "이어하기",
+      "탐험 일지",
+      "설정"
+    ],
+    "preserveApprovedArtwork": true
   }
 }
