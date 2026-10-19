@@ -156,7 +156,7 @@
     <div class="guide-panel hidden" data-guide-panel="score">
       <h3>처음 채점할 때의 원칙 · 총 100점</h3>
       <p>정책 선택의 방향이 아니라 <b>자료와 국가 조건을 근거로 판단했는지, 상대국 이해관계를 고려했는지, 협상 후 판단이 논리적으로 이어지는지</b>를 봅니다.</p>
-      <div id="rubricGuideOverview" class="rubric-overview"></div>
+      <div class="notice soft"><b>참여 중심 채점 · 2026-10-19</b> 100점 출발 · 작성 시도 최소 85점 · 거의 미작성 60점(교사 확인). 기존 허용 배점과 시간점수로 합산하며, 이전 가채점은 일괄 버튼으로 갱신합니다. 교사 확정점수는 보호합니다.</div><div id="rubricGuideOverview" class="rubric-overview"></div>
       <div class="notice soft"><b>AI 가채점</b> · AI 가채점은 학생 이름·학번을 보내지 않고 답안 내용과 배정 국가만 분석합니다. AI 추천점수는 학생에게 공개되지 않으며 최종 점수는 반드시 교사가 확정합니다.</div><div class="notice soft"><b>공동 채점 팁</b> · 처음 3명 정도를 함께 채점해 점수 기준을 맞춘 뒤 나머지를 나누면 교사 간 편차가 줄어듭니다. 학생 상세 화면에서는 각 요소의 점수별 기준을 바로 펼쳐볼 수 있습니다.</div>
     </div>
   </section>
@@ -204,7 +204,7 @@
       <div class="op-actions api-key-actions"><button id="saveOpenAiKey" class="primary">API 키 저장</button><button id="testOpenAiKey" class="secondary">연결 확인</button><button id="clearOpenAiKey" class="ghost">저장 키 삭제</button></div>
       <small id="apiKeyMessage" class="sub"></small>
       <hr class="soft-divider">
-      <div class="op-actions"><button id="createSyntheticSubmissions" class="secondary">가채점 시험용 모의 제출 만들기</button><button id="clearSyntheticSubmissions" class="ghost">시험용 모의 제출 삭제</button></div><small id="syntheticMessage" class="sub">이 기능은 AI 가채점 시험을 위해 모의 제출 기록을 만듭니다. 위의 모의 명단 화면 확인과 달리 서버에 시험용 기록이 생성되지만 실제 학생 답안은 건드리지 않습니다.</small><div class="op-actions" style="margin-top:10px"><button id="bulkAiGrade" class="secondary">미가채점 제출자 일괄 가채점</button><span id="bulkAiProgress" class="sub"></span></div>
+      <div class="op-actions"><button id="createSyntheticSubmissions" class="secondary">가채점 시험용 모의 제출 만들기</button><button id="clearSyntheticSubmissions" class="ghost">시험용 모의 제출 삭제</button></div><small id="syntheticMessage" class="sub">이 기능은 AI 가채점 시험을 위해 모의 제출 기록을 만듭니다. 위의 모의 명단 화면 확인과 달리 서버에 시험용 기록이 생성되지만 실제 학생 답안은 건드리지 않습니다.</small><div class="op-actions" style="margin-top:10px"><button id="bulkAiGrade" class="secondary">새 기준 미확정자 일괄 가채점</button><span id="bulkAiProgress" class="sub"></span></div>
     </article>
     <article class="teacher-op-card benchmark-card">
       <div class="op-card-head"><div><span class="eyebrow">정확도 점검 · 실제 기록과 완전 분리</span><h3>50건 가채점 검증</h3></div><span id="benchmarkStateBadge" class="badge">대기</span></div>

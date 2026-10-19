@@ -12,12 +12,12 @@ test('grading policy keeps content 94 and time 6 separate',()=>{
   assert.match(server,/timeCompliance는 AI가 판단하지 말고 0을 임시 출력/);
 });
 
-test('nonperformance zero is available and protected from generous floor',()=>{
+test('manual nonperformance zero remains available while policy guarantees are explicit',()=>{
   for(const key of ['countryAnalysis','fundAllocation','policyAgreement','conflictAnalysis','compromise','cooperationRoles','completion']){
     assert.match(server,new RegExp(key+':\\[[^\\]]*0\\]'));
     assert.match(teacher,new RegExp(key+':\\{[^\\n]*options:\\[[^\\]]*0\\]'));
   }
-  assert.match(server,/if\(current===0\)continue/);
+  assert.match(server,/gradeByEffort/);
   assert.match(teacher,/score===0\?['"]미수행['"]/);
   assert.match(server,/clean\.total<0\|\|clean\.total>100/);
 });
