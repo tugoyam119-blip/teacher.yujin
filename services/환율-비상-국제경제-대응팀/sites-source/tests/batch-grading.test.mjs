@@ -26,6 +26,7 @@ const admin=await import(moduleUrl(path.resolve('app/api/admin/route.ts')));
 const participation=await import(moduleUrl(path.resolve('app/api/participation.ts')));
 const batch=await import(moduleUrl(path.resolve('app/api/batch-grading.ts')));
 const calibration=await import(moduleUrl(path.resolve('app/api/grading-calibration.ts')));
+const v2=await import(moduleUrl(path.resolve('app/rubric-v2.ts')));
 const answers={won:'하락',dollar:'상승',cost:'증가',groups:{exporter:'유리',importer:'불리'},exportReason:'원화 약세로 수출 가격 경쟁력이 높아진다.',importReason:'달러 결제로 수입 원자재 비용이 증가한다.',effects:['수입물가 상승','외채 부담'],policies:['달러 공급','생필품 지원'],policyEffect:'환율 안정을 통해 수입 물가 충격을 완화한다.',policyRisk:'외환보유액과 재정 부담이 생긴다.',report:'IMF 긴급 금융 지원과 정책 자문을 요청하고 통화스와프와 공동성명을 추진한다.'};
 function student(id,cls='A',options={}){
  db.prepare('INSERT INTO roster VALUES(?,?,?)').run(id,'가상 학생',cls);
@@ -110,4 +111,61 @@ test('export loads full answers, review flags and teacher history only for chose
  assert.equal(exported.attempts.find(x=>x.student_id==='a1').answers.report,answers.report);
  assert.equal(exported.attempts.find(x=>x.student_id==='a-final').grade_history[0].teacher_score,91);
  const meta=JSON.parse(exported.attempts.find(x=>x.student_id==='a1').ai_breakdown);assert.ok(meta.reviewFlags.length);
+});
+
+function v2Response(points=[13,18,22,18,19]){
+ const snippets=[answers.exportReason,answers.policies[0],answers.policyEffect,answers.importReason,answers.report];
+ return {areas:Object.fromEntries(v2.V2_AREAS.map((area,i)=>[area.key,{score:points[i],reason:'답안에 스스로 판단한 내용이 확인됨',deduction:points[i]===area.max?'없음':'설명의 구체성이 일부 부족함',evidence:points[i]>0?[snippets[i]]:[]}])),confidence:'medium',reviewFlags:[],feedback:'영역별 근거 확인',strength:'자기 판단',improvement:'구체적 근거 보완'};
+}
+const aiResponse=raw=>Response.json({output:[{content:[{type:'output_text',text:JSON.stringify(raw)}]}]});
+test('PDF v2 exact weights, ranges, 90-point example, zero and maximum; no forced total',()=>{
+ assert.deepEqual(v2.V2_AREAS.map(a=>a.max),[15,20,25,20,20]);
+ assert.equal(v2.validateV2Grade(v2Response(),answers).score,90);
+ assert.equal(v2.validateV2Grade(v2Response([15,20,25,20,20]),answers).score,100);
+ assert.equal(v2.validateV2Grade(v2Response([0,0,0,0,0]),{}).score,0);
+ assert.equal(v2.validateV2Grade(v2Response([8,11,14,11,11]),answers).score,55);
+ const plain={...answers,report:'나라끼리 돈을 빌려 주고 도와 시장을 진정시키자.'},plainGrade=v2Response();plainGrade.areas.diligence.evidence=[plain.report];assert.equal(v2.validateV2Grade(plainGrade,plain).score,90);
+ for(const area of v2.V2_AREAS){for(const point of [-1,area.max+1,1.5,'13',NaN])assert.throws(()=>v2.v2Total({...v2.validateV2Grade(v2Response(),answers),[area.key]:point}));}
+ assert.throws(()=>v2.validateV2Grade({...v2Response(),areas:{...v2Response().areas,situation:{score:13,reason:'판단',deduction:'부족',evidence:['답안에 없는 허구 인용']}}},answers),/직접 근거/);
+});
+test('v2 AI uses PDF prompt and separate storage/cache without legacy regex override or time penalty',async()=>{
+ student('pdf-v2','PDF',{penalty:4,extra:10});db.prepare("UPDATE attempts SET ai_score=77,ai_breakdown='기존 결과 보존' WHERE student_id='pdf-v2'").run();
+ const original=globalThis.fetch;let body,requests=0;
+ globalThis.fetch=async(url,options)=>{requests++;body=JSON.parse(options.body);return aiResponse(v2Response())};
+ try{
+  const result=await batch.gradeOne('pdf-v2','v2.0');assert.equal(result.ai.score,90);assert.equal(result.ai.time,undefined);assert.equal(result.ai.calibrationApplied,undefined);
+  const row=db.prepare("SELECT * FROM attempts WHERE student_id='pdf-v2'").get();assert.equal(row.ai_score,77);assert.equal(row.ai_breakdown,'기존 결과 보존');assert.equal(row.ai_v2_score,90);assert.equal(row.teacher_score,null);
+  assert.match(body.input[0].content,/정답과 다른 정책/);assert.match(body.input[0].content,/추가시간 자동 감점은 적용하지/);assert.match(body.input[0].content,/총점 하한이 아닙니다/);
+  assert.equal((await batch.gradeOne('pdf-v2','v2.0')).status,'cached');assert.equal(requests,1);
+  assert.equal((await batch.gradeOne('a-final','v2.0')).status,'skipped');assert.equal(requests,1);
+  await assert.rejects(batch.gradeOne('pdf-v2','unknown'),/지원하지/);
+ }finally{globalThis.fetch=original}
+});
+test('v2 batch fixes rubric at start, records failure, and retries with same rubric',async()=>{
+ student('pdf-retry','PDF재시도');const original=globalThis.fetch;let failed=true;
+ globalThis.fetch=async()=>failed?new Response('{}',{status:429}):aiResponse(v2Response());
+ try{
+  const job=await call('start',{className:'PDF재시도',rubricVersion:'v2.0'});assert.equal(job.rubric_version,'v2.0');
+  const bad=await call('step',{token:job.token,rubricVersion:'legacy'});assert.equal(bad.failed,1);assert.equal(db.prepare("SELECT ai_v2_score FROM attempts WHERE student_id='pdf-retry'").get().ai_v2_score,null);
+  failed=false;await call('retry',{token:job.token});const done=await call('step',{token:job.token,rubricVersion:'legacy'});assert.equal(done.failed,0);assert.equal(done.status,'completed');
+  const row=db.prepare("SELECT * FROM attempts WHERE student_id='pdf-retry'").get();assert.equal(row.ai_v2_score,90);assert.equal(row.ai_score,null);
+ }finally{globalThis.fetch=original}
+});
+test('v2 never grants participation or time points just for a long idle session',async()=>{
+ student('pdf-idle','PDF');db.prepare("UPDATE attempts SET answers='{}',writing_changes=0,writing_seconds=0 WHERE student_id='pdf-idle'").run();
+ const original=globalThis.fetch;globalThis.fetch=async()=>aiResponse(v2Response([0,0,0,0,0]));
+ try{const result=await batch.gradeOne('pdf-idle','v2.0');assert.equal(result.ai.score,0);assert.equal(result.ai.diligence,0);assert.equal(result.ai.time,undefined);assert.ok(result.ai.reviewFlags.some(x=>x.includes('켜둔 시간')))}finally{globalThis.fetch=original}
+});
+test('v2 teacher finalization requires plan confirmation and saves a versioned audit atomically',async()=>{
+ const rubric={situation:13,policyChoice:18,reasoning:22,impact:18,diligence:19};
+ const grade=extra=>admin.POST(new Request('https://test/api/admin',{method:'POST',body:JSON.stringify({code:'test-code',action:'grade',studentId:'pdf-v2',rubricVersion:'v2.0',rubric,...extra})}));
+ assert.equal((await grade({})).status,400);assert.equal(db.prepare("SELECT teacher_score FROM attempts WHERE student_id='pdf-v2'").get().teacher_score,null);
+ assert.equal((await grade({planConfirmed:true,rubric:{...rubric,situation:16}})).status,400);
+ assert.equal((await grade({planConfirmed:true})).status,200);
+ const row=db.prepare("SELECT * FROM attempts WHERE student_id='pdf-v2'").get();assert.equal(row.teacher_score,90);assert.equal(JSON.parse(row.teacher_breakdown).rubricVersion,'v2.0');assert.equal(row.ai_score,77);
+ const history=db.prepare("SELECT * FROM grade_history WHERE student_id='pdf-v2'").get();assert.equal(history.event_type,'teacher_grade_v2');assert.equal(history.extra_penalty,0);assert.equal(history.provisional_score,90);
+});
+test('statistics use actual selected scores, include zeros and exclude ungraded values',()=>{
+ assert.deepEqual(v2.scoreStatistics([null,undefined,NaN]),{count:0,mean:null,median:null,atLeast90Percent:null,min:null,max:null});
+ assert.deepEqual(v2.scoreStatistics([100,90,0,null,80]),{count:4,mean:67.5,median:85,atLeast90Percent:50,min:0,max:100});
 });

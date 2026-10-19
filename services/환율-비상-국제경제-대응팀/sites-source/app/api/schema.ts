@@ -38,7 +38,9 @@ const tables = [
 )`
 ];
 const additions: Record<string, Record<string,string>> = {
+  grading_jobs: {rubric_version:"TEXT NOT NULL DEFAULT 'legacy'"},
   attempts: {
+    ai_v2_score:"INTEGER", ai_v2_breakdown:"TEXT", ai_v2_graded_at:"INTEGER",
     writing_changes: "INTEGER NOT NULL DEFAULT 0", writing_seconds: "INTEGER NOT NULL DEFAULT 0", last_writing_at: "INTEGER", writing_pause_seconds: "INTEGER NOT NULL DEFAULT 0",
     restart_authorized_at: "INTEGER",
     duration_minutes: "INTEGER NOT NULL DEFAULT 45", paused_at: "INTEGER",
