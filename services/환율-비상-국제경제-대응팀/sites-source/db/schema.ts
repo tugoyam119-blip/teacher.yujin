@@ -1,0 +1,27 @@
+// Intentionally empty by default.
+// Add Drizzle tables here when the site actually needs a database.
+// See examples/d1/db/schema.ts for an opt-in example.
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const settings = sqliteTable("settings", {
+  id: integer("id").primaryKey(), status: text("status").notNull().default("closed"),
+  durationMinutes: integer("duration_minutes").notNull().default(45), startedAt: integer("started_at"),
+  pausedAt: integer("paused_at"), pausedSeconds: integer("paused_seconds").notNull().default(0), updatedAt: integer("updated_at").notNull(),
+});
+export const roster = sqliteTable("roster", { studentId: text("student_id").primaryKey(), name: text("name").notNull(), className: text("class_name").notNull().default("") });
+export const classSessions = sqliteTable("class_sessions", { className:text("class_name").primaryKey(),status:text("status").notNull().default("closed"),durationMinutes:integer("duration_minutes").notNull().default(45),startedAt:integer("started_at"),deadline:integer("deadline"),examStartedAt:integer("exam_started_at"),pausedAt:integer("paused_at"),pausedSeconds:integer("paused_seconds").notNull().default(0),updatedAt:integer("updated_at").notNull() });
+export const attempts = sqliteTable("attempts", {
+  restartAuthorizedAt: integer("restart_authorized_at"),
+  studentId: text("student_id").primaryKey(), name: text("name").notNull(), className: text("class_name").notNull().default(""), answers: text("answers").notNull().default("{}"),
+  status: text("status").notNull().default("progress"), currentStep: integer("current_step").notNull().default(1), autoScore: integer("auto_score").notNull().default(0),
+  aiScore: integer("ai_score"), aiFeedback: text("ai_feedback"), aiBreakdown: text("ai_breakdown"), teacherBreakdown:text("teacher_breakdown"), aiGradedAt: integer("ai_graded_at"),
+  teacherScore: integer("teacher_score"), feedback: text("feedback").notNull().default(""), startedAt: integer("started_at").notNull(), durationMinutes:integer("duration_minutes").notNull().default(45),pausedAt:integer("paused_at"),pausedSeconds:integer("paused_seconds").notNull().default(0), updatedAt: integer("updated_at").notNull(), submittedAt: integer("submitted_at"), submissionType: text("submission_type"),
+  extraStatus:text("extra_status").notNull().default("none"),extraRequestedAt:integer("extra_requested_at"),extraGrantedMinutes:integer("extra_granted_minutes").notNull().default(0),extraStartedAt:integer("extra_started_at"),extraPenaltyExempt:integer("extra_penalty_exempt").notNull().default(0),extraPenalty:integer("extra_penalty").notNull().default(0),extraDecidedAt:integer("extra_decided_at"),extraReason:text("extra_reason").notNull().default(""),
+});
+export const studentVisits=sqliteTable("student_visits",{studentId:text("student_id").primaryKey(),name:text("name").notNull(),className:text("class_name").notNull(),firstSeenAt:integer("first_seen_at").notNull(),lastSeenAt:integer("last_seen_at").notNull(),loginCount:integer("login_count").notNull().default(0),lastPhase:text("last_phase").notNull().default("preview")});
+export const makeupRounds=sqliteTable("makeup_rounds",{className:text("class_name").primaryKey(),status:text("status").notNull().default("closed"),durationMinutes:integer("duration_minutes").notNull().default(45),openedAt:integer("opened_at"),examStartedAt:integer("exam_started_at"),closedAt:integer("closed_at"),updatedAt:integer("updated_at").notNull()});
+export const makeupRoster=sqliteTable("makeup_roster",{studentId:text("student_id").primaryKey(),name:text("name").notNull(),className:text("class_name").notNull(),addedAt:integer("added_at").notNull()});
+export const gradeHistory=sqliteTable("grade_history",{id:integer("id").primaryKey({autoIncrement:true}),studentId:text("student_id").notNull(),eventType:text("event_type").notNull().default("teacher_grade"),autoScore:integer("auto_score").notNull().default(0),aiScore:integer("ai_score"),extraPenalty:integer("extra_penalty").notNull().default(0),provisionalScore:integer("provisional_score"),teacherScore:integer("teacher_score"),feedback:text("feedback").notNull().default(""),createdAt:integer("created_at").notNull()});
+export const teacherSettings=sqliteTable("teacher_settings",{id:integer("id").primaryKey(),openaiApiKey:text("openai_api_key"),model:text("model").notNull().default("gpt-5.6-luna"),updatedAt:integer("updated_at").notNull()});
+export const benchmarkRuns=sqliteTable("benchmark_runs",{id:text("id").primaryKey(),status:text("status").notNull(),totalCount:integer("total_count").notNull().default(50),completedCount:integer("completed_count").notNull().default(0),failedCount:integer("failed_count").notNull().default(0),model:text("model").notNull(),metrics:text("metrics"),createdAt:integer("created_at").notNull(),updatedAt:integer("updated_at").notNull(),completedAt:integer("completed_at")});
+export const benchmarkCases=sqliteTable("benchmark_cases",{runId:text("run_id").notNull(),caseNo:integer("case_no").notNull(),label:text("label").notNull(),answers:text("answers").notNull(),expectedScore:integer("expected_score").notNull(),expectedBreakdown:text("expected_breakdown").notNull(),aiScore:integer("ai_score"),aiResult:text("ai_result"),confidence:text("confidence"),reviewRequired:integer("review_required").notNull().default(0),error:text("error"),completedAt:integer("completed_at")});
