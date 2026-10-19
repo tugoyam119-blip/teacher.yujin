@@ -30,3 +30,10 @@ ChatGPT 제작 이미지(PNG)의 원본 바이트를 손상 없이 GitHub에 등
 - 사용자 업로드 반복 없이 ChatGPT에서 파일 생성→바이트 확보→GitHub 업로드까지 이어지는 경로 실증.
 - 최소 3회 연속 성공, 실패 복구·중복 업로드·큰 파일·권한 오류 테스트.
 - 구현과 게임 화면 QA 성공 후 본 문서의 검증 상태만 변경한다.
+
+## 2026-10-20 추가 실측 — 대용량 시험 (v1.2 반영 메모)
+- 600×600 PNG **1,080,748 bytes**, Base64 **1,441,000 chars**: create_blob 반환 SHA `4bbeca9e9b2729b7408425d32f05cf95f620c2d7`. Tree/Commit/branch에 등록 성공. fetch_file(encoding=base64)는 SHA가 일치하나 content가 빈 문자열로 반환됨(2회). 따라서 왕복 완전검증 **실패/미충족**.
+- 1024×1024 PNG **3,147,060 bytes**, Base64 **4,196,080 chars**: 연결 호출에서 `h2 protocol error: error reading a body from connection`; GitHub Blob 생성 성공 확인 불가. 재시도 또는 다른 전송 경로 필요.
+- 1MB 정도의 승인 PNG 자체를 로컬 환경에서 읽어 GitHub create_blob 인자로 자동 공급하는 브리지는 구축되지 않음. 합성된 시험 PNG를 connector 실행 환경 안에서 생성·업로드한 경우만 확인.
+- 성공 판정: 실제 승인 게임 PNG, 재조회 원본 SHA-256 완전 일치, 이미지 생성부터 업로드/PR/게임 적용 자동화 및 최소 3회 연속 검증 통과 전까지 **기술 검증 단계**.
+- 대용량 이미지에 Base64 전체를 연결 인자 한 번에 싣는 방식은 한계를 확인했으므로, 파일 바이트를 서버로 직접 보내는 인증된 스트리밍 업로드 또는 별도 file-native connector 개발을 우선 검토한다.
