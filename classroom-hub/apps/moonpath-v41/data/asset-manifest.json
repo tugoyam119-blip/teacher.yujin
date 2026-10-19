@@ -81,5 +81,16 @@
       "설정"
     ],
     "preserveApprovedArtwork": true
+  },
+  "homeLogoQa": {
+    "checkedAt": "2026-10-19",
+    "sourceShaMatch": true,
+    "chromiumEmbeddedPngQA": "PASS_960x540_1280x800_390x844",
+    "testMethod": "page.set_content(data:image/png;base64) from local actual PNG; browser navigation to file/http blocked",
+    "fileProtocolQA": "BLOCKED_NOT_PASS",
+    "externalUrlQA": "NOT_RUN",
+    "gitBinaryUpload": "BLOCKED_NOT_DONE",
+    "buttonInteractionQa": "NOT_RUN",
+    "details": "Local QA artifacts created; no GitHub asset upload or service deployment."
   }
 }
