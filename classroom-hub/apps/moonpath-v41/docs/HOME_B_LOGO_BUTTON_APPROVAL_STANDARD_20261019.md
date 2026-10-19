@@ -43,3 +43,14 @@
 - 전달 크기나 도구 한도 때문에 단계가 막히면 **막힌 단계와 확인된 제한**을 기록하고 허용되는 대체 전송 경로를 확인한다. Base64 문자열을 임의로 잘라 업로드하거나 빈/손상된 PNG를 대신 올리지 않는다.
 - 위 작업은 **운영 main·Railway·기존 저장 데이터 변경 금지**, 최종 사용자 승인 전 배포 금지.
 - 재시도는 실패한 업로드에서 반드시 점검할 기본 경로지만 성공을 보장하지 않는다. 성공 판정은 원격 파일의 실제 존재와 바이트 대조 이후에만 한다.
+
+
+## 검증된 성공 사례: 소형 PNG Blob→Tree→Commit (2026-10-19)
+- **실제로 실행 및 성공:** 1×1 PNG 68바이트 Base64를 GitHub `create_blob(encoding=base64)`로 업로드. blob SHA `3f6eda845858c18c00bcd715f7679eee0ad387a2`.
+- 기존 개발 브랜치 HEAD `74f0868fe004befce9c36dc771eea073db966463`, 기본 tree `82c83bf2f98cd1a2bed3bff7ea09faa5d8d6b772`를 API로 조회.
+- `create_tree(base_tree_sha, [{path,mode:"100644",type:"blob",sha}])`로 기존 소스 보존하여 새 tree 생성.
+- `create_commit(tree_sha,parent_sha)` 후 `update_ref(branch_name,sha,expected_sha)`로 개발 브랜치만 갱신. 성공 커밋 `5c94717203dc59730218a57c7f09c43f981ecb67`.
+- GitHub git/tree recursive API 재조회 결과 `classroom-hub/apps/moonpath-v41/test-assets/github-blob-upload-probe-1x1.png`가 크기 **68바이트**, 위 Git blob SHA로 존재함을 확인.
+- **검증 범위:** 소형 PNG 업로드와 Git 트리 반영 PASS. 연결된 `fetch_file` 및 `fetch_blob`이 PNG 비UTF-8 디코딩을 지원하지 않아, 실제 원격 PNG 재다운로드 SHA-256 대조는 **미완료**.
+- **승인 로고 및 슬로건 원본(메가바이트 규모)은 아직 업로드되지 않았다.** 테스트 68바이트 성공을 대용량 전송 성공으로 주장하지 말 것. Base64 원본 전달 경로 마련 후 동일 절차 재사용.
+- 원본 두 PNG의 바이너리 저장은 확인 전까지 미완료 상태이며, main·Railway·기존 데이터는 변경 금지.
