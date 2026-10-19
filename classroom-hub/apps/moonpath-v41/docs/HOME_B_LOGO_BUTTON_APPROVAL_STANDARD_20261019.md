@@ -54,3 +54,10 @@
 - **검증 범위:** 소형 PNG 업로드와 Git 트리 반영 PASS. 연결된 `fetch_file` 및 `fetch_blob`이 PNG 비UTF-8 디코딩을 지원하지 않아, 실제 원격 PNG 재다운로드 SHA-256 대조는 **미완료**.
 - **승인 로고 및 슬로건 원본(메가바이트 규모)은 아직 업로드되지 않았다.** 테스트 68바이트 성공을 대용량 전송 성공으로 주장하지 말 것. Base64 원본 전달 경로 마련 후 동일 절차 재사용.
 - 원본 두 PNG의 바이너리 저장은 확인 전까지 미완료 상태이며, main·Railway·기존 데이터는 변경 금지.
+
+
+## 인증 및 GitHub 원격 접속 실증 (2026-10-19, 개발 브랜치 한정)
+- Python 컨테이너 `GH_TOKEN`, `GITHUB_TOKEN`, `GITHUB_PERSONAL_ACCESS_TOKEN` 없음. `https://api.github.com/rate_limit`, `https://github.com` 요청은 DNS 실패. 따라서 이 Python 환경의 직접 HTTPS 업로드 통과 아님.
+- 기존 인증된 ChatGPT GitHub 연결을 통해 `create_file`로 `classroom-hub/apps/moonpath-v41/docs/BINARY_CONNECTOR_AUTH_NETWORK_PROBE_20261019.md`를 개발 브랜치에 작성하고, `fetch_file(ref=개발 브랜치)` 재조회 시 내용 완전 일치를 확인함.
+- 실제 커밋: `f078ca4a29c0ef56e329841466189f40cb21361b`. 인증된 GitHub 연결의 텍스트 파일 쓰기와 네트워크 접근은 PASS. 개인 토큰을 채팅에 전달할 필요 없음.
+- **한계:** PNG 전체 바이너리를 로컬 파일에서 GitHub 연결의 `create_blob(content=base64)` 입력으로 자동 전달하는 원본 바이트 중계 경로는 아직 미확보. 위 텍스트 시험이 대용량 PNG 업로드를 증명하지 않음. REMOTE_BYTES_VERIFIED 및 HTML_RENDER_PASS 미완료.
