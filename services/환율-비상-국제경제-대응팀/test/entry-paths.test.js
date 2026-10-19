@@ -69,4 +69,5 @@ test('future classroom registrations use the canonical teacher URL', () => {
   const manifest = require('../yujint.app.json');
   assert.equal(manifest.manage_path, '/teacher');
   assert.equal(manifest.healthcheck_path, '/health');
+  assert.deepEqual(manifest.inherit_env, []);
 });

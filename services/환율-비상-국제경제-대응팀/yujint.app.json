@@ -2,5 +2,6 @@
   "schema": 1,
   "type": "server",
   "healthcheck_path": "/health",
-  "manage_path": "/teacher"
+  "manage_path": "/teacher",
+  "inherit_env": []
 }
