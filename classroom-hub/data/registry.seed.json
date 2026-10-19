@@ -1,5 +1,28 @@
 [
   {
+    "id": "suspicion-classroom",
+    "name": "의심의 교실 : 진실을 찾아라 (개발 테스트)",
+    "slug": "suspicion-classroom",
+    "kind": "학습게임",
+    "subject": "사회",
+    "audience": "both",
+    "description": "교사용 운영실·학생용 모바일·교실용 화면을 연결한 개발 테스트 게임입니다. 실제 학생 정보는 입력하지 마세요.",
+    "icon": "🕵️",
+    "deploy_type": "external",
+    "repo_path": "",
+    "target_url": "https://step11-api-qa-test.up.railway.app/",
+    "manage_url": "https://step11-api-qa-test.up.railway.app/teacher",
+    "published": true,
+    "archived": false,
+    "sort_order": 6,
+    "version": 1,
+    "version_label": "STEP13-QA",
+    "update_mode": "external",
+    "deploy_status": "ready",
+    "updated_at": "2026-10-19T00:00:00.000Z",
+    "histories": []
+  },
+  {
     "id": "moonpath-dev",
     "name": "미지의 길 : 달빛 마도 탐험 (개발용)",
     "slug": "moonpath-dev",
