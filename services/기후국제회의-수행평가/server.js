@@ -421,7 +421,8 @@ function applyGenerousClimateFloor(grade,session){
  const narratives=['priorityReason','agreementReason','compromise','finalDeclaration'];
  const mapping={countryAnalysis:['priority1','priorityReason'],fundAllocation:['agreementReason'],policyAgreement:['agreement','agreementReason'],conflictAnalysis:['opposingCountry','oppositionReason','compromise'],compromise:['compromise'],cooperationRoles:['actors','actorReason','actorAssignments','finalDeclaration'],completion:narratives,timeCompliance:[]};
  const time=Number.isInteger(session.timeComplianceScore)?session.timeComplianceScore:0;
- const policy=gradeByEffort(session.data||{},scoreOptions,mapping,narratives,['priority1','agreement','opposingCountry','actors'],{timeCompliance:time});
+ const data=session.data||{},budgetEvidence=Object.values(data.budget||{}).some(v=>Number(v)>0)?'예산 배분 시도':'';
+ const policy=gradeByEffort({...data,budgetEvidence},scoreOptions,mapping,narratives,['priority1','agreement','opposingCountry','actors','oppositionReason','actorReason','reflectionReason','actorAssignments','compromiseChoice','budgetEvidence'],{timeCompliance:time});
  grade.rawAiAreas=JSON.parse(JSON.stringify(grade.areas));
  for(const k of contentScoreKeys){const a=grade.areas[k]||{};grade.areas[k]={...a,score:policy.scores[k],reason:policy.note+(policy.present[k]?' 관련 작성·선택 흔적 인정.':' 직접 근거 부족: 참여 보장 점수이며 내용 숙달을 의미하지 않음.')};}
  grade.policyVersion=POLICY_VERSION;grade.effortPolicy={...policy.profile,note:policy.note};

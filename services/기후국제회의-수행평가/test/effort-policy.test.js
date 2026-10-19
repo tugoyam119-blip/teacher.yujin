@@ -19,3 +19,14 @@ test('short attempts accepted, blank/symbol/repetition rejected, choice-only fla
  const g=gradeByEffort({agreement:'cooperate'},options,mapping,fields,['agreement'],{timeCompliance:6});assert(g.total>=85);assert(g.profile.reviewRequired);
 });
 test('invalid fixed time fails closed',()=>{assert.throws(()=>gradeByEffort({},options,mapping,fields,[],{timeCompliance:5}));});
+
+test('real climate adapter recognizes secondary writing and budget-only effort',()=>{
+ const fs=require('fs'),path=require('path'),vm=require('vm');
+ const server=fs.readFileSync(path.join(__dirname,'../server.js'),'utf8');
+ const code=server.slice(server.indexOf('function applyGenerousClimateFloor('),server.indexOf('runAIGrade=async function(session)'));
+ const apply=vm.runInNewContext(code+';applyGenerousClimateFloor',{gradeByEffort,scoreOptions:options,contentScoreKeys:Object.keys(options).filter(k=>k!=='timeCompliance'),POLICY_VERSION:'effort-85-20261019'});
+ for(const data of [{actorReason:'협력'},{reflectionReason:'변경'},{oppositionReason:'돈'},{budget:{renewable:10}}]){
+  const grade=apply({areas:Object.fromEntries(Object.keys(options).map(k=>[k,{score:0,evidence:[]}]))},{data,timeComplianceScore:6});
+  assert(grade.contentTotal+6>=85);assert(grade.effortPolicy.attempted);
+ }
+});
