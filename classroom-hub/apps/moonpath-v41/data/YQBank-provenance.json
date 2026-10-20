@@ -1,0 +1,35 @@
+{
+  "source": "통합사회2_1단원_YQBank_교과서기반_60문항_v1.0.json",
+  "sourceLibraryId": "file_000000002f30820997c3b83719d3397a",
+  "sourceCodePath": "classroom-hub/apps/moonpath-dev/expedition.html",
+  "sourceCodeBlobSha": "35154eb61dac2e03fd6154fa1130d5a99c3ba70d",
+  "packId": "KR-HS-IS2-U01",
+  "packVersion": "1.0.0",
+  "questionCount": 60,
+  "uniqueIds": 60,
+  "sourceVsEmbedded": "PASS_SEMANTIC_FULL_OBJECT",
+  "mismatchCount": 0,
+  "sourceVsEmbeddedAuditDate": "2026-10-14",
+  "byType": {
+    "single_choice": 25,
+    "true_false": 8,
+    "matching": 7,
+    "ordering": 3,
+    "manual": 8,
+    "categorization": 6,
+    "short_text": 3
+  },
+  "byDifficulty": {
+    "1": 6,
+    "2": 15,
+    "3": 21,
+    "4": 12,
+    "5": 6
+  },
+  "educationalCorrectnessReview": "NOT_PERFORMED",
+  "endToEndRuntimeTest": "NOT_RUN",
+  "sourceSHA256": "3a2401498a73bf5afd7ed72329ef07d4dd742d58f5ab27ab966841cc67c5de7f",
+  "sourceRawByteCount": 147015,
+  "githubSourceBlobShaExpected": "74d2b5dabfcf6c309a217c26220c184dc4baaa8e",
+  "sourceByteIdenticalToBranchCopy": true
+}

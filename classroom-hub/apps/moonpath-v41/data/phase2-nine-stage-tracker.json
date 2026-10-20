@@ -1,0 +1,226 @@
+{
+  "masterVersion": "4.1.1",
+  "phase": "PHASE2",
+  "stageCount": 9,
+  "sourceOfTruth": "docs/PHASE2_9_STAGE_FIXED_PLAN.md",
+  "stages": [
+    {
+      "id": "2-1",
+      "title": "60문항 통합 문항 엔진",
+      "implementation": "CODE_COMPLETE_UNIT_ONLY",
+      "unitTest": "PASS_NODE_77",
+      "integrationTest": "NOT_RUN",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/questions/engine.js",
+        "tests/phase2-2-1.test.mjs",
+        "docs/PHASE2_STEP2_1_VERIFICATION_20261014.md"
+      ]
+    },
+    {
+      "id": "2-2",
+      "title": "무작위 출제·미출제/복습/회수",
+      "implementation": "CODE_COMPLETE_UNIT_AND_MOCK_IDB_ONLY",
+      "unitTest": "PASS_NODE_34",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/questions/draw.js",
+        "src/engine/reducer.js",
+        "src/engine/model.js",
+        "src/engine/session.js",
+        "tests/phase2-2-2.test.mjs",
+        "docs/PHASE2_STEP2_2_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-2-20261015.summary.json"
+      ],
+      "limitations": [
+        "교사 판정 후 미회수/복습 분류 상태 자동 등록은 2-3에서 연결",
+        "회수 미션 호출/진행/보상은 2-5·2-6 책임",
+        "지역 간 실제 이동 기록은 2-8에서 확정",
+        "IndexedDB 실제 Chrome/Edge 및 file:// 미검증"
+      ]
+    },
+    {
+      "id": "2-3",
+      "title": "답변 접수·교사 판정·타이머",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_101",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/questions/adjudication.js",
+        "src/engine/reducer.js",
+        "src/engine/model.js",
+        "src/engine/session.js",
+        "tests/phase2-2-3.test.mjs",
+        "docs/PHASE2_STEP2_3_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-3-20261015.summary.json"
+      ],
+      "limitations": [
+        "교사용 실제 입력/최종판정 화면 아직 없음",
+        "교사 판정 확정 후 장부 보상은 2-6에서 연결",
+        "정정 연쇄 재계산은 2-7에서 연결",
+        "IndexedDB 실제 Chrome/Edge 및 file:// 실증 미검증"
+      ]
+    },
+    {
+      "id": "2-4",
+      "title": "모둠·대표 순환",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_47",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/teams/roster.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "tests/phase2-2-4.test.mjs",
+        "docs/PHASE2_STEP2_4_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-4-20261015.summary.json"
+      ],
+      "limitations": [
+        "학생 명단 입력/출석 교사 UI, 파일 업로드는 아직 없음",
+        "가로채기 다른 모둠 실제 해결자 처리는 2-5에서 연결",
+        "지역 최초 완료 및 공헌·별빛 보상은 2-6/2-8에서 구현",
+        "실제 Windows Chrome/Edge 네이티브 IndexedDB·file:// 저장·강제 종료 복원 미검증"
+      ]
+    },
+    {
+      "id": "2-5",
+      "title": "가로채기·회수",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_38",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "BLOCKED_BY_ADMINISTRATOR",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/recovery/flows.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "src/storage/indexeddb.js",
+        "tests/phase2-2-5.test.mjs",
+        "docs/PHASE2_STEP2_5_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-5-20261015.summary.json"
+      ],
+      "limitations": [
+        "지역 방문 이벤트/경로 이동은 PHASE 2-8 미구현이므로 자연 회수는 실제 지역 방문 기록 연결 전이며 테스트는 방문 기록 모의만 통과",
+        "별빛·공헌도·열쇠 보상 및 이력 정산은 PHASE 2-6/2-7 미구현",
+        "교사/학생 실제 UI와 Native IndexedDB·file:// Chrome/Edge 강제 종료 복구 미검증",
+        "차시 재개/두 창 동기화/엔딩 30지역 실제 게임 통합 전"
+      ]
+    },
+    {
+      "id": "2-6",
+      "title": "별빛·열쇠·마법 장부",
+      "implementation": "CODE_CORE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_52",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "NOT_RUN",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/rewards/ledger.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "tests/phase2-2-6.test.mjs",
+        "docs/PHASE2_STEP2_6_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-6-20261015.summary.json"
+      ],
+      "limitations": [
+        "단계별 T2~T4 마법 해금 시점은 기준서에 구체적 완료 지역 수가 없어 미확정: 지역 진행 2-8 연결 후 확정",
+        "지역 완료 열쇠+1은 검증된 완료 상태를 요구하는 지급 함수만 있음: 실제 REGION_COMPLETED 이벤트 미구현",
+        "2-7 정정·연쇄 재계산·이미 소비한 별빛 정산 미구현",
+        "Chrome/Edge IndexedDB 및 오프라인 file:// 테스트 관리자 정책 차단",
+        "실제 교사·학생 화면 및 PDF/CSV 미구현"
+      ]
+    },
+    {
+      "id": "2-7",
+      "title": "판정 정정과 정산",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_52",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "BLOCKED_ENV_POLICY_FILE_URL",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/corrections/reconcile.js",
+        "src/rewards/ledger.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "src/recovery/flows.js",
+        "src/questions/draw.js",
+        "tests/phase2-2-7.test.mjs",
+        "docs/PHASE2_STEP2_7_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-7-20261015.summary.json"
+      ],
+      "limitations": [
+        "정정 원본 답안·원판정·미션 시도는 삭제/수정하지 않고 append-only correction으로 보존",
+        "원모둠/실제 해결자 귀속 재계산과 음수 대신 별빛 정산 필요 금액 표현",
+        "실제 Windows Chrome/Edge IndexedDB·file://·강제 종료 복구 미검증",
+        "PHASE 2-8 지역 완료/열쇠 실제 이벤트 연동 및 PHASE 2-9 전체 1지역 완주 미검증"
+      ]
+    },
+    {
+      "id": "2-8",
+      "title": "지역 완료/결과",
+      "implementation": "CODE_COMPLETE_UNIT_AND_FAKE_IDB_ONLY",
+      "unitTest": "PASS_NODE_38",
+      "integrationTest": "PASS_FAKE_IDB_ONLY",
+      "browserTest": "BLOCKED_BY_ADMINISTRATOR",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/world/regions.js",
+        "src/world/result-card.js",
+        "src/engine/model.js",
+        "src/engine/reducer.js",
+        "src/engine/session.js",
+        "src/questions/draw.js",
+        "tests/phase2-2-8.test.mjs",
+        "docs/PHASE2_STEP2_8_VERIFICATION_20261015.md",
+        "test-logs/phase2-step2-8-20261015.full.log"
+      ],
+      "limitations": [
+        "지역 이동은 REGION_ENTERED 명시 이벤트 이후의 EXPLICIT 모드에서만 엄격 검사. 2-1~2-7 기존 프로토타입 저장에 대한 자동 변환/강제 전환 미구현",
+        "회수 NATURAL 호출 자격은 실제 방문 이력으로 연결했으나 교사용 자동 표시/호출 UI 미구현",
+        "지역 완료 결과는 공개 요약 데이터 및 문자형 마크업만 구현. 신규 픽셀아트 결과 카드 최종 디자인·사용자 승인 전",
+        "지역 완료 열쇠 지급/별빛0은 Node·가상 IndexedDB에서만 검증. 실제 Chrome/Edge file:// 저장 실패/중단 복구 미검증",
+        "확장 엔딩/단서 조합/학생 창 두 창 동기화/PDF·CSV·JSON 파일 UI 미구현"
+      ]
+    },
+    {
+      "id": "2-9",
+      "title": "한 지역 완주 통합검증",
+      "implementation": "CODE_COMPLETE_TEST_HARNESS_ONLY",
+      "unitTest": "PASS_NODE_21_INTEGRATION_AND_BUILD",
+      "integrationTest": "PASS_FAKE_IDB_AND_CHROMIUM_DOM_WITH_MOCK_IDB_ONLY",
+      "browserTest": "BLOCKED_NATIVE_FILE_AND_HTTP_BY_ADMIN_POLICY",
+      "userApproval": "NOT_REQUESTED",
+      "evidence": [
+        "src/demo/one-region-smoke.js",
+        "src/demo/one-region-template.html",
+        "scripts/build-one-region-smoke.mjs",
+        "dist/phase2-9-one-region-smoke.html",
+        "tests/phase2-2-9.test.mjs",
+        "tests/phase2-2-9-build.test.mjs",
+        "tests/browser/phase29-dom-smoke.py",
+        "tests/browser/phase29-native-preflight.py",
+        "docs/PHASE2_STEP2_9_VERIFICATION_20261016.md",
+        "test-logs/phase2-step2-9-20261016.full.log"
+      ],
+      "limitations": [
+        "기능 검증 화면은 최종 승인된 신규 픽셀아트 HOME/교사·학생 이중창이 아님",
+        "Node 및 Chromium DOM은 실제 IndexedDB가 아닌 메모리 모의 저장소로 검증",
+        "실제 Windows Chrome·Edge file:// IndexedDB·강제 종료 복원·무인터넷 재연결 미검증",
+        "브라우저 선행 진입 관리자 정책 차단; V09/V11/V12/V14/V15/V16/V21 최종 실증 게이트 PASS 아님",
+        "브라우저/화면 최종 승인 전 운영 main/Railway 배포 금지"
+      ]
+    }
+  ]
+}

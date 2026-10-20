@@ -979,6 +979,12 @@ body{font-family:"Noto Sans KR","Malgun Gothic",Arial,sans-serif}
     footer.append(saveBtn);
     wrap.append(footer);
 
+    const preview=document.createElement("a");
+    preview.href="../moonpath-v41/dist/phase2-9-one-region-smoke.html";
+    preview.textContent="v4.1.1 개발 진행 확인 · 저장·복원 시험";
+    preview.style.cssText="display:block;text-align:center;margin:12px 0;color:inherit;font-size:13px";
+    wrap.append(preview);
+
     content.replaceChildren(wrap);
   }
 

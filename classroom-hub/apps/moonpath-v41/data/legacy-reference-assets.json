@@ -1,0 +1,76 @@
+{
+  "source": "old moonpath-dev/assets; reference only",
+  "baselineCommit": "16c5d7f9d929a06a35b47c8da410c7a73facdf20",
+  "assets": [
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/.gitkeep",
+      "byteSize": 1,
+      "gitBlobSha": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png",
+      "byteSize": 2507422,
+      "gitBlobSha": "ea222d821205f5ff539973f5d3d723dd525af685",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_FRAME_LEFT_1900x1300_VERIFIED.png",
+      "byteSize": 1721850,
+      "gitBlobSha": "35d3310aadc46b78e191ea821a9b67c54b733037",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_FRAME_LEFT_2300x1800_THIN_BORDER_v2.png",
+      "byteSize": 2580282,
+      "gitBlobSha": "6c0146282ad0e60106df0f56c3cf623da1e9419a",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_FRAME_RIGHT_1400x1750_VERIFIED.png",
+      "byteSize": 2182883,
+      "gitBlobSha": "67a1a4c3ec2698d3b976b6c3c280f3a4b95e43f5",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_FRAME_RIGHT_1400x1800_THIN_BORDER_v2.png",
+      "byteSize": 1642728,
+      "gitBlobSha": "f266c59f80b981a7ed62305dd463a62435da3472",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png",
+      "byteSize": 1708401,
+      "gitBlobSha": "5fcf8575c7364a93c58dc9c1f441e08ad32e4fd1",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png",
+      "byteSize": 1748332,
+      "gitBlobSha": "2722ba17ce0315960047149a4fd8e9824f1a1e1a",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_PROP_CAT_PIXEL_v1.svg",
+      "byteSize": 647,
+      "gitBlobSha": "b6301fad039a53055f251e1722efb29ec9b05dc3",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    },
+    {
+      "path": "classroom-hub/apps/moonpath-dev/assets/MP_SETUP_PROP_LANTERN_PIXEL_v1.svg",
+      "byteSize": 642,
+      "gitBlobSha": "0713e274a4d9bbb0d706c3230279b90b9245b27b",
+      "type": "file",
+      "usage": "REFERENCE_ONLY"
+    }
+  ]
+}

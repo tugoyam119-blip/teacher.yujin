@@ -1,0 +1,21 @@
+{
+  "commonEngineRequired": true,
+  "status": "SPEC_ONLY_NOT_BUILT",
+  "targets": [
+    {
+      "id": "online",
+      "output": "dist/online/",
+      "deployment": "blocked_before_user_approval"
+    },
+    {
+      "id": "offline",
+      "output": "dist/moonpath-v411.html",
+      "singleHtml": true,
+      "networkRequired": false,
+      "scheme": "file://",
+      "browserEvidence": "NOT_RUN"
+    }
+  ],
+  "storageNamespace": "moonpath-v411",
+  "allowLegacyStorageMutation": false
+}

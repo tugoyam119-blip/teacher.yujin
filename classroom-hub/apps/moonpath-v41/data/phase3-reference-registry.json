@@ -1,0 +1,436 @@
+{
+  "documentVersion": "v4.1.1",
+  "stage": "PHASE3_3-1",
+  "compiledAt": "2026-10-16",
+  "source": "actual PNG bytes from user-owned image Library; old sources not copied into new game",
+  "referenceImages": [
+    {
+      "id": "HOME_STEP10",
+      "filename": "HOME_STEP10_FINAL_NATIVE_960x540.png",
+      "libraryFileId": "file_00000000c3308209bf6bfbfed966a8c3",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "PRIOR_APPROVED_DIRECTION",
+      "usedToStudy": "최종 HOME의 전체 구도/달/성역/메뉴/광원",
+      "doNotAssume": "기존 한글과 버튼 그래픽을 새 게임에서 직접 사용할 수 없음",
+      "png": {
+        "width": 960,
+        "height": 540,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 1050987,
+        "sha256": "0320fab633217ba23a9ca93c93bd11aa7d398ea104ccf41e1e316a823c8b972e"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "HOME_REFERENCE",
+      "filename": "HOME_REFERENCE_MASTER_960x540.png",
+      "libraryFileId": "file_00000000ba9c820992c39918c60ba038",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "HISTORICAL_REFERENCE",
+      "usedToStudy": "HOME 세계관 색감/전경·원경 배치 비교",
+      "doNotAssume": "Step10보다 현재 기준이라고 단정하지 않음",
+      "png": {
+        "width": 960,
+        "height": 540,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 1076147,
+        "sha256": "3bfdf9d2ba1a2e8a06ab002313ccd894ec5050b5efd8cd59a908f6d580023ef4"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "HOME_V2",
+      "filename": "HOME_V2_NATIVE_960x540.png",
+      "libraryFileId": "file_000000008f2c82098f5d708eacd271f0",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "HISTORICAL_REFERENCE",
+      "usedToStudy": "HOME 발전 이력과 작은 화면 가독성 비교",
+      "doNotAssume": "현재 승인본으로 자동 승격 금지",
+      "png": {
+        "width": 960,
+        "height": 540,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 1073492,
+        "sha256": "f68706b62433c35284bfc91d0b41a38922a58a21d138421dd52155dab96af846"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "CHAR_FIVE_BACKS",
+      "filename": "달빛 마도사의 다섯 뒷모습.png",
+      "libraryFileId": "file_0000000026488206b096358c7fca82eb",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "USER_SELECTED_OPTION_1",
+      "usedToStudy": "1번 바람에 날리는 연보라 장발 후면/짙은 보라 의상/금빛 문양",
+      "doNotAssume": "1번만 선택된 방향; 전체 시트를 최종 sprite로 재사용 금지",
+      "png": {
+        "width": 1448,
+        "height": 1086,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 2457421,
+        "sha256": "98b5ba7297bd2b9ea701ee276048b3614dc9cedfa1a85f65104119ae9092a80e"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "CHAR_BACK_DESIGN",
+      "filename": "달빛 마도 캐릭터 뒷모습 시안.png",
+      "libraryFileId": "file_000000003e348206ad46b0d2f4d3c798",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "DESIGN_COMPARISON",
+      "usedToStudy": "후면 머리 흐름/의상·신발 실루엣 비교",
+      "doNotAssume": "5안 중 전부 승인 아님",
+      "png": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGBA",
+        "alphaChannel": true,
+        "alphaRange": [
+          1,
+          253
+        ],
+        "byteSize": 2231561,
+        "sha256": "04305868584dcd9dd71f83650ffe7c020635923c856ce98f0fc0593a52af4de6"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "BOOK_PAIR_COMPOSITE",
+      "filename": "미지의길_원본책장_파랑보라_실제레이어합성_v2.png",
+      "libraryFileId": "file_00000000f7d482069b7b5330e1aff415",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "PRIOR_PREFERRED_COMPOSITE",
+      "usedToStudy": "파랑·보라 양피지책장/중앙 돌길/표지판/캐릭터 깊이 배치",
+      "doNotAssume": "좌표 정확성 및 최종 6색 승인 의미 아님",
+      "png": {
+        "width": 960,
+        "height": 540,
+        "mode": "RGBA",
+        "alphaChannel": true,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 1076296,
+        "sha256": "5496a604d70105a53e70124b9163be3853f10afa4251734b4f7ad7acbe85d774"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "BOOK_BLUE",
+      "filename": "BOOK_PAGE_LEFT_BLUE_887x887.png",
+      "libraryFileId": "file_00000000829882078300111c61bef912",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "HISTORICAL_BOOK_REFERENCE",
+      "usedToStudy": "왼쪽 파랑 책장 코어/장식/투명 가장자리",
+      "doNotAssume": "새 책장 7영역/6색은 v4.1.1 명세에 맞게 제작",
+      "png": {
+        "width": 887,
+        "height": 887,
+        "mode": "RGBA",
+        "alphaChannel": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "byteSize": 1011354,
+        "sha256": "c6ff9c8f95a72670ecc2fec3f1d91da519ac46aa6328e4509a07fbc94e0f4b24"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "BOOK_PURPLE",
+      "filename": "BOOK_PAGE_RIGHT_PURPLE_887x887.png",
+      "libraryFileId": "file_0000000035708209be39834a3173a67b",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "HISTORICAL_BOOK_REFERENCE",
+      "usedToStudy": "오른쪽 보라 책장 코어/장식/투명 가장자리",
+      "doNotAssume": "기존 빈 프레임을 최종 자산으로 복사 금지",
+      "png": {
+        "width": 887,
+        "height": 887,
+        "mode": "RGBA",
+        "alphaChannel": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "byteSize": 1038438,
+        "sha256": "9fffd0fd5e5d64d4b5ee87564f2b67927d9ce360997a897ffbb911a9ec95c446"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "FORK_LAYOUT_QA",
+      "filename": "미지의길_갈림길_배치기준_검수용_v1.png",
+      "libraryFileId": "file_00000000b2648209915657c034ce0b65",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "QA_ONLY_NOT_FINAL_APPROVAL",
+      "usedToStudy": "Y자 길/중앙 표지판/마도사 후면 배치 관계",
+      "doNotAssume": "이미지에 검수 사각형 오버레이 있으므로 승인 완성 화면으로 간주 금지",
+      "png": {
+        "width": 960,
+        "height": 540,
+        "mode": "RGBA",
+        "alphaChannel": true,
+        "alphaRange": [
+          110,
+          255
+        ],
+        "byteSize": 1134205,
+        "sha256": "7175216cab399a8a12f38d18f3af3a77ff8ef558e3454b251ed8800947517f1f"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "FORK_BG_CANDIDATES",
+      "filename": "달빛 마도 탐험: BG01 갈림길 3종.png",
+      "libraryFileId": "file_000000006e1882098334926732916b1c",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "IDEA_SHEET_NOT_FINAL_APPROVAL",
+      "usedToStudy": "달빛 Y형 바닥/실제 풍경 장면형 분기",
+      "doNotAssume": "여러 시안의 채택 여부 미확인",
+      "png": {
+        "width": 1536,
+        "height": 1024,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 2646962,
+        "sha256": "494aed9323ca2e357f1fc3f4e56e998e779593f3dda474e19d503d7d7d49cb14"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "SETUP_BG",
+      "filename": "MP_SETUP_BG01_MOONLIT_TERRACE_APPROVED_20261010.png",
+      "libraryFileId": "file_000000008cb882069aca74bd71150214",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "NAMED_HISTORICAL_APPROVED",
+      "usedToStudy": "달빛 테라스/원경·난간/차가운 보라·따뜻한 등불 대비",
+      "doNotAssume": "신규 HOME 또는 새 게임 배경으로 직접 재사용 금지",
+      "png": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 2507422,
+        "sha256": "8a44cc79f65fee5a882be40487d4f8745f081094ea83ec9828ce3c3375173bf2"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "SETUP_LEFT",
+      "filename": "MP_SETUP_PANEL_FLOWER_MOON_LEFT_APPROVED_20261010.png",
+      "libraryFileId": "file_00000000dd6c822f954338ae829d196f",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "NAMED_HISTORICAL_APPROVED",
+      "usedToStudy": "보라·금빛 좌측 종이 프레임/흰 꽃/별 문장",
+      "doNotAssume": "기존 프레임 좌표를 960 화면에 그대로 대입 금지",
+      "png": {
+        "width": 1138,
+        "height": 941,
+        "mode": "RGBA",
+        "alphaChannel": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "byteSize": 1269774,
+        "sha256": "fed311b4f7c44ab3b8b688a8b81adf60e544d79261226d7f35cc521a87d7a4a4"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "SETUP_RIGHT",
+      "filename": "MP_SETUP_PANEL_FLOWER_MOON_RIGHT_APPROVED_20261010.png",
+      "libraryFileId": "file_00000000d4748206936ab4bc5023c318",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "NAMED_HISTORICAL_APPROVED",
+      "usedToStudy": "짝 프레임의 금빛 장식/투명 배경/보라 꽃 문양",
+      "doNotAssume": "명칭 APPROVED는 과거 작업 기준에 한함",
+      "png": {
+        "width": 534,
+        "height": 941,
+        "mode": "RGBA",
+        "alphaChannel": true,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "byteSize": 642042,
+        "sha256": "f40d8333cb4fb97e88ef79ed78e2fea4f24360c91598f4c84f76b95d277a5fbb"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "SETUP_UI_EXAMPLE",
+      "filename": "달빛 원정 준비: 마법의 픽셀 UI.png",
+      "libraryFileId": "file_00000000e81881f8a1cc40d4488d0756",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "LAYOUT_COMPARISON_ONLY",
+      "usedToStudy": "원정 설정 UI 글자 배치·패널 계층 사례",
+      "doNotAssume": "과거 확정 시안으로 간주 금지, 이미지 내 글자 새 에셋에 사용 금지",
+      "png": {
+        "width": 1672,
+        "height": 941,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 2237599,
+        "sha256": "0bcbc9598d25d195bdcba722291d81679cda33af886f58049b71aa4197c0e650"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    },
+    {
+      "id": "POPUP_LAYOUT_GUIDE",
+      "filename": "V4_NEW_POPUP_LAYOUT_GUIDE_960x540.png",
+      "libraryFileId": "file_000000002090820990d1e19f0b9f1b77",
+      "sourceLocation": "ChatGPT Library image file",
+      "sourceFileIsMountedInGithub": false,
+      "role": "REFERENCE_ONLY",
+      "pastReferenceCategory": "GUIDE_ONLY",
+      "usedToStudy": "보라/금빛 장식 팝업과 안전 콘텐츠 여백",
+      "doNotAssume": "최신 v4.1.1 중앙 문제 팝업과 동일한 최종 디자인이라고 단정 금지",
+      "png": {
+        "width": 960,
+        "height": 540,
+        "mode": "RGB",
+        "alphaChannel": false,
+        "alphaRange": [
+          255,
+          255
+        ],
+        "byteSize": 274209,
+        "sha256": "7c0392e27b7f9d2b2fb57e2876c0dfd890721a153f79c30fb1575dde8f0678e0"
+      },
+      "visualReviewed": true,
+      "newArtApproved": false
+    }
+  ],
+  "pixelPaletteSamples": [
+    {
+      "token": "DEEP_NIGHT",
+      "sourceId": "HOME_STEP10",
+      "sampleHex": "#091142",
+      "role": "원경·암부 네이비"
+    },
+    {
+      "token": "MOON_BLUE",
+      "sourceId": "HOME_STEP10",
+      "sampleHex": "#3B418F",
+      "role": "달빛을 받은 중간 거리 블루"
+    },
+    {
+      "token": "VIOLET_DEPTH",
+      "sourceId": "HOME_STEP10",
+      "sampleHex": "#7C68AA",
+      "role": "구름·마법 반사 보라"
+    },
+    {
+      "token": "HAIR_LAVENDER",
+      "sourceId": "HOME_STEP10",
+      "sampleHex": "#A586BC",
+      "role": "머리카락 연보라 계열 참고"
+    },
+    {
+      "token": "MOON_HIGHLIGHT",
+      "sourceId": "HOME_STEP10",
+      "sampleHex": "#D3B8D4",
+      "role": "달·옅은 보라 빛"
+    },
+    {
+      "token": "PARCHMENT",
+      "sourceId": "BOOK_PAIR_COMPOSITE",
+      "sampleHex": "#F0DAC4",
+      "role": "책장 안쪽 양피지/텍스트 여백"
+    },
+    {
+      "token": "WATER_COOL",
+      "sourceId": "HOME_STEP10",
+      "sampleHex": "#4B6CF7",
+      "role": "폭포 지점에서 추출한 차가운 푸른 빛"
+    },
+    {
+      "token": "WARM_DETAIL",
+      "sourceId": "HOME_STEP10",
+      "sampleHex": "#FFC685",
+      "role": "마도사 의상 금빛 하이라이트에서 추출"
+    }
+  ],
+  "paletteMethod": "mixed: first six tokens selected from top colors of Pillow median-cut of 300x180 thumbnail; last two sampled from actual HOME_STEP10 at (515,276) and (300,450); all are descriptive source samples only, NOT user-locked color specifications",
+  "referenceUsePolicy": "REFERENCE_ONLY_DO_NOT_SHIP_OR_COPY_OLD_PNG",
+  "userApprovedNewAssets": 0
+}

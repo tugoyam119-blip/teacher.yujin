@@ -1,0 +1,82 @@
+{
+  "version": "4.1.1",
+  "phase": "3-2",
+  "status": "B_DIRECTION_APPROVED_NOT_FINAL_GAME_ASSET",
+  "reference": {
+    "name": "HOME_STEP10_FINAL_NATIVE_960x540.png",
+    "sha256": "0320fab633217ba23a9ca93c93bd11aa7d398ea104ccf41e1e316a823c8b972e",
+    "usage": "REFERENCE_ONLY"
+  },
+  "variants": [
+    {
+      "id": "A",
+      "title": "기존 구도 계승형",
+      "sourceSha256": "d41008441d6005c1cc686bff82cd370010de5c2d8f4302c1d19026b20ebbb2e3",
+      "previewSha256": "5adde19a4a5c8aafcbb1c71b2566fa7a948e131027312a3f8d1f90f674969615",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "previewSize": [
+        960,
+        540
+      ],
+      "approval": "NOT_SELECTED",
+      "gitOriginalBinaryUploaded": false,
+      "browserRenderVerified": false,
+      "containsBakedText": true,
+      "usableAsFinalGameAsset": false
+    },
+    {
+      "id": "B",
+      "title": "성역 중심 웅장형",
+      "sourceSha256": "6b90f470a13307af8b87c0d8d25e4652eeb3aefd679803c70e7a99e4781fca2c",
+      "previewSha256": "b918602567a3ffd630dc6aa0465eeb1ac0efe0efa1d035eb5f50c16ab11a03fc",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "previewSize": [
+        960,
+        540
+      ],
+      "approval": "APPROVED_DIRECTION_ONLY",
+      "gitOriginalBinaryUploaded": false,
+      "browserRenderVerified": false,
+      "containsBakedText": true,
+      "usableAsFinalGameAsset": false
+    },
+    {
+      "id": "C",
+      "title": "탐험 출발 강조형",
+      "sourceSha256": "38356186e53b0ae17029fe7b7e0463424a227bedd0f7a4c6bffc7568cf0f368a",
+      "previewSha256": "4cd724c2915b35f018beb212342a9acfdeb4b6c2e805eed4ebd8a927e1820a84",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "previewSize": [
+        960,
+        540
+      ],
+      "approval": "NOT_SELECTED",
+      "gitOriginalBinaryUploaded": false,
+      "browserRenderVerified": false,
+      "containsBakedText": true,
+      "usableAsFinalGameAsset": false
+    }
+  ],
+  "designApproval": "B_DIRECTION_APPROVED",
+  "newProductionAssets": 0,
+  "assetApproval": 0,
+  "websiteRealGameQA": "NOT_RUN",
+  "offlineRealBrowserIndexedDB": "NOT_RUN",
+  "notes": [
+    "Visual concept bitmaps generated locally, not uploaded as GitHub original PNGs; this text manifest is not V19 evidence.",
+    "All three contain baked-in lettering and furniture/UI that must be separated into L0-L6 PNG/DOM.",
+    "A/B hats and C added staff/props are not the approved first back-view identity.",
+    "Only four HOME actions allowed in implementation: 새로운 탐험 / 이어하기 / 탐험 일지 / 설정.",
+    "The generated concepts do not imply an approved pixel master, game release or browser QA."
+  ],
+  "selectedVariant": "B"
+}
