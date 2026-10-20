@@ -917,7 +917,7 @@
     "created_at": "2026-10-05T04:57:08.065Z",
     "manage_url": "",
     "sort_order": 5,
-    "target_url": "/apps/moonpath-dev/",
+    "target_url": "/apps/moonpath-v41/home-b/",
     "updated_at": "2026-10-05T04:57:08.065Z",
     "deploy_type": "static",
     "description": "개발 중인 오프라인 학습게임 미리보기입니다. 학생 화면에는 노출되지 않습니다.",
