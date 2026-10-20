@@ -1,0 +1,135 @@
+{
+  "run": "work-20261020-rerun02",
+  "deploy": {
+    "scope": "deployment",
+    "deploymentId": "3ba22ea8-3192-448d-8f4f-cab32e29dce7",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:09:59.871276678Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"source\",\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:01.103043261Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"dry_1\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:02.219424345Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"dry_2\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:03.851742838Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"dry_3\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:03.851755473Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"bad_auth\",\"status\":401,\"result\":{\"error\":\"UNAUTHORIZED_OR_NOT_CONFIGURED\"}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:04.905435901Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"bad_sha\",\"status\":422,\"result\":{\"error\":\"SHA256_MISMATCH\",\"computed_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\"}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:14.214366031Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"commit_1\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643,\"github\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"4ae9f3c3a77a0689e8c2530eedea523ff054a6f9\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true}}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:22.106076409Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"commit_2\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643,\"github\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"ace34caf1ac9a6ec787850357fa66236b1b6580c\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true}}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:28.529776966Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"commit_3\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643,\"github\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"a9d392698ba25f46e5e4b3d45eda3af83b85b18d\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true}}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:10:28.529790344Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-rerun02\",\"test\":\"complete\",\"ok\":true}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  },
+  "independentDownload": {
+    "http": 200,
+    "bytes": 20979389,
+    "sha256": "5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432",
+    "equalsOriginal": true
+  },
+  "diagnostics": {
+    "shellCurl": "DNS resolution failed",
+    "nodeDefaultTLS": "Passed this rerun; prior TLS error did not reproduce",
+    "automaticImageGenTrigger": "Not implemented",
+    "tokenAccess": "Existing OAuth tool exposes names only; server-held auth used",
+    "replay": "three successful uploads created three commits"
+  }
+}
