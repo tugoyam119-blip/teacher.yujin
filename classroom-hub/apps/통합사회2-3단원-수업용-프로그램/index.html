@@ -1559,7 +1559,7 @@ q('.t731-feedback').innerHTML=res?(s.feedback?s.feedback+' ':'')+(res.feasible&&
 fitSlide();}
 function clearCheck(){s.checked=false;s.prediction='';s.feedback='';}
 q('[data-new745]').onclick=()=>{
- const type=(l.example+1)%3;
+ const type=0;
  const options=tradeOptions748(type).filter(v=>v.some((n,i)=>n!==Number(s.v[i])));
  const values=options[Math.floor(Math.random()*options.length)];
  const pool=fruitNames719.filter(n=>!s.fruits.includes(n));l.extra=state731(0);l.extra.v=values.map(String);l.extra.shares=['50','50'];const trades=positiveTrades766(values);l.extra.trade=trades[Math.floor(Math.random()*trades.length)].map(String);l.extra.fruits=[pool.splice(Math.floor(Math.random()*pool.length),1)[0],pool[Math.floor(Math.random()*pool.length)]];l.example=type;revealPreviousPage=false;render();
