@@ -708,6 +708,11 @@ function publicActivity(a) {
 }
 
 // static assets and embedded apps
+// Keep the classroom's existing development URL, and preserve the original HOME at index.html.
+app.get(['/apps/moonpath-dev', '/apps/moonpath-dev/'], (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.redirect(302, '/apps/moonpath-v41/home-b/');
+});
 app.use('/assets', express.static(PUBLIC, { maxAge: '5m', setHeaders: res => { res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
 app.use('/apps', express.static(APPS, { index: 'index.html', maxAge: '1m', setHeaders: (res, file) => { if (/\.html$/i.test(file)) res.setHeader('Cache-Control', 'no-cache'); res.setHeader('Content-Disposition', 'inline'); res.setHeader('X-Content-Type-Options', 'nosniff'); } }));
 

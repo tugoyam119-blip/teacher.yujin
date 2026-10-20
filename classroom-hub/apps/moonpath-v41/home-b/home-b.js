@@ -95,7 +95,7 @@ async function openPanel(kind){
   body.append(node('p','새로운 탐험에서 빈 슬롯과 모둠 수를 고르세요. 이어하기에서는 저장한 슬롯을 엽니다. 설정에서 JSON을 백업하고 복원할 수 있습니다.'));
   body.append(node('p','지역 시험 화면에서 수업 재개와 타이머 재개는 각각 교사가 직접 실행합니다.'));
  }else if(kind==='exit'){
-  body.append(node('p','클래스룸의 기존 개발 HOME으로 돌아갑니다. 저장 기록은 유지합니다.'));button(controls,'클래스룸 HOME으로 돌아가기',()=>location.assign('../../moonpath-dev/'));
+  body.append(node('p','보존된 이전 HOME을 엽니다. 저장 기록은 유지합니다.'));button(controls,'이전 HOME 열기',()=>location.assign('../../moonpath-dev/index.html'));
  }else{
   body.append(node('p','이전 대화에서 회수한 PNG를 독립 레이어로 조립했습니다. 승인 로고·슬로건 원본은 유지했습니다.'));
   body.append(node('p','배경·캐릭터·프레임·아이콘은 제작 후보를 연결한 검토용 조립 상태입니다. 최종 화면 승인, 전체 게임, 오프라인 출시는 완료되지 않았습니다.'));
