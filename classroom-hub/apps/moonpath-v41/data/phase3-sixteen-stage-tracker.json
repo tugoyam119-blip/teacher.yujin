@@ -4,7 +4,7 @@
   "stageCount": 16,
   "createdAt": "2026-10-16",
   "purpose": "track code vs actual PNG vs visual approval vs browser/function QA independently",
-  "productionMainProtected": true,
+  "productionMainProtected": false,
   "actualNewPngAssets": 0,
   "actualApprovedAssets": 0,
   "stages": [
@@ -79,9 +79,9 @@
       "browserRenderQA": "NOT_RUN",
       "functionQA": "NOT_RUN",
       "releaseStatus": "BLOCKED",
-      "statusDetail": "HOME logo main and slogan designs approved, positions provisional pending exact layer render; binary files remain local, GitHub PNG not uploaded; main/sub button common frames are generated candidates only. No production browser PASS.",
+      "statusDetail": "Logo and slogan PNGs exist at approved paths and match approved full SHA256. HOME layered runtime, buttons, independent character/background assets and final layout QA remain unimplemented. Coordinates remain provisional; no artwork or placement changed.",
       "logoDesignApproval": "APPROVED_REFERENCE_ONLY",
-      "logoBinaryUpload": "NOT_DONE",
+      "logoBinaryUpload": "VERIFIED_SHA256_20261020",
       "logoSloganBrowserQA": "NOT_RUN"
     },
     {
@@ -242,5 +242,11 @@
         "height": 24
       }
     }
-  ]
+  ],
+  "productionProtectionObservation": {
+    "checkedAt": "2026-10-20",
+    "githubBranchProtectionEnabled": false,
+    "thisWorkWritesMain": false,
+    "automaticMergeOrProductionDeploy": false
+  }
 }

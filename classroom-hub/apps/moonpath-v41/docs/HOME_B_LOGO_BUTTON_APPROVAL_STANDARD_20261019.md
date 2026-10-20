@@ -63,3 +63,8 @@
 - 기존 인증된 ChatGPT GitHub 연결을 통해 `create_file`로 `classroom-hub/apps/moonpath-v41/docs/BINARY_CONNECTOR_AUTH_NETWORK_PROBE_20261019.md`를 개발 브랜치에 작성하고, `fetch_file(ref=개발 브랜치)` 재조회 시 내용 완전 일치를 확인함.
 - 실제 커밋: `f078ca4a29c0ef56e329841466189f40cb21361b`. 인증된 GitHub 연결의 텍스트 파일 쓰기와 네트워크 접근은 PASS. 개인 토큰을 채팅에 전달할 필요 없음.
 - **한계:** PNG 전체 바이너리를 로컬 파일에서 GitHub 연결의 `create_blob(content=base64)` 입력으로 자동 전달하는 원본 바이트 중계 경로는 아직 미확보. 위 텍스트 시험이 대용량 PNG 업로드를 증명하지 않음. REMOTE_BYTES_VERIFIED 및 HTML_RENDER_PASS 미완료.
+
+
+## 2026년 10월 20일 원격 소스 재검증
+
+로고·슬로건 원본은 커밋 d2c6f7bee38f140705dee64d33d1aca82691675a에 실제 등록되어 있으며, 새 Git clone의 전체 PNG 바이트가 위 승인 SHA256·크기·규격과 일치했다. 따라서 본문의 과거 업로드 미완료 표기는 현재 상태가 아니다. 후보 좌표와 원본은 보존했고 HOME 조립·버튼·저장 복원 브라우저 검증은 아직 완료되지 않았다. [현재 검증 보고](HOME_SOURCE_AUDIT_20261020.md) 참조.
