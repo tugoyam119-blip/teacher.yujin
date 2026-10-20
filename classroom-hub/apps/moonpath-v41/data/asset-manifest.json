@@ -1,0 +1,102 @@
+{
+  "version": "4.1.1",
+  "newAssets": [],
+  "approvedAssets": [],
+  "phase3": "3-3",
+  "referenceRegistry": "data/phase3-reference-registry.json",
+  "visualContract": "data/phase3-visual-contract.json",
+  "stageTracker": "data/phase3-sixteen-stage-tracker.json",
+  "referenceAssetsAreNotGameAssets": true,
+  "status": "HOME_DESIGN_APPROVED_LOGO_BINARIES_VERIFIED_HOME_RUNTIME_NOT_IMPLEMENTED",
+  "minimumAcceptance": [
+    "SHA256 verified for complete original",
+    "GitHub byte-identical",
+    "visible in real browser",
+    "user approved per screen"
+  ],
+  "oldAssetPolicy": "REFERENCE_ONLY_NO_REUSE",
+  "homeConcepts": "data/phase3-home-concept-candidates.json",
+  "designDirections": {
+    "home": "B_APPROVED_DIRECTION_ONLY",
+    "character": "CHARACTER_SHEET_APPROVED_DIRECTION_ONLY",
+    "characterDesignRecord": "data/phase3-character-design-sheet.json"
+  },
+  "approvedDesignReferences": [
+    {
+      "id": "home_logo_main_approved_design",
+      "fileName": "미지의_길_달빛_마도_탐험.png",
+      "expectedPath": "assets/home/logo/logo_main.png",
+      "sourcePixels": [
+        1584,
+        993
+      ],
+      "mode": "RGBA",
+      "bytes": 1653077,
+      "sha256": "2709003daaf25fd6124469d996fd78351b4f292a125d5f964f62733265c20094",
+      "display": {
+        "x": 122,
+        "y": 9,
+        "width": 244,
+        "height": 153
+      },
+      "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
+      "gitBinaryUploaded": true,
+      "gitByteMatchVerified": true,
+      "browserQA": "NOT_RUN",
+      "releaseReady": false,
+      "gitBlobSha": "00a8586e7c57418bc7e99516df8971058f97c124",
+      "binaryCommit": "d2c6f7bee38f140705dee64d33d1aca82691675a",
+      "verificationEvidence": "docs/HOME_SOURCE_AUDIT_20261020.md"
+    },
+    {
+      "id": "home_logo_slogan_approved_design",
+      "fileName": "문제를_넘어_더_넓은_세상으로.png",
+      "expectedPath": "assets/home/logo/logo_slogan.png",
+      "sourcePixels": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "bytes": 578942,
+      "sha256": "33444040bc68b92094a0a15375cdaf8b42926bd11dd746fa0c9f2b3aabfc35d7",
+      "display": {
+        "x": 134,
+        "y": 166,
+        "width": 232,
+        "height": 24
+      },
+      "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
+      "gitBinaryUploaded": true,
+      "gitByteMatchVerified": true,
+      "browserQA": "NOT_RUN",
+      "releaseReady": false,
+      "notes": "Source aspect ratio 3:1 differs from display 9.6667:1; never force anisotropic scaling; crop/resize new canvas or reauthor with verified aspect before runtime.",
+      "gitBlobSha": "e46cec47a5b2b92f7aa2dab8cd6706e770d329eb",
+      "binaryCommit": "d2c6f7bee38f140705dee64d33d1aca82691675a",
+      "verificationEvidence": "docs/HOME_SOURCE_AUDIT_20261020.md"
+    }
+  ],
+  "homeUiPolicy": {
+    "exception": "HOME logo_main and slogan are single-image typography+ornament approved by user",
+    "otherUi": "Frame PNG + Icon PNG + HTML text",
+    "layout": "960x540 contain",
+    "mainMenu": [
+      "새로운 탐험",
+      "이어하기",
+      "탐험 일지",
+      "설정"
+    ],
+    "preserveApprovedArtwork": true
+  },
+  "homeLogoQa": {
+    "checkedAt": "2026-10-19",
+    "sourceShaMatch": true,
+    "chromiumEmbeddedPngQA": "PASS_960x540_1280x800_390x844",
+    "testMethod": "page.set_content(data:image/png;base64) from local actual PNG; browser navigation to file/http blocked",
+    "fileProtocolQA": "BLOCKED_NOT_PASS",
+    "externalUrlQA": "NOT_RUN",
+    "gitBinaryUpload": "VERIFIED_FROM_GIT_CHECKOUT_2026-10-20",
+    "buttonInteractionQa": "NOT_RUN",
+    "details": "Local QA artifacts created; no GitHub asset upload or service deployment."
+  }
+}

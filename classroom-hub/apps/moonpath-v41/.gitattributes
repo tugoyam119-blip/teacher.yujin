@@ -1,0 +1,4 @@
+# Preserve the exact source snapshot and deterministic embedded build on Windows.
+data/YQBank_60_v1.0.0_source.json -text
+src/** text eol=lf
+dist/** text eol=lf

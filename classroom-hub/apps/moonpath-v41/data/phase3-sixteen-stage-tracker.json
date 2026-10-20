@@ -1,0 +1,252 @@
+{
+  "version": "4.1.1",
+  "phase": "PHASE3",
+  "stageCount": 16,
+  "createdAt": "2026-10-16",
+  "purpose": "track code vs actual PNG vs visual approval vs browser/function QA independently",
+  "productionMainProtected": false,
+  "actualNewPngAssets": 0,
+  "actualApprovedAssets": 0,
+  "stages": [
+    {
+      "id": "3-1",
+      "title": "픽셀아트 제작 환경·규격",
+      "scope": "Reference PNG audit, 960x540/L0-L6/palette candidates/registry",
+      "implementation": "TECHNICAL_BASELINE_DOCUMENTED",
+      "referenceInspection": "PASS_15_ACTUAL_PNGS",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED",
+      "testStatus": "PASS_NODE_15_CONTRACT_TESTS_AND_15_IMAGE_BYTE_CHECKS",
+      "regressionStatus": "PASS_NODE_528_INCLUDING_PREVIOUS_513",
+      "evidence": [
+        "docs/PHASE3_STEP3_1_REFERENCE_AND_STANDARD_20261016.md",
+        "data/phase3-reference-registry.json",
+        "data/phase3-visual-contract.json",
+        "test-logs/phase3-step3-1-references.log",
+        "test-logs/phase3-step3-1-all-tests.log"
+      ]
+    },
+    {
+      "id": "3-2",
+      "title": "신규 HOME 시안",
+      "scope": "new HOME visual directions + user direction approval",
+      "implementation": "B_HOME_CONCEPT_DIRECTION_SELECTED_NOT_LAYERED",
+      "referenceInspection": "PASS_REAL_REFERENCE_HOME_AND_FIRST_BACK_IDENTITY_REVIEW",
+      "userVisualApproval": "APPROVED_B_DIRECTION_ONLY",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED",
+      "conceptCount": 3,
+      "newFinalPngUploadedToGithub": 0,
+      "statusDetail": "B (grand moonlit sanctuary) selected by user. Composite is only direction; still contains baked text and added assets that require redesign before final HOME PNG/DOM.",
+      "evidence": [
+        "docs/PHASE3_STEP3_2_HOME_CONCEPTS_20261016.md",
+        "data/phase3-home-concept-candidates.json"
+      ],
+      "selectedVariant": "B"
+    },
+    {
+      "id": "3-3",
+      "title": "신규 주인공 마도사",
+      "scope": "back/front identity and 23-frame animations",
+      "implementation": "CHARACTER_DESIGN_SHEET_CREATED_SPRITES_NOT_BUILT",
+      "referenceInspection": "PASS_PRIOR_SELECTED_FIRST_BACK_VIEW_REVIEW",
+      "userVisualApproval": "APPROVED_DESIGN_SHEET_DIRECTION_ONLY",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED",
+      "sheetEvidence": "달빛_아케인_여정_캐릭터_시트.png",
+      "sheetSha256": "b29da70036c0fbd7cfd1c2952665d8dfcbe250c9fc05bb2eea14e8e78213435d",
+      "actual64SpriteCount": 0,
+      "actualAnimationFrameCount": 0,
+      "requiredAnimationFrameCount": 23,
+      "individualSpriteApproval": "NOT_STARTED",
+      "statusDetail": "User likes new design sheet (front/back/three-quarter, lavender long hair, dark violet-gold outfit). Sheet is RGB collage (1491x1055) with illustrations and labels, NOT transparent 64x64 aligned sprite frames. 23 animation frames remain unmade.",
+      "evidence": [
+        "docs/PHASE3_STEP3_3_CHARACTER_DIRECTION_APPROVAL_20261016.md",
+        "data/phase3-character-design-sheet.json"
+      ]
+    },
+    {
+      "id": "3-4",
+      "title": "HOME 신규 PNG 실제 구현",
+      "scope": "separated image layers + HTML controls + click QA",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED",
+      "statusDetail": "Logo and slogan PNGs exist at approved paths and match approved full SHA256. HOME layered runtime, buttons, independent character/background assets and final layout QA remain unimplemented. Coordinates remain provisional; no artwork or placement changed.",
+      "logoDesignApproval": "APPROVED_REFERENCE_ONLY",
+      "logoBinaryUpload": "VERIFIED_SHA256_20261020",
+      "logoSloganBrowserQA": "NOT_RUN"
+    },
+    {
+      "id": "3-5",
+      "title": "새 탐험·이어하기·설정",
+      "scope": "3 slots, settings, popup and state handling",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-6",
+      "title": "마법 책장",
+      "scope": "six colors and common book regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-7",
+      "title": "갈림길 화면",
+      "scope": "realistic Y-fork, sign, back mage and perspective",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-8",
+      "title": "중앙 문제 팝업",
+      "scope": "7 question types; max 820x440; timer and teacher controls",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-9",
+      "title": "공통 HUD·결과·마법 UI",
+      "scope": "teacher/student separated HUD, magic, result, recovery",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-10",
+      "title": "푸른 달빛의 숲",
+      "scope": "new art for 5 T1 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-11",
+      "title": "붉은 잿빛 성채",
+      "scope": "new art for 5 T2 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-12",
+      "title": "황금빛 시간의 정원",
+      "scope": "new art for 5 T3 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-13",
+      "title": "보랏빛 별의 회랑",
+      "scope": "new art for 5 T4 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-14",
+      "title": "초록빛 기억의 성역",
+      "scope": "new art for 5 T5 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-15",
+      "title": "푸른 은빛의 달의 궁전",
+      "scope": "new art for 5 T6 regions",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    },
+    {
+      "id": "3-16",
+      "title": "전체 신규 자산·화면 통합 QA",
+      "scope": "per-asset PNG bytes/upload/browser and V18~V20 evidence",
+      "implementation": "NOT_STARTED",
+      "referenceInspection": "NOT_RUN",
+      "userVisualApproval": "NOT_REQUESTED",
+      "browserRenderQA": "NOT_RUN",
+      "functionQA": "NOT_RUN",
+      "releaseStatus": "BLOCKED"
+    }
+  ],
+  "homeLogoAssets": [
+    {
+      "id": "home_logo_main_approved_design",
+      "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
+      "gitBinaryUploaded": false,
+      "browserQA": "NOT_RUN",
+      "display": {
+        "x": 122,
+        "y": 9,
+        "width": 244,
+        "height": 153
+      }
+    },
+    {
+      "id": "home_logo_slogan_approved_design",
+      "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
+      "gitBinaryUploaded": false,
+      "browserQA": "NOT_RUN",
+      "display": {
+        "x": 134,
+        "y": 166,
+        "width": 232,
+        "height": 24
+      }
+    }
+  ],
+  "productionProtectionObservation": {
+    "checkedAt": "2026-10-20",
+    "githubBranchProtectionEnabled": false,
+    "thisWorkWritesMain": false,
+    "automaticMergeOrProductionDeploy": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "fileName": "달빛_아케인_여정_캐릭터_시트.png",
+  "fileId": "file_00000000443482099a7b38e19c888412",
+  "sha256": "b29da70036c0fbd7cfd1c2952665d8dfcbe250c9fc05bb2eea14e8e78213435d",
+  "bytes": 2682298,
+  "pixelWidth": 1491,
+  "pixelHeight": 1055,
+  "channels": "RGB",
+  "source": "user-visible image generated during PHASE 3-3 and approved in conversation 2026-10-16",
+  "class": "DESIGN_REFERENCE_APPROVED_NOT_RUNTIME_ASSET",
+  "gitBlobUploaded": false,
+  "sourcePngInGit": false,
+  "actual64SpriteCount": 0,
+  "actualAnimationFrameCount": 0,
+  "requiredAnimationFrameCount": 23,
+  "individualSpriteApproval": "NOT_STARTED",
+  "nativeBrowserQA": "NOT_RUN",
+  "approval": "USER_APPROVED_CHARACTER_DESIGN_DIRECTION",
+  "approvedFeatures": [
+    "lavender long hair",
+    "purple eyes chibi proportions",
+    "dark violet gold robe",
+    "front/back/three-quarter reference",
+    "B HOME mood"
+  ],
+  "finalRuntimeAsset": false
+}

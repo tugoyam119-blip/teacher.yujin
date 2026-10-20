@@ -1,0 +1,209 @@
+{
+  "version": "4.1.1",
+  "masterResolution": {
+    "width": 960,
+    "height": 540
+  },
+  "themes": [
+    {
+      "id": "T1",
+      "name": "푸른 달빛의 숲",
+      "bookshelfColor": "짙은 파랑·청록",
+      "regions": [
+        {
+          "id": "T1-R1",
+          "name": "달빛 이끼길",
+          "role": "entry"
+        },
+        {
+          "id": "T1-R2",
+          "name": "푸른 폭포길",
+          "role": "left"
+        },
+        {
+          "id": "T1-R3",
+          "name": "잊힌 성벽길",
+          "role": "right"
+        },
+        {
+          "id": "T1-R4",
+          "name": "고요한 호수",
+          "role": "merge"
+        },
+        {
+          "id": "T1-R5",
+          "name": "숲의 고대문",
+          "role": "final"
+        }
+      ]
+    },
+    {
+      "id": "T2",
+      "name": "붉은 잿빛 성채",
+      "bookshelfColor": "진홍·구리",
+      "regions": [
+        {
+          "id": "T2-R1",
+          "name": "붉은 낙엽길",
+          "role": "entry"
+        },
+        {
+          "id": "T2-R2",
+          "name": "불꽃 제련소",
+          "role": "left"
+        },
+        {
+          "id": "T2-R3",
+          "name": "무너진 감시탑",
+          "role": "right"
+        },
+        {
+          "id": "T2-R4",
+          "name": "재의 광장",
+          "role": "merge"
+        },
+        {
+          "id": "T2-R5",
+          "name": "봉인된 성채",
+          "role": "final"
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "황금빛 시간의 정원",
+      "bookshelfColor": "황금·호박",
+      "regions": [
+        {
+          "id": "T3-R1",
+          "name": "햇살의 계단",
+          "role": "entry"
+        },
+        {
+          "id": "T3-R2",
+          "name": "황금 시계탑",
+          "role": "left"
+        },
+        {
+          "id": "T3-R3",
+          "name": "바람의 회랑",
+          "role": "right"
+        },
+        {
+          "id": "T3-R4",
+          "name": "시간의 정원",
+          "role": "merge"
+        },
+        {
+          "id": "T3-R5",
+          "name": "태양의 제단",
+          "role": "final"
+        }
+      ]
+    },
+    {
+      "id": "T4",
+      "name": "보랏빛 별의 회랑",
+      "bookshelfColor": "보라·남색",
+      "regions": [
+        {
+          "id": "T4-R1",
+          "name": "별가루 산책로",
+          "role": "entry"
+        },
+        {
+          "id": "T4-R2",
+          "name": "부유섬 다리",
+          "role": "left"
+        },
+        {
+          "id": "T4-R3",
+          "name": "밤의 관측소",
+          "role": "right"
+        },
+        {
+          "id": "T4-R4",
+          "name": "성운의 광장",
+          "role": "merge"
+        },
+        {
+          "id": "T4-R5",
+          "name": "별의 대회랑",
+          "role": "final"
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "name": "초록빛 기억의 성역",
+      "bookshelfColor": "에메랄드·연두",
+      "regions": [
+        {
+          "id": "T5-R1",
+          "name": "이끼 낀 문",
+          "role": "entry"
+        },
+        {
+          "id": "T5-R2",
+          "name": "속삭이는 정원",
+          "role": "left"
+        },
+        {
+          "id": "T5-R3",
+          "name": "잊힌 기록실",
+          "role": "right"
+        },
+        {
+          "id": "T5-R4",
+          "name": "생명의 샘",
+          "role": "merge"
+        },
+        {
+          "id": "T5-R5",
+          "name": "기억의 성역",
+          "role": "final"
+        }
+      ]
+    },
+    {
+      "id": "T6",
+      "name": "푸른 은빛의 달의 궁전",
+      "bookshelfColor": "푸른 은빛·백색",
+      "regions": [
+        {
+          "id": "T6-R1",
+          "name": "은빛 수정길",
+          "role": "entry"
+        },
+        {
+          "id": "T6-R2",
+          "name": "얼어붙은 서고",
+          "role": "left"
+        },
+        {
+          "id": "T6-R3",
+          "name": "달빛 거울정원",
+          "role": "right"
+        },
+        {
+          "id": "T6-R4",
+          "name": "별의 왕좌 앞",
+          "role": "merge"
+        },
+        {
+          "id": "T6-R5",
+          "name": "달의 심장",
+          "role": "final"
+        }
+      ]
+    }
+  ],
+  "mainRoute": [
+    "entry",
+    "left_or_right",
+    "merge",
+    "final"
+  ],
+  "fullExplorationRequirement": "five_regions_per_theme",
+  "additionalExplorationReturnRequired": true
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>미지의 길 v4.1.1 · PHASE 2-9 기능 검증 전용</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#10182b;color:#f7f1ff;font-family:system-ui,"Malgun Gothic",sans-serif;overflow:hidden}
+#canvas{width:960px;height:540px;position:absolute;left:50%;top:50%;transform-origin:center center;background:linear-gradient(150deg,#101f3b,#302050 66%,#142b3b);border:2px solid #b89f6c;box-shadow:0 15px 65px #0009;overflow:hidden}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;height:66px;background:#0b1321c8;border-bottom:1px solid #b89f6c88}header h1{margin:2px 0;font-size:20px}header small{font-size:12px;color:#f3d99e}.notice{color:#ffd3a9;font-size:11px;max-width:345px;text-align:right}
+#toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:7px 16px;background:#141a34;border-bottom:1px solid #a38bc666;min-height:55px}
+label{font-size:12px}select,input,textarea{font:inherit;font-size:13px;color:#19223a;background:#fff;max-width:220px;border-radius:4px;padding:5px}
+select{min-width:65px}button{font:inherit;font-weight:700;font-size:12px;border:1px solid #c2a369;border-radius:6px;background:#e5dbbc;color:#211c35;padding:6px 8px;cursor:pointer}button:focus-visible{outline:3px solid #44c2e6}button:hover{filter:brightness(1.05)}button:disabled{filter:grayscale(1);opacity:.45;cursor:not-allowed}
+#body{display:grid;grid-template-columns:320px 1fr;gap:12px;padding:12px 14px;height:386px}.pane{background:#131d38dd;border:1px solid #6b659c;border-radius:10px;padding:12px;overflow:auto}.pane h2{font-size:18px;margin:0 0 8px}.pane h3{font-size:14px;margin:10px 0 5px;color:#f6dca6}.pane p{font-size:13px;line-height:1.55}
+.status-row{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff21;padding:4px;font-size:12px}.status-row strong{color:#ffe2ac}
+.actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}.legend{font-size:11px;color:#c3cce5}
+#results{font-size:12px}#results .mp-region-result header{display:block;height:auto;padding:7px;background:transparent}#results .mp-region-result h2{font-size:15px}#results dl{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin:6px 0}#results dl div{padding:5px;background:#384360;border-radius:4px}#results dd{margin:0;font-weight:700;color:#f7dca0}#results p{margin:5px 0}
+#message{height:32px;padding:7px 18px;font-size:12px;background:#101421;border-top:1px solid #a38bc666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#message[data-kind="error"]{color:#ff9a9a;background:#3b1623}
+#public-json{font-size:10px;white-space:pre-wrap;overflow-wrap:anywhere;background:#0c1526;padding:6px;max-height:90px;overflow:auto}
+#question-pane{position:absolute;z-index:5;left:70px;top:63px;width:820px;max-height:440px;background:#fff9ed;color:#261e3b;border:3px solid #bb985c;border-radius:13px;padding:14px 19px;box-shadow:0 10px 80px #000c;overflow:auto}
+#question-pane[hidden]{display:none}.question-head{display:flex;justify-content:space-between;gap:20px}.question-head small{color:#5d3d88;font-weight:700}#question-stem{font-size:19px;line-height:1.4;margin:7px 0}#question-stimulus{font-size:14px;line-height:1.5;white-space:pre-wrap;margin-bottom:8px}#response-form{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}#response-form textarea{grid-column:span 2;width:100%;min-height:85px;max-width:none}.question-choice{background:#f5eddb;border:1px solid #b3a682;padding:5px;border-radius:5px;display:flex;gap:5px;align-items:center;line-height:1.45}.question-select{display:flex;flex-direction:column;gap:2px;background:#efe7d3;padding:5px;border-radius:6px}.question-select select{max-width:none}.question-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.question-actions label{font-size:12px}.question-actions input{min-width:200px;max-width:250px}#question-clock{font-size:11px;color:#654970;font-weight:700}
+#engine-availability{font-size:11px;color:#9fffcb}@media (max-width:800px){#canvas{box-shadow:none}}
+</style></head><body>
+<main id="canvas" aria-label="PHASE 2-9 교사용 기능 검증 화면"><header><div><small>PHASE 2-9 · 검증 전용</small><h1>《미지의 길》 달빛 이끼길</h1></div><div class="notice">새 픽셀아트 및 최종 승인 UI가 아닙니다.<br>교사용 시험 화면 · 운영 버전과 별도 저장<br><b id="engine-availability">시험 환경 준비 중</b></div></header>
+<div id="toolbar"><label>슬롯 <select id="slot-picker"><option value="1">Ⅰ</option><option value="2">Ⅱ</option><option value="3">Ⅲ</option></select></label><label>모둠 <select id="team-count"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+<button id="new-expedition">새 시험</button><button id="continue-expedition">이어하기</button><button id="session-resume" disabled>수업 재개</button><button id="export-json">JSON 백업</button><label>복원 <input id="json-file" type="file" accept=".json"></label><button id="import-json">빈 슬롯 복원</button></div>
+<section id="body"><div class="pane"><h2 id="region-title">달빛 이끼길</h2><p id="slot-active">아직 시작하지 않음</p><p id="region-progress">기본문제 대기</p><div id="status-data"></div><h3>지역 결과 (최소 시험 형식)</h3><div id="results"></div></div>
+<div class="pane"><h2>교사 명령</h2><p>차시 상태: <b id="lesson-phase">-</b><br><span id="turn-status"></span></p>
+<div class="actions"><button id="region-enter">지역 진입</button><label>문제 모둠 <select id="team-select"></select></label><button id="draw-question" disabled>새 문제 준비</button><button id="intercept-open" disabled>가로채기</button></div>
+<div class="actions"><button id="complete-region" disabled>지역 완료 확정</button><button id="next-region" disabled>다음 지역 진입</button><button id="recovery-call" disabled>원모둠 회수 호출</button></div>
+<p class="legend">① 문제 준비 → ② 타이머 시작 → ③ 답변 제출 → ④ 교사 판정 → ⑤ 지역 완료. 원답 오답이면 가로채기 후 ⑤ 진행. 회수는 다음 지역 진입 후 수행.</p><h3>학생 공개 정보 (읽기 전용)</h3><pre id="public-json">{}</pre></div></section>
+<section id="question-pane" hidden role="dialog" aria-label="문항 진행 팝업"><div class="question-head"><small id="question-label"></small><span id="question-clock"></span></div><h2 id="question-stem">문제</h2><div id="question-stimulus"></div><div id="response-form"></div>
+<div class="question-actions"><button id="timer-start">타이머 시작</button><button id="timer-pause">일시정지</button><button id="timer-resume">재개</button><button id="submit-answer">답변 저장</button><label>교사 사유 <input id="teacher-reason" value="교사가 직접 확인함" /></label><button id="judge-right">정답 확정</button><button id="judge-wrong">오답 확정</button></div></section>
+<footer id="message" role="status" aria-live="polite">시험 파일 준비 중</footer>
+</main>
+<script>function resize(){const k=Math.min(innerWidth/960,innerHeight/540);document.getElementById('canvas').style.transform=`translate(-50%,-50%) scale(${k})`;}addEventListener('resize',resize);resize();</script>
+<!-- MP_MODULES -->
+<!-- MP_ENTRY -->
+</body></html>

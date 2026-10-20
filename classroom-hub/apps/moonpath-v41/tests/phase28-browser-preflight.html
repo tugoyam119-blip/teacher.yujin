@@ -1,0 +1,3 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>2-8 browser preflight only</title><body><h1>2-8 저장 사전검사</h1><script>
+(async()=>{try{const request=indexedDB.open('moonpath-v411-phase28-probe-only',1);request.onupgradeneeded=()=>request.result.createObjectStore('probe');request.onerror=()=>document.body.dataset.qa='ERROR:'+request.error?.name;request.onsuccess=()=>{const d=request.result;const tx=d.transaction('probe','readwrite');tx.objectStore('probe').put({ok:true},'test');tx.oncomplete=()=>{document.body.dataset.qa='IDB_WRITE_COMPLETED';d.close()};tx.onabort=()=>document.body.dataset.qa='ABORT';};}catch(e){document.body.dataset.qa='ERROR:'+e?.name}})()
+</script></body></html>
