@@ -25,10 +25,12 @@
       "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
       "sourceGalleryIndexAtRecovery": 13,
       "sourceRead": "SOURCE_READ_PASS",
-      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "transfer": "REMOTE_BYTES_VERIFIED",
       "f5JobId": null,
       "gamePath": "GAME_PATH_LINKED",
-      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720",
+      "remoteVerificationCommit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+      "remoteVerificationEvidence": "home-b-remote-verification.json"
     },
     {
       "assetId": "home-b-character-original.png",
@@ -45,10 +47,12 @@
       "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
       "sourceGalleryIndexAtRecovery": 14,
       "sourceRead": "SOURCE_READ_PASS",
-      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "transfer": "REMOTE_BYTES_VERIFIED",
       "f5JobId": null,
       "gamePath": "GAME_PATH_LINKED",
-      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720",
+      "remoteVerificationCommit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+      "remoteVerificationEvidence": "home-b-remote-verification.json"
     },
     {
       "assetId": "home-b-ui-source-original.png",
@@ -65,10 +69,12 @@
       "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
       "sourceGalleryIndexAtRecovery": 15,
       "sourceRead": "SOURCE_READ_PASS",
-      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "transfer": "REMOTE_BYTES_VERIFIED",
       "f5JobId": null,
       "gamePath": "GAME_PATH_LINKED",
-      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720",
+      "remoteVerificationCommit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+      "remoteVerificationEvidence": "home-b-remote-verification.json"
     },
     {
       "assetId": "home-b-main-frame-original.png",
@@ -85,10 +91,12 @@
       "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
       "sourceGalleryIndexAtRecovery": 24,
       "sourceRead": "SOURCE_READ_PASS",
-      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "transfer": "REMOTE_BYTES_VERIFIED",
       "f5JobId": null,
       "gamePath": "GAME_PATH_LINKED",
-      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720",
+      "remoteVerificationCommit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+      "remoteVerificationEvidence": "home-b-remote-verification.json"
     },
     {
       "assetId": "home-b-sub-frame-original.png",
@@ -105,10 +113,12 @@
       "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
       "sourceGalleryIndexAtRecovery": 25,
       "sourceRead": "SOURCE_READ_PASS",
-      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "transfer": "REMOTE_BYTES_VERIFIED",
       "f5JobId": null,
       "gamePath": "GAME_PATH_LINKED",
-      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720",
+      "remoteVerificationCommit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+      "remoteVerificationEvidence": "home-b-remote-verification.json"
     },
     {
       "assetId": "logo_main.png",
@@ -121,7 +131,10 @@
         993
       ],
       "sourceRead": "SOURCE_READ_PASS",
-      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720",
+      "remoteVerificationCommit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+      "transfer": "REMOTE_BYTES_VERIFIED",
+      "remoteVerificationEvidence": "home-b-remote-verification.json"
     },
     {
       "assetId": "logo_slogan.png",
@@ -134,7 +147,10 @@
         724
       ],
       "sourceRead": "SOURCE_READ_PASS",
-      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720",
+      "remoteVerificationCommit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+      "transfer": "REMOTE_BYTES_VERIFIED",
+      "remoteVerificationEvidence": "home-b-remote-verification.json"
     }
   ],
   "layoutReference": "docs/HOME_B_ASSEMBLY_20261020.md"

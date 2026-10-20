@@ -1,0 +1,54 @@
+{
+  "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9",
+  "assets": [
+    {
+      "path": "assets/home/assembly/background-original.png",
+      "bytes": 2888484,
+      "sha256": "73cf804ddf246be2073155328f98a1a046b338f1e89f5c52ec1cf7dee3640d0d",
+      "status": "REMOTE_BYTES_VERIFIED",
+      "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9"
+    },
+    {
+      "path": "assets/home/assembly/character-original.png",
+      "bytes": 756198,
+      "sha256": "4a953f2e48f3d50bdfe6dab5715c51e3be2fb88494a35a5f85a1271eddbfb366",
+      "status": "REMOTE_BYTES_VERIFIED",
+      "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9"
+    },
+    {
+      "path": "assets/home/assembly/ui-source-original.png",
+      "bytes": 1389942,
+      "sha256": "5ac9c308e43ea2c8086414a8253cca53a500695b35f57ccbe9fcbd0d245bb719",
+      "status": "REMOTE_BYTES_VERIFIED",
+      "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9"
+    },
+    {
+      "path": "assets/home/assembly/main-frame-original.png",
+      "bytes": 1458490,
+      "sha256": "611e6a63d4934c26c09fbc2150b8115c5688f2cda833dc163c9482756458101d",
+      "status": "REMOTE_BYTES_VERIFIED",
+      "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9"
+    },
+    {
+      "path": "assets/home/assembly/sub-frame-original.png",
+      "bytes": 1509171,
+      "sha256": "d0592a0c8c5242eccc23a9009b43762a26aa6abc3f256b4ad6a9fc5294e7ed32",
+      "status": "REMOTE_BYTES_VERIFIED",
+      "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9"
+    },
+    {
+      "path": "assets/home/logo/logo_main.png",
+      "bytes": 1653077,
+      "sha256": "2709003daaf25fd6124469d996fd78351b4f292a125d5f964f62733265c20094",
+      "status": "REMOTE_BYTES_VERIFIED",
+      "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9"
+    },
+    {
+      "path": "assets/home/logo/logo_slogan.png",
+      "bytes": 578942,
+      "sha256": "33444040bc68b92094a0a15375cdaf8b42926bd11dd746fa0c9f2b3aabfc35d7",
+      "status": "REMOTE_BYTES_VERIFIED",
+      "commit": "8ceeee7158d7fbfdde00d50903768cdcb397c8b9"
+    }
+  ]
+}

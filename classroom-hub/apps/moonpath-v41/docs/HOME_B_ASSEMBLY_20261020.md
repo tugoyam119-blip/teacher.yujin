@@ -29,6 +29,7 @@
 - HOME JSON 백업 생성. 파일 SHA-256 `18f28e5e213a6d0c98a825c45a92508397ab3b4137d32d1df87b8956b43052e3`.
 - 데이터를 삭제하지 않고 별도 로컬 origin의 빈 슬롯 II에 JSON 복원 성공. 이어하기에서 같은 문항·정지 상태·revision 8 확인.
 - HOME 일지에서 출제 1문항·모둠 4개·별빛/열쇠 0 요약 확인.
+- GitHub 커밋 `8ceeee7158d7fbfdde00d50903768cdcb397c8b9`의 PNG 7개를 HTTPS로 전체 재다운로드해 로컬 원본과 크기·SHA-256 모두 일치. `data/home-b-remote-verification.json` 참조. 인증서 검증을 유지하고 Windows 신뢰 저장소를 사용했다.
 
 ## 남은 승인·미검증
 
