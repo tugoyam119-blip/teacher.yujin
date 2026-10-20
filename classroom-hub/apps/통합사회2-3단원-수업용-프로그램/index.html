@@ -1657,6 +1657,24 @@ document.addEventListener('click',e=>{
  if(timerAction==='minus'){timerSeconds=Math.max(0,timerSeconds-60);timerPaint()}
  if(timerAction==='reset'){timerSeconds=180;timerRunning=false;timerPaint()}
 });
+// A tap in the lower half advances the same presentation step as ArrowRight.
+let lowerHalfPress=null;
+const lowerHalfControl='button,a,input,textarea,select,label,summary,details,dialog,[role="button"],[contenteditable],[data-term],nav,header,footer';
+document.addEventListener('pointerdown',e=>{
+ lowerHalfPress=e.isPrimary&&e.button===0?{x:e.clientX,y:e.clientY,scrollY:window.scrollY}:null;
+},true);
+document.addEventListener('pointercancel',()=>{lowerHalfPress=null},true);
+document.addEventListener('click',e=>{
+ const press=lowerHalfPress;lowerHalfPress=null;
+ if(!playerMode||e.defaultPrevented||e.button!==0||e.detail===0||e.detail>1||!press)return;
+ if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||overlayIsOpen()||document.body.classList.contains('notes-mode'))return;
+ if(e.clientY<window.innerHeight/2||press.y<window.innerHeight/2)return;
+ if(Math.hypot(e.clientX-press.x,e.clientY-press.y)>10||Math.abs(window.scrollY-press.scrollY)>5)return;
+ if(!(e.target instanceof Element)||!stage.contains(e.target)||e.target.closest(lowerHalfControl))return;
+ if(window.getSelection()?.toString())return;
+ presentMove(1);
+});
+
 // Footer taps move whole pages; keyboard taps reveal steps. Holding skips pages.
 const pageHold={delay:null,tick:null,key:null,pointerId:null,direction:0,active:false,suppressClickUntil:0};
 function stopPageHold(){
