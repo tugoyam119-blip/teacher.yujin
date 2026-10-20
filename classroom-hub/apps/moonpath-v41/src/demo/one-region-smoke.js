@@ -245,5 +245,25 @@ export async function bootOneRegionSmoke({pack,world}={}){
   notify('빈 슬롯으로 JSON을 복원했습니다. 자동 재개되지 않습니다.');
  });
  draw();
+ // HOME B opens only an explicitly selected existing test slot; never create from a URL.
+ const homeEntry=new URLSearchParams(location.search);
+ if(homeEntry.get('home')==='b'){
+  const slotText=homeEntry.get('slot');
+  if(/^[123]$/.test(slotText??'')){
+   $('slot-picker').value=slotText;
+   try{await initialize('CONTINUE');}catch(err){notify(`HOME 탐험 열기 실패 — ${err.code??err.name}: ${err.message}`,'error');}
+  }
+  const back=el('button','HOME으로');back.id='return-home';back.type='button';$('toolbar').prepend(back);
+  back.addEventListener('click',withError(async()=>{
+   back.disabled=true;
+   try{
+    const s=state();
+    if(s?.sessions.some(x=>x.id===s.activeSessionId&&x.phase==='ACTIVE'))await teacher.dispatch('SESSION_PAUSED');
+    if(teacher)await teacher.close();
+    database.close();
+    location.assign('../home-b/');
+   }catch(err){back.disabled=false;throw err;}
+  }));
+ }
  return {testDatabaseName:TEST_DB_NAME,hasTeacherSession:()=>!!teacher?.state,readPublic:()=>teacher?.state?teacher.getStudentProjection():null};
 }

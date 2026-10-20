@@ -1,0 +1,44 @@
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090713;color:#fff5df;font-family:"Malgun Gothic",system-ui,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:960px;height:540px;transform-origin:center;overflow:hidden;background:#111329}
+#background{position:absolute;inset:0;width:960px;height:540px;object-fit:cover;pointer-events:none}
+#character{position:absolute;left:105px;top:211px;width:311px;height:263px;z-index:2}
+.crop{overflow:hidden;position:relative;pointer-events:none}
+.crop img{position:absolute;max-width:none;user-select:none;pointer-events:none}
+#logo{position:absolute;left:122px;top:9px;width:244px;height:153px;object-fit:contain;z-index:3}
+#slogan{position:absolute;left:134px;top:166px;width:232px;height:24px;z-index:3}
+#quote{position:absolute;left:665px;top:31px;width:275px;height:77px;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;line-height:1.8;text-shadow:0 2px 4px #080626,0 0 8px #080626;z-index:3}
+.menu-button{position:absolute;display:block;border:0;padding:0;background:transparent;color:#fff5e7;cursor:pointer;z-index:4;font-family:inherit;text-align:left;isolation:isolate}
+.menu-button .frame{position:absolute;inset:0;z-index:-1}
+.menu-button .icon{position:absolute;left:13px;top:13px;width:40px;height:40px}
+.menu-button strong{position:absolute;left:61px;top:15px;right:12px;font-size:16px;font-weight:700;line-height:20px;text-shadow:0 1px 3px #09051a}
+.menu-button small{position:absolute;left:61px;top:37px;right:12px;white-space:nowrap;font-size:9px;line-height:13px;color:#f0e7ff;text-shadow:0 1px 3px #09051a}
+.menu-button:hover .frame{filter:brightness(1.18)}
+.menu-button:active{translate:0 1px}
+.menu-button:focus-visible{outline:2px solid #fff0b6;outline-offset:2px;border-radius:8px}
+.menu-button.sub{text-align:center}
+.menu-button.sub .icon{left:12px;top:8px;width:24px;height:24px}
+.menu-button.sub strong{left:2px;right:2px;top:35px;font-size:10px;line-height:14px}
+#footer-quote{position:absolute;left:18px;top:486px;width:290px;height:43px;margin:0;font-size:12px;line-height:1.6;text-shadow:0 2px 4px #080626,0 0 8px #080626;z-index:3}
+#review-note{position:absolute;right:12px;bottom:7px;z-index:5;font-size:9px;font-family:inherit;color:#ffe9bb;background:#1b1239bd;border:1px solid #bda16d99;border-radius:5px;padding:3px 6px;cursor:pointer}
+#message{position:absolute;left:260px;bottom:8px;max-width:440px;z-index:6;margin:0;padding:7px 12px;background:#140e30eb;border-radius:6px;font-size:12px}
+#message:empty{display:none}
+dialog{position:absolute;inset:0;margin:auto;width:650px;max-height:470px;border:2px solid #d9b775;border-radius:16px;padding:20px 24px;background:linear-gradient(145deg,#222044,#110c2b);color:#fff2dd;box-shadow:0 12px 60px #000a;z-index:20;font-size:14px}
+dialog::backdrop{background:#08061dcc}
+dialog header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #a68ac466;margin-bottom:15px}
+dialog h1{font-size:22px;margin:0 0 12px}
+dialog p{line-height:1.7}
+dialog button,dialog a.action{font:inherit;cursor:pointer;border:1px solid #bd9c69;border-radius:7px;background:#3e2e65;color:#fff3db;padding:8px 13px;display:inline-block;text-decoration:none}
+dialog button:disabled{opacity:.5;cursor:wait}
+dialog button:focus-visible,dialog a:focus-visible{outline:2px solid #fff0b6;outline-offset:2px}
+#close-panel{background:transparent;border:0;font-size:25px;margin-bottom:10px;padding:0 8px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.slot{padding:10px;border:1px solid #a68ac4;border-radius:8px;line-height:1.7}
+.slot input{margin-right:6px}
+.slot small{display:block;color:#d6c7e8;font-size:11px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0}
+select,input{font:inherit}
+select{padding:5px;background:#fffaed;color:#241b38;border-radius:5px}
+.details{font-size:12px;color:#d6c7e8}
+#panel-message{color:#ffe5a3;white-space:pre-wrap}
+@media(prefers-reduced-motion:reduce){.menu-button:active{translate:none}}

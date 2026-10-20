@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>미지의 길 · HOME B 개발 조립본</title>
+<link rel="stylesheet" href="home-b.css">
+</head>
+<body>
+<main id="stage" aria-label="미지의 길 HOME B">
+  <img id="background" src="../assets/home/assembly/background-original.png" alt="달빛 아래 떠 있는 왕국과 테라스">
+  <div id="character" class="crop" aria-label="마도사와 검은 고양이" role="img"></div>
+  <img id="logo" src="../assets/home/logo/logo_main.png" alt="미지의 길 · 달빛 마도 탐험">
+  <div id="slogan" class="crop" role="img" aria-label="문제를 넘어, 더 넓은 세상으로"></div>
+  <p id="quote">달빛이 비추는 곳,<br>오늘도 새로운 이야기가 시작된다.</p>
+  <nav id="menus" aria-label="주 메뉴"></nav>
+  <nav id="submenus" aria-label="보조 메뉴"></nav>
+  <p id="footer-quote">작은 호기심이<br>세상을 바꾸는 마법이 될 거야.</p>
+  <button id="review-note" type="button">개발 조립본 · 프레임 검토 중</button>
+  <p id="message" role="status" aria-live="polite"></p>
+  <dialog id="panel" aria-labelledby="panel-title">
+    <header><h1 id="panel-title"></h1><button id="close-panel" type="button" aria-label="닫기">×</button></header>
+    <div id="panel-body"></div>
+  </dialog>
+</main>
+<script type="module" src="home-b.js"></script>
+</body></html>
