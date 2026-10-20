@@ -1,5 +1,7 @@
 # GitHub 바이너리 Library 중계 검증 — 2026-10-19
 
+> **2026-10-20 갱신 — 자료 처리 기본 경로:** [F5 공식 규칙](F5_ASSET_PROCESSING_RULES_20261020.md)을 먼저 읽는다. 앞으로 승인 범위의 PNG 작업은 별도 F5 재지시 없이 원본 접근→영구 큐→원격 전체 SHA 검증→게임 연결·브라우저 확인 순서로 처리한다. 이 문서의 과거 Base64 우선 권장·전송 미확보·당시 진행 상태는 날짜가 붙은 이력이며, 현재 상태는 최신 장부와 증거로 조회한다. F5 test 서비스 배포와 운영 게임 배포는 다르며, 운영 main·승인 원본·학생 데이터 보호는 유지한다.
+
 ## 실제 검증 성공 (운영 main·Railway 무변경)
 - 메인 원본: `logo_main_approved.png`, 1,653,077바이트, SHA-256 `2709003daaf25fd6124469d996fd78351b4f292a125d5f964f62733265c20094`, Git Blob SHA-1 `00a8586e7c57418bc7e99516df8971058f97c124`.
 - 슬로건 원본: `logo_slogan_approved.png`, 578,942바이트, SHA-256 `33444040bc68b92094a0a15375cdaf8b42926bd11dd746fa0c9f2b3aabfc35d7`, Git Blob SHA-1 `e46cec47a5b2b92f7aa2dab8cd6706e770d329eb`.
