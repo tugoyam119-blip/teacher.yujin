@@ -709,18 +709,25 @@ const hanjaGloss={'資':'재물 자','本':'근본 본','主':'임금 주','義'
 Object.assign(hanjaGloss,{'實':'열매 실','物':'물건 물','爭':'다툴 쟁','議':'의논할 의','爲':'할 위','通':'통할 통','潤':'윤택할 윤','信':'믿을 신','萎':'시들 위','縮':'줄일 축','總':'거느릴 총','完':'완전할 완','雇':'품팔 고','營':'경영할 영','僚':'동료 료','官':'벼슬 관','緩':'느릴 완','減':'덜 감','稅':'세금 세','福':'복 복','祉':'복 지','證':'증거 증','券':'문서 권','情':'뜻 정','報':'갚을 보','稱':'일컬을 칭','無':'없을 무','賃':'품팔이 임','乘':'탈 승','車':'수레 차','元':'으뜸 원','子':'아들 자','當':'마땅할 당','預':'맡길 예','株':'그루 주','式':'법 식','債':'빚 채','不':'아닐 불','渡':'건널 도','網':'그물 망','査':'조사할 사','息':'쉴 식','固':'굳을 고','平':'평평할 평','均':'고를 균','素':'본디 소','調':'고를 조','供':'이바지할 공','給':'줄 급'});
 function fullHanja(raw){const chars=[...raw].filter(c=>hanjaGloss[c]);return chars.length?chars.map(c=>`${c}(${hanjaGloss[c]})`).join(' · '):`원어 · ${raw}`}
 slides.splice(slides.indexOf(advanced722)+1,0,{"t":5,"k":"3-5 · 그래프 심화 연습","title":"심화 계산기 2: 그래프로 시작하기","kind":"graph749","body":"<section id=\"graph749\" aria-label=\"그래프에서 시작하는 교역 계산기\"></section>","c":["기회비용","비교 우위","교역 조건"],"p":["A·B는 교역 전 생산·소비점, C·D는 완전 특화 후 교역한 소비점입니다. 좌표는 (X재, Y재) 순서입니다.","최대 생산량 → 기회비용 → 비교우위·특화 → 교환량 → 소비 이익 순서로 풉니다."]});
-// Small integer coordinates keep graph practice focused on comparative advantage.
-const graphPracticeBank763=[
- {cap:[[12,12],[8,24]],trade:[5,10]},
- {cap:[[24,24],[12,36]],trade:[8,16]},
- {cap:[[16,16],[8,24]],trade:[5,10]}
-];
-// X 1-unit trade bounds are integers with at least one strictly interior integer.
-const graphProblem749={step:0,serial:0,bank:0,cap:[[12,12],[8,24]],before:[[6,6],[4,12]],after:[[7,10],[5,14]]};
+// Integer trade bounds vary while all four production values stay within 50.
+const graphPracticeBank763=[];
+for(let low=1;low<=3;low++)for(let high=low+2;high<=5;high++){
+ for(let a=6;a<=30;a+=2)for(let c=4;c<a;c+=2){
+  const cap=[[a,a*low],[c,c*high]],values=cap.flat();
+  if(Math.max(...values)-Math.min(...values)>50)continue;
+  for(let rate=low+1;rate<high;rate++)for(let x=c/2+1;x<a/2;x++){
+   const y=x*rate;
+   if(y>a*low/2&&y<c*high/2)graphPracticeBank763.push({cap,trade:[x,y],range:low+':'+high});
+  }
+ }
+}
+const graphGroups764={};
+graphPracticeBank763.forEach((entry,i)=>(graphGroups764[entry.range]??=[]).push(i));
+const graphProblem749={step:0,serial:0,range:'2:4',cap:[[16,32],[12,48]],before:[[8,16],[6,24]],after:[[9,21],[7,27]]};
 function newGraph749(){
- const s=graphProblem749,choices=graphPracticeBank763.map((_,i)=>i).filter(i=>i!==s.bank);
- s.bank=choices[Math.floor(Math.random()*choices.length)];
- const entry=graphPracticeBank763[s.bank],[x,y]=entry.trade;
+ const s=graphProblem749,ranges=Object.keys(graphGroups764).filter(key=>key!==s.range);
+ s.range=ranges[Math.floor(Math.random()*ranges.length)];
+ const choices=graphGroups764[s.range],entry=graphPracticeBank763[choices[Math.floor(Math.random()*choices.length)]],[x,y]=entry.trade;
  s.cap=entry.cap.map(v=>v.slice());s.before=s.cap.map(([a,b])=>[a/2,b/2]);
  s.after=[[s.cap[0][0]-x,y],[x,s.cap[1][1]-y]];
  if(++s.serial%2){s.cap.reverse();s.before.reverse();s.after.reverse();}s.step=0;
@@ -1506,8 +1513,8 @@ function validTrade748(v){
 }
 function tradeOptions748(type){
  const options=[];
- for(let a=4;a<=16;a+=2)for(let c=4;c<=16;c+=2)for(let r=1;r<=3;r++)for(let t=1;t<=3;t++){
-  const b=a*r,d=c*t;if(Math.abs(r-t)<2||b>36||d>36||Math.max(a,b,c,d)>4*Math.min(a,b,c,d))continue;
+ for(let a=4;a<=30;a+=2)for(let c=4;c<=30;c+=2)for(let r=1;r<=5;r++)for(let t=1;t<=5;t++){
+  const b=a*r,d=c*t;if(Math.abs(r-t)<2||Math.max(a,b,c,d)-Math.min(a,b,c,d)>50)continue;
   const kind=a>c&&b>d?1:a<c&&b<d?2:a===c||b===d?3:0;
   if(kind===type)options.push([a,b,c,d]);
  }
