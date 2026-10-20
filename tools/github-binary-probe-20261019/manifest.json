@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "purpose": "Isolated PNG byte-for-byte GitHub connector round-trip probe; not a game asset replacement",
+  "source_name": "github_binary_probe.png",
+  "byte_length": 69,
+  "width": 1,
+  "height": 1,
+  "sha256": "c319b4ed7e591d5505bc3b8a73b8e3eb8f74e596cc8c00cf1d8e4b8c120e24d7",
+  "git_blob_sha1": "c79be11a976d83b3b9e19816db720dee013808eb",
+  "upload_tool": "GitHub.create_blob",
+  "upload_encoding": "base64",
+  "readback_status_at_creation": "pending",
+  "base_commit": "a0716900577e773c5348d2a3d5a8f314563a686d",
+  "base_tree": "236672be97c4e401b413971e1284244adb32ef06"
+}

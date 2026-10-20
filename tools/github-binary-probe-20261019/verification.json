@@ -1,0 +1,53 @@
+{
+  "status": "passed_for_69_byte_fixture",
+  "repository": "tugoyam119-blip/teacher.yujin",
+  "branch": "test/png-roundtrip-20261019-c319b4ed",
+  "verified_png_commit": "7f280f864d2eecb1dc51d0862ae0384925b882de",
+  "repo_path": "tools/github-binary-probe-20261019/github_binary_probe.png",
+  "byte_length": 69,
+  "dimensions": [1, 1],
+  "sha256": "c319b4ed7e591d5505bc3b8a73b8e3eb8f74e596cc8c00cf1d8e4b8c120e24d7",
+  "git_blob_sha1": "c79be11a976d83b3b9e19816db720dee013808eb",
+  "upload": {
+    "tool": "GitHub.create_blob",
+    "encoding": "base64",
+    "input": "Complete Base64 string derived from the mounted local PNG"
+  },
+  "readback": {
+    "tool": "GitHub.fetch_file",
+    "encoding": "base64",
+    "ref": "7f280f864d2eecb1dc51d0862ae0384925b882de",
+    "response_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNo\ndPoOAAMCAbvgG1URAAAAAElFTkSuQmCC\n"
+  },
+  "checks": {
+    "full_byte_equality": true,
+    "byte_length_matches": true,
+    "sha256_matches": true,
+    "git_blob_sha1_matches": true,
+    "png_all_chunk_crcs_and_pillow_decode": true
+  },
+  "offline_verifier_tests": {
+    "passed": 10,
+    "total": 10,
+    "cases": [
+      "valid newline Base64 accepted",
+      "result wrapper accepted",
+      "wrong remote blob SHA rejected",
+      "truncated Base64 rejected",
+      "invalid Base64 character rejected",
+      "UTF-8 encoding rejected",
+      "invalid original PNG signature rejected",
+      "missing content rejected",
+      "remote PNG CRC corruption rejected",
+      "trailing remote bytes rejected"
+    ],
+    "note": "These are offline regression cases, NOT ten GitHub uploads."
+  },
+  "known_limitations": [
+    "Only a 69-byte fixture was transmitted and compared in this experiment.",
+    "A real approved game PNG was not located by the Library searches; this does not establish absence from the Library.",
+    "Large-PNG payload capacity and unattended file-to-connector injection remain unverified.",
+    "GitHub.fetch_blob and generic GitHub.fetch PNG retrieval encounter UTF-8 decoding limitations; fetch_file with encoding=base64 succeeded.",
+    "No merge into main, game asset replacement, or service deployment was performed."
+  ]
+}
