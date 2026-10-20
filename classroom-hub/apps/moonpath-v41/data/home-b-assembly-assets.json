@@ -1,0 +1,141 @@
+{
+  "version": "4.1.1",
+  "role": "HOME B REVIEW ASSEMBLY",
+  "logicalSize": [
+    960,
+    540
+  ],
+  "userApprovedFinalHome": false,
+  "regeneratedImages": 0,
+  "sourcePngBytesModified": false,
+  "f5Status": "NOT_SUBMITTED_NO_SERVER_READABLE_SOURCE_REFERENCE",
+  "assets": [
+    {
+      "assetId": "home-b-background-original.png",
+      "role": "background",
+      "approval": "PRODUCTION_CANDIDATE",
+      "path": "assets/home/assembly/background-original.png",
+      "bytes": 2888484,
+      "sha256": "73cf804ddf246be2073155328f98a1a046b338f1e89f5c52ec1cf7dee3640d0d",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
+      "sourceGalleryIndexAtRecovery": 13,
+      "sourceRead": "SOURCE_READ_PASS",
+      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "f5JobId": null,
+      "gamePath": "GAME_PATH_LINKED",
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+    },
+    {
+      "assetId": "home-b-character-original.png",
+      "role": "character",
+      "approval": "PRODUCTION_CANDIDATE",
+      "path": "assets/home/assembly/character-original.png",
+      "bytes": 756198,
+      "sha256": "4a953f2e48f3d50bdfe6dab5715c51e3be2fb88494a35a5f85a1271eddbfb366",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
+      "sourceGalleryIndexAtRecovery": 14,
+      "sourceRead": "SOURCE_READ_PASS",
+      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "f5JobId": null,
+      "gamePath": "GAME_PATH_LINKED",
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+    },
+    {
+      "assetId": "home-b-ui-source-original.png",
+      "role": "icon source sheet",
+      "approval": "PRODUCTION_CANDIDATE",
+      "path": "assets/home/assembly/ui-source-original.png",
+      "bytes": 1389942,
+      "sha256": "5ac9c308e43ea2c8086414a8253cca53a500695b35f57ccbe9fcbd0d245bb719",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGBA",
+      "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
+      "sourceGalleryIndexAtRecovery": 15,
+      "sourceRead": "SOURCE_READ_PASS",
+      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "f5JobId": null,
+      "gamePath": "GAME_PATH_LINKED",
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+    },
+    {
+      "assetId": "home-b-main-frame-original.png",
+      "role": "main frame",
+      "approval": "NOT_USER_APPROVED",
+      "path": "assets/home/assembly/main-frame-original.png",
+      "bytes": 1458490,
+      "sha256": "611e6a63d4934c26c09fbc2150b8115c5688f2cda833dc163c9482756458101d",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
+      "sourceGalleryIndexAtRecovery": 24,
+      "sourceRead": "SOURCE_READ_PASS",
+      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "f5JobId": null,
+      "gamePath": "GAME_PATH_LINKED",
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+    },
+    {
+      "assetId": "home-b-sub-frame-original.png",
+      "role": "sub frame",
+      "approval": "NOT_USER_APPROVED",
+      "path": "assets/home/assembly/sub-frame-original.png",
+      "bytes": 1509171,
+      "sha256": "d0592a0c8c5242eccc23a9009b43762a26aa6abc3f256b4ad6a9fc5294e7ed32",
+      "size": [
+        1173,
+        1341
+      ],
+      "mode": "RGBA",
+      "sourceConversation": "6ad1bdcc-59a8-83ee-86c8-991895134cff",
+      "sourceGalleryIndexAtRecovery": 25,
+      "sourceRead": "SOURCE_READ_PASS",
+      "transfer": "GIT_BINARY_PENDING_REMOTE_VERIFY",
+      "f5JobId": null,
+      "gamePath": "GAME_PATH_LINKED",
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+    },
+    {
+      "assetId": "logo_main.png",
+      "path": "assets/home/logo/logo_main.png",
+      "approval": "DESIGN_APPROVED_LAYOUT_CANDIDATE",
+      "sha256": "2709003daaf25fd6124469d996fd78351b4f292a125d5f964f62733265c20094",
+      "bytes": 1653077,
+      "size": [
+        1584,
+        993
+      ],
+      "sourceRead": "SOURCE_READ_PASS",
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+    },
+    {
+      "assetId": "logo_slogan.png",
+      "path": "assets/home/logo/logo_slogan.png",
+      "approval": "DESIGN_APPROVED_LAYOUT_CANDIDATE",
+      "sha256": "33444040bc68b92094a0a15375cdaf8b42926bd11dd746fa0c9f2b3aabfc35d7",
+      "bytes": 578942,
+      "size": [
+        2172,
+        724
+      ],
+      "sourceRead": "SOURCE_READ_PASS",
+      "browser": "HTML_RENDER_PASS_LOCAL_1280x720"
+    }
+  ],
+  "layoutReference": "docs/HOME_B_ASSEMBLY_20261020.md"
+}
