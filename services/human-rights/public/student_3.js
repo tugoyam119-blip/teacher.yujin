@@ -86,7 +86,7 @@ async function saveSelfEvaluation(draft=false){
  }catch(e){msg.innerHTML='<div class="notice bad">저장하지 못했습니다. 입력 내용은 화면에 남아 있습니다. '+esc(e.message)+'</div>'}
  finally{selfEvalSaving=false;const current=document.getElementById('selfEvalText');if(current){current.disabled=false;document.getElementById('selfEvalDraft').disabled=false;document.getElementById('selfEvalSubmit').disabled=false}}
 }
-function render(){drawerOpen=false;if(!student)return loginView();if(API_MODE&&!state.submitted&&(!session.is_open||(state.revision&&!reopenAvailable())))return waitView();if(state.submitted||(!visitorMode&&session.self_evaluation_available)){submittedView();if(state.submitted)updateReopenStatus();return}({0:step0,1:step1,2:step2,3:step3,4:step4,5:step5,6:step6,7:step7}[state.step]||step0)()}
+function render(){drawerOpen=false;if(!student)return loginView();if(API_MODE&&!state.submitted&&!session.self_evaluation_available&&(!session.is_open||(state.revision&&!reopenAvailable())))return waitView();if(state.submitted||(!visitorMode&&session.self_evaluation_available)){submittedView();if(state.submitted)updateReopenStatus();return}({0:step0,1:step1,2:step2,3:step3,4:step4,5:step5,6:step6,7:step7}[state.step]||step0)()}
 async function init(){
   try{
     render();
