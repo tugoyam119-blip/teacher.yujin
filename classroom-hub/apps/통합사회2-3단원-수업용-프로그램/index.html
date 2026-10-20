@@ -744,7 +744,7 @@ function bindGraph749(){
    ['그래프에서 단서 찾기','<p>축의 끝점에서 최대 생산량을 읽으세요.</p><p><b>A·B</b>: 교역 전 생산·소비점<br><b>C·D</b>: 비교우위 재화에 완전 특화한 뒤 교역한 소비점</p><p>좌표는 <b>(X재 소비량, Y재 소비량)</b>입니다.</p>'],
    ['① 최대 생산량 읽기',table(row('X재 최대량',a+'개',c+'개')+row('Y재 최대량',b+'개',d+'개'))+'<p>X축·Y축과 만나는 점을 각각 읽습니다.</p>'],
    ['② 기회비용 계산',table(row('X재 1개',`${b} ÷ ${a} = Y재 ${F(b,a)}개`,`${d} ÷ ${c} = Y재 ${F(d,c)}개`)+row('Y재 1개',`${a} ÷ ${b} = X재 ${F(a,b)}개`,`${c} ÷ ${d} = X재 ${F(c,d)}개`))+'<p>상대 재화 최대량 ÷ 해당 재화 최대량</p>'],
-   ['③ 비교우위·특화와 교역 조건',table(row('비교우위·특화',exporter===0?'X재':'Y재',exporter===1?'X재':'Y재'))+`<p><b>Y재 ${Math.min(b/a,d/c)}개 &lt; X재 1개의 교환 대가 &lt; Y재 ${Math.max(b/a,d/c)}개</b></p><p>같은 재화의 기회비용이 더 낮은 나라가 특화합니다.</p>`],
+   ['③ 비교우위·특화와 교역 조건',table(row('비교우위·특화',exporter===0?'X재':'Y재',exporter===1?'X재':'Y재'))+`<p><b>Y재 ${exporter===0?F(b,a):F(d,c)}개 &lt; X재 1개의 교환 대가 &lt; Y재 ${exporter===0?F(d,c):F(b,a)}개</b></p><p>같은 재화의 기회비용이 더 낮은 나라가 특화합니다.</p>`],
    ['④ 소비점에서 교환량 찾기',`<p><b>${who(exporter)} → ${who(importer)}: X재 ${x}개</b><br>특화 생산 ${s.cap[exporter][0]} − 교역 후 소비 ${s.after[exporter][0]} = ${x}</p><p><b>${who(importer)} → ${who(exporter)}: Y재 ${y}개</b><br>특화 생산 ${s.cap[importer][1]} − 교역 후 소비 ${s.after[importer][1]} = ${y}</p><p>실제 교환비율: <b>X재 1개 ↔ Y재 ${F(y,x)}개</b></p>`],
    ['⑤ 교역 전후 소비와 이익',table(row('교역 전',...s.before.map(v=>`X ${v[0]} / Y ${v[1]}`))+row('교역 후',...s.after.map(v=>`X ${v[0]} / Y ${v[1]}`))+row('소비 증가',...s.after.map((v,i)=>`X +${v[0]-s.before[i][0]} / Y +${v[1]-s.before[i][1]}`)))+'<p><b>두 나라 모두 교역 전보다 두 재화를 더 소비합니다.</b></p>']
   ];
