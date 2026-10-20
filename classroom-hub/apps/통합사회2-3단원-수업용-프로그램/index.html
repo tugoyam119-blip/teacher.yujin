@@ -980,6 +980,34 @@ benefit752.p.unshift('영화를 보고 얻는 즐거움은 편익이고 표값�
  }}catch{}
 })();
 
+
+// Integrate supplementary prose into the lesson's existing examples and tables.
+(()=>{
+ const get=t=>{const s=slides.find(s=>s.title===t);if(!s)throw Error('Missing integration slide '+t);return s;};
+ const edit=(t,fn)=>{const s=get(t),d=document.createElement('div');d.innerHTML=s.body;fn(d);s.body=d.innerHTML;};
+ const card=(d,label,text)=>{const c=[...d.querySelectorAll('.board-card')].find(c=>c.querySelector('b')?.textContent.includes(label));if(!c)throw Error('Missing card '+label);const p=c.querySelector('p');p.textContent=text;};
+ const table=(heads,rows)=>'<table class="board-table"><thead><tr>'+heads.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.map(row=>'<tr>'+row.map((x,i)=>'<'+(i?'td':'th')+'>'+x+'</'+(i?'td':'th')+'>').join('')+'</tr>').join('')+'</tbody></table>';
+ get('시장은 효율성과 지속가능성을 함께 만들 수 있을까?').body='<p class="lead">편리한 배달 서비스는 소비자와 기업에 이익을 주지만, 포장 쓰레기와 노동 문제도 함께 만들 수 있습니다.</p>'+table(['살펴볼 기준','배달 서비스에서 판단하기'],[['효율성','주문·배달에 드는 시간과 비용을 줄이고 필요한 서비스를 얻는가?'],['공정성','소비자·기업·노동자 사이에 이익과 부담이 어떻게 나뉘는가?'],['지속가능성','포장 쓰레기와 노동 환경을 함께 고려하는가?']])+'<p class="question">시장 참여자의 자유로운 선택과 공동의 문제 해결은 어떻게 함께 이루어질까요?</p>';
+ edit('신항로 개척과 상업 자본주의',d=>card(d,'이윤의 원천','향신료처럼 지역 간 가격 차이가 큰 상품을 싸게 사서 비싸게 파는 유통 이윤'));
+ edit('애덤 스미스와 보이지 않는 손',d=>card(d,'보이지 않는 손','빵집 주인의 이윤 추구 → 빵 생산·판매 → 소비자의 필요 충족. 가격과 경쟁이 개인의 선택을 조정'));
+ edit('케인스: 불황에는 정부가 수요를 보완해야 한다',d=>{card(d,'처방','정부의 도로 건설 → 노동자의 소득 → 소비 증가 → 기업의 매출·고용 회복');const p=document.createElement('p');p.className='question';p.textContent='공공사업의 고용 효과와 재정 부담·사업 효율성은 어떻게 함께 따져야 할까요?';d.append(p);});
+ edit('루스벨트와 뉴딜 정책',d=>card(d,'의미','시장경제를 유지하면서 정부의 경제 안정 책임 확대'));
+ edit('2008년 금융 위기가 남긴 질문',d=>{const flow=d.querySelector('.flow');if(!flow)throw Error('Missing crisis flow');flow.innerHTML='<span>부실 대출·고위험 금융상품</span><b>→</b><span>금융기관 손실·대출 축소</span><b>→</b><span>기업 자금난·고용 감소</span><b>→</b><span>소비 감소·세계 침체</span>';});
+ edit('희소성 때문에 선택이 필요하다',d=>{const q=d.querySelector('.question');q.textContent='점심시간 50분에 식사·운동·낮잠을 모두 충분히 할 수 없다면, 무엇을 선택하고 무엇을 포기할까요?';});
+ edit('매몰 비용은 현재 선택에서 제외한다',d=>{card(d,'상황','재미없는 공연의 표값을 이미 냈고, 중도에 나가도 환불받을 수 없습니다.');card(d,'현재 판단','어떤 선택에도 회수할 수 없는 표값은 제외하고 남은 시간의 편익과 비용을 비교합니다.');});
+ get('개인의 합리성이 사회에도 최선일까?').body=table(['사례','개인·기업의 이익','다른 사람·사회에 미치는 영향'],[['자동차 이용','빠르고 편리한 이동','교통 혼잡·오염·탄소 배출 부담'],['공장의 오염 처리 축소','오염 처리 비용 절약','주변 주민의 건강 피해·환경 비용']])+'<p class="lead">개인이 고려하는 편익·비용과 사회 전체의 편익·비용은 다를 수 있습니다.</p><p class="question">피해가 거래의 대가에 반영되지 않을 때 세금·규제·보상은 선택을 어떻게 바꿀까요?</p>';
+ edit('시장 참여자의 권리와 책임',d=>{card(d,'노동자','일할 때: 성실한 노동과 노동권 보호');card(d,'소비자','구매할 때: 합리적·윤리적 선택과 정보 확인');});
+ edit('기업가 정신·사회적 책임·ESG',d=>{card(d,'기업의 사회적 책임','친환경 기술로 오염을 줄이는 등 환경·노동·소비자·공동체 영향을 고려');card(d,'기업가 정신','위험을 감수하고 친환경 기술을 새로운 상품·시장으로 발전시키는 도전');});
+ get('안전성·수익성·유동성을 함께 보자').body=table(['원칙','뜻','예금 사례에서 살펴보기'],[['안전성','원금과 자산 가치가 보전될 가능성','원금 손실 위험과 보호 조건 확인'],['수익성','이자·배당·가격 상승을 기대할 가능성','기대 이자 수익 확인. 일반적으로 주식보다 기대 수익이 낮은 편'],['유동성','필요할 때 쉽게 현금화할 가능성','인출·중도 해지 조건과 돈이 필요한 시점 확인']])+'<p class="lead">높은 기대 수익에는 일반적으로 높은 위험이 따릅니다. 세 원칙을 모두 최고로 만족하는 상품은 찾기 어렵습니다.</p><p class="question">가까운 시일에 쓸 돈이라면 사용 시점과 감당할 수 있는 손실을 어떻게 고려해야 할까요?</p>';
+ edit('예금·주식·채권·펀드·보험·연금',d=>{const row=[...d.querySelectorAll('tr')].find(r=>r.querySelector('th')?.textContent.includes('보험·연금'));if(!row)throw Error('Missing insurance row');row.querySelectorAll('td')[0].textContent='보험: 위험에 따른 손실 대비 / 연금: 노후의 지속적인 소득 준비';row.querySelectorAll('td')[1].textContent='수익률만으로 비교하지 않고 보장·소득 안정 기능 고려';});
+ get('리카도: 잘하는 것보다 덜 포기하는 것').body='<p class="lead">리카도는 한 나라가 두 상품 모두 더 잘 생산해도 기회비용 차이로 무역 이익이 생길 수 있다고 설명했습니다.</p>'+table(['리카도의 사례','포르투갈','영국'],[['절대적인 생산 능력','직물·포도주 모두 절대우위','두 상품 모두 절대열위'],['상대적으로 기회비용이 낮은 상품','포도주','직물'],['특화와 교환','포도주 생산·수출, 직물 수입','직물 생산·수출, 포도주 수입']])+'<p class="question">두 상품 모두 절대열위인 영국도 무역에 참여할 수 있는 까닭은 무엇일까요?</p>';
+ get('무역의 이익·교역 조건·분배').body=table(['살펴볼 측면','기대 효과 또는 조건','함께 따질 문제'],[['특화와 교환','국내 기회비용 사이의 교환 비율에서 양국이 이익을 얻을 수 있음','각 나라의 기회비용과 실제 교환 조건 확인'],['경제 전체','소비 선택 확대·비용 절감·규모의 경제·성장','환경 오염·자원 부담·공급망 의존'],['산업과 노동자','수출 확대 등으로 이익을 얻는 부문 발생','수입 경쟁에 따른 고용 충격 등 손실을 보는 부문도 발생']])+'<p class="question">무역으로 국가의 총이익이 커지면 모든 산업과 노동자에게 이익이 고르게 돌아갈까요?</p>';
+ const titles=['시장은 효율성과 지속가능성을 함께 만들 수 있을까?','신항로 개척과 상업 자본주의','애덤 스미스와 보이지 않는 손','케인스: 불황에는 정부가 수요를 보완해야 한다','루스벨트와 뉴딜 정책','2008년 금융 위기가 남긴 질문','희소성 때문에 선택이 필요하다','매몰 비용은 현재 선택에서 제외한다','개인의 합리성이 사회에도 최선일까?','시장 참여자의 권리와 책임','기업가 정신·사회적 책임·ESG','안전성·수익성·유동성을 함께 보자','예금·주식·채권·펀드·보험·연금','국제 분업과 글로벌 가치 사슬','리카도: 잘하는 것보다 덜 포기하는 것','자료 유형에 따라 계산식이 달라진다','무역의 이익·교역 조건·분배','시장경제를 보는 세 개의 렌즈'];
+ for(const title of titles){const s=get(title),plan=window.unit3GuidePlan?.[title];if(plan){s.p.push(...[plan.main,...(plan.focus||[]).map(x=>x[1])].filter(Boolean));delete window.unit3GuidePlan[title];}}
+ // Remove repeated introductions without removing the existing crisis diagram.
+ edit('대공황의 악순환을 한눈에 보기',d=>{for(const p of d.querySelectorAll('p'))if(p.textContent==='주가 하락의 충격이 서로 연결된 경제 주체를 따라 실업과 소득 감소로 확산되었습니다.')p.remove();});
+})();
+
 let current=Number(localStorage.getItem('social2_u3_slide_v2')||0),activeClass=localStorage.getItem('social2_u3_class_v2')||'1',recent=[],pinned=JSON.parse(localStorage.getItem('social2_u3_pinned_v2')||'[]');const stage=document.getElementById('lesson-stage');
 const search=document.getElementById('search');
 function stableText733(el,variants,index,html=false){
