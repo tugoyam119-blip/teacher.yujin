@@ -1,0 +1,261 @@
+{
+  "original": {
+    "file_id": "file_00000000059c8211a3c1859cc4ee4cb9",
+    "bytes": 20979389,
+    "sha256": "5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432"
+  },
+  "independent_work_download": {
+    "http": 200,
+    "bytes": 20979389,
+    "equalsOriginal": true
+  },
+  "main_run": {
+    "scope": "deployment",
+    "deploymentId": "b3ccd167-25fd-4931-9659-5ce979e6e9d2",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:06:16.186613134Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"source\",\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:17.130274815Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"dry_1\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:17.871846772Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"dry_2\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:18.598336745Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"dry_3\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:18.618984187Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"bad_auth\",\"status\":401,\"result\":{\"error\":\"UNAUTHORIZED_OR_NOT_CONFIGURED\"}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:19.384681313Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"bad_sha\",\"status\":422,\"result\":{\"error\":\"SHA256_MISMATCH\",\"computed_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\"}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:27.117453649Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"commit_1\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643,\"github\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"cf87d0e040048bbe78d19e0061e74090b306ff3a\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true}}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:33.512151119Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"commit_2\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643,\"github\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"7cee71692d3d6f3b49b44a777e80c0c304b9acb1\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true}}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:39.867523411Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"commit_3\",\"status\":200,\"result\":{\"verified\":true,\"bytes\":20979389,\"sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"width\":4096,\"height\":5118,\"chunkCount\":643,\"github\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"324cb0519e90fd1f211474c3571103b44a9214a9\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true}}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:06:39.867528911Z",
+        "severity": "info",
+        "message": "F5_WORK_QA {\"run\":\"work-20261020-01\",\"test\":\"complete\",\"ok\":true}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  },
+  "regression": {
+    "scope": "service",
+    "deploymentId": "c26f355c-7759-489a-9b07-f98a4836e3c0",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:07:10.037666536Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"1MB_1\",\"status\":200,\"verified\":true,\"bytes\":1048576,\"sha256\":\"6b5cb7cd1f9f9e900bab75359f12fd86d88bae7e9746115b6ba9b7d22624fa76\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:10.037669846Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"1MB_2\",\"status\":200,\"verified\":true,\"bytes\":1048576,\"sha256\":\"6b5cb7cd1f9f9e900bab75359f12fd86d88bae7e9746115b6ba9b7d22624fa76\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:10.037673335Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"1MB_3\",\"status\":200,\"verified\":true,\"bytes\":1048576,\"sha256\":\"6b5cb7cd1f9f9e900bab75359f12fd86d88bae7e9746115b6ba9b7d22624fa76\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:10.252035409Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"5MB_1\",\"status\":200,\"verified\":true,\"bytes\":5242880,\"sha256\":\"467a4e6f20e2a7cb6ff13e6b2be453556e6d52867e86aa09215ad21c35d1c66c\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:10.423387337Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"5MB_2\",\"status\":200,\"verified\":true,\"bytes\":5242880,\"sha256\":\"467a4e6f20e2a7cb6ff13e6b2be453556e6d52867e86aa09215ad21c35d1c66c\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:10.612227527Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"5MB_3\",\"status\":200,\"verified\":true,\"bytes\":5242880,\"sha256\":\"467a4e6f20e2a7cb6ff13e6b2be453556e6d52867e86aa09215ad21c35d1c66c\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:11.696497149Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"10MB_1\",\"status\":200,\"verified\":true,\"bytes\":10485760,\"sha256\":\"9a87582dd90b84508923630569d1ea2e7c3e32a3b25557d971b2ccb61767d086\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:12.045780799Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"10MB_2\",\"status\":200,\"verified\":true,\"bytes\":10485760,\"sha256\":\"9a87582dd90b84508923630569d1ea2e7c3e32a3b25557d971b2ccb61767d086\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:12.425228460Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"10MB_3\",\"status\":200,\"verified\":true,\"bytes\":10485760,\"sha256\":\"9a87582dd90b84508923630569d1ea2e7c3e32a3b25557d971b2ccb61767d086\",\"width\":1,\"height\":1,\"chunkCount\":4}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:12.425231780Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"interrupted_body\",\"partial_bytes\":65536,\"client_disconnected\":true,\"health_status\":200,\"commit_requested\":false}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:07:12.425234940Z",
+        "severity": "info",
+        "message": "F5_REGRESSION {\"test\":\"complete\",\"ok\":true}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  }
+}
