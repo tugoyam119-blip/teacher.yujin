@@ -2,7 +2,7 @@
  * This is NOT the approved game art nor the v4.1.1 production offline build.
  */
 import {readFileSync,writeFileSync,mkdirSync,readdirSync} from 'node:fs';
-import {resolve,relative,dirname,posix} from 'node:path';
+import {resolve,relative,dirname,isAbsolute} from 'node:path';
 import {createHash} from 'node:crypto';
 const cwd=resolve(import.meta.dirname,'..');
 const root=resolve(cwd,'src');
@@ -16,7 +16,8 @@ for(const abs of walk(root)){
  const original=readFileSync(abs,'utf8');
  modules[name]=original.replace(/\bfrom\s*(['"])(\.\.?\/[^'"\n]+)\1/g,(_match,_quote,imp)=>{
   const target=resolve(dirname(abs),imp);
-  if(!target.startsWith(root+'/')||!target.endsWith('.js'))throw Error(`Unexpected external import: ${abs} ${imp}`);
+  const local=relative(root,target);
+  if(local==='..'||local.startsWith('../')||local.startsWith('..\\')||isAbsolute(local)||!target.endsWith('.js'))throw Error(`Unexpected external import: ${abs} ${imp}`);
   return `from '${'mp:'+normalize(relative(root,target))}'`;
  });
 }

@@ -7,7 +7,7 @@
   "visualContract": "data/phase3-visual-contract.json",
   "stageTracker": "data/phase3-sixteen-stage-tracker.json",
   "referenceAssetsAreNotGameAssets": true,
-  "status": "HOME_B_CHARACTER_DIRECTION_AND_HOME_LOGO_SLOGAN_DESIGN_APPROVED_BINARIES_NOT_UPLOADED_OR_RENDER_QA",
+  "status": "HOME_DESIGN_APPROVED_LOGO_BINARIES_VERIFIED_HOME_RUNTIME_NOT_IMPLEMENTED",
   "minimumAcceptance": [
     "SHA256 verified for complete original",
     "GitHub byte-identical",
@@ -40,10 +40,13 @@
         "height": 153
       },
       "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
-      "gitBinaryUploaded": false,
-      "gitByteMatchVerified": false,
+      "gitBinaryUploaded": true,
+      "gitByteMatchVerified": true,
       "browserQA": "NOT_RUN",
-      "releaseReady": false
+      "releaseReady": false,
+      "gitBlobSha": "00a8586e7c57418bc7e99516df8971058f97c124",
+      "binaryCommit": "d2c6f7bee38f140705dee64d33d1aca82691675a",
+      "verificationEvidence": "docs/HOME_SOURCE_AUDIT_20261020.md"
     },
     {
       "id": "home_logo_slogan_approved_design",
@@ -63,11 +66,14 @@
         "height": 24
       },
       "approval": "USER_APPROVED_DESIGN_REFERENCE_2026-10-19",
-      "gitBinaryUploaded": false,
-      "gitByteMatchVerified": false,
+      "gitBinaryUploaded": true,
+      "gitByteMatchVerified": true,
       "browserQA": "NOT_RUN",
       "releaseReady": false,
-      "notes": "Source aspect ratio 3:1 differs from display 9.6667:1; never force anisotropic scaling; crop/resize new canvas or reauthor with verified aspect before runtime."
+      "notes": "Source aspect ratio 3:1 differs from display 9.6667:1; never force anisotropic scaling; crop/resize new canvas or reauthor with verified aspect before runtime.",
+      "gitBlobSha": "e46cec47a5b2b92f7aa2dab8cd6706e770d329eb",
+      "binaryCommit": "d2c6f7bee38f140705dee64d33d1aca82691675a",
+      "verificationEvidence": "docs/HOME_SOURCE_AUDIT_20261020.md"
     }
   ],
   "homeUiPolicy": {
@@ -89,7 +95,7 @@
     "testMethod": "page.set_content(data:image/png;base64) from local actual PNG; browser navigation to file/http blocked",
     "fileProtocolQA": "BLOCKED_NOT_PASS",
     "externalUrlQA": "NOT_RUN",
-    "gitBinaryUpload": "BLOCKED_NOT_DONE",
+    "gitBinaryUpload": "VERIFIED_FROM_GIT_CHECKOUT_2026-10-20",
     "buttonInteractionQa": "NOT_RUN",
     "details": "Local QA artifacts created; no GitHub asset upload or service deployment."
   }
