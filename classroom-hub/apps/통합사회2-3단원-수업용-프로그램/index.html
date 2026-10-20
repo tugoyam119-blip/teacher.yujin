@@ -958,6 +958,28 @@ benefit752.p.unshift('영화를 보고 얻는 즐거움은 편익이고 표값�
  for(const [title,rows] of entries){const s=slides.find(s=>s.title===title);if(!s)throw Error(title);s.body=s.body.replace(/<div><p><b>[\s\S]*?<\/div><\/div>/,'<div class="externality-notes759">'+rows.map(([a,b])=>'<p><b>'+a+'</b><span class="externality-line759">'+b+'</span></p>').join('')+'</div></div>');}
 })();
 
+
+// Textbook flow audit (50 checkpoints): preserve slide objects and worksheet links.
+(()=>{
+ const before=[...slides],at=title=>{const s=slides.find(s=>s.title===title);if(!s)throw Error('Missing audit anchor: '+title);return s;};
+ const moveBefore=(title,target)=>{const s=at(title);slides.splice(slides.indexOf(s),1);slides.splice(slides.indexOf(at(target)),0,s);};
+ moveBefore('물가상승률과 실업률을 함께 읽기','시장과 정부는 서로의 한계를 보완한다');
+ moveBefore('경쟁을 지키는 정부: 교복 가격 담합 사례','외부 효과의 해결: 빠진 비용과 편익 반영하기');
+ const crisis=at('대공황의 악순환을 한눈에 보기');
+ crisis.body='<p class="lead">산업 자본주의가 발전하면서 빈부 격차·아동 노동 등의 문제가 나타났고, 이를 비판하는 사회주의 사상이 확산되었습니다. 소수 기업의 독과점으로 자유로운 경쟁이 약화된 가운데 대공황이 발생했습니다.</p>'+crisis.body;
+ const enterprise=at('기업가 정신·사회적 책임·ESG');
+ const old='<div class="board-card"><b>'+T('기업가 정신')+'</b><p>위험을 감수하며 새로운 기회와 해결책을 찾는 태도</p></div><div class="board-card"><b>'+T('기업의 사회적 책임')+'</b><p>환경·노동·소비자·공동체 영향까지 책임</p></div>';
+ const replacement='<div class="board-card"><b>'+T('기업의 사회적 책임')+'</b><p>환경·노동·소비자·공동체 영향까지 책임</p></div><div class="board-card"><b>'+T('기업가 정신')+'</b><p>위험을 감수하며 새로운 기회와 해결책을 찾는 태도</p></div>';
+ if(!enterprise.body.includes(old))throw Error('Enterprise card order changed');enterprise.body=enterprise.body.replace(old,replacement);
+ at('시장 실패 사례 판단 · 핵심 세 유형').body+='<section class="focus-stack"><div class="focus-card"><b>교과서 77쪽 탐구로 연결</b><p>자료 1 비만세: 고열량 식품의 소비로 발생하는 사회적 비용을 부정적 외부 효과와 연결합니다. 자료 2 댐: 비용을 내지 않은 주민도 홍수 예방 혜택을 얻는 비배제성과 무임승차를 근거로 민간 공급 부족을 설명합니다.</p></div></section>';
+ at('국제 분업과 글로벌 가치 사슬').body='<p class="lead">무역은 나라 사이에 상품·서비스·생산 요소 등을 거래하는 것입니다. 국제 분업은 각 나라가 무역에 유리한 것을 특화하여 생산하는 것입니다. 무역 확대와 국제 분업의 발달은 서로를 촉진합니다.</p>'+at('국제 분업과 글로벌 가치 사슬').body;
+ at('시장경제를 보는 세 개의 렌즈').body+='<p class="teacher-cue"><b>교과서 98~99쪽 대단원 마무리</b> 98쪽 개념 확인·합리적 선택 문제 → 99쪽 정부 역할·금융 자산·비교 우위 문제 → 스스로 점검하기 순서로 학습을 마무리합니다.</p>';
+ try{if(localStorage.getItem('social2_u3_flow_audit')!=='audit50-v1'){
+  const old=before[Number(localStorage.getItem('social2_u3_slide_v2')||0)];if(old)localStorage.setItem('social2_u3_slide_v2',String(slides.indexOf(old)));
+  const saved=JSON.parse(localStorage.getItem('social2_u3_progress_v2')||'{}');for(const v of Object.values(saved)){const title=v.title||before[v.slide]?.title;const i=slides.findIndex(s=>s.title===title);if(i>=0)Object.assign(v,{title,slide:i,page:i+1,topic:slides[i].t});}localStorage.setItem('social2_u3_progress_v2',JSON.stringify(saved));localStorage.setItem('social2_u3_flow_audit','audit50-v1');
+ }}catch{}
+})();
+
 let current=Number(localStorage.getItem('social2_u3_slide_v2')||0),activeClass=localStorage.getItem('social2_u3_class_v2')||'1',recent=[],pinned=JSON.parse(localStorage.getItem('social2_u3_pinned_v2')||'[]');const stage=document.getElementById('lesson-stage');
 const search=document.getElementById('search');
 function stableText733(el,variants,index,html=false){
