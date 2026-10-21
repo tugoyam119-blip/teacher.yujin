@@ -33,7 +33,7 @@ for(const a of actions){
  const [x,y,w,h]=a.rect,sub=!a.description,b=node('button');b.type='button';b.id=`menu-${a.id}`;b.className=`menu-button${sub?' sub':''}`;b.setAttribute('aria-label',a.title);
  Object.assign(b.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
  const frame=cropped(ASSET+(sub?'sub-frame-original.png':'main-frame-original.png'),sub?[81,167,1009,967]:[38,109,2098,498],[w,h],sub?1173:2172);frame.classList.add('frame');b.append(frame);
- const icon=cropped(ASSET+'ui-source-original.png',a.icon,sub?[24,24]:[40,40],1672);icon.classList.add('icon');b.append(icon,node('strong',a.title));
+ const icon=cropped(`../assets/home/icons-alpha-v1/${a.id}.png`,[0,0,a.icon[2],a.icon[3]],sub?[24,24]:[40,40],a.icon[2]);icon.classList.add('icon');b.append(icon,node('strong',a.title));
  if(a.description)b.append(node('small',a.description));
  b.addEventListener('click',()=>openPanel(a.id).catch(report));$(sub?'submenus':'menus').append(b);
 }

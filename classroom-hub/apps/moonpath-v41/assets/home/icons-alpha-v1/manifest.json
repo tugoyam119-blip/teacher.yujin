@@ -1,0 +1,111 @@
+{
+  "source": "assets/home/assembly/ui-source-original.png",
+  "operation": "alpha-only extraction from original RGB; imagegen candidate rejected for artwork drift",
+  "assets": [
+    {
+      "id": "new",
+      "path": "assets/home/icons-alpha-v1/new.png",
+      "sourceRect": [
+        1204,
+        221,
+        115,
+        113
+      ],
+      "width": 115,
+      "height": 113,
+      "bytes": 33820,
+      "sha256": "70ae4991fd1e61b1f7d0da16150c533eb8f8c1ae30ff4a04d5b3a6bff506bed7",
+      "rgbPixelsUnchanged": true
+    },
+    {
+      "id": "continue",
+      "path": "assets/home/icons-alpha-v1/continue.png",
+      "sourceRect": [
+        1214,
+        378,
+        103,
+        84
+      ],
+      "width": 103,
+      "height": 84,
+      "bytes": 23718,
+      "sha256": "684baeb6d1fccad2c749346dca0ecd021992d96acbbed5d2979b9ccff487f5f7",
+      "rgbPixelsUnchanged": true
+    },
+    {
+      "id": "journal",
+      "path": "assets/home/icons-alpha-v1/journal.png",
+      "sourceRect": [
+        1212,
+        637,
+        100,
+        100
+      ],
+      "width": 100,
+      "height": 100,
+      "bytes": 26434,
+      "sha256": "b4555ef576c539d9aed5948f875498ff5d0ce45ee54049a549482db10ecc3389",
+      "rgbPixelsUnchanged": true
+    },
+    {
+      "id": "settings",
+      "path": "assets/home/icons-alpha-v1/settings.png",
+      "sourceRect": [
+        1214,
+        510,
+        100,
+        87
+      ],
+      "width": 100,
+      "height": 87,
+      "bytes": 20312,
+      "sha256": "955a5b32e2912a02f1e0c4b96b5cb7cc10836a9b1cf92efdeab1e138536efa04",
+      "rgbPixelsUnchanged": true
+    },
+    {
+      "id": "records",
+      "path": "assets/home/icons-alpha-v1/records.png",
+      "sourceRect": [
+        1214,
+        800,
+        60,
+        58
+      ],
+      "width": 60,
+      "height": 58,
+      "bytes": 9665,
+      "sha256": "ab1998820486e09810dbafb05979e58fc0254b6fcda8e4a01e3abd133f9677b5",
+      "rgbPixelsUnchanged": true
+    },
+    {
+      "id": "help",
+      "path": "assets/home/icons-alpha-v1/help.png",
+      "sourceRect": [
+        1373,
+        804,
+        65,
+        50
+      ],
+      "width": 65,
+      "height": 50,
+      "bytes": 9262,
+      "sha256": "6a62752e672e5754aca9e74b89b7c7be3f024b8108d53f5d19095ed7dda8c101",
+      "rgbPixelsUnchanged": true
+    },
+    {
+      "id": "exit",
+      "path": "assets/home/icons-alpha-v1/exit.png",
+      "sourceRect": [
+        1543,
+        805,
+        65,
+        52
+      ],
+      "width": 65,
+      "height": 52,
+      "bytes": 8965,
+      "sha256": "677af080c346a6db04de3b522dc48bd904f5c585d9bf343662166fc77cd52739",
+      "rgbPixelsUnchanged": true
+    }
+  ]
+}
