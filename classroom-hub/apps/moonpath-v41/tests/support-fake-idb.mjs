@@ -3,7 +3,7 @@
  */
 const copy=v=>structuredClone(v);
 export class FakeDatabase {
-  constructor(){this.stores=new Map(['slots','events','checkpoints','leases','quarantine'].map(n=>[n,new Map()]));this.failNextWrite=false;this.closed=false;}
+  constructor(){this.stores=new Map(['slots','events','checkpoints','leases','quarantine','archives'].map(n=>[n,new Map()]));this.failNextWrite=false;this.closed=false;}
   close(){this.closed=true;}
   transaction(names,mode){
     if(this.closed)throw new Error('Database closed');

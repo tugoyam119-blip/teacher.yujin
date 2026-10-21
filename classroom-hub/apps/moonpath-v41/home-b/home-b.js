@@ -1,4 +1,4 @@
-import {openEngineDatabase} from '../src/storage/indexeddb.js';
+import {openEngineDatabase} from '../src/storage/indexeddb.js?v=2-archive';
 import {TeacherEngineSession} from '../src/engine/session.js';
 import {makeBackup} from '../src/storage/backup.js';
 import {expeditionJournal,journalCsv,decisionLabel} from '../src/world/journal.js';
@@ -39,7 +39,7 @@ for(const a of actions){
 }
 function resize(){const scale=Math.min(innerWidth/960,innerHeight/540);$('stage').style.transform=`translate(-50%,-50%) scale(${scale})`;}
 addEventListener('resize',resize);resize();
-function report(e){const text=`처리하지 못했습니다: ${e.code??''} ${e.message??e}`;($('panel-message')??$('message')).textContent=text;}
+function report(e){const text=`처리하지 못했습니다: ${e.code??''} ${e.message??e}`;let target=$('panel-message');if(!target&&$('panel').open){target=node('p');target.id='panel-message';target.setAttribute('role','status');$('panel-body').append(target);}(target??$('message')).textContent=text;}
 async function refresh(){
  if(!database)database=await openEngineDatabase({open(_name,version){return indexedDB.open(TEST_DB,version);}});
  slots=await Promise.all([1,2,3].map(slot=>database.read(slot)));
@@ -99,19 +99,40 @@ async function openPanel(kind,setup=null){
   }catch(e){if(token===packRequest){chosen=null;status.textContent=`문제팩을 사용할 수 없습니다: ${e.message}`;}}}
   packs.addEventListener('change',loadPack);file.addEventListener('change',loadPack);
   body.append(node('p','현재 지원 형식은 60문항 YQBank JSON입니다. 선택한 원본은 탐험 저장과 백업에 함께 보관합니다.'));
-  const next=node('div');next.className='actions';button(next,'다음 · 탐험 설정',async()=>{if(rules.value!=='4.1.1')throw new Error('탐험 규칙을 먼저 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 먼저 선택하세요.');await openPanel('new-settings',{sourcePack:chosen});});body.append(next);
+  const next=node('div');next.className='actions';button(next,'다음 · 탐험 설정',async()=>{if(rules.value!=='4.1.1')throw new Error('탐험 규칙을 먼저 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 먼저 선택하세요.');await openPanel('new-settings',{sourcePack:chosen});});button(next,'탐험 보관함 열기',()=>openPanel('archive'));body.append(next);
   const message=node('p');message.id='panel-message';message.setAttribute('role','status');body.append(message);return;
  }
- if(['new-settings','continue','journal','settings','records'].includes(kind)){
+ if(['new-settings','continue','journal','settings','records','archive'].includes(kind)){
   body.append(node('p','v4.1.1 개발용 탐험입니다. 기존 HOME 저장 기록과 분리되어 있습니다.'));
   await refresh();if(request!==panelRequest||!panel.open)return;slotPicker(body);
  }
  const controls=node('div');controls.className='actions';
- if(kind==='new-settings'){
+ if(kind==='archive-confirm'){
+  $('panel-title').textContent='탐험 보관 확인';
+  body.append(node('p',`슬롯 ${roman[setup.slot-1]} · ${setup.name}을 보관함으로 옮깁니다. 문항·남은 시간·문제팩·이력은 보존하고 수업과 타이머를 일시정지합니다. 보관 저장이 완료된 뒤에만 슬롯이 비워집니다.`));
+  button(controls,'이 탐험을 보관하고 슬롯 비우기',async()=>{
+   await refresh();const found=slots[setup.slot-1].state;if(found?.meta.expeditionId!==setup.expeditionId||found.meta.revision!==setup.revision)throw new Error('탐험이 변경됐습니다. 보관함에서 다시 확인하세요.');
+   const teacher=new TeacherEngineSession(database);try{await teacher.open(setup.slot);const s=teacher.getState();await database.archiveSlot(setup.slot,{archiveId:crypto.randomUUID(),expectedRevision:s.meta.revision,lease:teacher.lease});}finally{await teacher.close();}
+   await openPanel('archive');$('panel-message').textContent='보관을 완료했습니다. 빈 슬롯에서 새로운 탐험을 시작할 수 있습니다.';
+  });button(controls,'취소 · 보관함으로',()=>openPanel('archive'));
+ }else if(kind==='archive'){
+  $('panel-title').textContent='탐험 보관함';
+  body.append(node('p','보관하면 슬롯이 비워지고 기록은 이 브라우저에 남습니다. 복원은 기록의 원래 슬롯이 비어 있을 때 가능합니다. 다른 기기로 옮기거나 브라우저 데이터를 지우기 전에는 JSON도 백업하세요.'));
+  const archiveActions=node('div');archiveActions.className='actions';body.append(archiveActions);
+  button(archiveActions,'선택한 슬롯의 탐험 보관',async()=>{const slot=selected(),s=slots[slot-1].state;if(!s)throw new Error('선택한 슬롯은 이미 비어 있습니다.');await openPanel('archive-confirm',{slot,name:s.meta.expeditionName||`슬롯 ${roman[slot-1]} 탐험`,expeditionId:s.meta.expeditionId,revision:s.meta.revision});});
+  button(archiveActions,'새로운 탐험 시작하기',()=>openPanel('new'));
+  const entries=await database.listArchives();if(request!==panelRequest||!panel.open)return;
+  const list=node('div');body.append(node('h2','보관한 탐험'),list);if(!entries.length)list.append(node('p','아직 보관한 탐험이 없습니다.'));
+  for(const a of entries){const item=node('section');item.className='setup-advanced';const s=a.state;item.append(node('h3',s.meta.expeditionName||`슬롯 ${roman[a.slot-1]} 탐험`),node('p',`원래 슬롯 ${roman[a.slot-1]} · ${s.teams.length}모둠 · 별빛 ${s.rewards.starlight} · 열쇠 ${s.rewards.keys} · 보관 ${new Date(a.archivedAt).toLocaleString('ko-KR')}${a.restoredAt?' · 복원 완료':''}`));
+   if(!a.restoredAt)button(item,`슬롯 ${roman[a.slot-1]}로 복원`,async()=>{const writerId=crypto.randomUUID(),lease=await database.acquireWriter(a.slot,writerId);try{await database.restoreArchive(a.key,{lease});}finally{await database.releaseWriter(a.slot,lease);}await openPanel('archive');$('panel-message').textContent='탐험을 복원했습니다. 이어하기에서 열어 주세요. 자동 재개하지 않습니다.';});
+   button(item,'이 보관 기록 JSON 백업',async()=>{const backup=await makeBackup({state:s,events:a.events.map(x=>x.event).sort((x,y)=>x.seq-y.seq)},{exportedAt:Date.now()});download(JSON.stringify(backup,null,2),'application/json',`moonpath-archive-${a.key}.json`);$('panel-message').textContent='보관 기록 JSON 백업을 만들었습니다.';});list.append(item);
+  }
+ }else if(kind==='new-settings'){
   if(!setup?.sourcePack)throw new Error('규칙과 문제팩을 먼저 선택하세요.');
   $('panel-title').textContent='새로운 탐험 · 탐험 설정';
   body.append(node('p',`선택한 규칙: v4.1.1 기본 규칙 · 문제팩: ${setup.sourcePack.pack.title||setup.sourcePack.pack.id} · v${setup.sourcePack.pack.pack_version} · 60문항`));
   button(body,'규칙·문제팩 다시 선택',()=>openPanel('new'));
+  button(body,slots.every(x=>x.state)?'슬롯이 모두 찼습니다 · 보관함 열기':'탐험 보관함 열기',()=>openPanel('archive'));
   const nameLabel=node('label','탐험 이름 '),nameInput=node('input');nameInput.id='expedition-name';nameInput.maxLength=80;nameInput.value='새로운 탐험';nameLabel.append(nameInput);body.append(nameLabel);
   const advanced=node('details');advanced.className='setup-advanced';advanced.append(node('summary','고급 설정'));
   const timerLabel=node('label','문제 제한 시간 '),timerSelect=node('select');timerSelect.id='timer-seconds';
@@ -126,9 +147,11 @@ async function openPanel(kind,setup=null){
    game(slot);
   });body.append(node('p','새 탐험을 저장한 뒤 마법 책장에서 테마를 선택합니다. 갈림길에서 지역을 고르고 수업을 시작합니다.'));
  }else if(kind==='continue'){
+  button(controls,'탐험 보관함 열기',()=>openPanel('archive'));
   button(controls,'선택한 탐험 이어하기',async()=>{const slot=selected();if(!slots[slot-1].state)throw new Error('저장된 탐험이 없는 슬롯입니다.');game(slot);});
   body.append(node('p','저장된 문항과 남은 시간을 복원합니다. 수업과 타이머는 교사가 직접 재개합니다.'));
  }else if(kind==='settings'){
+  button(controls,'탐험 보관함 열기',()=>openPanel('archive'));
   button(controls,'선택 슬롯 JSON 백업',async()=>{
    const data=await database.readConsistentForBackup(selected()),backup=await makeBackup(data,{exportedAt:Date.now()});
    const url=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));const a=node('a');a.href=url;a.download=`moonpath-v411-slot-${selected()}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);$('panel-message').textContent='JSON 백업 파일을 만들었습니다.';

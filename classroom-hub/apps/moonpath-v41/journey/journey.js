@@ -1,4 +1,4 @@
-import {openEngineDatabase} from '../src/storage/indexeddb.js';
+import {openEngineDatabase} from '../src/storage/indexeddb.js?v=2-archive';
 import {TeacherEngineSession} from '../src/engine/session.js';
 import {themeUnlocked,regionOptions,hasLiveMission} from '../src/world/navigation.js';
 import {worldProgress} from '../src/world/regions.js';
