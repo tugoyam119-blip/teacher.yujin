@@ -7,7 +7,7 @@
   "visualContract": "data/phase3-visual-contract.json",
   "stageTracker": "data/phase3-sixteen-stage-tracker.json",
   "referenceAssetsAreNotGameAssets": true,
-  "status": "HOME_DESIGN_APPROVED_LOGO_BINARIES_VERIFIED_HOME_RUNTIME_NOT_IMPLEMENTED",
+  "status": "HOME_B_DEVELOPMENT_RUNTIME_VERIFIED_FINAL_RELEASE_PENDING",
   "minimumAcceptance": [
     "SHA256 verified for complete original",
     "GitHub byte-identical",
@@ -98,5 +98,16 @@
     "gitBinaryUpload": "VERIFIED_FROM_GIT_CHECKOUT_2026-10-20",
     "buttonInteractionQa": "NOT_RUN",
     "details": "Local QA artifacts created; no GitHub asset upload or service deployment."
+  },
+  "developmentRuntime": {
+    "checkedAt": "2026-10-21",
+    "implementationCommit": "1a47b9b72b5fd35653e8bb88d2a510167690426b",
+    "currentRecord": "docs/CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md",
+    "assemblyRegistry": "data/home-b-assembly-assets.json",
+    "iconAlphaRegistry": "assets/home/icons-alpha-v1/manifest.json",
+    "browserQA": "IN_APP_BROWSER_DEVELOPMENT_LINK_VERIFIED",
+    "finalReleaseApproved": false,
+    "historicalQaScope": "approvedDesignReferences.browserQA and homeLogoQa retain the original pre-runtime audit results; NOT_RUN there is historical, not current development runtime status",
+    "approvalArraysScope": "newAssets and approvedAssets retain the final-release approval gate; development candidates are tracked in the separate registries"
   }
 }

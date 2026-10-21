@@ -1,5 +1,7 @@
 # HOME B 기준서 대조와 후속 구현
 
+> 당시 작업 기록입니다. 이후 병합·개발 링크 검증 및 현재 미완료 범위는 [최신 통합 기록](CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md)과 [당시 배포 증거](evidence/20261021/README.md)를 확인하세요.
+
 기준: MASTER_v4.1.1_original.md 결정 12·13·18·20·26 및 HOME_B_LOGO_BUTTON_APPROVAL_STANDARD_20261019.md. 사용자 요청에 따라 기존 개발 링크에 반영하는 기능 작업이다. 이미지 재생성·PNG 변경·HOME 좌표 변경은 없다.
 
 | 기준 | 기존 상태 | 이번 구현 | 남은 범위 |
