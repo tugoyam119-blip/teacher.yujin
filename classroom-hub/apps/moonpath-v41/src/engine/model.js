@@ -65,6 +65,7 @@ export function checkState(s){
   if(s.eventLog.length)insist(s.meta.updatedAt===s.eventLog.at(-1).at,'EVENT_TIME_MISMATCH','최종 수정 시각과 이벤트 시각이 다릅니다.');
   insist(Array.isArray(s.sessions)&&Array.isArray(s.teams)&&s.teams.length===s.settings.teamCount,'INVALID_STATE','필수 상태 데이터가 잘못되었습니다.');
   insist(Array.isArray(s.world?.themes)&&s.world.themes.length===6&&Object.keys(s.world.regions||{}).length===30,'INVALID_WORLD','30지역 구조가 일치하지 않습니다.');
+  if(s.world.navigation){const n=s.world.navigation;insist((n.view==='BOOKSHELF'&&n.themeId===null)||(n.view==='FORK'&&s.world.themes.some(t=>t.id===n.themeId)),'INVALID_NAVIGATION','저장된 책장·갈림길 정보가 올바르지 않습니다.');}
   checkParticipationHistory(s);
   checkSideMissionHistory(s);
   // PHASE 2-2: a saved draw ledger cannot claim extra unseen questions or

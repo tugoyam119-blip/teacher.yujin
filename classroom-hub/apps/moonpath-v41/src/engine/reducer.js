@@ -4,6 +4,7 @@ import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.j
 import {ROSTER_COMMANDS,applyRosterCommand,assignRepresentative,validateSolverIdentity} from '../teams/roster.js';
 import {creditFirstCorrect,creditRecovery,creditFirstRegionKey,useMagic} from '../rewards/ledger.js';
 import {REGION_COMMANDS,applyRegionCommand,processedRegionalAttempts} from '../world/regions.js';
+import {applyWorldView} from '../world/navigation.js';
 import {INTERCEPTION_COMMANDS,RECOVERY_COMMANDS,processInterception,processRecovery,extension,activeInterception,activeRecovery} from '../recovery/flows.js';
 import {applyJudgementCorrection,CORRECTION_EVENT,reconcileEntitlementLedger} from '../corrections/reconcile.js';
 
@@ -45,6 +46,9 @@ export function reduceCommand(current,command){
       if(state.activeAttemptId){const a=last();insist(a.timer.phase==='RESOLVED','ATTEMPT_ACTIVE','문제 진행 중 일반 화면 이동을 할 수 없습니다.');}
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','가로채기/회수미션 진행 중 화면 이동은 제한됩니다.');
       state.screen=payload.screen;
+      break;
+    case 'WORLD_VIEW_OPENED':
+      applyWorldView(state,payload);
       break;
     case 'REGION_ENTERED':
     case 'REGION_QUOTA_SET':

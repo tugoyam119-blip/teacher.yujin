@@ -29,6 +29,9 @@ export async function bootOneRegionSmoke({pack,world}={}){
    notify(`저장/명령 실패 — ${err.code??err.name??'ERROR'}: ${err.message}`,'error');
  }};
  const state=()=>teacher?.state?teacher.getState():null;
+ const journeyMode=new URLSearchParams(location.search).get('journey')==='1';
+ const selectedRegion=()=>journeyMode?(state()?.world.currentRegionId??'T1-R1'):'T1-R1';
+ const regionInfo=id=>world.themes.flatMap(t=>t.regions.map(r=>({...r,themeName:t.name,themeId:t.id}))).find(r=>r.id===id);
  const active=()=>state()?.activeAttemptId?state().attempts[state().activeAttemptId]:null;
  const interception=()=>state()?.interception?.records.find(x=>x.id===state()?.interception?.activeId)??null;
  const recovery=()=>state()?.recovery?.pending.find(x=>x.id===state()?.recovery?.activeId)??null;
@@ -40,19 +43,20 @@ export async function bootOneRegionSmoke({pack,world}={}){
  const attr=(tag,cls)=>{const x=el(tag);x.className=cls;return x;};
  const draw=()=>{
    const s=state();
-   $('region-title').textContent=s?.world?.currentRegionId==='T1-R2'?'푸른 폭포길 · 회수 시험':'달빛 이끼길 · 통합 시험';
+   if(journeyMode)document.querySelector('h1').textContent=`《미지의 길》 ${regionInfo(selectedRegion()).name}`;
+   $('region-title').textContent=journeyMode?`${regionInfo(selectedRegion()).name} · 지역 시험`:s?.world?.currentRegionId==='T1-R2'?'푸른 폭포길 · 회수 시험':'달빛 이끼길 · 통합 시험';
    $('slot-active').textContent=s?`슬롯 ${s.meta.slot} / revision ${s.meta.revision}`:'아직 시작하지 않음';
    $('status-data').replaceChildren();
    if(s){
     $('status-data').append(makeLine('모둠 수',s.teams.length),makeLine('별빛',s.rewards.starlight),
       makeLine('열쇠',s.rewards.keys),makeLine('보상 정산',s.rewards.settlementRequired?`필요 ${s.rewards.settlementDue}`:'정상'),
       makeLine('회수 대기',s.recovery.pending.filter(x=>x.status!=='INVALIDATED').length));
-    const reg=s.world.regions['T1-R1'];
+    const rid=selectedRegion(),info=regionInfo(rid),reg=s.world.regions[rid];
     const completed=reg.status==='COMPLETED';
-    $('region-progress').textContent=`달빛 이끼길: ${reg.status} / 기본 문제 목표 ${reg.baseQuota}건`;
+    $('region-progress').textContent=`${info.name}: ${reg.status} / 기본 문제 목표 ${reg.baseQuota}건`;
     $('results').replaceChildren();
-    if(completed){const page=el('div');page.innerHTML=renderRegionResultMarkup(teacher.getRegionResult('T1-R1',{publicOnly:true}),{
-      regionName:'달빛 이끼길',themeName:'푸른 달빛의 숲'});$('results').append(page);}
+    if(completed){const page=el('div');page.innerHTML=renderRegionResultMarkup(teacher.getRegionResult(rid,{publicOnly:true}),{
+      regionName:info.name,themeName:info.themeName});$('results').append(page);}
     const lessons=s.sessions.filter(x=>x.id===s.activeSessionId);
     $('lesson-phase').textContent=lessons.length?lessons[0].phase:'종료 또는 미시작';
     // Read-only public projection is never populated from the teacher state directly.
@@ -60,10 +64,11 @@ export async function bootOneRegionSmoke({pack,world}={}){
     $('turn-status').textContent=`문항 ${s.questions.draws.length}개 / ${s.interception.records.length} 가로채기 / 회수 완료 ${s.recovery.resolved.length}`;
     enabled('region-enter',!!s&&!completed&&reg.status==='AVAILABLE');
     enabled('draw-question',reg.status==='IN_PROGRESS'&&(!active()||active().timer.phase==='RESOLVED')&&
-       !interception()&&!recovery() && s.world.currentRegionId==='T1-R1'&& s.sessions.some(x=>x.id===s.activeSessionId&&x.phase==='ACTIVE'));
+       !interception()&&!recovery() && s.world.currentRegionId===rid&& s.sessions.some(x=>x.id===s.activeSessionId&&x.phase==='ACTIVE'));
     enabled('complete-region',reg.status==='IN_PROGRESS'&&!interception()&&!recovery());
-    enabled('next-region',completed && s.world.regions['T1-R2'].status==='AVAILABLE'&&s.world.currentRegionId==='T1-R1');
-    enabled('recovery-call',s.world.currentRegionId==='T1-R2'&&listRecoveryCandidates(s,{inRegionId:'T1-R2'}).length>0&&!recovery());
+    enabled('next-region',journeyMode?completed:completed && s.world.regions['T1-R2'].status==='AVAILABLE'&&s.world.currentRegionId==='T1-R1');
+    const recoveryRegion=journeyMode?rid:'T1-R2';
+    enabled('recovery-call',s.world.currentRegionId===recoveryRegion&&listRecoveryCandidates(s,{inRegionId:recoveryRegion}).length>0&&!recovery());
     enabled('intercept-open',!!active()?.judgement?.decision&&active().judgement.decision==='INCORRECT'&&
        !interception()&&!recovery()&&!s.interception.records.some(x=>x.sourceAttemptId===active().id));
     enabled('session-resume',lessons.length>0&&lessons[0].phase==='PAUSED');
@@ -199,9 +204,9 @@ export async function bootOneRegionSmoke({pack,world}={}){
  }
  event('new-expedition',()=>initialize('CREATE'));
  event('continue-expedition',()=>initialize('CONTINUE'));
- event('region-enter',async()=>{await teacher.enterRegion('T1-R1');notify('지역 진입 완료');});
+ event('region-enter',async()=>{await teacher.enterRegion(selectedRegion());notify('지역 진입 완료');});
  event('draw-question',async()=>{
-  const result=await teacher.drawQuestion(qe,{regionId:'T1-R1',teamId:$('team-select').value});
+  const result=await teacher.drawQuestion(qe,{regionId:selectedRegion(),teamId:$('team-select').value});
   flow='MAIN';$('response-form').dataset.renderKey='';notify(`문항 ${result.questionId}가 저장되었습니다. 교사가 타이머를 시작해야 합니다.`);
  });
  event('timer-start',async()=>{await dispatchTimer('STARTED');notify('타이머 시작 저장 완료');});
@@ -217,13 +222,20 @@ export async function bootOneRegionSmoke({pack,world}={}){
   await teacher.openInterception({sourceAttemptId:a.id,targetTeamId:target.id});
   flow='INTERCEPTION';$('response-form').dataset.renderKey='';notify(`가로채기 대상: ${target.name}`);
  });
- event('complete-region',async()=>{await teacher.completeRegion('T1-R1');notify('지역 완료·열쇠 지급이 저장됐습니다.');});
- event('next-region',async()=>{await teacher.enterRegion('T1-R2');notify('다음 지역에 진입했습니다. 원래 지역 결과는 유지됩니다.');});
+ event('complete-region',async()=>{await teacher.completeRegion(selectedRegion());notify('지역 완료·열쇠 지급이 저장됐습니다.');});
+ const openRoutes=async()=>{
+  const s=state();if(!s)throw new Error('탐험을 먼저 열어 주세요.');
+  await teacher.dispatch('WORLD_VIEW_OPENED',{view:'FORK',themeId:regionInfo(selectedRegion()).themeId});
+  if(s.sessions.some(x=>x.id===s.activeSessionId&&x.phase==='ACTIVE'))await teacher.dispatch('SESSION_PAUSED');
+  const slot=s.meta.slot;await teacher.close();database.close();location.assign(`../journey/?slot=${slot}`);
+ };
+ event('next-region',async()=>{if(journeyMode){await openRoutes();return;}await teacher.enterRegion('T1-R2');notify('다음 지역에 진입했습니다. 원래 지역 결과는 유지됩니다.');});
  event('recovery-call',async()=>{
-  const cand=listRecoveryCandidates(teacher.getState(),{inRegionId:'T1-R2'})[0];
+  const rid=journeyMode?selectedRegion():'T1-R2';
+  const cand=listRecoveryCandidates(teacher.getState(),{inRegionId:rid})[0];
   if(!cand)throw new Error('자연 회수 후보가 없습니다.');
   await teacher.controlRecovery('RECOVERY_CALLED',{
-   recoveryId:cand.id,teamId:cand.originTeamId,regionId:'T1-R2',mode:'NATURAL',reason:'다음 지역에서 원래 오답 모둠 회수'
+   recoveryId:cand.id,teamId:cand.originTeamId,regionId:rid,mode:'NATURAL',reason:'다음 지역에서 원래 오답 모둠 회수'
   });
   flow='RECOVERY';$('response-form').dataset.renderKey='';notify('다음 지역 원모둠 회수 시작 대기');
  });
@@ -254,6 +266,7 @@ export async function bootOneRegionSmoke({pack,world}={}){
    try{await initialize('CONTINUE');}catch(err){notify(`HOME 탐험 열기 실패 — ${err.code??err.name}: ${err.message}`,'error');}
   }
   const back=el('button','HOME으로');back.id='return-home';back.type='button';$('toolbar').prepend(back);
+  if(journeyMode){const routes=el('button','책장·갈림길');routes.type='button';routes.id='open-routes';routes.addEventListener('click',withError(openRoutes));$('toolbar').prepend(routes);$('next-region').textContent='갈림길로 이동';}
   back.addEventListener('click',withError(async()=>{
    back.disabled=true;
    try{
