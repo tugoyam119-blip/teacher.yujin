@@ -72,6 +72,7 @@ export function checkState(s){
   // hide a first issuance. Legacy PHASE 1 timer-only attempts have no draw row.
   const q=s.questions;
   insist(q?.packId===s.meta.packId&&q?.packVersion===s.meta.packVersion,'PACK_MISMATCH','문항팩과 원정 정보가 다릅니다.');
+  if(q.sourcePack)insist(q.sourcePack.pack?.id===q.packId&&q.sourcePack.pack?.pack_version===q.packVersion&&q.sourcePack.questions?.length===60,'PACK_MISMATCH','저장된 원본 문제팩과 원정 정보가 다릅니다.');
   insist(Array.isArray(q.issuedIds)&&Array.isArray(q.recoveryOnlyIds)&&Array.isArray(q.reviewEligibleIds),
     'DRAW_HISTORY_INVALID','문항 이력 필수 배열이 없습니다.');
   const unique=a=>new Set(a).size===a.length&&a.every(id=>typeof id==='string'&&id.length>0);

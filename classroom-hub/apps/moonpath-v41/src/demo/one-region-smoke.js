@@ -18,7 +18,7 @@ const TEST_DB_NAME='moonpath-v411-phase29-smoke-db-v1';
 
 export function testDatabaseName(){return TEST_DB_NAME;}
 export async function bootOneRegionSmoke({pack,world}={}){
- const qe=createQuestionEngine(pack);
+ let qe=createQuestionEngine(pack);
  let teacher=null,flow='MAIN',database=null;
  let statusMessage='신규 시제품은 원본 게임이 아닌 별도 시험 데이터베이스를 사용합니다.';
  const storageKind=()=>globalThis.__MP_FAKE_BROWSER_DB__?'브라우저 메모리 모의 DB':'시험 전용 IndexedDB';
@@ -190,6 +190,7 @@ export async function bootOneRegionSmoke({pack,world}={}){
   }else{
    await teacher.open(slot);notify('저장된 시험 원정을 읽었습니다. 타이머/차시는 자동 재개되지 않습니다.');
   }
+  qe=createQuestionEngine(teacher.getState().questions.sourcePack??pack);
   flow='MAIN';$('response-form').dataset.renderKey='';draw();
  };
  // Isolate from both production game localStorage and development engine's normal DB.
@@ -254,6 +255,7 @@ export async function bootOneRegionSmoke({pack,world}={}){
   if(teacher?.state)await teacher.close();
   teacher=new TeacherEngineSession(database,{newId:uniqueId,heartbeatMs:10000});
   await teacher.restoreJSONToEmptySlot(slot,txt);
+  qe=createQuestionEngine(teacher.getState().questions.sourcePack??pack);
   notify('빈 슬롯으로 JSON을 복원했습니다. 자동 재개되지 않습니다.');
  });
  draw();

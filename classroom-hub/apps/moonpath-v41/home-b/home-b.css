@@ -41,6 +41,12 @@ select,input{font:inherit}
 select{padding:5px;background:#fffaed;color:#241b38;border-radius:5px}
 .details{font-size:12px;color:#d6c7e8}
 #panel-message{color:#ffe5a3;white-space:pre-wrap}
+dialog.setup-selection h2{font-size:17px;margin:10px 0}
+dialog.setup-selection ul{font-size:12px;line-height:1.5;margin:10px 0;padding-left:20px}
+dialog.setup-selection p{font-size:12px;line-height:1.5;margin:8px 0}
+dialog.setup-selection select{max-width:100%}
+dialog.setup-selection .actions{position:sticky;bottom:-20px;background:#191332;padding:8px 0;margin:8px 0 0}
+dialog.setup-selection #panel-message:empty{display:none}
 .setup-advanced{margin:12px 0;padding:10px;border:1px solid #a68ac466;border-radius:8px}
 .setup-advanced summary,dialog details summary{cursor:pointer;margin-bottom:10px}
 dialog input[type="text"],#expedition-name{max-width:350px;padding:6px;border-radius:5px}
