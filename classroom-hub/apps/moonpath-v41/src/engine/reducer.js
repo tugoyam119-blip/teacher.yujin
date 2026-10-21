@@ -1,3 +1,4 @@
+import {refreshHealth,requireHealth} from '../world/health.js';
 import {checkState,clone,insist,requireId,validTimestamp,timerRemainingMs,TIME_SAND_COST,TIME_SAND_EXTENSION_MS,canonicalJson} from './model.js';
 import {validateDrawCommand} from '../questions/draw.js';
 import {assessAnswer,validateTeacherJudgement} from '../questions/adjudication.js';
@@ -47,6 +48,14 @@ export function reduceCommand(current,command){
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','가로채기/회수미션 진행 중 화면 이동은 제한됩니다.');
       state.screen=payload.screen;
       break;
+    case 'HEALTH_RETURNED':{
+      insist(state.health?.returnRequired,'HEALTH_NOT_DEPLETED','소진된 체력만 책장에서 회복할 수 있습니다.');
+      insist(payload.teacherConfirmed===true,'TEACHER_REQUIRED','책장 복귀·회복에는 교사 확인이 필요합니다.');
+      insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','현재 문항을 먼저 확정하세요.');
+      insist(!sideBusy(),'SIDE_MISSION_ACTIVE','현재 가로채기·회수를 먼저 마쳐 주세요.');
+      const lesson=state.sessions.find(x=>x.id===state.activeSessionId);if(lesson?.phase==='ACTIVE'){finishActiveTime(lesson);lesson.phase='PAUSED';}
+      applyWorldView(state,{view:'BOOKSHELF'});break;
+    }
     case 'WORLD_VIEW_OPENED':
       applyWorldView(state,payload);
       break;
@@ -55,6 +64,7 @@ export function reduceCommand(current,command){
     case 'REGION_COMPLETED':
     case 'EXTRA_EXPLORATION_STARTED':
     case 'EXTRA_EXPLORATION_RETURNED':{
+      if(['REGION_ENTERED','REGION_COMPLETED','EXTRA_EXPLORATION_STARTED','EXTRA_EXPLORATION_RETURNED'].includes(type))requireHealth(state);
       applyRegionCommand(state,type,payload,{eventId,at});
       if(type==='REGION_COMPLETED')creditFirstRegionKey(state,{regionId:payload.regionId,eventId,at});
       break;
@@ -94,6 +104,7 @@ export function reduceCommand(current,command){
       finishActiveTime(s);s.phase='ENDED';s.endedAt=at;state.activeSessionId=null;break;
     }
     case 'ATTEMPT_PREPARED':{
+      requireHealth(state);
       const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
       insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 가로채기/회수미션을 먼저 종료해야 합니다.');
@@ -108,6 +119,7 @@ export function reduceCommand(current,command){
       state.activeAttemptId=payload.attemptId;break;
     }
     case 'QUESTION_DRAWN':{
+      requireHealth(state);
       // PHASE 2-2. A selected question and its PREPARED attempt are committed in
       // the SAME event/IndexedDB transaction. No grading or reward takes place.
       const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
@@ -264,6 +276,7 @@ export function reduceCommand(current,command){
     case 'RECOVERY_ANSWER_SUBMITTED':
     case 'RECOVERY_JUDGED':
     case 'RECOVERY_FORFEITED':{
+      if(type==='RECOVERY_CALLED')requireHealth(state);
       processRecovery(state,type,payload,{eventId,at});
       if(type==='RECOVERY_JUDGED'){
         const row=state.recovery.resolved.find(x=>x.id===payload.recoveryId&&x.resolutionEventId===eventId);
@@ -323,7 +336,8 @@ export function reduceCommand(current,command){
   const event={seq,eventId,type,at,payload};
   state.meta.revision=seq;state.meta.updatedAt=at;
   state.eventLog.push({seq,eventId,type,at,payload:clone(payload)});
-  if(type===CORRECTION_EVENT||REGION_COMMANDS.includes(type)||INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='MAGIC_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
+  refreshHealth(state);
+  if(type==='HEALTH_RETURNED'||type===CORRECTION_EVENT||REGION_COMMANDS.includes(type)||INTERCEPTION_COMMANDS.includes(type)||RECOVERY_COMMANDS.includes(type)||ROSTER_COMMANDS.includes(type)||type==='TIME_SAND_USED'||type==='MAGIC_USED'||type==='RECOVER_INTERRUPTED'||type==='SESSION_ENDED'||type==='CHECKPOINT_REPAIRED'||type==='ANSWER_JUDGED'||type==='ATTEMPT_RESOLVED'||(type==='ANSWER_SUBMITTED'&&payload.lateReason)) state.audit.push({seq,eventId,type,at});
   checkState(state);
   return {duplicate:false,state,event};
 }

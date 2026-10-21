@@ -98,6 +98,7 @@ async function openPanel(kind,setup=null){
    const info=validateQuestionPack(raw);if(token!==packRequest||request!==panelRequest)return;chosen=raw;status.textContent=`${raw.pack.title||info.packId} · v${info.packVersion} · ${info.count}문항 · 검증 완료`;
   }catch(e){if(token===packRequest){chosen=null;status.textContent=`문제팩을 사용할 수 없습니다: ${e.message}`;}}}
   packs.addEventListener('change',loadPack);file.addEventListener('change',loadPack);
+  packSection.append(node('p','공동 체력 ♥8 · 기본 문제 오답 −1 / 유효 회수 +1. 소진되면 기록을 보존하고 책장에서 회복합니다.'));
   packSection.append(node('p','현재 지원 형식은 60문항 YQBank JSON입니다. 선택한 원본은 탐험 저장과 백업에 함께 보관합니다.'));
   const next=node('div');next.className='actions';button(next,'다음 · 탐험 설정',async()=>{if(rules.value!=='4.1.1')throw new Error('탐험 규칙을 먼저 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 먼저 선택하세요.');await openPanel('new-settings',{sourcePack:chosen});});button(next,'탐험 보관함 열기',()=>openPanel('archive'));body.append(next);
   const message=node('p');message.id='panel-message';message.setAttribute('role','status');body.append(message);return;
@@ -143,7 +144,7 @@ async function openPanel(kind,setup=null){
    const expeditionName=nameInput.value.trim();if(!expeditionName||expeditionName.length>80)throw new Error('탐험 이름을 1~80자로 입력하세요.');
    const response=await fetch('../config/world.json');if(!response.ok)throw new Error('세계 설정을 읽지 못했습니다.');const world=await response.json();
    const teacher=new TeacherEngineSession(database);
-   try{await teacher.create({slot,world,teamCount:Number(select.value),timerSeconds:Number(timerSelect.value),expeditionName,sourcePack:setup.sourcePack});await teacher.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});}finally{await teacher.close();}
+   try{await teacher.create({slot,world,teamCount:Number(select.value),timerSeconds:Number(timerSelect.value),expeditionName,healthEnabled:true,sourcePack:setup.sourcePack});await teacher.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});}finally{await teacher.close();}
    game(slot);
   });body.append(node('p','새 탐험을 저장한 뒤 마법 책장에서 테마를 선택합니다. 갈림길에서 지역을 고르고 수업을 시작합니다.'));
  }else if(kind==='continue'){

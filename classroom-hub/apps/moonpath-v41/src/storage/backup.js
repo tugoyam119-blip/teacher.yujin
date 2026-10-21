@@ -1,4 +1,4 @@
-import {checkState,clone,EngineError,insist,ENGINE_VERSION,SCHEMA_VERSION,canonicalJson} from '../engine/model.js';
+import {checkState,clone,EngineError,insist,ENGINE_VERSION,SCHEMA_VERSION,HEALTH_SCHEMA_VERSION,canonicalJson} from '../engine/model.js';
 export const BACKUP_FORMAT='moonpath-v411-backup-v1';
 
 export async function sha256(utf8){
@@ -13,7 +13,7 @@ export async function makeBackup(stateAndEvents,{exportedAt=Date.now()}={}){
     insist(e.seq===original.seq&&e.eventId===original.eventId&&e.type===original.type&&e.at===original.at,'BACKUP_EVENT_MISMATCH','이벤트 로그 내용이 상태와 다릅니다.');
     if(original.payload!==undefined)insist(canonicalJson(e.payload??{})===canonicalJson(original.payload),'BACKUP_EVENT_MISMATCH','이벤트 상세 내용이 상태와 다릅니다.');
   });
-  const payload={format:BACKUP_FORMAT,schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,slot:state.meta.slot,expeditionId:state.meta.expeditionId,exportedAt,state:clone(state),events:clone(events)};
+  const payload={format:BACKUP_FORMAT,schemaVersion:state.meta.schemaVersion,engineVersion:ENGINE_VERSION,slot:state.meta.slot,expeditionId:state.meta.expeditionId,exportedAt,state:clone(state),events:clone(events)};
   return {...payload,integrity:{algorithm:'SHA-256',hex:await sha256(JSON.stringify(payload))}};
 }
 export async function verifyBackup(input){
@@ -23,8 +23,9 @@ export async function verifyBackup(input){
   const actual=await sha256(JSON.stringify(payload));
   insist(actual===integrity.hex,'BACKUP_CHECKSUM_INVALID','백업 파일이 변조 또는 손상되었습니다.');
   insist(payload.format===BACKUP_FORMAT,'BACKUP_FORMAT','다른 종류의 백업 파일입니다.');
-  insist(payload.schemaVersion===SCHEMA_VERSION&&payload.engineVersion===ENGINE_VERSION,'BACKUP_VERSION','엔진 및 백업 스키마 버전이 호환되지 않습니다.');
+  insist([SCHEMA_VERSION,HEALTH_SCHEMA_VERSION].includes(payload.schemaVersion)&&payload.engineVersion===ENGINE_VERSION,'BACKUP_VERSION','엔진 및 백업 스키마 버전이 호환되지 않습니다.');
   checkState(payload.state);
+  insist(payload.schemaVersion===payload.state.meta.schemaVersion,'BACKUP_VERSION','백업과 상태의 스키마가 다릅니다.');
   insist(payload.slot===payload.state.meta.slot&&payload.expeditionId===payload.state.meta.expeditionId,'BACKUP_ID_MISMATCH','원정 ID/슬롯이 일치하지 않습니다.');
   insist(Array.isArray(payload.events)&&payload.events.length===payload.state.meta.revision,'EVENT_COUNT','이벤트 로그의 개수가 다릅니다.');
   payload.events.forEach((e,i)=>{

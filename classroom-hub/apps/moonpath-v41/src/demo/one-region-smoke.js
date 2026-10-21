@@ -48,6 +48,8 @@ export async function bootOneRegionSmoke({pack,world}={}){
    $('slot-active').textContent=s?`슬롯 ${s.meta.slot} / revision ${s.meta.revision}`:'아직 시작하지 않음';
    $('status-data').replaceChildren();
    if(s){
+    if(s.health)$('status-data').append(makeLine('공동 체력',`♥ ${s.health.current}/${s.health.max}${s.health.returnRequired?' · 책장 복귀 필요':''}`));
+    if($('health-return')){$('health-return').hidden=!s.health?.returnRequired;enabled('health-return',!!s.health?.returnRequired&&!interception()&&!recovery()&&(!active()||active().timer.phase==='RESOLVED'));}
     $('status-data').append(makeLine('모둠 수',s.teams.length),makeLine('별빛',s.rewards.starlight),
       makeLine('열쇠',s.rewards.keys),makeLine('보상 정산',s.rewards.settlementRequired?`필요 ${s.rewards.settlementDue}`:'정상'),
       makeLine('회수 대기',s.recovery.pending.filter(x=>x.status!=='INVALIDATED').length));
@@ -63,12 +65,12 @@ export async function bootOneRegionSmoke({pack,world}={}){
     $('public-json').textContent=JSON.stringify(teacher.getStudentProjection(),null,2);
     $('turn-status').textContent=`문항 ${s.questions.draws.length}개 / ${s.interception.records.length} 가로채기 / 회수 완료 ${s.recovery.resolved.length}`;
     enabled('region-enter',!!s&&!completed&&reg.status==='AVAILABLE');
-    enabled('draw-question',reg.status==='IN_PROGRESS'&&(!active()||active().timer.phase==='RESOLVED')&&
+    enabled('draw-question',!s.health?.returnRequired&&reg.status==='IN_PROGRESS'&&(!active()||active().timer.phase==='RESOLVED')&&
        !interception()&&!recovery() && s.world.currentRegionId===rid&& s.sessions.some(x=>x.id===s.activeSessionId&&x.phase==='ACTIVE'));
-    enabled('complete-region',reg.status==='IN_PROGRESS'&&!interception()&&!recovery());
+    enabled('complete-region',!s.health?.returnRequired&&reg.status==='IN_PROGRESS'&&!interception()&&!recovery());
     enabled('next-region',journeyMode?completed:completed && s.world.regions['T1-R2'].status==='AVAILABLE'&&s.world.currentRegionId==='T1-R1');
     const recoveryRegion=journeyMode?rid:'T1-R2';
-    enabled('recovery-call',s.world.currentRegionId===recoveryRegion&&listRecoveryCandidates(s,{inRegionId:recoveryRegion}).length>0&&!recovery());
+    enabled('recovery-call',!s.health?.returnRequired&&s.world.currentRegionId===recoveryRegion&&listRecoveryCandidates(s,{inRegionId:recoveryRegion}).length>0&&!recovery());
     enabled('intercept-open',!!active()?.judgement?.decision&&active().judgement.decision==='INCORRECT'&&
        !interception()&&!recovery()&&!s.interception.records.some(x=>x.sourceAttemptId===active().id));
     enabled('session-resume',lessons.length>0&&lessons[0].phase==='PAUSED');
@@ -267,6 +269,7 @@ export async function bootOneRegionSmoke({pack,world}={}){
    $('slot-picker').value=slotText;
    try{await initialize('CONTINUE');}catch(err){notify(`HOME 탐험 열기 실패 — ${err.code??err.name}: ${err.message}`,'error');}
   }
+  const healthReturn=el('button','체력 소진 · 책장 복귀·회복 확인');healthReturn.id='health-return';healthReturn.type='button';healthReturn.hidden=true;healthReturn.addEventListener('click',withError(async()=>{await teacher.dispatch('HEALTH_RETURNED',{teacherConfirmed:true});const slot=state().meta.slot;await teacher.close();database.close();location.assign(`../journey/?slot=${slot}`);}));$('toolbar').prepend(healthReturn);
   const back=el('button','HOME으로');back.id='return-home';back.type='button';$('toolbar').prepend(back);
   if(journeyMode){const routes=el('button','책장·갈림길');routes.type='button';routes.id='open-routes';routes.addEventListener('click',withError(openRoutes));$('toolbar').prepend(routes);$('next-region').textContent='갈림길로 이동';}
   back.addEventListener('click',withError(async()=>{

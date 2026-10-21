@@ -1,9 +1,11 @@
+import {checkHealth} from '../world/health.js';
 /** The rules below are v4.1.1 design decisions; this file contains only PHASE 1 groundwork. */
 import {checkRewardHistory} from '../rewards/ledger.js';
 import {checkWorldHistory,regionResult,worldProgress} from '../world/regions.js';
 import {checkCorrectionHistory,effectiveOriginDecision,originIncorrectAtEvent} from '../corrections/reconcile.js';
 export const ENGINE_VERSION = '4.1.1';
 export const SCHEMA_VERSION = 1;
+export const HEALTH_SCHEMA_VERSION = 2;
 export const DB_NAME = 'moonpath-v411-engine-db'; // Deliberately never touch legacy localStorage keys.
 export const MIN_SLOT = 1;
 export const MAX_SLOT = 3;
@@ -30,16 +32,18 @@ export function canonicalJson(value){
 export function checkSlot(slot){insist(Number.isInteger(slot)&&slot>=MIN_SLOT&&slot<=MAX_SLOT,'SLOT_INVALID','슬롯은 I~III(1~3) 중 하나여야 합니다.');return slot;}
 export function requireId(str,label){insist(typeof str==='string'&&str.length>0&&str.length<=128,'INVALID_ID',`${label} ID가 올바르지 않습니다.`);return str;}
 export function validTimestamp(at){insist(Number.isSafeInteger(at)&&at>=0,'INVALID_TIME','이벤트 시각이 올바르지 않습니다.');return at;}
-export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeconds=60,expeditionName='',packId='KR-HS-IS2-U01',packVersion='1.0.0',world}){
+export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeconds=60,expeditionName='',healthEnabled=false,packId='KR-HS-IS2-U01',packVersion='1.0.0',world}){
   checkSlot(slot);requireId(expeditionId,'원정');validTimestamp(createdAt);
+  insist(typeof healthEnabled==='boolean','HEALTH_INVALID','체력 적용 여부는 참/거짓이어야 합니다.');
   insist(Number.isInteger(teamCount)&&teamCount>=2&&teamCount<=8,'INVALID_TEAM_COUNT','모둠은 2~8개여야 합니다.');
   insist(TIMER_CHOICES_SEC.includes(timerSeconds),'INVALID_TIMER','타이머 값은 끔/45/60/90/120초 중 하나여야 합니다.');
   insist(typeof expeditionName==='string'&&expeditionName.trim().length<=80,'INVALID_EXPEDITION_NAME','탐험 이름은 80자 이내여야 합니다.');
   insist(world?.themes?.length===6&&world.themes.every(t=>t.regions?.length===5),'INVALID_WORLD','공식 6테마 30지역 기준이 필요합니다.');
   return {
-    meta:{schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,expeditionId,expeditionName:expeditionName.trim(),slot,revision:0,createdAt,updatedAt:createdAt,packId,packVersion},
+    meta:{schemaVersion:healthEnabled?HEALTH_SCHEMA_VERSION:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,expeditionId,expeditionName:expeditionName.trim(),slot,revision:0,createdAt,updatedAt:createdAt,packId,packVersion},
     screen:'HOME',
-    settings:{teamCount,timerSeconds,interception:true,lessonMinutes:45},
+    settings:{teamCount,timerSeconds,interception:true,lessonMinutes:45,...(healthEnabled?{healthEnabled:true}:{})},
+    ...(healthEnabled?{health:{version:1,max:8,current:8,returnRequired:false}}:{}),
     world:{currentRegionId:null,mainRouteChoice:{},additionalExplorationReturn:null,regionEntryOrder:[],visitHistory:[],results:[],quotaHistory:[],progressionMode:null,regions:Object.fromEntries(world.themes.flatMap(t=>t.regions).map(r=>[r.id,{status:'LOCKED',completedAt:null}])),themes:world.themes.map(t=>({id:t.id,name:t.name,regionIds:t.regions.map(r=>r.id)}))},
     sessions:[],
     activeSessionId:null,
@@ -55,7 +59,7 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
   };
 }
 export function checkState(s){
-  insist(s?.meta?.schemaVersion===SCHEMA_VERSION,'SCHEMA_MISMATCH','저장 파일 스키마가 호환되지 않습니다.');
+  insist(s?.meta?.schemaVersion===(s?.settings?.healthEnabled===true?HEALTH_SCHEMA_VERSION:SCHEMA_VERSION),'SCHEMA_MISMATCH','저장 파일 스키마가 호환되지 않습니다.');
   insist(s.meta.engineVersion===ENGINE_VERSION,'ENGINE_MISMATCH','엔진 버전이 다릅니다.');
   checkSlot(s.meta.slot);requireId(s.meta.expeditionId,'원정');
   insist(Number.isSafeInteger(s.meta.revision)&&s.meta.revision>=0,'INVALID_REVISION','revision이 올바르지 않습니다.');
@@ -152,6 +156,7 @@ export function checkState(s){
     const a=s.attempts[s.activeAttemptId];insist(a&&TIMER_PHASES.includes(a.timer.phase),'INVALID_ATTEMPT','활성 문제와 타이머 상태가 맞지 않습니다.');
     insist(a.timer.remainingMs>=0&&Number.isFinite(a.timer.remainingMs),'INVALID_TIMER','음수 또는 유효하지 않은 잔여 시간입니다.');
   }
+  checkHealth(s);
   checkRewardHistory(s);
   checkCorrectionHistory(s);
   checkWorldHistory(s);
@@ -416,7 +421,7 @@ export function publicProjection(s,at){
     version:ENGINE_VERSION,revision:s.meta.revision,slot:s.meta.slot,expeditionId:s.meta.expeditionId,
     screen:s.screen,regionId:s.world.currentRegionId,
     teamNames:s.teams.map(({id,name})=>({id,name})),
-    resources:{keys:s.rewards.keys,starlight:s.rewards.starlight},
+    resources:{keys:s.rewards.keys,starlight:s.rewards.starlight,...(s.health?{health:s.health.current,healthMax:s.health.max,healthReturnRequired:s.health.returnRequired}:{})},
     attempt:attempt?{id:attempt.id,phase:attempt.timer.phase,remainingMs:timerRemainingMs(attempt,at)}:null,
     lesson:s.activeSessionId?{active:true}:null,
     // Counts-only projection; never include original answers, roster or audit.
