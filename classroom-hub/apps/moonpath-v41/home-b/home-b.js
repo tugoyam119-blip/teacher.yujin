@@ -54,7 +54,7 @@ function slotPicker(body){
  list.append(label);});field.append(list);body.append(field);
 }
 function button(parent,text,fn){const b=node('button',text);b.type='button';b.addEventListener('click',async()=>{if(busy)return;busy=true;const controls=[...$('panel').querySelectorAll('button,input,select')].map(e=>[e,e.disabled]);controls.forEach(([e])=>{e.disabled=true;});try{await fn();}catch(e){report(e);}finally{busy=false;controls.forEach(([e,disabled])=>{if(e.isConnected)e.disabled=disabled;});}});parent.append(b);return b;}
-function game(slot){const target=new URL('../dist/phase2-9-one-region-smoke.html',location.href);target.searchParams.set('home','b');target.searchParams.set('slot',slot);location.assign(target.href);}
+function game(slot){const target=new URL('../journey/',location.href);target.searchParams.set('slot',slot);location.assign(target.href);}
 function download(text,type,filename){const url=URL.createObjectURL(new Blob([text],{type}));const a=node('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
 function table(parent,title,headers,rows){
  parent.append(node('h2',title));if(!rows.length){parent.append(node('p','아직 기록이 없습니다.'));return;}
@@ -94,9 +94,9 @@ async function openPanel(kind){
    const expeditionName=nameInput.value.trim();if(!expeditionName||expeditionName.length>80)throw new Error('탐험 이름을 1~80자로 입력하세요.');
    const response=await fetch('../config/world.json');if(!response.ok)throw new Error('세계 설정을 읽지 못했습니다.');const world=await response.json();
    const teacher=new TeacherEngineSession(database);
-   try{await teacher.create({slot,world,teamCount:Number(select.value),timerSeconds:Number(timerSelect.value),expeditionName});await teacher.dispatch('SESSION_STARTED',{sessionId:crypto.randomUUID()});await teacher.enterRegion('T1-R1');}finally{await teacher.close();}
+   try{await teacher.create({slot,world,teamCount:Number(select.value),timerSeconds:Number(timerSelect.value),expeditionName});await teacher.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});}finally{await teacher.close();}
    game(slot);
-  });body.append(node('p','확인하면 새 탐험을 저장한 뒤, 현재 구현된 지역 시험 화면으로 이동합니다.'));
+  });body.append(node('p','새 탐험을 저장한 뒤 마법 책장에서 테마를 선택합니다. 갈림길에서 지역을 고르고 수업을 시작합니다.'));
  }else if(kind==='continue'){
   button(controls,'선택한 탐험 이어하기',async()=>{const slot=selected();if(!slots[slot-1].state)throw new Error('저장된 탐험이 없는 슬롯입니다.');game(slot);});
   body.append(node('p','저장된 문항과 남은 시간을 복원합니다. 수업과 타이머는 교사가 직접 재개합니다.'));

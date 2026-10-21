@@ -1,9 +1,9 @@
 {
   "builtAt": "2026-10-16",
   "role": "PHASE2-9 TEACHER-ONLY TEST BUILD",
-  "buildSha256": "9b163036795d932e4809b930b07cefc7e307a4eb8ffcb196415c52f73e11106e",
-  "htmlBytes": 340116,
-  "moduleCount": 16,
+  "buildSha256": "771beda5c25fbcac1bc5c85de5c1ce001fb5b72c5ace5769fb723113925ac03b",
+  "htmlBytes": 344158,
+  "moduleCount": 17,
   "questionCount": 60,
   "testOnly": true,
   "actualBrowserIdbStatus": "NOT_TESTED",
