@@ -5,7 +5,7 @@ import {TeacherEngineSession} from '../src/engine/session.js';
 import {IndexedDbExpeditionStore} from '../src/storage/indexeddb.js';
 import {FakeDatabase} from './support-fake-idb.mjs';
 import {createQuestionEngine} from '../src/questions/engine.js';
-import {regionOptions,themeUnlocked} from '../src/world/navigation.js';
+import {regionOptions,themeUnlocked,themeRouteGuide,extraResumeTarget} from '../src/world/navigation.js';
 import {worldProgress} from '../src/world/regions.js';
 const world=JSON.parse(readFileSync(new URL('../config/world.json',import.meta.url))),pack=JSON.parse(readFileSync(new URL('../data/YQBank_60_v1.0.0_source.json',import.meta.url)));
 async function setup(){let at=1000,id=0;const clock=()=>++at,store=new IndexedDbExpeditionStore(new FakeDatabase(),{clock});const t=new TeacherEngineSession(store,{clock,newId:()=>`progress-${++id}`,heartbeatMs:0});await t.create({slot:1,world,teamCount:2});await t.dispatch('SESSION_STARTED',{sessionId:'lesson'});return t;}
@@ -23,4 +23,19 @@ test('main completion, full exploration and pending recovery remain independent 
 test('additional exploration blocks other routes and restores the saved original region after completion and JSON reload',async()=>{
  const t=await setup();await main(t);await finish(t,'T2-R1');await t.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});await t.dispatch('EXTRA_EXPLORATION_STARTED',{regionId:'T1-R3',teacherConfirmed:true});assert.equal(regionOptions(t.getState(),'T2')[1].allowed,false);assert.match(regionOptions(t.getState(),'T2')[1].reason,/복귀/);await t.enterRegion('T1-R3',{mode:'EXTRA'});
  for(let i=0;i<2;i++){await t.drawQuestion(qe,{regionId:'T1-R3',teamId:`TEAM_0${i+1}`});await t.dispatch('TIMER_STARTED');await submit(t);await t.judgeAnswer({attemptId:t.getState().activeAttemptId,decision:'CORRECT',teacherConfirmed:true,teacherReason:'기능 시험 확인',missingResponseConfirmed:true});}await t.completeRegion('T1-R3');const json=await t.exportJSON();await t.close();let n=10000;const store=new IndexedDbExpeditionStore(new FakeDatabase(),{clock:()=>++n});const restored=new TeacherEngineSession(store,{clock:()=>++n,newId:()=>`restored-${++n}`,heartbeatMs:0});await restored.restoreJSONToEmptySlot(1,json);assert.equal(restored.getState().world.additionalExplorationReturn.fromRegionId,'T2-R1');await restored.dispatch('SESSION_RESUMED');await restored.dispatch('EXTRA_EXPLORATION_RETURNED',{teacherConfirmed:true});await restored.dispatch('SESSION_PAUSED');assert.equal(restored.getState().world.currentRegionId,'T2-R1');assert.equal(restored.getState().world.mainRouteChoice.T1,'LEFT');assert.equal(restored.getState().world.additionalExplorationReturn,null);assert.equal(worldProgress(restored.getState()).themes[0].fullExploration,true);assert.equal(regionOptions(restored.getState(),'T2')[1].allowed,true);await restored.close();
+});
+
+
+test('theme guide inspects locked and selected routes without starting lessons or mutating state',async()=>{
+ const t=await setup();const before=t.getState();const locked=themeRouteGuide(before,'T2');assert.equal(locked.unlocked,false);assert.equal(locked.mainRoute,null);assert.equal(locked.regions.length,5);assert.deepEqual(t.getState(),before);
+ await main(t);const done=t.getState(),guide=themeRouteGuide(done,'T1');assert.deepEqual(guide.mainRoute,['T1-R1','T1-R2','T1-R4','T1-R5']);assert.deepEqual(guide.extraRegionIds,['T1-R3']);assert.deepEqual(t.getState(),done);await t.close();
+});
+
+test('interrupted extra entry resumes its target after JSON restore instead of reopening the origin',async()=>{
+ const t=await setup();await main(t);await finish(t,'T2-R1');await t.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});await t.dispatch('EXTRA_EXPLORATION_STARTED',{regionId:'T1-R3',teacherConfirmed:true});
+ // Simulate exit/storage interruption after the committed start, before REGION_ENTERED.
+ const json=await t.exportJSON(),original=t.getState();assert.deepEqual(extraResumeTarget(original),{regionId:'T1-R3',action:'ENTER'});await t.close();
+ let n=50000;const restored=new TeacherEngineSession(new IndexedDbExpeditionStore(new FakeDatabase(),{clock:()=>++n}),{clock:()=>++n,newId:()=>`resume-${++n}`,heartbeatMs:0});await restored.restoreJSONToEmptySlot(1,json);
+ const snapshot=restored.getState(),target=extraResumeTarget(snapshot);assert.equal(snapshot.world.currentRegionId,'T2-R1');assert.deepEqual(target,{regionId:'T1-R3',action:'ENTER'});assert.equal(snapshot.sessions[0].phase,'PAUSED');assert.deepEqual(restored.getState(),snapshot);
+ await restored.dispatch('SESSION_RESUMED');await restored.enterRegion(target.regionId,{mode:'EXTRA'});const entered=restored.getState();assert.equal(entered.world.currentRegionId,'T1-R3');assert.equal(entered.world.additionalExplorationReturn.fromRegionId,'T2-R1');assert.deepEqual(entered.questions,snapshot.questions);assert.deepEqual(entered.rewards,snapshot.rewards);assert.deepEqual(entered.world.mainRouteChoice,snapshot.world.mainRouteChoice);assert.deepEqual(extraResumeTarget(entered),{regionId:'T1-R3',action:'CONTINUE'});await restored.close();
 });

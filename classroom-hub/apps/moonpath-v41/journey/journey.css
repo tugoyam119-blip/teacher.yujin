@@ -11,3 +11,5 @@ button{font:inherit;color:#fff5dd;background:#282044;border:1px solid #bd9f68;bo
 .progress-line,.route-guide{font-size:12px;line-height:18px;margin:0 0 5px}.route-guide{color:#e1c783}details{font-size:12px;margin-top:5px}details p{margin:5px 0}summary{cursor:pointer}
 .extra-banner{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px;margin-bottom:8px;background:#392953;border:1px solid #c3a164;border-radius:7px;font-size:12px}.extra-banner button{font-size:12px;padding:6px}
 .notice h2{font-size:20px;margin:0 0 10px}.notice p{font-size:13px;line-height:1.7;margin:8px 0}
+
+.book-cell{position:relative}.book-cell>.book{width:100%;padding-right:72px}.theme-info-button{position:absolute;right:12px;top:32px;font-size:10px;padding:4px 6px;background:#19132de8}.route-link{grid-column:1/-1;text-align:center;font-size:10px;line-height:10px;color:#e1c783}.routes{row-gap:2px}.theme-info ol{padding-left:24px;font-size:12px;line-height:1.7}.theme-info li{margin:4px 0}
