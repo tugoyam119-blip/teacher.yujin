@@ -107,3 +107,6 @@ F5만 성공했다고 게임의 V01~V22 상태를 일괄 승격하지 않는다.
 PR #55 당시 health ready는 확인했지만 큐의 원본 허용 대상이 `.oaiusercontent.com`으로 제한되어 GitHub raw 입력은 `INVALID_JOB`이었다. 성공한 PNG 전송 작업은 없다. F5_QUEUE_JOB을 비우고 정리 배포를 확인했으며 허용 목록을 확대하지 않았다. 실제 적용은 Git 바이너리 업로드 후 원격·서비스의 전체 SHA-256 일치로 검증했다. 건강 상태·접수·전송 성공·게임 표시·사용자 승인은 각각 별개다.
 
 이 제한을 해결하지 않은 상태에서 PNG→Railway→GitHub 경로를 사용 가능하다고 가정하지 않는다. 본문은 공식 절차이고 이 절은 당시 관측한 실행 상태다. [최신 구현 기록](CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md)과 [실행 증거](evidence/20261021/HOME-B-icons-alpha-deployment-20261021.md)를 참조한다.
+
+## 새 생성 원본의 실제 전송 시험
+2026-10-21 내장 ImageGen 생성 PNG의 로컬 확보·PNG 검사·Git 업로드·GitHub 전체 재다운로드 일치까지 실제 확인했다. 공유 개발 도메인의 배포·브라우저 확인은 PR #58 승인 대기이며 아직 전체 경로 성공이 아니다. [실행 기록](IMAGEGEN_PIPELINE_PROBE_20261021.md)을 확인한다. 이 Git 경로 결과를 F5 큐 성공이나 생성 완료 상시 자동화로 확대하지 않는다.
