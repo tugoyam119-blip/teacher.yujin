@@ -41,4 +41,11 @@ select,input{font:inherit}
 select{padding:5px;background:#fffaed;color:#241b38;border-radius:5px}
 .details{font-size:12px;color:#d6c7e8}
 #panel-message{color:#ffe5a3;white-space:pre-wrap}
+.setup-advanced{margin:12px 0;padding:10px;border:1px solid #a68ac466;border-radius:8px}
+.setup-advanced summary,dialog details summary{cursor:pointer;margin-bottom:10px}
+dialog input[type="text"],#expedition-name{max-width:350px;padding:6px;border-radius:5px}
+#journal-report{font-size:12px}#journal-report h2{font-size:16px;margin:15px 0 8px}
+.journal-table{overflow-x:auto}#journal-report table{border-collapse:collapse;width:100%;font-size:11px}
+#journal-report td,#journal-report th{border:1px solid #a68ac466;padding:6px;text-align:left;white-space:nowrap}
+#journal-report th{background:#34275b}#journal-report p{color:#e6d9f7}
 @media(prefers-reduced-motion:reduce){.menu-button:active{translate:none}}
