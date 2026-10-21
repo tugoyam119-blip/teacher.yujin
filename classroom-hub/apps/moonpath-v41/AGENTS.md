@@ -1,6 +1,7 @@
 # Moonpath v4.1.1 작업 지침
 이 경로의 게임 개발·자료 처리 작업을 시작할 때 다음 문서를 먼저 읽는다.
 - docs/MASTER_v4.1.1_original.md
+- docs/CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md
 - docs/F5_ASSET_PROCESSING_RULES_20261020.md
 - 최신 디자인 승인 문서와 data/asset-manifest.json
 
@@ -16,3 +17,6 @@ F5 허용 쓰기 범위는 test/ 브랜치, tools/png-transport-lab/ 아래 PNG�
 
 ## 2026-10-20 개발 링크 반영 승인
 사용자는 새 작업과 이번 수정 사항을 유진T 클래스룸 미지의길 개발용 링크에 반영하고 해당 링크에서 확인하도록 명시적으로 요청했다. 개발 미리보기 연결과 배포는 이 승인 범위에서 진행한다. 기존 HOME 이미지·배치와 학생 데이터는 보존하며, 클래스룸 공유 main은 최신 기준에서 미지의길 경로만 PR로 반영한다. 최종 게임 출시 승인으로 확대하지 않는다.
+
+## 2026-10-21 구현 기록 유지
+작업별 과거 기록과 최신 상태를 구분한다. 구현·방법·수정·검증·배포 및 미검증 범위는 docs/CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md에 연결하고, 다음 변경마다 함께 갱신한다. 승인 원본·학생 백업 JSON·토큰을 변경 기록에 복제하지 않는다.
