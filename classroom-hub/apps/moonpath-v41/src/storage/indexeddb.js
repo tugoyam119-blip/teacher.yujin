@@ -2,9 +2,9 @@ import {DB_NAME,EngineError,checkSlot,checkState,clone,insist,validTimestamp,req
 import {reduceCommand} from '../engine/reducer.js';
 import {activeInterception,activeRecovery} from '../recovery/flows.js';
 
-const DB_VERSION=1;
+const DB_VERSION=2;
 export const LEASE_TTL_MS=30_000;
-const STORES=Object.freeze({slots:'slots',events:'events',checkpoints:'checkpoints',leases:'leases',quarantine:'quarantine'});
+const STORES=Object.freeze({slots:'slots',events:'events',checkpoints:'checkpoints',leases:'leases',quarantine:'quarantine',archives:'archives'});
 const cpKey=(slot,type)=>`${slot}:${type}`;
 const evKey=(slot,seq)=>`${slot}:${String(seq).padStart(12,'0')}`;
 
@@ -42,6 +42,44 @@ export async function openEngineDatabase(factory=globalThis.indexedDB){
 export class IndexedDbExpeditionStore {
   constructor(db,{clock=()=>Date.now()}={}){this.db=db;this.clock=clock;}
   close(){this.db.close();}
+  async listArchives(){
+    return onTx(this.db,[STORES.archives],'readonly',(tx,{done})=>{const r=tx.objectStore(STORES.archives).getAll();r.onsuccess=()=>done(r.result.sort((a,b)=>b.archivedAt-a.archivedAt));});
+  }
+  async archiveSlot(slot,{archiveId,expectedRevision,lease}){
+    checkSlot(slot);requireId(archiveId,'보관');const now=validTimestamp(this.clock());
+    return onTx(this.db,Object.values(STORES),'readwrite',(tx,{done,fail})=>{
+      const names=['slots','events','checkpoints','leases','quarantine'],rows={};let loaded=0;
+      for(const name of names){const r=tx.objectStore(name).getAll();r.onsuccess=()=>{rows[name]=r.result;if(++loaded!==names.length)return;try{
+        const row=rows.slots.find(x=>x.key===slot),l=rows.leases.find(x=>x.key===slot);this._checkLease(l,lease,now);
+        insist(row?.state,'SLOT_EMPTY','보관할 탐험이 없습니다.');checkState(row.state);
+        insist(row.state.meta.revision===expectedRevision,'REVISION_CONFLICT','탐험이 변경되었습니다. 다시 확인하세요.');
+        const s=row.state,lesson=s.sessions.find(x=>x.id===s.activeSessionId),running=[s.attempts[s.activeAttemptId],activeInterception(s),activeRecovery(s)?.runs?.find(x=>x.id===activeRecovery(s)?.activeRunId)].some(x=>x?.timer.phase==='RUNNING');
+        insist(lesson?.phase!=='ACTIVE'&&!running,'PAUSE_REQUIRED','수업과 타이머를 저장·일시정지한 뒤 보관하세요.');
+        const events=rows.events.filter(x=>x.slot===slot),checkpoints=rows.checkpoints.filter(x=>x.slot===slot),quarantine=rows.quarantine.filter(x=>x.slot===slot);
+        insist(events.length===s.meta.revision&&events.every(x=>canonicalJson(x.event)===canonicalJson(s.eventLog[x.event.seq-1])),'BROKEN_SEQUENCE','보관할 이벤트 이력이 일치하지 않습니다.');
+        insist(canonicalJson(checkpoints.find(x=>x.key===cpKey(slot,'latest'))?.state)===canonicalJson(s),'CHECKPOINT_DIVERGED','보관할 최신 체크포인트가 일치하지 않습니다.');
+        tx.objectStore(STORES.archives).add({key:archiveId,archivedAt:now,slot,state:s,events,checkpoints,quarantine,restoredAt:null});
+        tx.objectStore(STORES.slots).delete(slot);
+        for(const name of ['events','checkpoints','quarantine'])for(const x of rows[name].filter(x=>x.slot===slot))tx.objectStore(name).delete(x.key);
+        done({committed:true,archiveId});
+      }catch(e){fail(e);}};}
+    });
+  }
+  async restoreArchive(archiveId,{lease}){
+    requireId(archiveId,'보관');const now=validTimestamp(this.clock());
+    return onTx(this.db,Object.values(STORES),'readwrite',(tx,{done,fail})=>{
+      const ar=tx.objectStore(STORES.archives).get(archiveId);ar.onsuccess=()=>{try{
+        const a=ar.result;insist(a&&!a.restoredAt,'ARCHIVE_UNAVAILABLE','복원할 보관 기록이 없거나 이미 복원했습니다.');checkSlot(a.slot);checkState(a.state);
+        let row,l,loaded=0;const ready=()=>{if(++loaded!==2)return;try{
+          this._checkLease(l,lease,now);insist(!row,'SLOT_OCCUPIED',`원래 슬롯 ${a.slot}을 먼저 보관해 비워 주세요. 기존 탐험은 덮어쓰지 않습니다.`);
+          tx.objectStore(STORES.slots).add({key:a.slot,state:a.state});
+          for(const name of ['events','checkpoints','quarantine'])for(const x of a[name])tx.objectStore(name).add(x);
+          tx.objectStore(STORES.archives).put({...a,restoredAt:now});done({committed:true,slot:a.slot});
+        }catch(e){fail(e);}};
+        const sr=tx.objectStore(STORES.slots).get(a.slot),lr=tx.objectStore(STORES.leases).get(a.slot);sr.onsuccess=()=>{row=sr.result;ready();};lr.onsuccess=()=>{l=lr.result;ready();};
+      }catch(e){fail(e);}};
+    });
+  }
   async acquireWriter(slot,writerId){
     checkSlot(slot);requireId(writerId,'작성자');
     const now=validTimestamp(this.clock());
