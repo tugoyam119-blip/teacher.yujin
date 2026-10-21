@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-21T04:44:00Z",
+  "mergeCommit": "180d0cfa48d5f3ba7ceec1b807768e932021dd55",
+  "deploymentId": "8ee300f4-ef11-44fb-a4c7-1a0c640ab273",
+  "deploymentStatus": "SUCCESS",
+  "url": "https://magnificent-gentleness-production-61b8.up.railway.app/apps/moonpath-dev/image-pipeline-test/",
+  "httpStatus": 200,
+  "bytes": 1346990,
+  "sha256": "b796cd087ffacb832adb6e52839e6787059d2fa0f326a85f2c5820b26d493a39",
+  "pixels": [
+    1254,
+    1254
+  ],
+  "browserResult": "PASS: hash, bytes, natural dimensions; visual checkerboard visible outside bottle",
+  "f5QueueUsed": false,
+  "homeChanged": false
+}
