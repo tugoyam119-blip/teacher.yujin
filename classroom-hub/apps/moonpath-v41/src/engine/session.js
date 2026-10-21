@@ -26,13 +26,13 @@ export class TeacherEngineSession {
   }
   _stopHeartbeat(){if(this.heartbeat!==null){clearInterval(this.heartbeat);this.heartbeat=null;}}
   _enqueue(action){const pending=this.queue.then(action);this.queue=pending.catch(()=>{});return pending;}
-  async create({slot,world,teamCount=4,timerSeconds=60,expeditionName='',sourcePack=null,expeditionId=this.newId()}){
+  async create({slot,world,teamCount=4,timerSeconds=60,expeditionName='',healthEnabled=false,sourcePack=null,expeditionId=this.newId()}){
     return this._enqueue(async()=>{
       checkSlot(slot);insist(this.slot===null,'SESSION_BOUND','이미 열린 슬롯이 있습니다.');
       const at=this.clock(),lease=await this.store.acquireWriter(slot,this.writerId);
       try{
         const pack=sourcePack?validateQuestionPack(sourcePack):null;
-        const blank=newExpedition({slot,world,teamCount,timerSeconds,expeditionName,createdAt:at,expeditionId,...(pack?{packId:pack.packId,packVersion:pack.packVersion}:{})});
+        const blank=newExpedition({slot,world,teamCount,timerSeconds,expeditionName,healthEnabled,createdAt:at,expeditionId,...(pack?{packId:pack.packId,packVersion:pack.packVersion}:{})});
         if(sourcePack)blank.questions.sourcePack=clone(sourcePack);
         const result=await this.store.createSlot(blank,{type:'EXPEDITION_CREATED',eventId:this.newId(),at,payload:{}},lease);
         this.slot=slot;this.lease=lease;this.state=result.state;this._startHeartbeat();return clone(result.state);

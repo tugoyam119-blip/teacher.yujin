@@ -51,12 +51,13 @@ function showRegion(parent,id){
  button(box,'갈림길로 돌아가기',async()=>{if(s.screen!=='FORK')await view('FORK',theme.id);else preview=null;});parent.append(box);
 }
 function render(){
- const s=teacher.getState(),scene=$('scene');scene.replaceChildren();$('save-status').textContent=`${s.meta.expeditionName||`슬롯 ${slot} 탐험`} · 슬롯 ${slot} · 저장 버전 ${s.meta.revision} · 열쇠 ${s.rewards.keys}(비소모) · 별빛 ${s.rewards.starlight} · 복원 후 수업/타이머는 자동 재개하지 않습니다.`;
+ const s=teacher.getState(),scene=$('scene');scene.replaceChildren();$('save-status').textContent=`${s.meta.expeditionName||`슬롯 ${slot} 탐험`} · 슬롯 ${slot} · 저장 버전 ${s.meta.revision}${s.health?` · 체력 ♥${s.health.current}/${s.health.max}`:''} · 열쇠 ${s.rewards.keys}(비소모) · 별빛 ${s.rewards.starlight} · 복원 후 수업/타이머는 자동 재개하지 않습니다.`;
  $('bookshelf').disabled=hasLiveMission(s);
  if(hasLiveMission(s)){
   $('title').textContent='진행 중인 탐험';const box=node('div');box.className='notice';box.append(node('h2','진행 중인 문항을 이어갑니다'),node('p','문항·남은 시간·가로채기·회수 상태를 보존했습니다. 이 상태에서는 책장이나 다른 경로로 이동할 수 없습니다.'));
   button(box,'저장된 지역 계속하기',region);scene.append(box);return;
  }
+ if(s.health?.returnRequired){$('title').textContent='체력이 소진됐습니다';const box=node('div');box.className='notice';box.append(node('h2','책장으로 돌아가 체력을 회복하세요'),node('p','기존 지역 진행·문항·별빛·열쇠·추가 탐험 복귀 위치는 그대로 유지됩니다. 회복 후 남은 진행을 이어갑니다.'));button(box,'책장 복귀·체력 8로 회복 확인',async()=>{await teacher.dispatch('HEALTH_RETURNED',{teacherConfirmed:true});preview=null;themePreview=null;});scene.append(box);return;}
  const extra=s.world.additionalExplorationReturn;
  if(extra){const banner=node('div');banner.className='extra-banner';const r=world.themes.flatMap(t=>t.regions).find(r=>r.id===extra.regionId),back=world.themes.flatMap(t=>t.regions).find(r=>r.id===extra.fromRegionId);banner.append(node('span',`추가 탐험: ${r.name} · 복귀 위치: ${back?.name??'책장'}`));if(s.world.regions[extra.regionId].status==='COMPLETED')button(banner,'추가 탐험을 마치고 원래 위치로 복귀',returnExtra);else button(banner,s.world.regions[extra.regionId].status==='AVAILABLE'?'중단된 추가 탐험 진입 이어가기':'추가 탐험 계속하기',continueExtra);scene.append(banner);}
  if(themePreview){$('title').textContent='마법 책장 · 테마 안내';showTheme(scene,themePreview);return;}
