@@ -17,4 +17,6 @@ try {
   console.warn('human-rights version sync skipped:', err.message);
 }
 
+require('./lib/textbook-p69-p72.cjs').install(__dirname);
+
 require('./server.js');
