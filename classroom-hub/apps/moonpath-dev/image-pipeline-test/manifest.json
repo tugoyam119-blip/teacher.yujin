@@ -1,0 +1,21 @@
+{
+  "id": "imagegen-comet-bottle-20261021",
+  "purpose": "TEST_ONLY_NOT_APPROVED_GAME_ART",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept. Asset type: isolated PNG transport verification illustration, never a replacement game asset. Create one small whimsical glass bottle containing a glowing turquoise comet, hand painted fantasy illustration, centered square composition, generous transparent margins. No text, no logos, no interface, no background. This is a disposable pipeline test unrelated to existing HOME artwork.",
+  "transparentBackgroundRequested": true,
+  "file": "comet-bottle-original.png",
+  "bytes": 1346990,
+  "sha256": "b796cd087ffacb832adb6e52839e6787059d2fa0f326a85f2c5820b26d493a39",
+  "width": 1254,
+  "height": 1254,
+  "alpha": {
+    "transparent": 1038862,
+    "partial": 533173,
+    "opaque": 481
+  },
+  "processing": "PNG decode and alpha/size/hash validation only; original bytes unchanged; CSS contain display; no regenerated derivative",
+  "transport": "local generated output -> workspace binary -> Git -> GitHub -> Railway static deployment",
+  "storageAccess": false,
+  "homeReferences": false
+}

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>미지의 길 이미지 전송 시험</title>
+<style>body{margin:24px;background:#172036;color:#fff;font:18px system-ui}main{max-width:780px;margin:auto}.preview{width:min(100%,480px);aspect-ratio:1;background:repeating-conic-gradient(#dce1ed 0% 25%,#818b9e 0% 50%) 0/32px 32px}.preview img{width:100%;height:100%;object-fit:contain}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}a{color:#a8e9ff}</style>
+<main><h1>이미지 전송 시험</h1><p>이번 대화에서 새로 만든 테스트 이미지입니다. 승인 HOME·버튼 배치·저장 데이터에는 연결하지 않습니다.</p>
+<div class="preview"><img id="sample" src="comet-bottle-original.png" alt="투명 배경의 혜성 유리병 테스트 이미지"></div>
+<p id="result" role="status">원본 확인 중…</p><pre id="detail"></pre><a href="../">미지의 길 개발 HOME</a></main>
+<script type="module">
+const result=document.querySelector('#result');
+try {
+ const manifest=await fetch('manifest.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('manifest '+r.status);return r.json()});
+ const response=await fetch(manifest.file,{cache:'no-store'});if(!response.ok)throw Error('PNG '+response.status);
+ const bytes=await response.arrayBuffer();const sha=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(x=>x.toString(16).padStart(2,'0')).join('');
+ const img=document.querySelector('#sample');await img.decode();
+ const pass=sha===manifest.sha256&&bytes.byteLength===manifest.bytes&&img.naturalWidth===manifest.width&&img.naturalHeight===manifest.height;
+ result.textContent=pass?'검증 통과: 원본과 표시된 이미지의 해시·크기·규격 일치':'검증 실패';result.dataset.pass=String(pass);
+ document.querySelector('#detail').textContent=JSON.stringify({bytes:bytes.byteLength,sha256:sha,width:img.naturalWidth,height:img.naturalHeight,alpha:manifest.alpha},null,2);
+}catch(error){result.textContent='검증 오류: '+error.message;result.dataset.pass='false'}
+</script></html>
