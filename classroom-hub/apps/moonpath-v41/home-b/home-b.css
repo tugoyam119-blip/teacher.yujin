@@ -23,35 +23,45 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090713;col
 #review-note{position:absolute;right:12px;bottom:7px;z-index:5;font-size:9px;font-family:inherit;color:#ffe9bb;background:#1b1239bd;border:1px solid #bda16d99;border-radius:5px;padding:3px 6px;cursor:pointer}
 #message{position:absolute;left:260px;bottom:8px;max-width:440px;z-index:6;margin:0;padding:7px 12px;background:#140e30eb;border-radius:6px;font-size:12px}
 #message:empty{display:none}
-dialog{position:absolute;inset:0;margin:auto;width:650px;max-height:470px;border:2px solid #d9b775;border-radius:16px;padding:20px 24px;background:linear-gradient(145deg,#222044,#110c2b);color:#fff2dd;box-shadow:0 12px 60px #000a;z-index:20;font-size:14px}
+/* Native modal top-layer is outside the transformed 960x540 stage.
+   Scale its own dimensions and type, not the approved HOME artwork or menu coordinates.
+   Earlier moonpath-dev #game-popup used 85.6vw of the logical stage; use 820x500 for HOME here (question popup limits are unchanged). */
+dialog{position:absolute;inset:0;margin:auto;width:calc(820px * var(--popup-scale,1));height:calc(500px * var(--popup-scale,1));max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);border:2px solid #d9b775;border-radius:16px;padding:calc(18px * var(--popup-scale,1)) calc(22px * var(--popup-scale,1));background:linear-gradient(145deg,#222044,#110c2b);color:#fff2dd;box-shadow:0 12px 60px #000a;z-index:20;font-size:max(15px,calc(16px * var(--popup-scale,1)));overflow:hidden}
+dialog[open]{display:flex;flex-direction:column}
 dialog::backdrop{background:#08061dcc}
-dialog header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #a68ac466;margin-bottom:15px}
-dialog h1{font-size:22px;margin:0 0 12px}
-dialog p{line-height:1.7}
-dialog button,dialog a.action{font:inherit;cursor:pointer;border:1px solid #bd9c69;border-radius:7px;background:#3e2e65;color:#fff3db;padding:8px 13px;display:inline-block;text-decoration:none}
+dialog header{display:flex;flex:0 0 auto;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid #a68ac466;margin-bottom:calc(12px * var(--popup-scale,1));padding-bottom:calc(8px * var(--popup-scale,1))}
+dialog h1{font-size:max(22px,calc(24px * var(--popup-scale,1)));line-height:1.3;margin:0;overflow-wrap:anywhere}
+#panel-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:8px;line-height:1.65;overflow-wrap:anywhere}
+dialog p{line-height:1.65;margin:.65em 0}
+dialog button,dialog a.action{font:inherit;cursor:pointer;border:1px solid #bd9c69;border-radius:7px;background:#3e2e65;color:#fff3db;padding:.55em .8em;display:inline-block;text-decoration:none;min-height:2.4em}
 dialog button:disabled{opacity:.5;cursor:wait}
 dialog button:focus-visible,dialog a:focus-visible{outline:2px solid #fff0b6;outline-offset:2px}
-#close-panel{background:transparent;border:0;font-size:25px;margin-bottom:10px;padding:0 8px}
-.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
-.slot{padding:10px;border:1px solid #a68ac4;border-radius:8px;line-height:1.7}
+#close-panel{background:transparent;border:0;font-size:1.6em;line-height:1;min-width:44px;min-height:44px;padding:0;flex-shrink:0}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+.slot{padding:12px;border:1px solid #a68ac4;border-radius:8px;line-height:1.65;min-width:0}
 .slot input{margin-right:6px}
-.slot small{display:block;color:#d6c7e8;font-size:11px}
+.slot small{display:block;color:#d6c7e8;font-size:max(13px,calc(14px * var(--popup-scale,1)))}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0}
-select,input{font:inherit}
-select{padding:5px;background:#fffaed;color:#241b38;border-radius:5px}
-.details{font-size:12px;color:#d6c7e8}
+dialog select,dialog input{font:inherit;max-width:100%}
+dialog select{padding:.4em;background:#fffaed;color:#241b38;border-radius:5px}
+.details{font-size:.9em;color:#d6c7e8}
 #panel-message{color:#ffe5a3;white-space:pre-wrap}
-dialog.setup-selection h2{font-size:17px;margin:10px 0}
-dialog.setup-selection ul{font-size:12px;line-height:1.5;margin:10px 0;padding-left:20px}
-dialog.setup-selection p{font-size:12px;line-height:1.5;margin:8px 0}
-dialog.setup-selection select{max-width:100%}
-dialog.setup-selection .actions{position:sticky;bottom:-20px;background:#191332;padding:8px 0;margin:8px 0 0}
+dialog.setup-selection h2{font-size:1.15em;margin:.65em 0}
+dialog.setup-selection ul{font-size:1em;line-height:1.65;margin:.6em 0;padding-left:1.4em}
+dialog.setup-selection p{font-size:1em;line-height:1.65;margin:.65em 0}
+dialog.setup-selection .actions{position:sticky;bottom:0;background:#191332;padding:8px 0;margin:8px 0 0}
 dialog.setup-selection #panel-message:empty{display:none}
-.setup-advanced{margin:12px 0;padding:10px;border:1px solid #a68ac466;border-radius:8px}
+.setup-advanced{margin:12px 0;padding:12px;border:1px solid #a68ac466;border-radius:8px}
 .setup-advanced summary,dialog details summary{cursor:pointer;margin-bottom:10px}
-dialog input[type="text"],#expedition-name{max-width:350px;padding:6px;border-radius:5px}
-#journal-report{font-size:12px}#journal-report h2{font-size:16px;margin:15px 0 8px}
-.journal-table{overflow-x:auto}#journal-report table{border-collapse:collapse;width:100%;font-size:11px}
-#journal-report td,#journal-report th{border:1px solid #a68ac466;padding:6px;text-align:left;white-space:nowrap}
+dialog input[type="text"],#expedition-name{width:min(100%,24em);padding:.45em;border-radius:5px}
+#journal-report{font-size:1em}#journal-report h2{font-size:1.15em;margin:1em 0 .5em}
+.journal-table{overflow-x:auto}#journal-report table{border-collapse:collapse;width:100%;font-size:.9em}
+#journal-report td,#journal-report th{border:1px solid #a68ac466;padding:.5em;text-align:left;white-space:nowrap}
 #journal-report th{background:#34275b}#journal-report p{color:#e6d9f7}
+@media(max-width:600px){dialog{width:calc(100vw - 20px);height:calc(100dvh - 20px);max-width:none;max-height:none;padding:16px;font-size:16px}dialog h1{font-size:22px}.slots{grid-template-columns:1fr}.slot small{font-size:14px}dialog header{margin-bottom:12px;padding-bottom:8px}#panel-body{padding-right:4px}dialog select{width:100%}.actions>*{flex:1 1 100%}}
 @media(prefers-reduced-motion:reduce){.menu-button:active{translate:none}}
+
+.setup-columns{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1.3em}.setup-columns section{min-width:0}.setup-columns label{display:block}.setup-columns select{display:block;width:100%;margin-top:.35em}.setup-columns li{margin-bottom:.35em}
+@media(max-width:800px){.setup-columns{grid-template-columns:1fr}.setup-columns select{width:100%}}
+
+.setup-columns [hidden]{display:none!important}dialog.setup-selection ul{font-size:.875em;line-height:1.4}.setup-columns li{margin-bottom:.2em}dialog.setup-selection p{font-size:.9em;line-height:1.5}.setup-columns h2{margin-top:0!important}.setup-columns{padding-top:.3em}

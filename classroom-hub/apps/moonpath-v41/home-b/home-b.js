@@ -37,7 +37,7 @@ for(const a of actions){
  if(a.description)b.append(node('small',a.description));
  b.addEventListener('click',()=>openPanel(a.id).catch(report));$(sub?'submenus':'menus').append(b);
 }
-function resize(){const scale=Math.min(innerWidth/960,innerHeight/540);$('stage').style.transform=`translate(-50%,-50%) scale(${scale})`;}
+function resize(){const scale=Math.min(innerWidth/960,innerHeight/540);$('stage').style.transform=`translate(-50%,-50%) scale(${scale})`;document.documentElement.style.setProperty('--popup-scale',String(scale));}
 addEventListener('resize',resize);resize();
 function report(e){const text=`처리하지 못했습니다: ${e.code??''} ${e.message??e}`;let target=$('panel-message');if(!target&&$('panel').open){target=node('p');target.id='panel-message';target.setAttribute('role','status');$('panel-body').append(target);}(target??$('message')).textContent=text;}
 async function refresh(){
@@ -77,19 +77,19 @@ function showJournal(target,report){
 }
 async function openPanel(kind,setup=null){
  const request=++panelRequest;
- const panel=$('panel'),body=$('panel-body');body.replaceChildren();$('panel-title').textContent=actions.find(a=>a.id===kind)?.title??'HOME B 조립 상태';
+ const panel=$('panel'),body=$('panel-body');body.replaceChildren();body.scrollTop=0;$('panel-title').textContent=actions.find(a=>a.id===kind)?.title??'HOME B 조립 상태';
  panel.classList.toggle('setup-selection',kind==='new');
  if(!panel.open)panel.showModal();
  if(kind==='new'){
   $('panel-title').textContent='새로운 탐험 · 규칙과 문제팩';
-  body.append(node('h2','1. 탐험 규칙'));
+  const columns=node('div'),ruleSection=node('section'),packSection=node('section');columns.className='setup-columns';columns.append(ruleSection,packSection);body.append(columns);ruleSection.append(node('h2','1. 탐험 규칙'));
   const rulesLabel=node('label','탐험 규칙 '),rules=node('select');rules.id='setup-rules';
-  for(const [value,text] of [['','규칙을 선택하세요'],['4.1.1','v4.1.1 기본 규칙']]){const o=node('option',text);o.value=value;rules.append(o);}rulesLabel.append(rules);body.append(rulesLabel);
-  const list=node('ul');for(const text of ['기본 4모둠(2~8모둠), 지역 기본 문제 수는 모둠 수와 같습니다.','교사가 수업·문제 타이머를 시작하며 기본 제한 시간은 60초입니다.','대표 순환과 가로채기를 사용하며, 오답은 이후 지역에서 회수합니다.','지역 최초 완료는 열쇠 +1, 최초 정답·유효 회수는 공동 별빛 +1입니다.','책장 → 갈림길 → 지역으로 진행하며 저장·복원 후에는 자동 재개하지 않습니다.'])list.append(node('li',text));body.append(list,node('h2','2. 문제팩 선택'));
+  for(const [value,text] of [['','규칙을 선택하세요'],['4.1.1','v4.1.1 기본 규칙']]){const o=node('option',text);o.value=value;rules.append(o);}rulesLabel.append(rules);ruleSection.append(rulesLabel);
+  const list=node('ul');for(const text of ['기본 4모둠(2~8모둠), 지역 기본 문제 수는 모둠 수와 같습니다.','교사가 수업·문제 타이머를 시작하며 기본 제한 시간은 60초입니다.','대표 순환과 가로채기를 사용하며, 오답은 이후 지역에서 회수합니다.','지역 최초 완료는 열쇠 +1, 최초 정답·유효 회수는 공동 별빛 +1입니다.','책장 → 갈림길 → 지역으로 진행하며 저장·복원 후에는 자동 재개하지 않습니다.'])list.append(node('li',text));ruleSection.append(list);packSection.append(node('h2','2. 문제팩 선택'));
   const packLabel=node('label','문제팩 '),packs=node('select');packs.id='setup-pack';
-  for(const [value,text] of [['','문제팩을 선택하세요'],['builtin','기본팩 · 통합사회2 1단원 · 인권 보장과 헌법 · 60문항'],['file','JSON 문제팩 불러오기']]){const o=node('option',text);o.value=value;packs.append(o);}packLabel.append(packs);body.append(packLabel);
-  const fileLabel=node('label','문제팩 JSON 파일 '),file=node('input');file.type='file';file.accept='.json,application/json';file.id='setup-pack-file';fileLabel.hidden=true;fileLabel.append(file);body.append(fileLabel);
-  const status=node('p','문제팩을 선택하면 제목·버전·문항 수를 확인합니다.');status.id='setup-pack-status';status.setAttribute('role','status');body.append(status);
+  for(const [value,text] of [['','문제팩을 선택하세요'],['builtin','기본팩 · 통합사회2 1단원 · 인권 보장과 헌법 · 60문항'],['file','JSON 문제팩 불러오기']]){const o=node('option',text);o.value=value;packs.append(o);}packLabel.append(packs);packSection.append(packLabel);
+  const fileLabel=node('label','문제팩 JSON 파일 '),file=node('input');file.type='file';file.accept='.json,application/json';file.id='setup-pack-file';fileLabel.hidden=true;fileLabel.append(file);packSection.append(fileLabel);
+  const status=node('p','문제팩을 선택하면 제목·버전·문항 수를 확인합니다.');status.id='setup-pack-status';status.setAttribute('role','status');packSection.append(status);
   let chosen=null,packRequest=0;
   async function loadPack(){const token=++packRequest;chosen=null;$('panel-message').textContent='';fileLabel.hidden=packs.value!=='file';try{let raw;
    if(packs.value==='builtin'){const r=await fetch('../data/YQBank_60_v1.0.0_source.json');if(!r.ok)throw new Error('기본 문제팩을 불러오지 못했습니다.');raw=await r.json();}
@@ -98,7 +98,7 @@ async function openPanel(kind,setup=null){
    const info=validateQuestionPack(raw);if(token!==packRequest||request!==panelRequest)return;chosen=raw;status.textContent=`${raw.pack.title||info.packId} · v${info.packVersion} · ${info.count}문항 · 검증 완료`;
   }catch(e){if(token===packRequest){chosen=null;status.textContent=`문제팩을 사용할 수 없습니다: ${e.message}`;}}}
   packs.addEventListener('change',loadPack);file.addEventListener('change',loadPack);
-  body.append(node('p','현재 지원 형식은 60문항 YQBank JSON입니다. 선택한 원본은 탐험 저장과 백업에 함께 보관합니다.'));
+  packSection.append(node('p','현재 지원 형식은 60문항 YQBank JSON입니다. 선택한 원본은 탐험 저장과 백업에 함께 보관합니다.'));
   const next=node('div');next.className='actions';button(next,'다음 · 탐험 설정',async()=>{if(rules.value!=='4.1.1')throw new Error('탐험 규칙을 먼저 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 먼저 선택하세요.');await openPanel('new-settings',{sourcePack:chosen});});button(next,'탐험 보관함 열기',()=>openPanel('archive'));body.append(next);
   const message=node('p');message.id='panel-message';message.setAttribute('role','status');body.append(message);return;
  }
