@@ -7,6 +7,25 @@ export function themeUnlocked(s,themeId){
  const index=s.world.themes.findIndex(t=>t.id===themeId);
  return index>=0&&(index===0||s.world.regions[s.world.themes[index-1].regionIds[4]].status==='COMPLETED');
 }
+/** Read-only route guide: inspection must not start a lesson, select a branch or award anything. */
+export function themeRouteGuide(s,themeId){
+ const theme=s.world.themes.find(t=>t.id===themeId);insist(theme,'THEME_INVALID','공식 테마가 아닙니다.');
+ const choice=s.world.mainRouteChoice[themeId]??null,options=regionOptions(s,themeId);
+ return {themeId,unlocked:themeUnlocked(s,themeId),choice,
+  mainRoute:choice?[theme.regionIds[0],theme.regionIds[choice==='LEFT'?1:2],...theme.regionIds.slice(3)]:null,
+  regions:options.map((option,index)=>({...option,position:index+1})),
+  extraRegionIds:options.filter(o=>o.mode==='EXTRA'&&o.status!=='COMPLETED').map(o=>o.id)};
+}
+/** A committed EXTRA_STARTED can survive an interrupted REGION_ENTERED write. Resume its target. */
+export function extraResumeTarget(s){
+ const extra=s.world.additionalExplorationReturn;if(!extra)return null;
+ const r=s.world.regions[extra.regionId];insist(r,'EXTRA_HISTORY_INVALID','추가 탐험 지역이 없습니다.');
+ if(r.status==='COMPLETED')return {regionId:extra.regionId,action:'RETURN'};
+ if(r.status==='IN_PROGRESS'&&s.world.currentRegionId===extra.regionId)return {regionId:extra.regionId,action:'CONTINUE'};
+ insist(r.status==='AVAILABLE'&&(!s.world.currentRegionId||s.world.regions[s.world.currentRegionId]?.status==='COMPLETED'),
+  'EXTRA_HISTORY_INVALID','추가 탐험 진입 상태를 확인해야 합니다.');
+ return {regionId:extra.regionId,action:'ENTER'};
+}
 export function applyWorldView(s,p){
  insist(!hasLiveMission(s),'ATTEMPT_ACTIVE','진행 중인 문항·가로채기·회수를 먼저 마쳐야 책장과 갈림길로 이동할 수 있습니다.');
  insist(p.view==='BOOKSHELF'||p.view==='FORK','WORLD_VIEW_INVALID','책장 또는 갈림길을 선택하세요.');
