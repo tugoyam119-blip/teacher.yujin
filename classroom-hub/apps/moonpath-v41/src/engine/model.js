@@ -30,13 +30,14 @@ export function canonicalJson(value){
 export function checkSlot(slot){insist(Number.isInteger(slot)&&slot>=MIN_SLOT&&slot<=MAX_SLOT,'SLOT_INVALID','슬롯은 I~III(1~3) 중 하나여야 합니다.');return slot;}
 export function requireId(str,label){insist(typeof str==='string'&&str.length>0&&str.length<=128,'INVALID_ID',`${label} ID가 올바르지 않습니다.`);return str;}
 export function validTimestamp(at){insist(Number.isSafeInteger(at)&&at>=0,'INVALID_TIME','이벤트 시각이 올바르지 않습니다.');return at;}
-export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeconds=60,packId='KR-HS-IS2-U01',packVersion='1.0.0',world}){
+export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeconds=60,expeditionName='',packId='KR-HS-IS2-U01',packVersion='1.0.0',world}){
   checkSlot(slot);requireId(expeditionId,'원정');validTimestamp(createdAt);
   insist(Number.isInteger(teamCount)&&teamCount>=2&&teamCount<=8,'INVALID_TEAM_COUNT','모둠은 2~8개여야 합니다.');
   insist(TIMER_CHOICES_SEC.includes(timerSeconds),'INVALID_TIMER','타이머 값은 끔/45/60/90/120초 중 하나여야 합니다.');
+  insist(typeof expeditionName==='string'&&expeditionName.trim().length<=80,'INVALID_EXPEDITION_NAME','탐험 이름은 80자 이내여야 합니다.');
   insist(world?.themes?.length===6&&world.themes.every(t=>t.regions?.length===5),'INVALID_WORLD','공식 6테마 30지역 기준이 필요합니다.');
   return {
-    meta:{schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,expeditionId,slot,revision:0,createdAt,updatedAt:createdAt,packId,packVersion},
+    meta:{schemaVersion:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,expeditionId,expeditionName:expeditionName.trim(),slot,revision:0,createdAt,updatedAt:createdAt,packId,packVersion},
     screen:'HOME',
     settings:{teamCount,timerSeconds,interception:true,lessonMinutes:45},
     world:{currentRegionId:null,mainRouteChoice:{},additionalExplorationReturn:null,regionEntryOrder:[],visitHistory:[],results:[],quotaHistory:[],progressionMode:null,regions:Object.fromEntries(world.themes.flatMap(t=>t.regions).map(r=>[r.id,{status:'LOCKED',completedAt:null}])),themes:world.themes.map(t=>({id:t.id,name:t.name,regionIds:t.regions.map(r=>r.id)}))},
