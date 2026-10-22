@@ -23,130 +23,88 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090713;col
 #review-note{position:absolute;right:12px;bottom:7px;z-index:5;font-size:9px;font-family:inherit;color:#ffe9bb;background:#1b1239bd;border:1px solid #bda16d99;border-radius:5px;padding:3px 6px;cursor:pointer}
 #message{position:absolute;left:260px;bottom:8px;max-width:440px;z-index:6;margin:0;padding:7px 12px;background:#140e30eb;border-radius:6px;font-size:12px}
 #message:empty{display:none}
-/* Native modal top-layer is outside the transformed 960x540 stage.
-   Scale its own dimensions and type, not the approved HOME artwork or menu coordinates.
-   Earlier moonpath-dev #game-popup used 85.6vw of the logical stage; use 820x500 for HOME here (question popup limits are unchanged). */
-dialog{position:absolute;inset:0;margin:auto;width:calc(820px * var(--popup-scale,1));height:calc(500px * var(--popup-scale,1));max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);border:2px solid #d9b775;border-radius:16px;padding:calc(18px * var(--popup-scale,1)) calc(22px * var(--popup-scale,1));background:linear-gradient(145deg,#222044,#110c2b);color:#fff2dd;box-shadow:0 12px 60px #000a;z-index:20;font-size:max(15px,calc(16px * var(--popup-scale,1)));overflow:hidden}
-dialog[open]{display:flex;flex-direction:column}
-dialog::backdrop{background:#08061dcc}
-dialog header{display:flex;flex:0 0 auto;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid #a68ac466;margin-bottom:calc(12px * var(--popup-scale,1));padding-bottom:calc(8px * var(--popup-scale,1))}
-dialog h1{font-size:max(22px,calc(24px * var(--popup-scale,1)));line-height:1.3;margin:0;overflow-wrap:anywhere}
-#panel-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:8px;line-height:1.65;overflow-wrap:anywhere}
-dialog p{line-height:1.65;margin:.65em 0}
-dialog button,dialog a.action{font:inherit;cursor:pointer;border:1px solid #bd9c69;border-radius:7px;background:#3e2e65;color:#fff3db;padding:.55em .8em;display:inline-block;text-decoration:none;min-height:2.4em}
-dialog button:disabled{opacity:.5;cursor:wait}
-dialog button:focus-visible,dialog a:focus-visible{outline:2px solid #fff0b6;outline-offset:2px}
-#close-panel{background:transparent;border:0;font-size:1.6em;line-height:1;min-width:44px;min-height:44px;padding:0;flex-shrink:0}
-.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
-.slot{padding:12px;border:1px solid #a68ac4;border-radius:8px;line-height:1.65;min-width:0}
-.slot input{margin-right:6px}
-.slot small{display:block;color:#d6c7e8;font-size:max(13px,calc(14px * var(--popup-scale,1)))}
-.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0}
-dialog select,dialog input{font:inherit;max-width:100%}
-dialog select{padding:.4em;background:#fffaed;color:#241b38;border-radius:5px}
-.details{font-size:.9em;color:#d6c7e8}
-#panel-message{color:#ffe5a3;white-space:pre-wrap}
-dialog.setup-selection h2{font-size:1.15em;margin:.65em 0}
-dialog.setup-selection ul{font-size:1em;line-height:1.65;margin:.6em 0;padding-left:1.4em}
-dialog.setup-selection p{font-size:1em;line-height:1.65;margin:.65em 0}
-dialog.setup-selection .actions{position:sticky;bottom:0;background:#191332;padding:8px 0;margin:8px 0 0}
-dialog.setup-selection #panel-message:empty{display:none}
-.setup-advanced{margin:12px 0;padding:12px;border:1px solid #a68ac466;border-radius:8px}
-.setup-advanced summary,dialog details summary{cursor:pointer;margin-bottom:10px}
-dialog input[type="text"],#expedition-name{width:min(100%,24em);padding:.45em;border-radius:5px}
-#journal-report{font-size:1em}#journal-report h2{font-size:1.15em;margin:1em 0 .5em}
-.journal-table{overflow-x:auto}#journal-report table{border-collapse:collapse;width:100%;font-size:.9em}
-#journal-report td,#journal-report th{border:1px solid #a68ac466;padding:.5em;text-align:left;white-space:nowrap}
-#journal-report th{background:#34275b}#journal-report p{color:#e6d9f7}
-@media(max-width:600px){dialog{width:calc(100vw - 20px);height:calc(100dvh - 20px);max-width:none;max-height:none;padding:16px;font-size:16px}dialog h1{font-size:22px}.slots{grid-template-columns:1fr}.slot small{font-size:14px}dialog header{margin-bottom:12px;padding-bottom:8px}#panel-body{padding-right:4px}dialog select{width:100%}.actions>*{flex:1 1 100%}}
+/* Approved popup art is independent of text, controls and game data. */
+#panel{--u:var(--popup-scale,1);position:fixed;inset:0;margin:auto;width:calc(820px * var(--u));height:calc(500px * var(--u));max-width:none;max-height:none;padding:0;border:0;border-radius:0;background:transparent;color:#fff2dd;overflow:hidden;font-size:calc(16px * var(--u));line-height:1.5;isolation:isolate}
+#panel::backdrop{background:#08061d99}
+#panel .popup-art{position:absolute;inset:0;pointer-events:none;z-index:-1}
+#panel .popup-frame{width:100%;height:100%;position:absolute;inset:0;pointer-events:none}
+#panel .popup-title-art{position:absolute;left:calc(180px * var(--u));top:calc(24px * var(--u));width:calc(460px * var(--u));height:calc(56px * var(--u))}
+#panel .popup-close-art{position:absolute;left:calc(744px * var(--u));top:calc(24px * var(--u));width:calc(48px * var(--u));height:calc(48px * var(--u))}
+#panel header{display:contents}
+#panel-title{position:absolute;left:calc(204px * var(--u));top:calc(36px * var(--u));width:calc(412px * var(--u));height:calc(32px * var(--u));margin:0;text-align:center;color:#fff0cb;font-size:calc(24px * var(--u));line-height:calc(32px * var(--u));white-space:nowrap;font-weight:700;text-shadow:0 1px 2px #100c2b;outline:none}
+#close-panel{position:absolute;left:calc(756px * var(--u));top:calc(16px * var(--u));width:calc(64px * var(--u));height:calc(64px * var(--u));padding:0;border:0;color:#fff2d7;background:transparent;font:inherit;font-size:calc(28px * var(--u));line-height:1;cursor:pointer;z-index:2}
+#close-panel:hover:not(:disabled){filter:brightness(1.2)}
+#panel-scroll{display:contents}
+#panel-body{position:absolute;left:calc(48px * var(--u));top:calc(116px * var(--u));width:calc(724px * var(--u));height:calc(252px * var(--u));overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:#a88bc5 #21193c;overflow-wrap:anywhere;padding:0;min-width:0}
+#panel-footer{position:absolute;left:calc(48px * var(--u));top:calc(396px * var(--u));width:calc(724px * var(--u));height:calc(80px * var(--u))}
+#panel-message{height:calc(24px * var(--u));margin:0;overflow:auto;line-height:1.5;color:#ffe1a1;font-size:calc(14px * var(--u));white-space:pre-wrap;scrollbar-width:thin}
+#panel-actions{display:flex;align-items:center;justify-content:flex-end;gap:calc(12px * var(--u));height:calc(44px * var(--u));margin-top:calc(12px * var(--u))}
+.popup-button{--button-image:url('../assets/home/popup-v2/secondary-normal.png');display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;box-sizing:border-box;min-width:calc(156px * var(--u));height:calc(44px * var(--u));padding:0;border-style:solid;border-color:transparent;border-width:0 calc(24px * var(--u));border-image-source:var(--button-image);border-image-slice:0 24 fill;border-image-width:0 calc(24px * var(--u));border-image-repeat:stretch;background:none;color:#fff3d8;font:inherit;font-size:calc(16px * var(--u));font-weight:700;white-space:nowrap;cursor:pointer;text-shadow:0 1px 2px #0d0921}
+#panel-actions .popup-button{padding:0;flex:0 0 calc(156px * var(--u))}
+.popup-button[data-variant=primary]{--button-image:url('../assets/home/popup-v2/primary-normal.png')}
+.popup-button[data-variant=cancel]{--button-image:url('../assets/home/popup-v2/cancel-normal.png')}
+.popup-button:hover:not(:disabled){--button-image:url('../assets/home/popup-v2/secondary-hover.png')}
+.popup-button[data-variant=primary]:hover:not(:disabled){--button-image:url('../assets/home/popup-v2/primary-hover.png')}
+.popup-button[data-variant=cancel]:hover:not(:disabled){--button-image:url('../assets/home/popup-v2/cancel-hover.png')}
+.popup-button:active:not(:disabled){--button-image:url('../assets/home/popup-v2/secondary-pressed.png')}
+.popup-button[data-variant=primary]:active:not(:disabled){--button-image:url('../assets/home/popup-v2/primary-pressed.png')}
+.popup-button[data-variant=cancel]:active:not(:disabled){--button-image:url('../assets/home/popup-v2/cancel-pressed.png')}
+.popup-button:disabled{--button-image:url('../assets/home/popup-v2/secondary-disabled.png');color:#ccc1d4;cursor:not-allowed}
+.popup-button[data-variant=primary]:disabled{--button-image:url('../assets/home/popup-v2/primary-disabled.png')}
+.popup-button[data-variant=cancel]:disabled{--button-image:url('../assets/home/popup-v2/cancel-disabled.png')}
+#close-panel:disabled{filter:saturate(.25) brightness(.65);cursor:wait}
+#panel :is(button,input,select,summary,a):focus-visible{outline:calc(2px * var(--u)) solid #fff0ac;outline-offset:calc(2px * var(--u))}
+#panel p{margin:0 0 .65em;line-height:1.5}
+#panel #panel-message{margin:0}
+#panel h2{font-size:1.125em;line-height:1.35;margin:0 0 .5em;color:#f4daa5}
+#panel h3{font-size:1em;color:#f4daa5}
+#panel label{display:block}
+#panel :is(input,select){font:inherit;max-width:100%;color:#fff0dd;background:#292141;border:1px solid #9c80b8;border-radius:2px;padding:.3em;min-height:2em}
+#panel select{width:100%;appearance:none;padding-right:1.8em;color:#fff0dd;background:#292141 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23f1d9ac' stroke-width='2'/%3E%3C/svg%3E") right .5em center/12px 8px no-repeat}
+#panel input[type=radio]{min-height:auto;accent-color:#d5b56f}
+#panel select option{color:#251d38;background:#fff3dd}
+#panel-body::-webkit-scrollbar{width:calc(12px * var(--u));height:calc(12px * var(--u))}
+#panel-body::-webkit-scrollbar-track{background:#21193c}
+#panel-body::-webkit-scrollbar-thumb{background:#9b7db9;border:2px solid #21193c}
+#expedition-name{width:min(100%,24em)}
+#panel fieldset{margin:0 0 .75em;padding:.5em;border:1px solid #806a9e;min-width:0}
+#panel legend{color:#f1d9ac}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6em}
+.slot{padding:.5em;border:1px solid #76618c;background:#201a38;min-width:0}
+.slot:has(input:checked){border-color:#e9c580;background:#302343}
+.slot small{display:block;font-size:.875em;color:#ded0ee}
+.actions{display:flex;flex-wrap:wrap;gap:.5em;align-items:center;margin:.65em 0}
+.setup-columns{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1.3em}
+.setup-columns section{min-width:0}
+.setup-columns ul{margin:.5em 0;padding-left:1.25em}
+.setup-columns li{margin-bottom:.2em}
+.setup-columns [hidden]{display:none!important}
+.setup-advanced{margin:.75em 0;padding:.65em;border:1px solid #75628e;background:#211b38}
+#panel summary{cursor:pointer}
+#panel-body>.popup-button{margin:0 .5em .75em 0}
+.journal-table{overflow-x:auto;margin:.65em 0}
+#journal-report table{border-collapse:collapse;width:100%;font-size:.9em}
+#journal-report :is(td,th){padding:.5em;border:1px solid #78658f;text-align:left;white-space:nowrap}
+#journal-report th{background:#302441}
+.details{color:#d6c7e8;font-size:.9em}
+/* Small screens retain readable text and rebuild the image rim from fixed slices. */
+#panel.compact{--u:1;width:min(820px,calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right)));height:calc(var(--visible-height,100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));max-height:none;background:#17133c;border:24px solid transparent;border-image:url('../assets/home/popup-v2/compact-rim.png') 32 fill / 24px / 0 round;overflow:hidden;font-size:16px}
+#panel.compact .popup-art{display:none}
+#panel.compact #panel-title{left:32px;top:0;width:calc(100% - 88px);height:48px;padding:4px 24px;background:none;border:0 solid transparent;border-image:url('../assets/home/popup-v2/title.png') 16 24 fill / 16px 24px / 0 stretch;font-size:20px;line-height:20px;white-space:normal;display:flex;align-items:center;justify-content:center}
+#panel.compact #close-panel{left:auto;right:0;top:0;width:48px;height:48px;background:transparent url('../assets/home/popup-v2/close.png') center/contain no-repeat}
+#panel.compact #panel-scroll{position:absolute;left:0;right:0;top:72px;bottom:0;display:flex;flex-direction:column;gap:16px;min-height:0}
+#panel.compact #panel-body{position:relative;left:auto;top:auto;width:auto;height:auto;flex:1;min-height:0}
+#panel.compact #panel-footer{position:relative;left:auto;top:auto;width:auto;height:auto;flex:none}
+#panel.compact #panel-message{height:40px;font-size:14px}
+#panel.compact #panel-actions{display:flex;flex-direction:column;align-items:stretch;gap:8px;height:auto;margin-top:8px}
+#panel.compact #panel-actions .popup-button{flex:none;width:100%;height:44px;order:1}
+#panel.compact #panel-actions [data-variant=primary]{order:0}
+#panel.compact #panel-actions [data-variant=cancel]{order:2}
+#panel.compact .setup-columns,#panel.compact .slots{grid-template-columns:1fr}
+#panel.compact .popup-button{min-width:156px;max-width:100%}
+#panel.compact.short #panel-actions{flex-direction:row;flex-wrap:wrap}
+#panel.compact.short #panel-actions .popup-button{width:auto;flex:1 1 156px}
+#panel.compact.short #panel-scroll{overflow:auto}
+#panel.compact.short #panel-body{flex:none;overflow:visible}
+#panel.compact.short #panel-message{height:auto;min-height:24px}
 @media(prefers-reduced-motion:reduce){.menu-button:active{translate:none}}
-
-.setup-columns{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1.3em}.setup-columns section{min-width:0}.setup-columns label{display:block}.setup-columns select{display:block;width:100%;margin-top:.35em}.setup-columns li{margin-bottom:.35em}
-@media(max-width:800px){.setup-columns{grid-template-columns:1fr}.setup-columns select{width:100%}}
-
-.setup-columns [hidden]{display:none!important}dialog.setup-selection ul{font-size:.875em;line-height:1.4}.setup-columns li{margin-bottom:.2em}dialog.setup-selection p{font-size:.9em;line-height:1.5}.setup-columns h2{margin-top:0!important}.setup-columns{padding-top:.3em}
-
-/* HOME B common fantasy dialog v1: presentation only, gameplay state unchanged. */
-dialog#panel{
-  --moon-gold:#e7c785;--moon-lilac:#bda0ed;
-  isolation:isolate;
-  border:4px solid #ab824e;
-  border-radius:12px;
-  background:
-    radial-gradient(ellipse at 50% 0%,#59417b 0%,transparent 46%),
-    repeating-linear-gradient(0deg,transparent 0 7px,#ffffff05 7px 8px),
-    linear-gradient(145deg,#281e50 0%,#16132f 58%,#0e122a 100%);
-  box-shadow:0 0 0 3px #37244c,0 0 0 6px #e0bd75,0 0 0 9px #19102f,0 26px 75px #050414ed,inset 0 0 0 3px #6f5295,inset 0 0 34px #09071c;
-  padding:calc(20px * var(--popup-scale,1)) calc(24px * var(--popup-scale,1));
-}
-dialog#panel::before,dialog#panel::after{
-  content:"✦";pointer-events:none;position:absolute;z-index:1;
-  top:5px;color:#f4d99d;font-size:22px;line-height:1;
-  text-shadow:0 0 9px #c9a0ed;
-}
-dialog#panel::before{left:11px}dialog#panel::after{right:11px}
-dialog#panel header{
-  position:relative;align-items:center;
-  padding:2px 42px calc(14px * var(--popup-scale,1));
-  margin-bottom:calc(14px * var(--popup-scale,1));
-  border-bottom:2px solid #a583c3;
-  background:linear-gradient(90deg,transparent,#56407766,transparent);
-}
-dialog#panel header::before{content:"☾";position:absolute;left:12px;top:4px;color:var(--moon-gold);font-size:23px}
-dialog#panel h1{
-  width:100%;text-align:center;color:#ffe5aa;
-  font-weight:800;letter-spacing:.045em;
-  text-shadow:0 2px 0 #2c1746,0 0 12px #8961c477;
-}
-dialog#panel #close-panel{
-  position:absolute;right:0;top:0;z-index:2;
-  min-width:40px;min-height:40px;color:#fbe8c5;
-  border:2px solid #9774ae;border-radius:7px;
-  background:linear-gradient(#543b79,#291d4c);box-shadow:inset 0 0 0 1px #c7a26d;
-}
-dialog#panel #panel-body{
-  border:1px solid #8b70af;
-  background:linear-gradient(150deg,#191434ed,#15132cfa);
-  box-shadow:inset 0 0 0 2px #372955,inset 0 0 22px #070617b3;
-  border-radius:6px;
-  padding:clamp(12px,2.3vw,20px);
-  scrollbar-color:#a88bc5 #241a42;
-}
-dialog#panel #panel-body h2,dialog#panel #panel-body h3{color:#f5dca3;text-shadow:0 1px 5px #302152}
-dialog#panel .slot,dialog#panel .setup-advanced,dialog#panel .setup-columns section{
-  background:linear-gradient(160deg,#31244e,#211936);
-  border:2px solid #866caa;border-radius:7px;
-  box-shadow:inset 0 0 0 1px #513e72;
-  padding:12px;
-}
-dialog#panel .slot:has(input:checked){border-color:#e7c785;box-shadow:0 0 0 1px #a98054,inset 0 0 18px #8562a044}
-dialog#panel button:not(#close-panel),dialog#panel a.action{
-  color:#fff1d0;font-weight:700;
-  border:2px solid #d3af72;border-radius:5px;
-  background:linear-gradient(180deg,#6a4b94 0%,#3c2b65 50%,#2b214e 100%);
-  box-shadow:inset 0 0 0 2px #7b65a0,0 3px 0 #130d2a;
-  text-shadow:0 1px 2px #15102b;
-  transition:filter .12s ease,transform .12s ease;
-}
-dialog#panel button:not(#close-panel):hover,dialog#panel a.action:hover{filter:brightness(1.18)}
-dialog#panel button:not(#close-panel):active{transform:translateY(2px)}
-dialog#panel button:focus-visible,dialog#panel a:focus-visible,dialog#panel input:focus-visible,dialog#panel select:focus-visible{outline:3px solid #ffe39e;outline-offset:2px}
-dialog#panel .actions{padding:12px 0 5px;border-top:1px solid #7b659766}
-dialog#panel .actions button:first-of-type{background:linear-gradient(#9070b9,#604087 52%,#453268);border-color:#f2d48d}
-dialog#panel select,dialog#panel input[type=text],dialog#panel input[type=file]{
-  color:#f8e9d7;background:#2b2149;border:1px solid #ad8bc2;
-  border-radius:5px;padding:.52em;min-height:2.5em;
-}
-dialog#panel select option{color:#241b38;background:#fffaed}
-dialog#panel fieldset{border:1px solid #9479b1;border-radius:6px;min-width:0}
-dialog#panel legend{color:#f4dba5;font-weight:700}
-dialog#panel #panel-message{color:#ffe0a1}
-@media(max-width:600px){
- dialog#panel{padding:12px;border-width:3px}
- dialog#panel header{padding:6px 35px 12px}
- dialog#panel header::before{left:0}
- dialog#panel #panel-body{padding:12px}
- dialog#panel .setup-columns{grid-template-columns:1fr}
- dialog#panel .setup-columns section{padding:10px}
-}
-@media(prefers-reduced-motion:reduce){dialog#panel button{transition:none}}

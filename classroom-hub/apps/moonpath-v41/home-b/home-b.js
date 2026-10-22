@@ -4,7 +4,10 @@ import {makeBackup} from '../src/storage/backup.js';
 import {expeditionJournal,journalCsv,decisionLabel} from '../src/world/journal.js';
 import {validateQuestionPack} from '../src/questions/engine.js';
 
+import {setupPopup,beginPanel,finishPanel,decorateButton} from './popup-ui.js?v=20261022-popup-v2';
+
 const $=id=>document.getElementById(id);
+setupPopup();
 const ASSET='../assets/home/assembly/';
 const TEST_DB='moonpath-v411-phase29-smoke-db-v1';
 const roman=['I','II','III'];
@@ -35,11 +38,11 @@ for(const a of actions){
  const frame=cropped(ASSET+(sub?'sub-frame-original.png':'main-frame-original.png'),sub?[81,167,1009,967]:[38,109,2098,498],[w,h],sub?1173:2172);frame.classList.add('frame');b.append(frame);
  const icon=cropped(`../assets/home/icons-alpha-v1/${a.id}.png`,[0,0,a.icon[2],a.icon[3]],sub?[24,24]:[40,40],a.icon[2]);icon.classList.add('icon');b.append(icon,node('strong',a.title));
  if(a.description)b.append(node('small',a.description));
- b.addEventListener('click',()=>openPanel(a.id).catch(report));$(sub?'submenus':'menus').append(b);
+ b.addEventListener('click',()=>openPanel(a.id,null,b).catch(report));$(sub?'submenus':'menus').append(b);
 }
 function resize(){const scale=Math.min(innerWidth/960,innerHeight/540);$('stage').style.transform=`translate(-50%,-50%) scale(${scale})`;document.documentElement.style.setProperty('--popup-scale',String(scale));}
 addEventListener('resize',resize);resize();
-function report(e){const text=`처리하지 못했습니다: ${e.code??''} ${e.message??e}`;let target=$('panel-message');if(!target&&$('panel').open){target=node('p');target.id='panel-message';target.setAttribute('role','status');$('panel-body').append(target);}(target??$('message')).textContent=text;}
+function report(e){const text=`처리하지 못했습니다: ${e.code??''} ${e.message??e}`;const target=$('panel').open?$('panel-message'):$('message');target.textContent=text;}
 async function refresh(){
  if(!database)database=await openEngineDatabase({open(_name,version){return indexedDB.open(TEST_DB,version);}});
  slots=await Promise.all([1,2,3].map(slot=>database.read(slot)));
@@ -54,7 +57,7 @@ function slotPicker(body){
  if(s)label.append(node('small',`저장 ${new Date(s.meta.updatedAt).toLocaleString('ko-KR')}${item.needsRepair?' · 복구 점검 필요':''}`));
  list.append(label);});field.append(list);body.append(field);
 }
-function button(parent,text,fn){const b=node('button',text);b.type='button';b.addEventListener('click',async()=>{if(busy)return;busy=true;const controls=[...$('panel').querySelectorAll('button,input,select')].map(e=>[e,e.disabled]);controls.forEach(([e])=>{e.disabled=true;});try{await fn();}catch(e){report(e);}finally{busy=false;controls.forEach(([e,disabled])=>{if(e.isConnected)e.disabled=disabled;});}});parent.append(b);return b;}
+function button(parent,text,fn,variant='secondary'){const b=node('button',text);b.type='button';decorateButton(b,text,variant);b.addEventListener('click',async()=>{if(busy)return;busy=true;$('panel').setAttribute('aria-busy','true');const controls=[...$('panel').querySelectorAll('button,input,select')].map(e=>[e,e.disabled]);controls.forEach(([e])=>{e.disabled=true;});try{await fn();}catch(e){report(e);}finally{busy=false;$('panel').removeAttribute('aria-busy');controls.forEach(([e,disabled])=>{if(e.isConnected)e.disabled=disabled;});}});parent.append(b);return b;}
 function game(slot){const target=new URL('../journey/',location.href);target.searchParams.set('slot',slot);location.assign(target.href);}
 function download(text,type,filename){const url=URL.createObjectURL(new Blob([text],{type}));const a=node('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
 function table(parent,title,headers,rows){
@@ -75,9 +78,9 @@ function showJournal(target,report){
  table(details,'저장된 감사 이력',['순번','유형','시각'],report.audit.slice(-100).map(a=>[a.seq,a.type,new Date(a.at).toLocaleString('ko-KR')]));target.append(details);
  target.append(node('p','화면에는 최근 문항 200개·감사 이력 100개까지 표시합니다. CSV에는 전체 기록을 포함합니다.'));
 }
-async function openPanel(kind,setup=null){
+async function openPanel(kind,setup=null,trigger=null){
  const request=++panelRequest;
- const panel=$('panel'),body=$('panel-body');body.replaceChildren();body.scrollTop=0;$('panel-title').textContent=actions.find(a=>a.id===kind)?.title??'HOME B 조립 상태';
+ const panel=$('panel'),body=$('panel-body');beginPanel(trigger);$('panel-title').textContent=actions.find(a=>a.id===kind)?.title??'HOME B 조립 상태';
  panel.classList.toggle('setup-selection',kind==='new');
  if(!panel.open)panel.showModal();
  if(kind==='new'){
@@ -100,8 +103,8 @@ async function openPanel(kind,setup=null){
   packs.addEventListener('change',loadPack);file.addEventListener('change',loadPack);
   packSection.append(node('p','공동 체력 ♥8 · 기본 문제 오답 −1 / 유효 회수 +1. 소진되면 기록을 보존하고 책장에서 회복합니다.'));
   packSection.append(node('p','현재 지원 형식은 60문항 YQBank JSON입니다. 선택한 원본은 탐험 저장과 백업에 함께 보관합니다.'));
-  const next=node('div');next.className='actions';button(next,'다음 · 탐험 설정',async()=>{if(rules.value!=='4.1.1')throw new Error('탐험 규칙을 먼저 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 먼저 선택하세요.');await openPanel('new-settings',{sourcePack:chosen});});button(next,'탐험 보관함 열기',()=>openPanel('archive'));body.append(next);
-  const message=node('p');message.id='panel-message';message.setAttribute('role','status');body.append(message);return;
+  const next=node('div');next.className='actions';button(next,'다음 · 탐험 설정',async()=>{if(rules.value!=='4.1.1')throw new Error('탐험 규칙을 먼저 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 먼저 선택하세요.');await openPanel('new-settings',{sourcePack:chosen});},'primary');button(next,'탐험 보관함 열기',()=>openPanel('archive'));body.append(next);
+  finishPanel(next);return;
  }
  if(['new-settings','continue','journal','settings','records','archive'].includes(kind)){
   body.append(node('p','v4.1.1 개발용 탐험입니다. 기존 HOME 저장 기록과 분리되어 있습니다.'));
@@ -115,7 +118,7 @@ async function openPanel(kind,setup=null){
    await refresh();const found=slots[setup.slot-1].state;if(found?.meta.expeditionId!==setup.expeditionId||found.meta.revision!==setup.revision)throw new Error('탐험이 변경됐습니다. 보관함에서 다시 확인하세요.');
    const teacher=new TeacherEngineSession(database);try{await teacher.open(setup.slot);const s=teacher.getState();await database.archiveSlot(setup.slot,{archiveId:crypto.randomUUID(),expectedRevision:s.meta.revision,lease:teacher.lease});}finally{await teacher.close();}
    await openPanel('archive');$('panel-message').textContent='보관을 완료했습니다. 빈 슬롯에서 새로운 탐험을 시작할 수 있습니다.';
-  });button(controls,'취소 · 보관함으로',()=>openPanel('archive'));
+  },'primary');button(controls,'취소 · 보관함으로',()=>openPanel('archive'),'cancel');
  }else if(kind==='archive'){
   $('panel-title').textContent='탐험 보관함';
   body.append(node('p','보관하면 슬롯이 비워지고 기록은 이 브라우저에 남습니다. 복원은 기록의 원래 슬롯이 비어 있을 때 가능합니다. 다른 기기로 옮기거나 브라우저 데이터를 지우기 전에는 JSON도 백업하세요.'));
@@ -146,10 +149,10 @@ async function openPanel(kind,setup=null){
    const teacher=new TeacherEngineSession(database);
    try{await teacher.create({slot,world,teamCount:Number(select.value),timerSeconds:Number(timerSelect.value),expeditionName,healthEnabled:true,sourcePack:setup.sourcePack});await teacher.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});}finally{await teacher.close();}
    game(slot);
-  });body.append(node('p','새 탐험을 저장한 뒤 마법 책장에서 테마를 선택합니다. 갈림길에서 지역을 고르고 수업을 시작합니다.'));
+  },'primary');body.append(node('p','새 탐험을 저장한 뒤 마법 책장에서 테마를 선택합니다. 갈림길에서 지역을 고르고 수업을 시작합니다.'));
  }else if(kind==='continue'){
   button(controls,'탐험 보관함 열기',()=>openPanel('archive'));
-  button(controls,'선택한 탐험 이어하기',async()=>{const slot=selected();if(!slots[slot-1].state)throw new Error('저장된 탐험이 없는 슬롯입니다.');game(slot);});
+  button(controls,'선택한 탐험 이어하기',async()=>{const slot=selected();if(!slots[slot-1].state)throw new Error('저장된 탐험이 없는 슬롯입니다.');game(slot);},'primary');
   body.append(node('p','저장된 문항과 남은 시간을 복원합니다. 수업과 타이머는 교사가 직접 재개합니다.'));
  }else if(kind==='settings'){
   button(controls,'탐험 보관함 열기',()=>openPanel('archive'));
@@ -175,15 +178,15 @@ async function openPanel(kind,setup=null){
   body.append(node('p','새로운 탐험에서 빈 슬롯과 모둠 수를 고르세요. 이어하기에서는 저장한 슬롯을 엽니다. 설정에서 JSON을 백업하고 복원할 수 있습니다.'));
   body.append(node('p','지역 시험 화면에서 수업 재개와 타이머 재개는 각각 교사가 직접 실행합니다.'));
  }else if(kind==='exit'){
-  body.append(node('p','보존된 이전 HOME을 엽니다. 저장 기록은 유지합니다.'));button(controls,'이전 HOME 열기',()=>location.assign('../../moonpath-dev/index.html'));
+  body.append(node('p','보존된 이전 HOME을 엽니다. 저장 기록은 유지합니다.'));button(controls,'이전 HOME 열기',()=>location.assign('../../moonpath-dev/index.html'),'primary');
  }else{
   body.append(node('p','이전 대화에서 회수한 PNG를 독립 레이어로 조립했습니다. 승인 로고·슬로건 원본은 유지했습니다.'));
   body.append(node('p','배경·캐릭터·프레임·아이콘은 제작 후보를 연결한 검토용 조립 상태입니다. 최종 화면 승인, 전체 게임, 오프라인 출시는 완료되지 않았습니다.'));
  }
- body.append(controls);const message=node('p');message.id='panel-message';message.setAttribute('role','status');body.append(message);
+ finishPanel(controls);
 }
 $('close-panel').addEventListener('click',()=>{if(!busy)$('panel').close();});
 $('panel').addEventListener('cancel',e=>{if(busy)e.preventDefault();});
 $('panel').addEventListener('close',()=>{panelRequest++;});
-$('review-note').addEventListener('click',()=>openPanel('review').catch(report));
+$('review-note').addEventListener('click',()=>openPanel('review',null,$('review-note')).catch(report));
 addEventListener('pageshow',()=>{busy=false;});

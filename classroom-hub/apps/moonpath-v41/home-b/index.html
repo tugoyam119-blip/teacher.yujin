@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>미지의 길 · HOME B 개발 조립본</title>
-<link rel="stylesheet" href="home-b.css?v=20261022-common-popup-v1">
+<link rel="stylesheet" href="home-b.css?v=20261022-popup-v2">
 </head>
 <body>
 <main id="stage" aria-label="미지의 길 HOME B">
@@ -17,10 +17,20 @@
   <p id="footer-quote">작은 호기심이<br>세상을 바꾸는 마법이 될 거야.</p>
   <button id="review-note" type="button">개발 조립본 · 프레임 검토 중</button>
   <p id="message" role="status" aria-live="polite"></p>
-  <dialog id="panel" aria-labelledby="panel-title">
-    <header><h1 id="panel-title"></h1><button id="close-panel" type="button" aria-label="닫기">×</button></header>
-    <div id="panel-body"></div>
-  </dialog>
 </main>
-<script type="module" src="home-b.js?v=20261021-health"></script>
+<dialog id="panel" aria-labelledby="panel-title">
+  <div class="popup-art" aria-hidden="true">
+    <img class="popup-frame" src="../assets/home/popup-v2/frame-base.png" alt="">
+    <img class="popup-title-art" src="../assets/home/popup-v2/title.png" alt="">
+    <img class="popup-close-art" src="../assets/home/popup-v2/close-approved-fragment.png" alt="">
+  </div>
+  <header><h1 id="panel-title" tabindex="-1"></h1><button id="close-panel" type="button" aria-label="닫기">×</button></header>
+  <div id="panel-scroll"><div id="panel-body"></div>
+    <footer id="panel-footer">
+      <p id="panel-message" role="status" aria-live="polite"></p>
+      <div id="panel-actions" aria-label="팝업 조작"></div>
+    </footer>
+  </div>
+</dialog>
+<script type="module" src="home-b.js?v=20261022-popup-v2"></script>
 </body></html>
