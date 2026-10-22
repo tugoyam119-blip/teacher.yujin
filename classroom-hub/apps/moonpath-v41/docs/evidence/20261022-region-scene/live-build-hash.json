@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-22T10:32:08.625Z",
+  "url": "https://moonpath-v411-test.kkyj119.workers.dev/dist/phase2-9-one-region-smoke.html",
+  "status": 200,
+  "bytes": 5554818,
+  "sha256": "de7257e5614b9b6412cc402856e2a43845245b2692d5a89fd8d8d1d073232da0",
+  "expectedSha256": "de7257e5614b9b6412cc402856e2a43845245b2692d5a89fd8d8d1d073232da0",
+  "matches": true
+}

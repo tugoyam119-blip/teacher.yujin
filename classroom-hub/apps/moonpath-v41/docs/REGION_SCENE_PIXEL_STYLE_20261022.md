@@ -26,3 +26,7 @@
 - 재현: `tests/browser/region-scene-smoke.cjs`, `region-popup-smoke.cjs`, `step08-cloudflare-live.cjs`. 배포 후 지역 화면 검사는 REGION_SCENE_BASE를 실제 시험 주소로 설정할 수 있다. PLAYWRIGHT_MODULE/PLAYWRIGHT_BROWSERS_PATH/POPUP_TEST_OUTPUT으로 실행 환경과 증거 위치 지정.
 
 증거는 `docs/evidence/20261022-region-scene/`. 사용자 프로필과 다른 임시 브라우저 문맥/합성 시험 데이터만 사용한다. 사용자 실제 기존 저장을 읽거나 변경하지 않는다. main 기준f7e0e8e29428b3b7118c9553cd517f870bfd785e 보존, Railway 도구/배포 호출 없음. 시험 브랜치 push의 기존 Cloudflare 자동 배포 및 실제 주소 검증은 후속 결과로 구분한다. 모바일 실기기·가상 키보드·Windows Chrome/Edge·6테마 완주·오프라인 file:// 전체 검증은 별도 미실시다.
+
+## 실제 시험 사이트 후속 검증
+시험 커밋7b1234540f3defd4d31fd69468ddfceb58f37733의 기존 자동 빌드5406af6c-d1b4-447e-ac15-031a229b5ac6는 stopped/success다. 배포c22d24ed-0c24-40db-8e9a-07e5ab591825(2026-10-22T10:31:19.740845Z), 버전5e82559c-8ade-4d6b-a5cd-8e4392c37c55에100% 제공. 실제 단일HTML 응답200/5,554,818바이트, SHA-256 de7257e5614b9b6412cc402856e2a43845245b2692d5a89fd8d8d1d073232da0가 Git 커밋과 일치했다.
+실제 HTTPS 주소에서 지역 화면8개와 연속 저장/복원12개 검증이 모두 PASS. 연속 검사의 첫 시도는 about:blank에서 SSL 연결 오류로 검사 시작 전 중단됐고, 인증서 검증을 해제하지 않은 새 임시 브라우저 재시도에서 통과했다. 정상 실행에서는 브라우저 예외/HTTP 오류0. 지역 화면 캡처는 outputs/region-scene-live/Region-scene-desktop.png와 Region-scene-mobile.png다. main HEAD f7e0e8e29428b3b7118c9553cd517f870bfd785e 불변, Railway 미접근, 실제 사용자 저장 미접근. 후속 검증 기록은 로컬에 보관해 문서 반영만을 위한 추가 배포는 하지 않는다.

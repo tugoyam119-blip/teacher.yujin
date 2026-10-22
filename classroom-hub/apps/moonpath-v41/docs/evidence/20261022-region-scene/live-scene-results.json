@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-22T10:32:23.280Z",
+  "site": "https://moonpath-v411-test.kkyj119.workers.dev/",
+  "browser": "Playwright WebKit; isolated native IDB context",
+  "passed": 8,
+  "checks": [
+    "HOME background, image panels, actual saved HUD values and original navigation/runtime controls",
+    "All teacher controls use approved button artwork and fit the desktop panel",
+    "Expanding detail panel preserves exact saved state",
+    "Original regional JSON export works from the horizontal save toolbar without changing state",
+    "390px mobile readable layout, 44px controls, no horizontal overflow and unchanged saved state",
+    "Short landscape remains scrollable with accessible navigation and unchanged saved state",
+    "Original HOME handler pauses lesson safely and preserves settings/roster",
+    "No browser exceptions or HTTP errors"
+  ],
+  "errors": [],
+  "httpErrors": []
+}
