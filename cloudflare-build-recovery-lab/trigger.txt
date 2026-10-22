@@ -1,0 +1,2 @@
+GitHub push baseline run: GIT-A
+Only the dedicated test branch and isolated Worker are in scope.
