@@ -1,0 +1,68 @@
+{
+  "note": "Existing isolated QA screenshots copied byte-identically; no user save data copied",
+  "images": [
+    {
+      "id": "home",
+      "path": "docs/evidence/20261022-consolidated-standard/home.png",
+      "source": "isolated verification output Cloudflare-HOME-local.png",
+      "bytes": 2019364,
+      "sha256": "3896990dcfb3ee790515595a71859c67d7317889d7fe9e32ce9cfca0766c441d"
+    },
+    {
+      "id": "preparation",
+      "path": "docs/evidence/20261022-consolidated-standard/preparation.png",
+      "source": "isolated verification output journey-pixel-live/STEP08-01-preparation.png",
+      "bytes": 1000708,
+      "sha256": "9bcb6ac58d06b11a80a1a5ce19fc8837486de2bbe1f145f2b48681f62cdc42b1"
+    },
+    {
+      "id": "guide",
+      "path": "docs/evidence/20261022-consolidated-standard/guide.png",
+      "source": "isolated verification output journey-pixel-live/Journey-01-guide.png",
+      "bytes": 907619,
+      "sha256": "dc9aada089e089b256251106798a33f818378093bd016428876e72799d900fb1"
+    },
+    {
+      "id": "map",
+      "path": "docs/evidence/20261022-consolidated-standard/map.png",
+      "source": "isolated verification output journey-pixel-live/Journey-02-map.png",
+      "bytes": 2107497,
+      "sha256": "393ae0e9f0c5b5bc1d22a501fabac75aa175f9894d74c63bd4d0f77d54b3f6ee"
+    },
+    {
+      "id": "fork",
+      "path": "docs/evidence/20261022-consolidated-standard/fork.png",
+      "source": "isolated verification output journey-pixel-live/Journey-04-book-fork.png",
+      "bytes": 2734885,
+      "sha256": "28c8c690042b0898ffb2512561e1bc68cc64902583808e70714e1c222293a430"
+    },
+    {
+      "id": "region",
+      "path": "docs/evidence/20261022-consolidated-standard/region.png",
+      "source": "isolated verification output region-scene-live/Region-scene-desktop.png",
+      "bytes": 852791,
+      "sha256": "a96eb7aa2294068c668b42636a574148fb9d08dbd41a125a3b28706d4204d60e"
+    },
+    {
+      "id": "question",
+      "path": "docs/evidence/20261022-consolidated-standard/question.png",
+      "source": "isolated verification output region-scene-live/Scene-live-02-continued-question.png",
+      "bytes": 881470,
+      "sha256": "ddea2929d81a4691810a5a7a28e6ab036e1a7f0427802aa394621de6b08cade9"
+    },
+    {
+      "id": "map-mobile",
+      "path": "docs/evidence/20261022-consolidated-standard/map-mobile.png",
+      "source": "isolated verification output journey-pixel-live/Journey-03-map-mobile.png",
+      "bytes": 498806,
+      "sha256": "e4d4fa669b5c012650758d5c5a1e4e93a89a4422c7c3eb924bdafc958ee5e729"
+    },
+    {
+      "id": "fork-mobile",
+      "path": "docs/evidence/20261022-consolidated-standard/fork-mobile.png",
+      "source": "isolated verification output journey-pixel-live/Journey-05-fork-mobile.png",
+      "bytes": 820410,
+      "sha256": "8d2f5dd4b1605d875ebe9727e66bc1f620356290bca1828599967c3074f71cc5"
+    }
+  ]
+}

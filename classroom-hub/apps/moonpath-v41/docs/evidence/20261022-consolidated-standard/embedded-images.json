@@ -1,0 +1,137 @@
+{
+  "source": "docs/MASTER_v4.1.1_original.md",
+  "embeddedImages": 26,
+  "brokenCurrentLinks": [],
+  "images": [
+    {
+      "source": "../assets/home/popup-v2/frame-approved-master.png",
+      "bytes": 457009,
+      "sha256": "8bbdd9b4af5859cef7a24b935c35c404583d302166eca796befcee5476c902ee"
+    },
+    {
+      "source": "../assets/home/popup-v2/primary-normal.png",
+      "bytes": 16415,
+      "sha256": "612c5bd7285caeec43f15121de0ccba1de37120108df156bf7a4123161a22949"
+    },
+    {
+      "source": "../assets/home/popup-v2/primary-hover.png",
+      "bytes": 18160,
+      "sha256": "6f30f6e19308bf61502961fc0b5237e4f9713c5f9333c6b4aa91f25a0612aeb7"
+    },
+    {
+      "source": "../assets/home/popup-v2/primary-pressed.png",
+      "bytes": 15667,
+      "sha256": "92deb606a0f5ffe1a0f5ad61576726160c9e2362f41a7756c8c9a32449974b01"
+    },
+    {
+      "source": "../assets/home/popup-v2/primary-disabled.png",
+      "bytes": 16323,
+      "sha256": "492c6a767f26cbb6d45edfc0ded126a239effdf20741866d8284021a6ee86c8a"
+    },
+    {
+      "source": "../assets/home/popup-v2/secondary-normal.png",
+      "bytes": 15143,
+      "sha256": "1e57e1a8e8ce18444b26270144aac2be4c438237aa5c8e7afb5bac557d0788fa"
+    },
+    {
+      "source": "../assets/home/popup-v2/secondary-hover.png",
+      "bytes": 16486,
+      "sha256": "da813e4b0b9e467d365e80fb8dc0e2e00fb2d78a224523059e23ef73d5d13f3f"
+    },
+    {
+      "source": "../assets/home/popup-v2/secondary-pressed.png",
+      "bytes": 14202,
+      "sha256": "e8e39b4e75ecdfaff0cde73ebe8fbf4b7b925beeba27b2f6874d09f8cdec8c79"
+    },
+    {
+      "source": "../assets/home/popup-v2/secondary-disabled.png",
+      "bytes": 14710,
+      "sha256": "769374c8d7896f26fb555f14504248b70bbd4cb0020fe1008eff7b8ba479e173"
+    },
+    {
+      "source": "../assets/home/popup-v2/cancel-normal.png",
+      "bytes": 12885,
+      "sha256": "b9a60f2c67790849aa4ec031f95cac4f17d2f6c69ecd7fac5dc099cae4ce3ee3"
+    },
+    {
+      "source": "../assets/home/popup-v2/cancel-hover.png",
+      "bytes": 13807,
+      "sha256": "6bc7d1fd0584a165376abf9e51471c14135bc109b5ceb222d5f63415ef021084"
+    },
+    {
+      "source": "../assets/home/popup-v2/cancel-pressed.png",
+      "bytes": 11954,
+      "sha256": "5ddf50bc05a0641305ff3af90e3d50a9f401133cec86ae1c6a1efc48b2994b82"
+    },
+    {
+      "source": "../assets/home/popup-v2/cancel-disabled.png",
+      "bytes": 13194,
+      "sha256": "a70c22a6d7af6ed25ec2ea5b760312f014cf81a9c661e48dfd4ecf59b22377eb"
+    },
+    {
+      "source": "../assets/journey/pixel-v1/world-map.png",
+      "bytes": 3583000,
+      "sha256": "1eebe3f8c7131fd9f330415ca5f001876ec47d9aa470dad073ad5701a92295dd"
+    },
+    {
+      "source": "../assets/journey/pixel-v1/library-crossroads.png",
+      "bytes": 3658852,
+      "sha256": "e1d6d885407f33aa32e297d9c27b821ae48cda453683117c9a65c36dc6b54d79"
+    },
+    {
+      "source": "../assets/journey/pixel-v1/magic-book.png",
+      "bytes": 2062803,
+      "sha256": "da2dcc115d6ac1c7c11328f5bdd864549293f4512300f2e5959e385a592f8684"
+    },
+    {
+      "source": "../assets/journey/pixel-v1/mage-back.png",
+      "bytes": 1347652,
+      "sha256": "96d048a69e795f921451343c8b1a07ec5d5fd707e49b9b8bbb795935549d0044"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/home.png",
+      "bytes": 2019364,
+      "sha256": "3896990dcfb3ee790515595a71859c67d7317889d7fe9e32ce9cfca0766c441d"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/preparation.png",
+      "bytes": 1000708,
+      "sha256": "9bcb6ac58d06b11a80a1a5ce19fc8837486de2bbe1f145f2b48681f62cdc42b1"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/guide.png",
+      "bytes": 907619,
+      "sha256": "dc9aada089e089b256251106798a33f818378093bd016428876e72799d900fb1"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/map.png",
+      "bytes": 2107497,
+      "sha256": "393ae0e9f0c5b5bc1d22a501fabac75aa175f9894d74c63bd4d0f77d54b3f6ee"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/fork.png",
+      "bytes": 2734885,
+      "sha256": "28c8c690042b0898ffb2512561e1bc68cc64902583808e70714e1c222293a430"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/region.png",
+      "bytes": 852791,
+      "sha256": "a96eb7aa2294068c668b42636a574148fb9d08dbd41a125a3b28706d4204d60e"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/question.png",
+      "bytes": 881470,
+      "sha256": "ddea2929d81a4691810a5a7a28e6ab036e1a7f0427802aa394621de6b08cade9"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/map-mobile.png",
+      "bytes": 498806,
+      "sha256": "e4d4fa669b5c012650758d5c5a1e4e93a89a4422c7c3eb924bdafc958ee5e729"
+    },
+    {
+      "source": "evidence/20261022-consolidated-standard/fork-mobile.png",
+      "bytes": 820410,
+      "sha256": "8d2f5dd4b1605d875ebe9727e66bc1f620356290bca1828599967c3074f71cc5"
+    }
+  ]
+}

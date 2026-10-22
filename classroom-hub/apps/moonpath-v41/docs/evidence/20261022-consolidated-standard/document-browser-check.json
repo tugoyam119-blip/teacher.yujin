@@ -1,0 +1,7 @@
+{
+  "browser": "isolated WebKit; file URL",
+  "decodedEmbeddedImages": 26,
+  "desktopNoHorizontalOverflow": true,
+  "mobileNoHorizontalOverflow": true,
+  "errors": []
+}
