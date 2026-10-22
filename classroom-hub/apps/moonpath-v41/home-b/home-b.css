@@ -65,3 +65,88 @@ dialog input[type="text"],#expedition-name{width:min(100%,24em);padding:.45em;bo
 @media(max-width:800px){.setup-columns{grid-template-columns:1fr}.setup-columns select{width:100%}}
 
 .setup-columns [hidden]{display:none!important}dialog.setup-selection ul{font-size:.875em;line-height:1.4}.setup-columns li{margin-bottom:.2em}dialog.setup-selection p{font-size:.9em;line-height:1.5}.setup-columns h2{margin-top:0!important}.setup-columns{padding-top:.3em}
+
+/* HOME B common fantasy dialog v1: presentation only, gameplay state unchanged. */
+dialog#panel{
+  --moon-gold:#e7c785;--moon-lilac:#bda0ed;
+  isolation:isolate;
+  border:4px solid #ab824e;
+  border-radius:12px;
+  background:
+    radial-gradient(ellipse at 50% 0%,#59417b 0%,transparent 46%),
+    repeating-linear-gradient(0deg,transparent 0 7px,#ffffff05 7px 8px),
+    linear-gradient(145deg,#281e50 0%,#16132f 58%,#0e122a 100%);
+  box-shadow:0 0 0 3px #37244c,0 0 0 6px #e0bd75,0 0 0 9px #19102f,0 26px 75px #050414ed,inset 0 0 0 3px #6f5295,inset 0 0 34px #09071c;
+  padding:calc(20px * var(--popup-scale,1)) calc(24px * var(--popup-scale,1));
+}
+dialog#panel::before,dialog#panel::after{
+  content:"✦";pointer-events:none;position:absolute;z-index:1;
+  top:5px;color:#f4d99d;font-size:22px;line-height:1;
+  text-shadow:0 0 9px #c9a0ed;
+}
+dialog#panel::before{left:11px}dialog#panel::after{right:11px}
+dialog#panel header{
+  position:relative;align-items:center;
+  padding:2px 42px calc(14px * var(--popup-scale,1));
+  margin-bottom:calc(14px * var(--popup-scale,1));
+  border-bottom:2px solid #a583c3;
+  background:linear-gradient(90deg,transparent,#56407766,transparent);
+}
+dialog#panel header::before{content:"☾";position:absolute;left:12px;top:4px;color:var(--moon-gold);font-size:23px}
+dialog#panel h1{
+  width:100%;text-align:center;color:#ffe5aa;
+  font-weight:800;letter-spacing:.045em;
+  text-shadow:0 2px 0 #2c1746,0 0 12px #8961c477;
+}
+dialog#panel #close-panel{
+  position:absolute;right:0;top:0;z-index:2;
+  min-width:40px;min-height:40px;color:#fbe8c5;
+  border:2px solid #9774ae;border-radius:7px;
+  background:linear-gradient(#543b79,#291d4c);box-shadow:inset 0 0 0 1px #c7a26d;
+}
+dialog#panel #panel-body{
+  border:1px solid #8b70af;
+  background:linear-gradient(150deg,#191434ed,#15132cfa);
+  box-shadow:inset 0 0 0 2px #372955,inset 0 0 22px #070617b3;
+  border-radius:6px;
+  padding:clamp(12px,2.3vw,20px);
+  scrollbar-color:#a88bc5 #241a42;
+}
+dialog#panel #panel-body h2,dialog#panel #panel-body h3{color:#f5dca3;text-shadow:0 1px 5px #302152}
+dialog#panel .slot,dialog#panel .setup-advanced,dialog#panel .setup-columns section{
+  background:linear-gradient(160deg,#31244e,#211936);
+  border:2px solid #866caa;border-radius:7px;
+  box-shadow:inset 0 0 0 1px #513e72;
+  padding:12px;
+}
+dialog#panel .slot:has(input:checked){border-color:#e7c785;box-shadow:0 0 0 1px #a98054,inset 0 0 18px #8562a044}
+dialog#panel button:not(#close-panel),dialog#panel a.action{
+  color:#fff1d0;font-weight:700;
+  border:2px solid #d3af72;border-radius:5px;
+  background:linear-gradient(180deg,#6a4b94 0%,#3c2b65 50%,#2b214e 100%);
+  box-shadow:inset 0 0 0 2px #7b65a0,0 3px 0 #130d2a;
+  text-shadow:0 1px 2px #15102b;
+  transition:filter .12s ease,transform .12s ease;
+}
+dialog#panel button:not(#close-panel):hover,dialog#panel a.action:hover{filter:brightness(1.18)}
+dialog#panel button:not(#close-panel):active{transform:translateY(2px)}
+dialog#panel button:focus-visible,dialog#panel a:focus-visible,dialog#panel input:focus-visible,dialog#panel select:focus-visible{outline:3px solid #ffe39e;outline-offset:2px}
+dialog#panel .actions{padding:12px 0 5px;border-top:1px solid #7b659766}
+dialog#panel .actions button:first-of-type{background:linear-gradient(#9070b9,#604087 52%,#453268);border-color:#f2d48d}
+dialog#panel select,dialog#panel input[type=text],dialog#panel input[type=file]{
+  color:#f8e9d7;background:#2b2149;border:1px solid #ad8bc2;
+  border-radius:5px;padding:.52em;min-height:2.5em;
+}
+dialog#panel select option{color:#241b38;background:#fffaed}
+dialog#panel fieldset{border:1px solid #9479b1;border-radius:6px;min-width:0}
+dialog#panel legend{color:#f4dba5;font-weight:700}
+dialog#panel #panel-message{color:#ffe0a1}
+@media(max-width:600px){
+ dialog#panel{padding:12px;border-width:3px}
+ dialog#panel header{padding:6px 35px 12px}
+ dialog#panel header::before{left:0}
+ dialog#panel #panel-body{padding:12px}
+ dialog#panel .setup-columns{grid-template-columns:1fr}
+ dialog#panel .setup-columns section{padding:10px}
+}
+@media(prefers-reduced-motion:reduce){dialog#panel button{transition:none}}
