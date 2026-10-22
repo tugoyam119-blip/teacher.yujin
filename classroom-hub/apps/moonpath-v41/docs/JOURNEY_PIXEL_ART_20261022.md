@@ -33,3 +33,7 @@ HOME background-original.png, character-original.png, main-frame-original.png를
 
 배포 및 원격 파일 전체 재다운로드 검증은 완료 후 후속 기록에 추가한다.
 - CAREFUL/STANDARD/QUICK 실제 로컬 진입·첫 문제·새로고침 일시정지 3모드 PASS.
+
+## 배포 후 실제 검증
+시험 커밋357d0a20278eb4484adf1745a8ee0712179547c2, Cloudflare 빌드a4cc6f7c-e601-4b09-91b4-afdefec25d98 success. 배포6c305b7c-a6d6-4a45-9d6e-16183b8d90cc, 버전56b87dac-0ebf-4999-bf5a-be02d219dcd6 100%. GitHub raw 전체4PNG 및 배포4PNG의 바이트/해시 모두 원본 일치. 실제 지도/책장/마도사 UI7개, 실제 새 탐험/문제/이어하기/백업/복원12개 PASS. main HEAD f7e0e8e29428b3b7118c9553cd517f870bfd785e 유지.
+초기 연속 검사2회는 느린 기존 지역 HTML 로딩으로 첫 ACTIVE 기대 및30초 navigation 제한에서 각각 시간 초과했다. 원래5초 인계/안전 일시정지 규칙은 변경하지 않았다. 명시 교사 재개를 허용하는 검사와 더 긴 navigation 대기로 다시 수행한 전체12개가 PASS. 초기 시간 초과를 PASS로 바꾸지 않았다. Node의 GitHub 인증서 오류는 인증서 검증을 유지한 WebKit 전체 다운로드로 대체했다. 후속 검증 기록은 재배포를 유발하지 않도록 로컬에만 커밋한다.
