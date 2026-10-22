@@ -24,3 +24,6 @@
 
 재현: tests/browser/journey-map-smoke.cjs. 증거는 outputs/journey-map-local 및 후속 실제 배포 검증 기록에 둔다.
 - 세 가지 교사 확인 CAREFUL/STANDARD/QUICK: 새 흐름 진입·명단·첫 문제·새로고침 일시정지 3모드 PASS.
+
+## 배포 후 확인
+시험 커밋 ed6133d64593c188f9a67a1a11dc509c912a598a, Cloudflare 빌드4fba58c0-2087-40c6-94bf-ea5da8a542ee success. 실제 시험 사이트에서 지도6개 시나리오 및 새 탐험/문제/이어하기/백업/복원12개 검증 PASS. main HEAD f7e0e8e29428b3b7118c9553cd517f870bfd785e 유지, Railway 조작 없음. 후속 실검증 기록은 재배포를 만들지 않도록 로컬 커밋에 보관한다.
