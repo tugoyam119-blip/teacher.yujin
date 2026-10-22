@@ -1,0 +1,13 @@
+{
+  "site": "https://moonpath-v411-test.kkyj119.workers.dev/",
+  "browser": "isolated WebKit context",
+  "dataScope": "Synthetic disposable fixtures only; no user browser profile accessed",
+  "checks": [
+    "Actual settings UI exports verified new settings, seed and roster",
+    "Occupied slot rejects restore and remains byte-equivalent",
+    "Archive frees slot, real JSON import restores settings/seed/roster without auto-start",
+    "Synthetic legacy slot3 unchanged through new expedition, export, archive and restore",
+    "No browser page errors"
+  ],
+  "errors": []
+}

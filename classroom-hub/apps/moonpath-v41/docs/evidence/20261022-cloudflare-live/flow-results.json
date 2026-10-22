@@ -1,0 +1,8 @@
+{
+  "browser": "Playwright WebKit; fresh contexts on Cloudflare test URL",
+  "checks": [
+    "CAREFUL: settings, roster, entry confirmation, first question, refresh paused",
+    "STANDARD: settings, roster, entry confirmation, first question, refresh paused",
+    "QUICK: settings, roster, entry confirmation, first question, refresh paused"
+  ]
+}

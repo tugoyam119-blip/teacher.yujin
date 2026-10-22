@@ -1,0 +1,66 @@
+{
+  "browser": "Playwright WebKit, fresh isolated browser context on Cloudflare test URL; not physical mobile",
+  "url": "https://moonpath-v411-test.kkyj119.workers.dev/home-b/",
+  "checks": [
+    "Seven HOME buttons rendered",
+    {
+      "desktopGeometry": {
+        "width": 1093.328125,
+        "height": 666.65625,
+        "bodyWidth": 965.328125,
+        "bodyHeight": 480,
+        "bodyLeft": 64,
+        "bodyTop": 154.65625
+      }
+    },
+    "One screen setup updates actual duration, cooperation and people summary",
+    {
+      "settingsScroll": {
+        "client": 480,
+        "scroll": 608
+      }
+    },
+    "Close restores HOME trigger focus",
+    "continue: open, footer, Escape close",
+    "journal: open, footer, Escape close",
+    "settings: open, footer, Escape close",
+    "records: open, footer, Escape close",
+    "help: open, footer, Escape close",
+    "exit: open, footer, Escape close",
+    "HOME DOM, image paths and coordinates unchanged after popup interactions (focus outline excluded)",
+    {
+      "mobileGeometry": {
+        "width": 390,
+        "height": 844,
+        "panel": {
+          "x": 12,
+          "y": 12,
+          "width": 366,
+          "height": 820
+        },
+        "buttons": [
+          {
+            "width": 318,
+            "height": 44,
+            "left": 36,
+            "right": 354,
+            "bottom": 808
+          },
+          {
+            "width": 318,
+            "height": 44,
+            "left": 36,
+            "right": 354,
+            "bottom": 756
+          }
+        ],
+        "bodyFont": "16px"
+      }
+    },
+    "Short landscape enables combined content/footer scroll",
+    "No browser page errors or HTTP >=400 responses"
+  ],
+  "errors": [],
+  "failures": [],
+  "storageScope": "Fresh ephemeral browser context on Cloudflare test origin; no user browser profile or existing saves accessed"
+}
