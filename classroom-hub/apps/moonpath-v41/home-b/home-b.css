@@ -142,3 +142,25 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090713;col
 .preparation-options span{word-break:keep-all}
 #panel .preparation-settings h2 small{float:right;font-size:.65em;font-weight:400;color:#dcc6e9}
 #panel .preparation-settings fieldset{padding:.3em .4em;margin-bottom:.4em}
+
+
+/* Expedition preparation v3: preserve approved 820x500 artwork and engine controls. */
+#panel.preparation:not(.compact) .preparation-grid{grid-template-columns:minmax(0,460fr) minmax(0,248fr)}
+#panel.preparation:not(.compact) #panel-footer{left:calc(524px * var(--u));width:calc(248px * var(--u))}
+#panel.preparation .preparation-v3-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(9px * var(--u));align-content:start}
+#panel.preparation .preparation-v3-item{min-width:0}
+#panel.preparation .preparation-v3-wide{grid-column:1/-1}
+#panel.preparation .preparation-v3-fields label{display:block;margin:0;min-width:0}
+#panel.preparation .preparation-v3-fields select,
+#panel.preparation .preparation-v3-fields input:not([type=radio]){width:100%;min-width:0;box-sizing:border-box}
+#panel.preparation .preparation-v3-fields fieldset{min-width:0;margin:0;padding:calc(5px * var(--u));border:1px solid #806a9e}
+#panel.preparation .preparation-v3-fields .preparation-options{flex-wrap:wrap}
+#panel.preparation .preparation-v3-fields .preparation-options label{min-width:0;white-space:normal}
+#panel.preparation .preparation-v3-summary{margin:calc(8px * var(--u)) 0;display:grid;gap:calc(5px * var(--u))}
+#panel.preparation .preparation-v3-summary-row{display:grid;gap:1px;border-bottom:1px solid #605274;padding-bottom:calc(4px * var(--u))}
+#panel.preparation .preparation-v3-summary dt{font-size:.76em;color:#d7c3e8}
+#panel.preparation .preparation-v3-summary dd{margin:0;color:#ffedca;font-weight:600;overflow-wrap:anywhere}
+#panel.preparation .preparation-v3-note{font-size:.75em;color:#dacde5}
+#panel.compact .preparation-v3-fields{grid-template-columns:1fr;gap:12px}
+#panel.compact .preparation-v3-wide{grid-column:auto}
+#panel.compact .preparation-v3-summary{gap:8px}
