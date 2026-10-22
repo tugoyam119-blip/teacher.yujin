@@ -13,9 +13,9 @@ const server=http.createServer(async(req,res)=>{try{let p=path.resolve(root,'.'+
   const read=()=>page.evaluate(async()=>{const m=await import('/moonpath-v41/src/storage/indexeddb.js');const db=await m.openEngineDatabase({open:(_n,v)=>indexedDB.open('moonpath-v411-phase29-smoke-db-v1',v)});try{return (await db.read(1)).state;}finally{db.close();}});
   await page.goto(base+'home-b/',{waitUntil:'networkidle'});await page.locator('#menu-new').click();await page.locator('#panel-actions button').last().waitFor();
   await page.locator('input[name="confirmation"][value="'+mode+'"]').check();await page.locator('input[name="participation"][value="COOPERATIVE"]').check();await page.locator('#expedition-seed').fill('browser-class');
-  await page.getByRole('button',{name:'탐험 시작',exact:true}).click();await page.waitForURL('**/journey/?slot=1');await page.locator('.book').first().waitFor();
+  await page.getByRole('button',{name:'탐험 시작',exact:true}).click();await page.waitForURL('**/journey/?slot=1');await page.locator('#journey-guide[open]').waitFor();await page.locator('#guide-map').click();await page.locator('.map-destination').first().waitFor();
   let state=await read();assert.equal(state.settings.preparation.confirmation,mode);assert.equal(state.teams.length,6);assert.equal(state.teams[0].members.length,4);assert.equal(state.settings.interception,false);assert.equal(state.activeSessionId,null);
-  await page.locator('.book').first().click();await page.locator('button.region').first().click();
+  await page.locator('.map-destination').first().click();await page.locator('button.region').first().click();
   if(mode==='CAREFUL'){await page.getByRole('button',{name:'이 지역 진입 확인',exact:true}).click();await page.locator('#message').filter({hasText:'수업 시작'}).waitFor();assert.equal((await read()).activeSessionId,null);await page.getByRole('button',{name:'수업 시작 확인',exact:true}).click();}
   await page.getByRole('button',{name:mode==='QUICK'?'지역·첫 문제 시작':'이 지역 진입 확인',exact:true}).click();await page.waitForURL('**/dist/**');await page.locator('#engine-availability').filter({hasText:'시험 DB 준비됨'}).waitFor();await page.waitForFunction(()=>document.querySelector('#lesson-phase').textContent==='ACTIVE');
   state=await read();assert.equal(state.sessions.at(-1).phase,'ACTIVE');

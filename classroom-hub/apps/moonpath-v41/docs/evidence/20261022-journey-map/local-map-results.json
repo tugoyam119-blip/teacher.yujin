@@ -1,0 +1,13 @@
+{
+  "site": "http://127.0.0.1:55323/",
+  "checks": [
+    "New expedition opens game guide first; dismissing it never changes save or starts lesson",
+    "Six destinations follow sequential unlock; locked theme preview and reopening guide preserve exact save",
+    "Mobile map and guide have no horizontal overflow and preserve save",
+    "First start opens five book-shaped region choices connected by Y route; only entrance allowed and lesson remains stopped",
+    "Region preview cancel preserves exact save; book fork fits mobile width",
+    "Explicit entry opens real first region and question, preserving roster/settings"
+  ],
+  "passed": 6,
+  "errors": []
+}

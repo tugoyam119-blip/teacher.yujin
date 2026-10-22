@@ -1,3 +1,4 @@
+import {drawWorldMap,decorateFork,setupGuide} from './map-ui.js?v=20261022-map';
 import {openEngineDatabase} from '../src/storage/indexeddb.js?v=2-archive';
 import {TeacherEngineSession} from '../src/engine/session.js';
 import {themeUnlocked,regionOptions,hasLiveMission,themeRouteGuide,extraResumeTarget} from '../src/world/navigation.js?v=20261021-route-guide';
@@ -75,19 +76,17 @@ function render(){
  }
  const savedTheme=s.world.navigation?.themeId;
  if(s.screen==='FORK'&&savedTheme){
-  const theme=world.themes.find(t=>t.id===savedTheme);$('title').textContent=`${theme.name} · 갈림길`;
+  const theme=world.themes.find(t=>t.id===savedTheme);$('title').textContent=`${theme.name} · 마법 책장 갈림길`;
   progressLine(scene,theme.id);const choice=s.world.mainRouteChoice[theme.id];const note=node('p',`① 진입 → ② 왼쪽 또는 ③ 오른쪽 → ④ 합류 → ⑤ 마지막${choice?` · 선택한 주경로: ${choice==='LEFT'?'왼쪽':'오른쪽'}`:' · 좌우 경로 미선택'}`);note.className='route-guide';scene.append(note);
   const routes=node('div');routes.className='routes';const options=regionOptions(s,savedTheme);
   options.forEach((o,i)=>{if([1,3,4].includes(i)){const link=node('div',i===1?'↙ 왼쪽 / 오른쪽 ↘':i===3?'↘ 합류 ↙':'↓');link.className='route-link';link.setAttribute('aria-hidden','true');routes.append(link);}const r=theme.regions[i];const b=button(routes,'',()=>{preview=o.id;},{disabled:!o.allowed&&!o.canViewResult});b.className=`region ${r.role}`;b.title=o.reason;
    b.append(node('strong',`${['① 진입','② 왼쪽','③ 오른쪽','④ 합류','⑤ 마지막'][i]} · ${r.name}`),node('span',`${o.canViewResult?'완료 · 결과 보기':o.allowed&&!o.visited?'미방문 · 진입 가능':statusLabel[o.status]}${o.continuing?' · 계속하기':o.mode==='EXTRA'?' · 추가 탐험':''}`));
-  });scene.append(routes);
+  });decorateFork(routes);scene.append(routes);
   const locked=node('details');locked.append(node('summary','잠긴 길의 조건 보기'));for(const o of options.filter(o=>!o.allowed&&!o.canViewResult))locked.append(node('p',`${theme.regions.find(r=>r.id===o.id).name}: ${o.reason}`));if(locked.childElementCount>1)scene.append(locked);
   return;
  }
- $('title').textContent='마법 책장';const books=node('div');books.className='books';const progress=worldProgress(s);
- [0,3,1,4,2,5].forEach(i=>{const theme=world.themes[i],unlocked=themeUnlocked(s,theme.id),p=progress.themes[i],cell=node('div');cell.className='book-cell';books.append(cell);const b=button(cell,'',()=>view('FORK',theme.id),{disabled:!unlocked});b.className='book';b.style.setProperty('--color',colors[i]);
-  const visited=theme.regions.some(r=>(s.world.visitHistory??[]).some(v=>v.regionId===r.id)||s.world.currentRegionId===r.id);b.title=`${theme.bookshelfColor} · ${progressText(p)}`;b.setAttribute('aria-label',`${theme.name} · ${unlocked?progressText(p):'잠김 · 앞 테마의 마지막 지역 완료 필요'}`);
-  b.append(node('strong',theme.name),node('span',unlocked?`${p.fullExploration?'완전 탐색':p.mainFinished?'주경로 완료':visited?'진행 중':'미방문'} · ${p.completedRegions}/5${p.unresolvedRecovery?` · 회수 ${p.unresolvedRecovery}건`:p.learningComplete?' · 학습 달성':''}`:'잠김 · 앞 테마 마지막 지역 완료 필요'));const info=button(cell,'테마 정보',()=>{themePreview=theme.id;});info.className='theme-info-button';info.setAttribute('aria-label',`${theme.name} 테마 정보`);});scene.append(books);
+ $('title').textContent='달빛 탐험 지도';
+ drawWorldMap({scene,world,state:s,progress:worldProgress(s),unlocked:themeUnlocked,button,node,view,info:id=>{themePreview=id;}});
  if(s.world.currentRegionId&&s.world.regions[s.world.currentRegionId].status==='IN_PROGRESS')button(scene,'진행 중인 지역 계속하기',region);
 }
 $('home').addEventListener('click',()=>run(home));$('bookshelf').addEventListener('click',()=>run(()=>view('BOOKSHELF')));
@@ -95,6 +94,6 @@ addEventListener('pagehide',()=>{teacher?.close().catch(()=>{});});
 try{
  if(!Number.isInteger(slot)||slot<1||slot>3)throw new Error('HOME에서 슬롯 I~III을 선택해 주세요.');
  const response=await fetch('../config/world.json');if(!response.ok)throw new Error('공식 세계 설정을 불러오지 못했습니다.');world=await response.json();
- db=await openEngineDatabase({open(_name,version){return indexedDB.open('moonpath-v411-phase29-smoke-db-v1',version);}});teacher=new TeacherEngineSession(db);await teacher.open(slot);render();
+ db=await openEngineDatabase({open(_name,version){return indexedDB.open('moonpath-v411-phase29-smoke-db-v1',version);}});teacher=new TeacherEngineSession(db);await teacher.open(slot);render();setupGuide(teacher.getState());
 }catch(e){$('bookshelf').disabled=true;report(e);$('save-status').textContent='탐험을 열지 못했습니다. 저장 데이터는 자동 교체하지 않습니다.';if(e.code==='WRITER_BUSY'){const box=node('div');box.className='notice';box.append(node('p','다른 탐험 창을 닫아 주세요. 새로고침 직후라면 최대 30초 뒤 다시 열 수 있습니다.'));button(box,'저장된 탐험 다시 열기',()=>location.reload());$('scene').append(box);}}
 finally{$('home').disabled=false;}
