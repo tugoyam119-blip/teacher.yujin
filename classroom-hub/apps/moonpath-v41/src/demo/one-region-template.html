@@ -14,9 +14,9 @@ select{min-width:65px}button{font:inherit;font-weight:700;font-size:12px;border:
 #results{font-size:12px}#results .mp-region-result header{display:block;height:auto;padding:7px;background:transparent}#results .mp-region-result h2{font-size:15px}#results dl{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin:6px 0}#results dl div{padding:5px;background:#384360;border-radius:4px}#results dd{margin:0;font-weight:700;color:#f7dca0}#results p{margin:5px 0}
 #message{height:32px;padding:7px 18px;font-size:12px;background:#101421;border-top:1px solid #a38bc666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#message[data-kind="error"]{color:#ff9a9a;background:#3b1623}
 #public-json{font-size:10px;white-space:pre-wrap;overflow-wrap:anywhere;background:#0c1526;padding:6px;max-height:90px;overflow:auto}
-#question-pane{position:absolute;z-index:5;left:70px;top:128px;width:820px;max-height:360px;background:#fff9ed;color:#261e3b;border:3px solid #bb985c;border-radius:13px;padding:14px 19px;box-shadow:0 10px 80px #000c;overflow:auto}
-#question-pane[hidden]{display:none}.question-head{display:flex;justify-content:space-between;gap:20px}.question-head small{color:#5d3d88;font-weight:700}#question-stem{font-size:19px;line-height:1.4;margin:7px 0}#question-stimulus{font-size:14px;line-height:1.5;white-space:pre-wrap;margin-bottom:8px}#response-form{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}#response-form textarea{grid-column:span 2;width:100%;min-height:85px;max-width:none}.question-choice{background:#f5eddb;border:1px solid #b3a682;padding:5px;border-radius:5px;display:flex;gap:5px;align-items:center;line-height:1.45}.question-select{display:flex;flex-direction:column;gap:2px;background:#efe7d3;padding:5px;border-radius:6px}.question-select select{max-width:none}.question-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.question-actions label{font-size:12px}.question-actions input{min-width:200px;max-width:250px}#question-clock{font-size:11px;color:#654970;font-weight:700}
 #engine-availability{font-size:11px;color:#9fffcb}@media (max-width:800px){#canvas{box-shadow:none}}
+
+<!-- MP_QUESTION_STYLE -->
 </style></head><body>
 <main id="canvas" aria-label="PHASE 2-9 교사용 기능 검증 화면"><header><div><small>PHASE 2-9 · 검증 전용</small><h1>《미지의 길》 달빛 이끼길</h1></div><div class="notice">새 픽셀아트 및 최종 승인 UI가 아닙니다.<br>교사용 시험 화면 · 운영 버전과 별도 저장<br><b id="engine-availability">시험 환경 준비 중</b></div></header>
 <div id="toolbar"><label>슬롯 <select id="slot-picker"><option value="1">Ⅰ</option><option value="2">Ⅱ</option><option value="3">Ⅲ</option></select></label><label>모둠 <select id="team-count"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
@@ -26,10 +26,24 @@ select{min-width:65px}button{font:inherit;font-weight:700;font-size:12px;border:
 <div class="actions"><button id="region-enter">지역 진입</button><label>문제 모둠 <select id="team-select"></select></label><button id="draw-question" disabled>새 문제 준비</button><button id="intercept-open" disabled>가로채기</button></div>
 <div class="actions"><button id="complete-region" disabled>지역 완료 확정</button><button id="next-region" disabled>다음 지역 진입</button><button id="recovery-call" disabled>원모둠 회수 호출</button></div>
 <p class="legend">① 문제 준비 → ② 타이머 시작 → ③ 답변 제출 → ④ 교사 판정 → ⑤ 지역 완료. 원답 오답이면 가로채기 후 ⑤ 진행. 회수는 다음 지역 진입 후 수행.</p><h3>학생 공개 정보 (읽기 전용)</h3><pre id="public-json">{}</pre></div></section>
-<section id="question-pane" hidden role="dialog" aria-label="문항 진행 팝업"><div class="question-head"><small id="question-label"></small><span id="question-clock"></span></div><h2 id="question-stem">문제</h2><div id="question-stimulus"></div><div id="response-form"></div>
-<div class="question-actions"><button id="timer-start">타이머 시작</button><button id="timer-pause">일시정지</button><button id="timer-resume">재개</button><button id="submit-answer">답변 저장</button><label>교사 사유 <input id="teacher-reason" value="교사가 직접 확인함" /></label><button id="judge-right">정답 확정</button><button id="judge-wrong">오답 확정</button></div></section>
+
 <footer id="message" role="status" aria-live="polite">시험 파일 준비 중</footer>
 </main>
+
+<section id="question-pane" hidden role="dialog" aria-labelledby="question-popup-title" aria-describedby="question-label">
+ <div class="question-art" aria-hidden="true"><div class="question-art-frame"></div><div class="question-art-title"></div><div class="question-art-corner"></div></div>
+ <h2 id="question-popup-title">달빛 문제</h2><div id="question-navigation"></div>
+ <div id="question-layout">
+  <div id="question-content"><div class="question-head"><small id="question-label"></small><span id="question-clock" hidden></span><span id="question-clock-label" role="status" aria-live="polite"></span></div>
+   <h3 id="question-stem" tabindex="-1">문제</h3><div id="question-stimulus"></div><div id="response-form"></div>
+  </div>
+  <div id="question-footer"><p id="question-status" role="status" aria-live="polite"></p>
+   <div id="question-timers"><button id="timer-start" type="button">타이머 시작</button><button id="timer-pause" type="button">일시정지</button><button id="timer-resume" type="button">타이머 재개</button></div>
+   <div id="question-grading"><label>교사 판정 근거<input id="teacher-reason" value="교사가 직접 확인함" aria-label="교사 판정 근거"></label><button id="submit-answer" type="button">답변 저장</button><button id="judge-right" type="button">정답 확정</button><button id="judge-wrong" type="button">오답 확정</button></div>
+  </div>
+ </div>
+</section>
+
 <script>function resize(){const k=Math.min(innerWidth/960,innerHeight/540);document.getElementById('canvas').style.transform=`translate(-50%,-50%) scale(${k})`;}addEventListener('resize',resize);resize();</script>
 <!-- MP_MODULES -->
 <!-- MP_ENTRY -->

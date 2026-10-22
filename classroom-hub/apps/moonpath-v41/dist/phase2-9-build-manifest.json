@@ -1,10 +1,97 @@
 {
-  "builtAt": "2026-10-16",
+  "builtAt": "2026-10-22T10:07:47.034Z",
   "role": "PHASE2-9 TEACHER-ONLY TEST BUILD",
-  "buildSha256": "2eb3ae57b53f111202a66c0c2a2b72675997d0b2f6924362a2730a1a0d2de670",
-  "htmlBytes": 366254,
-  "moduleCount": 19,
+  "buildSha256": "96f10cac861abf1b9325eb5c04082f28101200a536b9a014d7572982474ac8ff",
+  "htmlBytes": 1319273,
+  "moduleCount": 20,
   "questionCount": 60,
+  "embeddedPopupArtwork": [
+    {
+      "path": "assets/home/popup-v2/frame-base.png",
+      "sha256": "5e368b34216860623c651f9724aed82d189f3e905199f6149c26860875e168ed",
+      "bytes": 403339
+    },
+    {
+      "path": "assets/home/popup-v2/title.png",
+      "sha256": "44e32346e6b6ebdb1d6346a3ba379b3ff2d57a7ddbe11cd7dd230d6d685fcba5",
+      "bytes": 46898
+    },
+    {
+      "path": "assets/home/popup-v2/close-approved-fragment.png",
+      "sha256": "f93879998e87ea45a71d367d9946119476b2e7c0be05b8a822e6693e17ff24a1",
+      "bytes": 5728
+    },
+    {
+      "path": "assets/home/popup-v2/secondary-normal.png",
+      "sha256": "1e57e1a8e8ce18444b26270144aac2be4c438237aa5c8e7afb5bac557d0788fa",
+      "bytes": 15143
+    },
+    {
+      "path": "assets/home/popup-v2/primary-normal.png",
+      "sha256": "612c5bd7285caeec43f15121de0ccba1de37120108df156bf7a4123161a22949",
+      "bytes": 16415
+    },
+    {
+      "path": "assets/home/popup-v2/cancel-normal.png",
+      "sha256": "b9a60f2c67790849aa4ec031f95cac4f17d2f6c69ecd7fac5dc099cae4ce3ee3",
+      "bytes": 12885
+    },
+    {
+      "path": "assets/home/popup-v2/secondary-hover.png",
+      "sha256": "da813e4b0b9e467d365e80fb8dc0e2e00fb2d78a224523059e23ef73d5d13f3f",
+      "bytes": 16486
+    },
+    {
+      "path": "assets/home/popup-v2/primary-hover.png",
+      "sha256": "6f30f6e19308bf61502961fc0b5237e4f9713c5f9333c6b4aa91f25a0612aeb7",
+      "bytes": 18160
+    },
+    {
+      "path": "assets/home/popup-v2/cancel-hover.png",
+      "sha256": "6bc7d1fd0584a165376abf9e51471c14135bc109b5ceb222d5f63415ef021084",
+      "bytes": 13807
+    },
+    {
+      "path": "assets/home/popup-v2/secondary-pressed.png",
+      "sha256": "e8e39b4e75ecdfaff0cde73ebe8fbf4b7b925beeba27b2f6874d09f8cdec8c79",
+      "bytes": 14202
+    },
+    {
+      "path": "assets/home/popup-v2/primary-pressed.png",
+      "sha256": "92deb606a0f5ffe1a0f5ad61576726160c9e2362f41a7756c8c9a32449974b01",
+      "bytes": 15667
+    },
+    {
+      "path": "assets/home/popup-v2/cancel-pressed.png",
+      "sha256": "5ddf50bc05a0641305ff3af90e3d50a9f401133cec86ae1c6a1efc48b2994b82",
+      "bytes": 11954
+    },
+    {
+      "path": "assets/home/popup-v2/secondary-disabled.png",
+      "sha256": "769374c8d7896f26fb555f14504248b70bbd4cb0020fe1008eff7b8ba479e173",
+      "bytes": 14710
+    },
+    {
+      "path": "assets/home/popup-v2/primary-disabled.png",
+      "sha256": "492c6a767f26cbb6d45edfc0ded126a239effdf20741866d8284021a6ee86c8a",
+      "bytes": 16323
+    },
+    {
+      "path": "assets/home/popup-v2/cancel-disabled.png",
+      "sha256": "a70c22a6d7af6ed25ec2ea5b760312f014cf81a9c661e48dfd4ecf59b22377eb",
+      "bytes": 13194
+    },
+    {
+      "path": "assets/home/popup-v2/compact-rim.png",
+      "sha256": "cd7d0a49803f4b9aba72c72df1c69179cc59f5b5e8ad279a235ef6dc4aa02a6b",
+      "bytes": 18518
+    },
+    {
+      "path": "assets/home/popup-v2/close.png",
+      "sha256": "e8b853170b864f2e53513a3b020a8a4ee380f386f6d2be04af4f92d22d5b446b",
+      "bytes": 5419
+    }
+  ],
   "testOnly": true,
   "actualBrowserIdbStatus": "NOT_TESTED",
   "offlineFileCompatibility": "NOT_TESTED",

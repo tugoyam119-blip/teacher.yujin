@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-22T10:06:46.660Z",
+  "site": "http://127.0.0.1:65412/",
+  "browser": "Playwright WebKit; fresh disposable context",
+  "scope": "Synthetic fixture only, no user profile or existing save accessed",
+  "passed": 12,
+  "checks": [
+    "New expedition saves selected time, cooperation, 2x3 roster and Seed without starting a lesson",
+    "Real answer input, submission and teacher judgement save a correct answer and one starlight",
+    "HOME return pauses in-progress second question and saves actual remaining time",
+    "Continue UI restores exact question, answer history, remaining time, lesson, roster, rewards and Seed without auto-resume",
+    "Explicit lesson resume and separate timer resume work; next HOME return pauses safely",
+    "Actual JSON download includes resolved and pending questions plus paused time and rewards",
+    "Occupied slot restore rejected without any saved-state change",
+    "Damaged backup fails integrity validation and leaves empty slot empty",
+    "Real JSON restore preserves both questions, exact paused time, full previous event prefix, Seed, roster and rewards",
+    "Restored expedition continues through HOME UI in paused state with the correct pending question",
+    "Synthetic pre-existing legacy slot3 stays exactly unchanged throughout the continuous flow",
+    "No browser exceptions or HTTP errors"
+  ],
+  "questionTypes": [
+    "single_choice"
+  ],
+  "errors": [],
+  "httpErrors": []
+}

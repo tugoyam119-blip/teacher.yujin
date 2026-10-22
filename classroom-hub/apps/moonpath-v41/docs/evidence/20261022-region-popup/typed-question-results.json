@@ -1,0 +1,95 @@
+{
+  "browser": "Playwright WebKit; native IDB; isolated synthetic contexts",
+  "checks": [
+    {
+      "type": "single_choice",
+      "result": "PASS",
+      "verified": [
+        "approved frame",
+        "input preserved on timer pause/resume",
+        "actual submit and teacher judgement",
+        "saved resolved state/reward",
+        "lesson control returns to toolbar"
+      ]
+    },
+    {
+      "type": "true_false",
+      "result": "PASS",
+      "verified": [
+        "approved frame",
+        "input preserved on timer pause/resume",
+        "actual submit and teacher judgement",
+        "saved resolved state/reward",
+        "lesson control returns to toolbar"
+      ]
+    },
+    {
+      "type": "matching",
+      "result": "PASS",
+      "verified": [
+        "approved frame",
+        "input preserved on timer pause/resume",
+        "actual submit and teacher judgement",
+        "saved resolved state/reward",
+        "lesson control returns to toolbar"
+      ]
+    },
+    {
+      "type": "categorization",
+      "result": "PASS",
+      "verified": [
+        "approved frame",
+        "input preserved on timer pause/resume",
+        "actual submit and teacher judgement",
+        "saved resolved state/reward",
+        "lesson control returns to toolbar"
+      ]
+    },
+    {
+      "type": "ordering",
+      "result": "PASS",
+      "verified": [
+        "approved frame",
+        "input preserved on timer pause/resume",
+        "actual submit and teacher judgement",
+        "saved resolved state/reward",
+        "lesson control returns to toolbar"
+      ]
+    },
+    {
+      "type": "short_text",
+      "result": "PASS",
+      "verified": [
+        "approved frame",
+        "input preserved on timer pause/resume",
+        "actual submit and teacher judgement",
+        "saved resolved state/reward",
+        "lesson control returns to toolbar"
+      ]
+    },
+    {
+      "type": "manual",
+      "result": "PASS",
+      "verified": [
+        "approved frame",
+        "input preserved on timer pause/resume",
+        "actual submit and teacher judgement",
+        "saved resolved state/reward",
+        "lesson control returns to toolbar"
+      ],
+      "mobile": true,
+      "landscape": true,
+      "validation": true
+    },
+    {
+      "type": "INTERCEPTION_AND_RECOVERY",
+      "result": "PASS",
+      "verified": [
+        "same approved frame",
+        "actual answer and teacher judgement in both side missions",
+        "region completion key1",
+        "starlight3 and recovery resolved"
+      ]
+    }
+  ]
+}

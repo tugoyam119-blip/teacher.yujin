@@ -30,7 +30,10 @@ test('외부 네트워크/CDN/원격 글꼴 링크·fetch/XHR/외부 script 사�
 test('960×540 contain·중앙 문제 팝업·교사 버튼 존재(정적 검사)',()=>{
  assert.match(html,/#canvas\{width:960px;height:540px/);
  assert.match(html,/Math\.min\(innerWidth\/960,innerHeight\/540\)/);
- assert.match(html,/#question-pane\{[^}]*top:128px;width:820px;max-height:360px/);
+ assert.match(html,/#question-pane\{[^}]*width:calc\(820px \* var\(--q\)\);height:calc\(500px \* var\(--q\)\)/);
+ assert.ok(html.includes('id="question-content"'));assert.ok(html.includes('id="question-footer"'));
+ assert.ok(manifest.embeddedPopupArtwork.length>=15);
+ for(const a of manifest.embeddedPopupArtwork){const bytes=readFileSync(new URL('../'+a.path,import.meta.url));assert.equal(createHash('sha256').update(bytes).digest('hex'),a.sha256);assert.ok(html.includes('data:image/png;base64,'+bytes.toString('base64')));}
  for(const id of ['slot-picker','new-expedition','continue-expedition','draw-question','timer-start','submit-answer','judge-right',
   'judge-wrong','intercept-open','complete-region','next-region','recovery-call','export-json','import-json'])
   assert.ok(html.includes(`id="${id}"`),id);

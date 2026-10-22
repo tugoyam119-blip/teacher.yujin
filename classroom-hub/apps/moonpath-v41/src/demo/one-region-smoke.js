@@ -1,3 +1,4 @@
+import {setupQuestionPopup} from './question-popup.js';
 import {lessonBudget} from '../engine/preparation.js';
 /**
  * PHASE 2-9 — isolated functional TEST screen, not approved HOME or release UI.
@@ -19,6 +20,7 @@ const TEST_DB_NAME='moonpath-v411-phase29-smoke-db-v1';
 
 export function testDatabaseName(){return TEST_DB_NAME;}
 export async function bootOneRegionSmoke({pack,world}={}){
+ const questionPopup=setupQuestionPopup();
  let qe=createQuestionEngine(pack);
  let teacher=null,flow='MAIN',database=null;
  addEventListener('pagehide',()=>{teacher?.close().catch(()=>{});});
@@ -109,8 +111,8 @@ export async function bootOneRegionSmoke({pack,world}={}){
  };
  const showQuestion=()=>{
   const q=currentQuestion(),current=mission();
-  const pane=$('question-pane');if(!q||!current||(flow==='MAIN'&&current.timer.phase==='RESOLVED')){pane.hidden=true;return;}
-  pane.hidden=false;
+  const pane=$('question-pane');if(!q||!current||(flow==='MAIN'&&current.timer.phase==='RESOLVED')){pane.hidden=true;questionPopup.hide();return;}
+  pane.hidden=false;questionPopup.show({flow,timer:current.timer,renderKey:`${flow}:${current.id}`,type:q.type});
   $('question-label').textContent=`${flow==='MAIN'?'기본문제':flow==='INTERCEPTION'?'가로채기':'오답 회수'} · ${q.questionId}`;
   $('question-stem').textContent=q.stem;
   $('question-stimulus').textContent=q.stimulus??'';
