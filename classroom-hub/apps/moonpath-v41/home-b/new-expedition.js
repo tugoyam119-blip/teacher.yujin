@@ -1,3 +1,4 @@
+import {mountPreparationV3} from './preparation-v3-ui.js';
 import {validateQuestionPack} from '../src/questions/engine.js';
 const node=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
 export async function renderPreparation({body,slots,button,onStart,onArchive,isCurrent}){
@@ -34,5 +35,6 @@ export async function renderPreparation({body,slots,button,onStart,onArchive,isC
  pack.addEventListener('change',load);file.addEventListener('change',load);
  const controls=node('div');button(controls,'돌아가기',()=>document.getElementById('panel').close(),'cancel');
  button(controls,'탐험 시작',async()=>{if(!empty||slots[Number(slot.value)-1].state)throw new Error('빈 슬롯을 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 선택하세요.');if(!name.value.trim())throw new Error('탐험 이름을 입력하세요.');await onStart({slot:Number(slot.value),expeditionName:name.value.trim(),teamCount:Number(fields['team-count'].value),timerSeconds:Number(fields['timer-seconds'].value),sourcePack:chosen,preparation:{version:1,lessonMinutes:Number(value('lesson-minutes')),confirmation:value('confirmation'),participation:value('participation'),membersPerTeam:Number(fields['members-per-team'].value),seed:seed.value}});},'primary');
+ mountPreparationV3({grid,left,right,fields});
  await load();return controls;
 }
