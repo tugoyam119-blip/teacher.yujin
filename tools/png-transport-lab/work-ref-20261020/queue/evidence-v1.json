@@ -1,0 +1,601 @@
+{
+  "finalDeployment": {
+    "id": "6d423a85-906a-4550-b33b-eddeac459323",
+    "status": "SUCCESS",
+    "createdAt": "2026-10-20T06:16:59.512Z",
+    "url": null
+  },
+  "volume": {
+    "id": "6e265735-07a8-4e2d-b980-4cf2c4cd2276",
+    "mount": "/data",
+    "sizeMB": 500
+  },
+  "initialFailure": {
+    "scope": "deployment",
+    "deploymentId": "4698ee25-a3fc-4b79-a8c3-7a21219ecad6",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:14:01.050551852Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":false,\"job\":{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476840328,\"updated_at\":1792476840328}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:01.050674697Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":false,\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476840320,\"updated_at\":1792476840320}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:01.050680758Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476840320,\"updated_at\":1792476840324}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:01.783249969Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"startup\",\"jobs\":[{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476840320,\"updated_at\":1792476840324},{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476840328,\"updated_at\":1792476840328}]}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:01.783256400Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:06.135792126Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:08.034598309Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"committing\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:13.140209212Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"error\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"retry_wait\",\"error\":\"GITHUB_RAW_FETCH_404\",\"attempts\":1}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:13.140215975Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"error\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"retry_wait\",\"error\":\"QA_TRANSIENT\",\"attempts\":1}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:15.305053941Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:16.324108935Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:18.123808256Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"committing\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:22.469113173Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"error\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"retry_wait\",\"error\":\"GITHUB_RAW_FETCH_404\",\"attempts\":2}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:22.469117522Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:23.563059212Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:25.462570073Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"committing\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:30.750130698Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"error\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"retry_wait\",\"error\":\"GITHUB_RAW_FETCH_404\",\"attempts\":2}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:30.750136997Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:32.481109472Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:33.560727193Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"committing\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  },
+  "afterFix": {
+    "scope": "deployment",
+    "deploymentId": "043915f2-b497-4e54-a109-d9b3e84871e5",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:14:59.264207790Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":\"GITHUB_RAW_FETCH_404\",\"result\":null,\"created_at\":1792476840320,\"updated_at\":1792476898124}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:59.264215435Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":\"GITHUB_RAW_FETCH_404\",\"result\":null,\"created_at\":1792476840320,\"updated_at\":1792476898129}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:59.264223292Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":\"GITHUB_RAW_FETCH_404\",\"result\":null,\"created_at\":1792476840328,\"updated_at\":1792476898135}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:59.265483977Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"startup\",\"jobs\":[{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":\"GITHUB_RAW_FETCH_404\",\"result\":null,\"created_at\":1792476840320,\"updated_at\":1792476898129},{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":\"GITHUB_RAW_FETCH_404\",\"result\":null,\"created_at\":1792476840328,\"updated_at\":1792476898135}]}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:14:59.265490449Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:00.380318487Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:02.646647875Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"succeeded\",\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":1,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840320,\"updated_at\":1792476902108}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:02.646670073Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"error\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"retry_wait\",\"error\":\"QA_TRANSIENT\",\"attempts\":1}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:04.519503489Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:05.823084277Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:08.823756418Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"succeeded\",\"job\":{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":2,\"next_at\":1792476904144,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840328,\"updated_at\":1792476908313}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  },
+  "authenticatedAPIQA": {
+    "scope": "service",
+    "deploymentId": "80f8232b-772d-4109-bacb-91cf542ca4f8",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:15:30.873204517Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":1,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840320,\"updated_at\":1792476902108}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:30.873210500Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":1,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840320,\"updated_at\":1792476902108}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:30.873219845Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":2,\"next_at\":1792476904144,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840328,\"updated_at\":1792476908313}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:31.879076426Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"startup\",\"jobs\":[{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":1,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840320,\"updated_at\":1792476902108},{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":2,\"next_at\":1792476904144,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840328,\"updated_at\":1792476908313}]}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:31.879082288Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"api_qa\",\"duplicate_status\":200,\"duplicate_id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"main_status\":422,\"list_status\":200,\"source_redacted\":true}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:15:31.879087983Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"recovery_checkpoint\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"committing\",\"simulation\":true}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  },
+  "restartAndFreshCommit": {
+    "scope": "service",
+    "deploymentId": "ec55ffaa-18dd-4123-85ab-15668680ed86",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:16:05.117386920Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":false,\"job\":{\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v2.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476963978,\"updated_at\":1792476963978}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:05.117395577Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"enqueued\",\"duplicate\":true,\"job\":{\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v2.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476963978,\"updated_at\":1792476963983}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:05.117402565Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"startup\",\"jobs\":[{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":1,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476840320,\"updated_at\":1792476902108},{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":2,\"next_at\":1792476904144,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840328,\"updated_at\":1792476908313},{\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v2.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"queued\",\"attempts\":0,\"next_at\":0,\"error\":null,\"result\":null,\"created_at\":1792476963978,\"updated_at\":1792476963983}]}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:05.119661375Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:06.077798402Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:09.169711851Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"succeeded\",\"job\":{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":2,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840320,\"updated_at\":1792476968390}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:09.169720535Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"state\":\"downloading\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:10.194456291Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"state\":\"verified\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:11.256704960Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"state\",\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"state\":\"committing\"}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      },
+      {
+        "timestamp": "2026-10-20T06:16:18.213975989Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"succeeded\",\"job\":{\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v2.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":1,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"bcb0b0c243c316f053e14f818c23621489c98c64\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true},\"created_at\":1792476963978,\"updated_at\":1792476977798}}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  },
+  "finalStartup": {
+    "scope": "deployment",
+    "deploymentId": "6d423a85-906a-4550-b33b-eddeac459323",
+    "serviceId": "4f772e37-0165-4a49-a45b-3178693f8227",
+    "environmentId": "3a2ec2f1-4768-42b0-811a-70e03053e5b9",
+    "status": "SUCCESS",
+    "deploy": [
+      {
+        "timestamp": "2026-10-20T06:17:05.849392697Z",
+        "severity": "info",
+        "message": "F5_QUEUE {\"test\":\"startup\",\"jobs\":[{\"id\":\"14ad54dd93c7f86c6739c4fb7f34ed5c40c6a35236033462a02078424574ace9\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":2,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840320,\"updated_at\":1792476968390},{\"id\":\"80c13bd84b312fa17d66da071410844549c09fa9d50c02a3a156b8c17a880715\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-retry-v1.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":2,\"next_at\":1792476904144,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true,\"commit_skipped\":true},\"created_at\":1792476840328,\"updated_at\":1792476908313},{\"id\":\"6a3bdbae319932ed40ed079bb4833701c5bb5842195b01426803ed666023229b\",\"branch\":\"test/f5-work-ref-20261020\",\"path\":\"tools/png-transport-lab/work-ref-20261020/queue-v2.png\",\"sha\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"bytes\":20979389,\"state\":\"succeeded\",\"attempts\":1,\"next_at\":0,\"error\":null,\"result\":{\"status\":\"BYTE_VERIFIED\",\"uploaded\":true,\"verified\":true,\"blob_sha\":\"38d7bf34aae6708af546f41a5ba083295242cb47\",\"commit_sha\":\"bcb0b0c243c316f053e14f818c23621489c98c64\",\"remote_sha256\":\"5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432\",\"remote_bytes\":20979389,\"sha_matches\":true,\"size_matches\":true},\"created_at\":1792476963978,\"updated_at\":1792476977798}]}",
+        "attributes": [
+          {
+            "key": "level",
+            "value": "\"info\""
+          }
+        ]
+      }
+    ]
+  },
+  "independentDownload": {
+    "commit": "bcb0b0c243c316f053e14f818c23621489c98c64",
+    "http": 200,
+    "bytes": 20979389,
+    "sha256": "5a81cabb99e6369d0fdc0e62789aa3d8e411c5bcbd1f7b88a55c8b59b4402432",
+    "equalsOriginal": true
+  },
+  "limits": [
+    "Single-worker only",
+    "Injected transient error; not real outage",
+    "Simulated post-commit checkpoint followed by real redeploy; not power-loss test",
+    "ChatGPT environment submission still requires redeploy",
+    "No ImageGen event subscription",
+    "No automatic cache eviction"
+  ]
+}

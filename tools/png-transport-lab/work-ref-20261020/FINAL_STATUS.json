@@ -1,0 +1,18 @@
+{
+  "finalDeployment": {
+    "id": "0406d55e-6bf6-40d6-a29b-7326146b5ffd",
+    "status": "SUCCESS"
+  },
+  "publicHealthHTTP": 200,
+  "jobVariableCleared": true,
+  "regressionRunnerRemovedFromDeployment": true,
+  "pr": "https://github.com/tugoyam119-blip/teacher.yujin/pull/45",
+  "merged": false,
+  "fullCompletion": false,
+  "remaining": [
+    "ImageGen completion event trigger",
+    "newly generated image reference validation",
+    "A1 ZIP source review and host MCP registration",
+    "interrupted commit recovery and commit idempotency"
+  ]
+}
