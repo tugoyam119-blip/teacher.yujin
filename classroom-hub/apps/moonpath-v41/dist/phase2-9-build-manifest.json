@@ -1,9 +1,9 @@
 {
-  "builtAt": "2026-10-22T10:07:47.034Z",
+  "builtAt": "2026-10-22T10:28:09.539Z",
   "role": "PHASE2-9 TEACHER-ONLY TEST BUILD",
-  "buildSha256": "96f10cac861abf1b9325eb5c04082f28101200a536b9a014d7572982474ac8ff",
-  "htmlBytes": 1319273,
-  "moduleCount": 20,
+  "buildSha256": "de7257e5614b9b6412cc402856e2a43845245b2692d5a89fd8d8d1d073232da0",
+  "htmlBytes": 5554818,
+  "moduleCount": 21,
   "questionCount": 60,
   "embeddedPopupArtwork": [
     {
@@ -92,6 +92,11 @@
       "bytes": 5419
     }
   ],
+  "embeddedSceneBackground": {
+    "path": "assets/home/assembly/background-original.png",
+    "sha256": "73cf804ddf246be2073155328f98a1a046b338f1e89f5c52ec1cf7dee3640d0d",
+    "bytes": 2888484
+  },
   "testOnly": true,
   "actualBrowserIdbStatus": "NOT_TESTED",
   "offlineFileCompatibility": "NOT_TESTED",

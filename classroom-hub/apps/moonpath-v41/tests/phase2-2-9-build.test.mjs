@@ -45,7 +45,8 @@ test('독립 시험 DB, 구운영 localStorage 키와 강제 초기화 API 접�
 });
 test('단일 HTML은 시험본임을 밝히고 정식 배포 증거 없음',()=>{
  assert.ok(html.includes('검증 전용'));
- assert.ok(html.includes('새 픽셀아트 및 최종 승인 UI가 아닙니다.'));
+ assert.ok(html.includes('교사용 시험 화면'));
+ assert.equal(manifest.embeddedSceneBackground.sha256,'73cf804ddf246be2073155328f98a1a046b338f1e89f5c52ec1cf7dee3640d0d');
  assert.equal(manifest.actualBrowserIdbStatus,'NOT_TESTED');
  assert.equal(manifest.offlineFileCompatibility,'NOT_TESTED');
  assert.equal(manifest.fullGameBuild,false);

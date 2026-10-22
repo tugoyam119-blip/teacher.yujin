@@ -1,3 +1,4 @@
+import {setupRegionScene} from './region-scene.js';
 import {setupQuestionPopup} from './question-popup.js';
 import {lessonBudget} from '../engine/preparation.js';
 /**
@@ -20,6 +21,7 @@ const TEST_DB_NAME='moonpath-v411-phase29-smoke-db-v1';
 
 export function testDatabaseName(){return TEST_DB_NAME;}
 export async function bootOneRegionSmoke({pack,world}={}){
+ setupRegionScene();
  const questionPopup=setupQuestionPopup();
  let qe=createQuestionEngine(pack);
  let teacher=null,flow='MAIN',database=null;
@@ -48,7 +50,7 @@ export async function bootOneRegionSmoke({pack,world}={}){
  const draw=()=>{
    const s=state();
    if(journeyMode)document.querySelector('h1').textContent=`《미지의 길》 ${regionInfo(selectedRegion()).name}`;
-   $('region-title').textContent=journeyMode?`${regionInfo(selectedRegion()).name} · 지역 시험`:s?.world?.currentRegionId==='T1-R2'?'푸른 폭포길 · 회수 시험':'달빛 이끼길 · 통합 시험';
+   $('region-title').textContent=journeyMode?`${regionInfo(selectedRegion()).name} · 탐험 현황`:s?.world?.currentRegionId==='T1-R2'?'푸른 폭포길 · 회수 시험':'달빛 이끼길 · 통합 시험';
    $('slot-active').textContent=s?`슬롯 ${s.meta.slot} / revision ${s.meta.revision}`:'아직 시작하지 않음';
    $('status-data').replaceChildren();
    if(s){

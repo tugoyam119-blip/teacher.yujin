@@ -7,8 +7,8 @@ export function setupQuestionPopup(){
   const b=byId(id);b.classList.add('question-button');b.dataset.variant=role[id]??'secondary';
  }
  const attachControls=()=>{
-  const lesson=byId('session-resume'),lessonTarget=pane.hidden?byId('toolbar'):byId('question-timers');if(lesson.parentElement!==lessonTarget)lessonTarget.append(lesson);
-  const home=byId('return-home'),homeTarget=pane.hidden?byId('toolbar'):byId('question-navigation');if(home){
+  const lesson=byId('session-resume'),lessonTarget=pane.hidden?(byId('scene-runtime-controls')??byId('toolbar')):byId('question-timers');if(lesson.parentElement!==lessonTarget)lessonTarget.append(lesson);
+  const home=byId('return-home'),homeTarget=pane.hidden?(byId('scene-navigation')??byId('toolbar')):byId('question-navigation');if(home){
    home.textContent=pane.hidden?'HOME으로':'↶';home.setAttribute('aria-label','HOME으로 · 수업과 타이머 일시정지');home.title='HOME으로 · 수업과 타이머 일시정지';if(home.parentElement!==homeTarget)homeTarget.prepend(home);
   }
  };
