@@ -22,7 +22,7 @@
       "sha256": "a70c22a6d7af6ed25ec2ea5b760312f014cf81a9c661e48dfd4ecf59b22377eb",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -33,7 +33,7 @@
       "sha256": "6bc7d1fd0584a165376abf9e51471c14135bc109b5ceb222d5f63415ef021084",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -44,7 +44,7 @@
       "sha256": "b9a60f2c67790849aa4ec031f95cac4f17d2f6c69ecd7fac5dc099cae4ce3ee3",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -55,7 +55,7 @@
       "sha256": "5ddf50bc05a0641305ff3af90e3d50a9f401133cec86ae1c6a1efc48b2994b82",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -66,7 +66,7 @@
       "sha256": "f93879998e87ea45a71d367d9946119476b2e7c0be05b8a822e6693e17ff24a1",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -77,7 +77,7 @@
       "sha256": "e8b853170b864f2e53513a3b020a8a4ee380f386f6d2be04af4f92d22d5b446b",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "RUNTIME_CROP_DERIVATIVE_OF_APPROVED_MASTER",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -88,7 +88,7 @@
       "sha256": "cd7d0a49803f4b9aba72c72df1c69179cc59f5b5e8ad279a235ef6dc4aa02a6b",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "RUNTIME_CROP_DERIVATIVE_OF_APPROVED_MASTER",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -99,7 +99,7 @@
       "sha256": "8bbdd9b4af5859cef7a24b935c35c404583d302166eca796befcee5476c902ee",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -110,7 +110,7 @@
       "sha256": "5e368b34216860623c651f9724aed82d189f3e905199f6149c26860875e168ed",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -121,7 +121,7 @@
       "sha256": "492c6a767f26cbb6d45edfc0ded126a239effdf20741866d8284021a6ee86c8a",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -132,7 +132,7 @@
       "sha256": "6f30f6e19308bf61502961fc0b5237e4f9713c5f9333c6b4aa91f25a0612aeb7",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -143,7 +143,7 @@
       "sha256": "612c5bd7285caeec43f15121de0ccba1de37120108df156bf7a4123161a22949",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -154,7 +154,7 @@
       "sha256": "92deb606a0f5ffe1a0f5ad61576726160c9e2362f41a7756c8c9a32449974b01",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -165,7 +165,7 @@
       "sha256": "769374c8d7896f26fb555f14504248b70bbd4cb0020fe1008eff7b8ba479e173",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -176,7 +176,7 @@
       "sha256": "da813e4b0b9e467d365e80fb8dc0e2e00fb2d78a224523059e23ef73d5d13f3f",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -187,7 +187,7 @@
       "sha256": "1e57e1a8e8ce18444b26270144aac2be4c438237aa5c8e7afb5bac557d0788fa",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -198,7 +198,7 @@
       "sha256": "e8e39b4e75ecdfaff0cde73ebe8fbf4b7b925beeba27b2f6874d09f8cdec8c79",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     },
     {
@@ -209,9 +209,10 @@
       "sha256": "44e32346e6b6ebdb1d6346a3ba379b3ff2d57a7ddbe11cd7dd230d6d685fcba5",
       "sourceRead": "SOURCE_READ_PASS",
       "approval": "USER_APPROVED_VISUAL_IN_CURRENT_CHAT",
-      "remoteBytes": "PENDING",
+      "remoteBytes": "REMOTE_BYTES_VERIFIED",
       "browser": "LOCAL_WEBKIT_LAYOUT_AND_FLOW_VERIFIED"
     }
   ],
-  "closeAlignmentDerivative": "Desktop: approved fragment and base recombine unchanged. Actual ring is centered at (788,48), so the transparent HTML close target encloses (756,16,64,64). Compact: full ring cropped from master (756,16,64,64) to48x48, inside the designed48px target."
+  "closeAlignmentDerivative": "Desktop: approved fragment and base recombine unchanged. Actual ring is centered at (788,48), so the transparent HTML close target encloses (756,16,64,64). Compact: full ring cropped from master (756,16,64,64) to48x48, inside the designed48px target.",
+  "remoteVerificationSourceCommit": "88c0544e5218e36a8acd4ac0dac55bcb6ac595f6"
 }

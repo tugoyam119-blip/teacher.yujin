@@ -39,3 +39,7 @@
 내장 브라우저의 localhost 연결은 타임아웃으로 실패했다. 위 실검증은 별도 로컬 WebKit 엔진이며 Windows Chrome/Edge·모바일 실기기·가상 키보드 실동작 검증이 아니다. 실제 저장 생성/백업/보관 복원 전 과정, 오프라인 단일 HTML, 배포 후 검증은 이번 STEP05에서 수행하지 않았다. 기존 자동 저장 검사와 구분한다.
 
 로컬 원본 PNG를 확보했으므로 `IMAGEGEN_PIPELINE_PROBE_20261021.md` 및 F5 현행 정정에 따른 Git 바이너리 경로를 사용한다. F5 큐 성공으로 기록하지 않는다. GitHub 재다운로드 SHA 대조는 별도 증거로 기록하며 Cloudflare 시험 배포는 STEP07 작업이다.
+
+## GitHub 전송 검증
+
+구현 커밋 `88c0544e5218e36a8acd4ac0dac55bcb6ac595f6`을 시험 브랜치에 push한 뒤 PNG18개를 GitHub raw에서 전체 재다운로드했다.18개 모두 HTTP200·크기·SHA-256이 로컬과 일치했다. 증거: `docs/evidence/20261022-popup-v2/remote-verification.json`. 이 검증은 GitHub 바이트 검증이며 Cloudflare 배포·배포 후 화면 검증이 아니다.
