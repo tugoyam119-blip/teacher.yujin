@@ -30,3 +30,6 @@
 - 재현 검사: `tests/browser/region-popup-smoke.cjs`(로컬 서버, PLAYWRIGHT_MODULE/PLAYWRIGHT_BROWSERS_PATH/POPUP_TEST_OUTPUT 지정 가능), `tests/browser/step08-cloudflare-live.cjs`(실제 시험 주소의 연속 흐름). 검증 자료는 `docs/evidence/20261022-region-popup/`에 보존한다.
 
 실제 사용자 프로필·기존 저장에는 접근하지 않는다. main 기준f7e0e8e29428b3b7118c9553cd517f870bfd785e를 보존하며 Railway 도구/배포를 호출하지 않는다. 시험 브랜치 push는 기존 Cloudflare 자동 배포 대상으로, 배포 성공 및 원격 화면 검증 결과는 별도 후속 증거로 구분한다. Windows Chrome/Edge·모바일 실기기/키보드·오프라인 file:// 전체 동작·6테마 완주는 미검증이다.
+
+## 시험 사이트 최종 확인
+구현 커밋c596a460c3f1b8abb3d86ab15c287d39f8061b7a를 시험 브랜치에 반영했다. 기존 자동 빌드a07e9165-1031-419c-8d7d-e17f9a3fac40는 stopped/success(2026-10-22T10:10:55.027Z)이며 배포6b09d302-9a2c-4649-b014-f7cf899c48b2, 버전cfa3c16e-f097-4bdf-851c-73390001a22a에100% 제공한다. 실제HTTPS 응답200, 단일HTML1,319,273바이트 SHA-256 96f10cac861abf1b9325eb5c04082f28101200a536b9a014d7572982474ac8ff가 Git 커밋과 일치했다. 실제 시험 주소의 새 프레임 표시와 연속 저장·복원12개 검증도 PASS, 브라우저 예외/HTTP 오류0. 기존 사용자 프로필과 다른 임시 WebKit 문맥만 사용했다. 최종 화면은 outputs/Region-live-02-continued-question.png다. main HEAD f7e0e8e29428b3b7118c9553cd517f870bfd785e와 원격 시험 HEAD c596a46 확인. 후속 증거는 로컬에만 보관하여 문서 반영을 위한 추가 배포는 하지 않는다.
