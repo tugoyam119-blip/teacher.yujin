@@ -38,6 +38,12 @@ export function reduceCommand(current,command){
     }
   };
   const ensureRunningNotExpired=a=>insist(a.timer.phase!=='RUNNING'||timerRemainingMs(a,at)>0,'TIMER_DEADLINE','시각 만료가 도달했습니다. 만료 이벤트를 확정해야 합니다.');
+  // New rules checkpoint known activity at every saved command. Reopening never
+  // counts the unknown interval since the last save (which may include closure).
+  if(state.settings.preparation&&type!=='RECOVER_INTERRUPTED'){
+    const lesson=state.sessions.find(s=>s.id===state.activeSessionId);
+    if(lesson?.phase==='ACTIVE'){lesson.activeMs+=Math.max(0,at-lesson.activeSince);lesson.activeSince=at;}
+  }
   switch(type){
     case 'EXPEDITION_CREATED':
       insist(current.meta.revision===0,'NOT_INITIAL','신규 원정 생성 명령은 최초에만 허용합니다.');
@@ -98,6 +104,11 @@ export function reduceCommand(current,command){
     case 'SESSION_RESUMED':{
       const s=activeSession();insist(s.phase==='PAUSED','SESSION_NOT_PAUSED','일시정지된 차시가 아닙니다.');s.phase='ACTIVE';s.activeSince=at;break;
     }
+    case 'SESSION_WRAP_REQUESTED':
+    case 'SESSION_WRAP_CANCELLED':{
+      insist(state.settings.preparation&&payload.teacherConfirmed===true,'TEACHER_REQUIRED','교사가 수업 마무리를 확인해야 합니다.');
+      const s=activeSession();s.wrapRequested=type==='SESSION_WRAP_REQUESTED';break;
+    }
     case 'SESSION_ENDED':{
       const s=activeSession();insist(state.activeAttemptId?last().timer.phase==='RESOLVED':true,'ATTEMPT_ACTIVE','진행 중인 문제를 먼저 처리해야 합니다.');
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 회수/가로채기를 먼저 종료해야 합니다.');
@@ -105,7 +116,7 @@ export function reduceCommand(current,command){
     }
     case 'ATTEMPT_PREPARED':{
       requireHealth(state);
-      const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
+      const s=activeSession();insist(!s.wrapRequested,'LESSON_WRAP_REQUESTED','마무리 예약 후에는 새 문항을 준비할 수 없습니다.');insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
       insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 가로채기/회수미션을 먼저 종료해야 합니다.');
       requireId(payload.attemptId,'문제 시도');requireId(payload.questionId,'문항');
@@ -125,6 +136,7 @@ export function reduceCommand(current,command){
       const s=activeSession();insist(s.phase==='ACTIVE','SESSION_NOT_ACTIVE','진행 중인 차시가 필요합니다.');
       insist(!state.activeAttemptId||last().timer.phase==='RESOLVED','ATTEMPT_ACTIVE','기존 문제를 먼저 처리해야 합니다.');
       insist(!sideBusy(),'SIDE_MISSION_ACTIVE','진행 중인 가로채기/회수미션을 먼저 종료해야 합니다.');
+      insist(!s.wrapRequested,'LESSON_WRAP_REQUESTED','마무리 예약 후에는 새 문항을 준비할 수 없습니다.');
       validateDrawCommand(state,payload,at);
       // Explicit region navigation enables strict quota/route checks; older PHASE 1/2
       // prototype fixture saves remain loadable until migration is approved.

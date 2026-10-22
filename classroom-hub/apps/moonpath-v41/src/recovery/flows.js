@@ -135,6 +135,7 @@ export function processInterception(s,type,p,{eventId,at}){
         targetTeamId:null,status:'SKIPPED',reason:reason(p.reason,'가로채기 생략 사유'),openedEventId:eventId,openedAt:at});
       book.lastTeamId=null;return;
     }
+    insist(s.settings.interception!==false,'INTERCEPTION_DISABLED','완전 협동 탐험에서는 가로채기를 사용하지 않습니다.');
     requireId(p.interceptionId,'가로채기');
     insist(!book.records.some(x=>x.id===p.interceptionId),'INTERCEPTION_DUPLICATE','가로채기 ID가 중복되었습니다.');
     insist(p.targetTeamId!==origin.teamId,'INTERCEPTION_ORIGIN_TEAM','원래 문제의 모둠은 가로채기 대상이 될 수 없습니다.');
@@ -178,6 +179,7 @@ function canEmerge(s,row,regionId){
   return i>=0&&j>i&&regionId!==row.originRegionId&&visits.at(-1)===regionId;
 }
 export function processRecovery(s,type,p,{eventId,at}){
+  if(type==='RECOVERY_CALLED')insist(!s.sessions.find(x=>x.id===s.activeSessionId)?.wrapRequested,'LESSON_WRAP_REQUESTED','수업 마무리 예약 후 새 회수 문항을 시작할 수 없습니다.');
   extension(s);validTimestamp(at);requireId(eventId,'이벤트');
   teacher(p);
   if(['RECOVERY_DEFERRED','RECOVERY_RELEASED','RECOVERY_ORIGIN_FORFEITED','RECOVERY_CALLED'].includes(type)){

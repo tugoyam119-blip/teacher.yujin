@@ -26,15 +26,15 @@ export class TeacherEngineSession {
   }
   _stopHeartbeat(){if(this.heartbeat!==null){clearInterval(this.heartbeat);this.heartbeat=null;}}
   _enqueue(action){const pending=this.queue.then(action);this.queue=pending.catch(()=>{});return pending;}
-  async create({slot,world,teamCount=4,timerSeconds=60,expeditionName='',healthEnabled=false,sourcePack=null,expeditionId=this.newId()}){
+  async create({slot,world,teamCount=4,timerSeconds=60,expeditionName='',healthEnabled=false,preparation=null,sourcePack=null,expeditionId=this.newId()}){
     return this._enqueue(async()=>{
       checkSlot(slot);insist(this.slot===null,'SESSION_BOUND','이미 열린 슬롯이 있습니다.');
       const at=this.clock(),lease=await this.store.acquireWriter(slot,this.writerId);
       try{
         const pack=sourcePack?validateQuestionPack(sourcePack):null;
-        const blank=newExpedition({slot,world,teamCount,timerSeconds,expeditionName,healthEnabled,createdAt:at,expeditionId,...(pack?{packId:pack.packId,packVersion:pack.packVersion}:{})});
+        const blank=newExpedition({slot,world,teamCount,timerSeconds,expeditionName,healthEnabled,preparation,createdAt:at,expeditionId,...(pack?{packId:pack.packId,packVersion:pack.packVersion}:{})});
         if(sourcePack)blank.questions.sourcePack=clone(sourcePack);
-        const result=await this.store.createSlot(blank,{type:'EXPEDITION_CREATED',eventId:this.newId(),at,payload:{}},lease);
+        const result=await this.store.createSlot(blank,{type:'EXPEDITION_CREATED',eventId:this.newId(),at,payload:blank.settings.preparation?{preparation:clone(blank.settings.preparation)}:{}},lease);
         this.slot=slot;this.lease=lease;this.state=result.state;this._startHeartbeat();return clone(result.state);
       }catch(err){await this.store.releaseWriter(slot,lease).catch(()=>{});throw err;}
     });
@@ -98,7 +98,7 @@ export class TeacherEngineSession {
     });
   }
   /** Plans + persists the exact draw inside one teacher-side serialized operation. */
-  async drawQuestion(questionEngine,{regionId,teamId,attemptId=null,eventId=null,random=Math.random}={}){
+  async drawQuestion(questionEngine,{regionId,teamId,attemptId=null,eventId=null,random=null}={}){
     return this._enqueue(async()=>{
       insist(this.state&&this.lease,'SESSION_NOT_OPEN','교사 원정 세션을 먼저 열어야 합니다.');
       // A double-click/retry with the SAME event ID returns its original issued

@@ -1,3 +1,4 @@
+import {applyPreparation,normalizePreparation} from './preparation.js';
 import {checkHealth} from '../world/health.js';
 /** The rules below are v4.1.1 design decisions; this file contains only PHASE 1 groundwork. */
 import {checkRewardHistory} from '../rewards/ledger.js';
@@ -32,14 +33,14 @@ export function canonicalJson(value){
 export function checkSlot(slot){insist(Number.isInteger(slot)&&slot>=MIN_SLOT&&slot<=MAX_SLOT,'SLOT_INVALID','슬롯은 I~III(1~3) 중 하나여야 합니다.');return slot;}
 export function requireId(str,label){insist(typeof str==='string'&&str.length>0&&str.length<=128,'INVALID_ID',`${label} ID가 올바르지 않습니다.`);return str;}
 export function validTimestamp(at){insist(Number.isSafeInteger(at)&&at>=0,'INVALID_TIME','이벤트 시각이 올바르지 않습니다.');return at;}
-export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeconds=60,expeditionName='',healthEnabled=false,packId='KR-HS-IS2-U01',packVersion='1.0.0',world}){
+export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeconds=60,expeditionName='',healthEnabled=false,preparation=null,packId='KR-HS-IS2-U01',packVersion='1.0.0',world}){
   checkSlot(slot);requireId(expeditionId,'원정');validTimestamp(createdAt);
   insist(typeof healthEnabled==='boolean','HEALTH_INVALID','체력 적용 여부는 참/거짓이어야 합니다.');
   insist(Number.isInteger(teamCount)&&teamCount>=2&&teamCount<=8,'INVALID_TEAM_COUNT','모둠은 2~8개여야 합니다.');
   insist(TIMER_CHOICES_SEC.includes(timerSeconds),'INVALID_TIMER','타이머 값은 끔/45/60/90/120초 중 하나여야 합니다.');
   insist(typeof expeditionName==='string'&&expeditionName.trim().length<=80,'INVALID_EXPEDITION_NAME','탐험 이름은 80자 이내여야 합니다.');
   insist(world?.themes?.length===6&&world.themes.every(t=>t.regions?.length===5),'INVALID_WORLD','공식 6테마 30지역 기준이 필요합니다.');
-  return {
+  const state={
     meta:{schemaVersion:healthEnabled?HEALTH_SCHEMA_VERSION:SCHEMA_VERSION,engineVersion:ENGINE_VERSION,expeditionId,expeditionName:expeditionName.trim(),slot,revision:0,createdAt,updatedAt:createdAt,packId,packVersion},
     screen:'HOME',
     settings:{teamCount,timerSeconds,interception:true,lessonMinutes:45,...(healthEnabled?{healthEnabled:true}:{})},
@@ -57,6 +58,8 @@ export function newExpedition({slot,expeditionId,createdAt,teamCount=4,timerSeco
     magic:{used:[],unlocked:['MOON_WHISPER','STAR_COMPASS']},clues:{collected:[],combinations:[]},
     eventLog:[],audit:[],corrections:{records:[]}
   };
+  if(preparation)applyPreparation(state,preparation);
+  return state;
 }
 export function checkState(s){
   insist(s?.meta?.schemaVersion===(s?.settings?.healthEnabled===true?HEALTH_SCHEMA_VERSION:SCHEMA_VERSION),'SCHEMA_MISMATCH','저장 파일 스키마가 호환되지 않습니다.');
@@ -70,6 +73,13 @@ export function checkState(s){
   insist(Array.isArray(s.sessions)&&Array.isArray(s.teams)&&s.teams.length===s.settings.teamCount,'INVALID_STATE','필수 상태 데이터가 잘못되었습니다.');
   insist(Array.isArray(s.world?.themes)&&s.world.themes.length===6&&Object.keys(s.world.regions||{}).length===30,'INVALID_WORLD','30지역 구조가 일치하지 않습니다.');
   if(s.world.navigation){const n=s.world.navigation;insist((n.view==='BOOKSHELF'&&n.themeId===null)||(n.view==='FORK'&&s.world.themes.some(t=>t.id===n.themeId)),'INVALID_NAVIGATION','저장된 책장·갈림길 정보가 올바르지 않습니다.');}
+  insist(!s.eventLog.some(e=>e.type==='EXPEDITION_CREATED'&&e.payload?.preparation)||!!s.settings.preparation,'PREPARATION_INVALID','새 탐험 규칙이 저장 상태에서 누락됐습니다.');
+  if(s.settings.preparation){
+    const p=normalizePreparation(s.settings.preparation);
+    insist(s.settings.lessonMinutes===p.lessonMinutes&&s.settings.interception===(p.participation==='ROTATION'),'PREPARATION_INVALID','저장된 탐험 규칙이 일치하지 않습니다.');
+    const created=s.eventLog.find(e=>e.type==='EXPEDITION_CREATED');
+    if(created)insist(canonicalJson(created.payload?.preparation)===canonicalJson(p),'PREPARATION_INVALID','탐험 준비 규칙이 생성 기록과 다릅니다.');
+  }
   checkParticipationHistory(s);
   checkSideMissionHistory(s);
   // PHASE 2-2: a saved draw ledger cannot claim extra unseen questions or

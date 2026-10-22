@@ -1,7 +1,7 @@
 const {webkit}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const fs=require('node:fs/promises'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'../../..');
-const outDir=path.resolve(process.env.POPUP_TEST_OUTPUT||path.join(outDir,'popup-v2'));
+const outDir=path.resolve(process.env.POPUP_TEST_OUTPUT||path.join(process.cwd(),'outputs','popup-v2'));
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.png':'image/png'};
 const server=http.createServer(async(req,res)=>{try{let p=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!p.startsWith(root+path.sep))throw Error('path');if((await fs.stat(p)).isDirectory())p=path.join(p,'index.html');res.writeHead(200,{'Content-Type':mime[path.extname(p)]??'application/octet-stream'});res.end(await fs.readFile(p));}catch{res.writeHead(404);res.end();}});
 (async()=>{
@@ -22,15 +22,15 @@ const server=http.createServer(async(req,res)=>{try{let p=path.resolve(root,'.'+
   const geometry=await page.locator('#panel').evaluate(el=>{const r=el.getBoundingClientRect();const body=document.querySelector('#panel-body').getBoundingClientRect();return {width:r.width,height:r.height,bodyWidth:body.width,bodyHeight:body.height,bodyLeft:body.left-r.left,bodyTop:body.top-r.top};});
   assert.ok(Math.abs(geometry.width-820*4/3)<1);assert.ok(Math.abs(geometry.height-500*4/3)<1);checks.push({desktopGeometry:geometry});
   await page.screenshot({path:path.join(outDir,'STEP05-desktop-new.png')});
-  await page.getByRole('button',{name:'다음 · 탐험 설정',exact:true}).click();
-  await page.getByRole('status').filter({hasText:'탐험 규칙을 먼저'}).waitFor();checks.push('Validation error stays in fixed status area');
-  await page.locator('#setup-rules').selectOption('4.1.1');await page.locator('#setup-pack').selectOption('builtin');
   await page.locator('#setup-pack-status').filter({hasText:'검증 완료'}).waitFor();
-  await page.getByRole('button',{name:'다음 · 탐험 설정',exact:true}).click();
-  await page.locator('#expedition-name').waitFor();assert.equal(await page.locator('#team-count').count(),1);
-  assert.equal(await page.locator('#panel-body #team-count').count(),1);checks.push('Rule/pack selection reaches settings; team selector remains in body');
+  assert.equal(await page.locator('#team-count').inputValue(),'6');
+  await page.locator('input[name="lesson-minutes"][value="25"]').check();
+  await page.locator('input[name="participation"][value="COOPERATIVE"]').check();
+  assert.ok((await page.locator('#preparation-summary').innerText()).includes('25분'));
+  assert.ok((await page.locator('#preparation-summary').innerText()).includes('완전 협동'));
+  checks.push('One screen setup updates actual duration, cooperation and people summary');
   await page.screenshot({path:path.join(outDir,'STEP05-desktop-settings.png')});
-  const scroll=await page.locator('#panel-body').evaluate(el=>({client:el.clientHeight,scroll:el.scrollHeight}));assert.ok(scroll.scroll>scroll.client);checks.push({bodyScroll:scroll});
+  const scroll=await page.locator('.preparation-settings').evaluate(el=>({client:el.clientHeight,scroll:el.scrollHeight}));assert.ok(scroll.scroll>scroll.client);checks.push({settingsScroll:scroll});
   await page.locator('#close-panel').click();await page.waitForFunction(()=>document.activeElement===document.querySelector('#menu-new'));checks.push('Close restores HOME trigger focus');
   for(const [id,title] of [['continue','이어하기'],['journal','탐험 일지'],['settings','설정'],['records','기록'],['help','도움말'],['exit','나가기']]){
    await page.locator(`#menu-${id}`).click();await page.locator('#panel-actions button').first().waitFor();
@@ -38,12 +38,12 @@ const server=http.createServer(async(req,res)=>{try{let p=path.resolve(root,'.'+
    assert.equal(await page.locator('#panel').evaluate(el=>el.open),false);checks.push(`${id}: open, footer, Escape close`);
   }
   assert.equal(await page.locator('#stage').evaluate(el=>el.outerHTML),homeBefore);checks.push('HOME DOM, image paths and coordinates unchanged after popup interactions (focus outline excluded)');
-  await page.setViewportSize({width:390,height:844});await page.locator('#menu-new').click();await page.locator('#panel.compact').waitFor();
+  await page.setViewportSize({width:390,height:844});await page.locator('#menu-new').click();await page.locator('#panel.compact').waitFor();await page.locator('#panel-actions button').last().waitFor();
   await page.screenshot({path:path.join(outDir,'STEP05-mobile-new.png')});
   const mobile=await page.evaluate(()=>{const p=document.querySelector('#panel'),r=p.getBoundingClientRect();const buttons=[...document.querySelectorAll('#panel-actions button')].map(b=>{const r=b.getBoundingClientRect();return {width:r.width,height:r.height,left:r.left,right:r.right,bottom:r.bottom};});return {width:innerWidth,height:innerHeight,panel:{x:r.x,y:r.y,width:r.width,height:r.height},buttons,bodyFont:getComputedStyle(document.querySelector('#panel-body')).fontSize};});
   assert.equal(mobile.bodyFont,'16px');for(const b of mobile.buttons){assert.ok(b.height>=44);assert.ok(b.right<=390);assert.ok(b.bottom<=844);}checks.push({mobileGeometry:mobile});
   await page.locator('#close-panel').click();await page.setViewportSize({width:844,height:390});await page.locator('#menu-new').click();
-  await page.screenshot({path:path.join(outDir,'STEP05-short-landscape.png')});assert.equal(await page.locator('#panel.short').count(),1);checks.push('Short landscape enables combined content/footer scroll');
+  await page.locator('#panel-actions button').last().waitFor();await page.screenshot({path:path.join(outDir,'STEP05-short-landscape.png')});assert.equal(await page.locator('#panel.short').count(),1);checks.push('Short landscape enables combined content/footer scroll');
   assert.deepEqual(errors,[]);assert.deepEqual(failures,[]);checks.push('No browser page errors or HTTP >=400 responses');
   await fs.writeFile(path.join(outDir,'STEP05-browser-results.json'),JSON.stringify({browser:'Playwright WebKit, fresh isolated browser context; not Windows Chrome/Edge or physical mobile',url,checks,errors,failures,storageScope:'Only ephemeral local test origin; no production origin or existing data accessed'},null,2));
   console.log(JSON.stringify({passed:checks.length,checks},null,2));

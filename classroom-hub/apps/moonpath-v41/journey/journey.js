@@ -12,14 +12,17 @@ async function run(fn){if(busy)return;busy=true;const controls=[...document.quer
 function button(parent,text,fn,{disabled=false}={}){const b=node('button',text);b.type='button';b.disabled=disabled;b.addEventListener('click',()=>run(fn));parent.append(b);return b;}
 async function view(view,themeId){await teacher.dispatch('WORLD_VIEW_OPENED',{view,themeId});preview=null;themePreview=null;$('message').textContent='';}
 async function home(){if(teacher?.state){const s=teacher.getState();if(s.sessions.some(x=>x.id===s.activeSessionId&&x.phase==='ACTIVE'))await teacher.dispatch('SESSION_PAUSED');await teacher.close();}db?.close();location.assign('../home-b/');}
-async function region(){const s=teacher.getState();if(s.screen!=='REGION'&&!hasLiveMission(s))await teacher.dispatch('SCREEN_CHANGED',{screen:'REGION'});await teacher.close();db.close();location.assign(`../dist/phase2-9-one-region-smoke.html?home=b&journey=1&slot=${slot}`);}
+async function region(freshEntry=false){const s=teacher.getState();if(s.screen!=='REGION'&&!hasLiveMission(s))await teacher.dispatch('SCREEN_CHANGED',{screen:'REGION'});if(freshEntry){sessionStorage.setItem('moonpath-quick-handoff',JSON.stringify({slot,expeditionId:s.meta.expeditionId,revision:teacher.getState().meta.revision,at:Date.now()}));}await teacher.close();db.close();location.assign(`../dist/phase2-9-one-region-smoke.html?home=b&journey=1&slot=${slot}`);}
 async function activeLesson(){const s=teacher.getState(),lesson=s.sessions.find(x=>x.id===s.activeSessionId);if(!lesson||lesson.phase==='ENDED')await teacher.dispatch('SESSION_STARTED',{sessionId:crypto.randomUUID()});else if(lesson.phase==='PAUSED')await teacher.dispatch('SESSION_RESUMED');}
 async function enter(option){
  const theme=world.themes.find(t=>t.regions.some(r=>r.id===option.id));option=regionOptions(teacher.getState(),theme.id).find(o=>o.id===option.id);if(!option.allowed)throw new Error(option.reason);
  if(option.continuing){await region();return;}
- await activeLesson();
+ if(teacher.getState().settings.preparation?.confirmation==='CAREFUL'){
+  const state=teacher.getState(),lesson=state.sessions.find(x=>x.id===state.activeSessionId);
+  if(lesson?.phase!=='ACTIVE')throw new Error('먼저 수업 시작을 확인해 주세요.');
+ }else await activeLesson();
  if(option.mode==='EXTRA'&&!teacher.getState().world.additionalExplorationReturn){await view('BOOKSHELF');await teacher.dispatch('EXTRA_EXPLORATION_STARTED',{regionId:option.id,teacherConfirmed:true});}
- await teacher.enterRegion(option.id,{mode:option.mode});await region();
+ await teacher.enterRegion(option.id,{mode:option.mode});await region(!!teacher.getState().settings.preparation);
 }
 function progressText(p){return `주경로 ${p.mainFinished?'완료':'미완료'} · 완전 탐색 ${p.fullExploration?'달성':`${p.completedRegions}/5`} · 학습 ${p.learningComplete?'달성':p.unresolvedRecovery?`회수 ${p.unresolvedRecovery}건 대기`:'주경로 완료 전'}`;}
 function progressLine(parent,themeId){const p=worldProgress(teacher.getState()).themes.find(t=>t.themeId===themeId);const line=node('p',progressText(p));line.className='progress-line';parent.append(line);}
@@ -46,7 +49,8 @@ function showRegion(parent,id){
  else if(option.allowed){
   box.append(node('p',`기본 문제 ${s.world.regions[id].baseQuota??s.settings.teamCount}개 · 제한 시간 ${s.settings.timerSeconds?`${s.settings.timerSeconds}초`:'끔'} · ${option.mode==='EXTRA'?'추가 탐험':'주경로'}`));
   const branch=theme.regions.indexOf(r);if(option.mode==='MAIN'&&(branch===1||branch===2)&&!s.world.mainRouteChoice[theme.id])box.append(node('p','이 길을 선택하면 반대편 길은 주경로 완료 뒤 추가 탐험으로 열립니다. 아직 경로를 확정하지 않았습니다.'));
-  button(box,option.continuing?'저장된 지역 계속하기':option.mode==='EXTRA'?'추가 탐험 진입 확인':'이 지역 진입 확인',()=>enter(option));
+  const confirmation=s.settings.preparation?.confirmation;const lesson=s.sessions.find(x=>x.id===s.activeSessionId);if(confirmation==='CAREFUL'&&!option.continuing&&lesson?.phase!=='ACTIVE')button(box,'수업 시작 확인',activeLesson);
+  button(box,option.continuing?'저장된 지역 계속하기':confirmation==='QUICK'?'지역·첫 문제 시작':option.mode==='EXTRA'?'추가 탐험 진입 확인':'이 지역 진입 확인',()=>enter(option));
  }
  button(box,'갈림길로 돌아가기',async()=>{if(s.screen!=='FORK')await view('FORK',theme.id);else preview=null;});parent.append(box);
 }

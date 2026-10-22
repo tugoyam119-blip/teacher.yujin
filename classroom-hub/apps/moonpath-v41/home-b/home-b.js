@@ -1,8 +1,9 @@
+import {renderPreparation} from './new-expedition.js';
 import {openEngineDatabase} from '../src/storage/indexeddb.js?v=2-archive';
 import {TeacherEngineSession} from '../src/engine/session.js';
 import {makeBackup} from '../src/storage/backup.js';
 import {expeditionJournal,journalCsv,decisionLabel} from '../src/world/journal.js';
-import {validateQuestionPack} from '../src/questions/engine.js';
+
 
 import {setupPopup,beginPanel,finishPanel,decorateButton} from './popup-ui.js?v=20261022-popup-v2';
 
@@ -81,32 +82,17 @@ function showJournal(target,report){
 async function openPanel(kind,setup=null,trigger=null){
  const request=++panelRequest;
  const panel=$('panel'),body=$('panel-body');beginPanel(trigger);$('panel-title').textContent=actions.find(a=>a.id===kind)?.title??'HOME B 조립 상태';
- panel.classList.toggle('setup-selection',kind==='new');
+ panel.classList.toggle('preparation',kind==='new');
  if(!panel.open)panel.showModal();
  if(kind==='new'){
-  $('panel-title').textContent='새로운 탐험 · 규칙과 문제팩';
-  const columns=node('div'),ruleSection=node('section'),packSection=node('section');columns.className='setup-columns';columns.append(ruleSection,packSection);body.append(columns);ruleSection.append(node('h2','1. 탐험 규칙'));
-  const rulesLabel=node('label','탐험 규칙 '),rules=node('select');rules.id='setup-rules';
-  for(const [value,text] of [['','규칙을 선택하세요'],['4.1.1','v4.1.1 기본 규칙']]){const o=node('option',text);o.value=value;rules.append(o);}rulesLabel.append(rules);ruleSection.append(rulesLabel);
-  const list=node('ul');for(const text of ['기본 4모둠(2~8모둠), 지역 기본 문제 수는 모둠 수와 같습니다.','교사가 수업·문제 타이머를 시작하며 기본 제한 시간은 60초입니다.','대표 순환과 가로채기를 사용하며, 오답은 이후 지역에서 회수합니다.','지역 최초 완료는 열쇠 +1, 최초 정답·유효 회수는 공동 별빛 +1입니다.','책장 → 갈림길 → 지역으로 진행하며 저장·복원 후에는 자동 재개하지 않습니다.'])list.append(node('li',text));ruleSection.append(list);packSection.append(node('h2','2. 문제팩 선택'));
-  const packLabel=node('label','문제팩 '),packs=node('select');packs.id='setup-pack';
-  for(const [value,text] of [['','문제팩을 선택하세요'],['builtin','기본팩 · 통합사회2 1단원 · 인권 보장과 헌법 · 60문항'],['file','JSON 문제팩 불러오기']]){const o=node('option',text);o.value=value;packs.append(o);}packLabel.append(packs);packSection.append(packLabel);
-  const fileLabel=node('label','문제팩 JSON 파일 '),file=node('input');file.type='file';file.accept='.json,application/json';file.id='setup-pack-file';fileLabel.hidden=true;fileLabel.append(file);packSection.append(fileLabel);
-  const status=node('p','문제팩을 선택하면 제목·버전·문항 수를 확인합니다.');status.id='setup-pack-status';status.setAttribute('role','status');packSection.append(status);
-  let chosen=null,packRequest=0;
-  async function loadPack(){const token=++packRequest;chosen=null;$('panel-message').textContent='';fileLabel.hidden=packs.value!=='file';try{let raw;
-   if(packs.value==='builtin'){const r=await fetch('../data/YQBank_60_v1.0.0_source.json');if(!r.ok)throw new Error('기본 문제팩을 불러오지 못했습니다.');raw=await r.json();}
-   else if(packs.value==='file'){if(!file.files[0]){status.textContent='불러올 JSON 파일을 선택하세요.';return;}if(file.files[0].size>2*1024*1024)throw new Error('문제팩 파일은 2MiB 이하여야 합니다.');raw=JSON.parse(await file.files[0].text());}
-   else{status.textContent='문제팩을 선택하세요.';return;}
-   const info=validateQuestionPack(raw);if(token!==packRequest||request!==panelRequest)return;chosen=raw;status.textContent=`${raw.pack.title||info.packId} · v${info.packVersion} · ${info.count}문항 · 검증 완료`;
-  }catch(e){if(token===packRequest){chosen=null;status.textContent=`문제팩을 사용할 수 없습니다: ${e.message}`;}}}
-  packs.addEventListener('change',loadPack);file.addEventListener('change',loadPack);
-  packSection.append(node('p','공동 체력 ♥8 · 기본 문제 오답 −1 / 유효 회수 +1. 소진되면 기록을 보존하고 책장에서 회복합니다.'));
-  packSection.append(node('p','현재 지원 형식은 60문항 YQBank JSON입니다. 선택한 원본은 탐험 저장과 백업에 함께 보관합니다.'));
-  const next=node('div');next.className='actions';button(next,'다음 · 탐험 설정',async()=>{if(rules.value!=='4.1.1')throw new Error('탐험 규칙을 먼저 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 먼저 선택하세요.');await openPanel('new-settings',{sourcePack:chosen});},'primary');button(next,'탐험 보관함 열기',()=>openPanel('archive'));body.append(next);
-  finishPanel(next);return;
+  $('panel-title').textContent='달빛 원정 준비';await refresh();if(request!==panelRequest||!panel.open)return;
+  const controls=await renderPreparation({body,slots,button,isCurrent:()=>request===panelRequest&&panel.open,onArchive:()=>openPanel('archive'),onStart:async config=>{
+   const r=await fetch('../config/world.json');if(!r.ok)throw new Error('세계 설정을 읽지 못했습니다.');
+   const world=await r.json(),teacher=new TeacherEngineSession(database);
+   try{await teacher.create({...config,world,healthEnabled:true});await teacher.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});}finally{await teacher.close();}game(config.slot);
+  }});if(request===panelRequest&&panel.open)finishPanel(controls);return;
  }
- if(['new-settings','continue','journal','settings','records','archive'].includes(kind)){
+ if(['continue','journal','settings','records','archive'].includes(kind)){
   body.append(node('p','v4.1.1 개발용 탐험입니다. 기존 HOME 저장 기록과 분리되어 있습니다.'));
   await refresh();if(request!==panelRequest||!panel.open)return;slotPicker(body);
  }
@@ -131,25 +117,6 @@ async function openPanel(kind,setup=null,trigger=null){
    if(!a.restoredAt)button(item,`슬롯 ${roman[a.slot-1]}로 복원`,async()=>{const writerId=crypto.randomUUID(),lease=await database.acquireWriter(a.slot,writerId);try{await database.restoreArchive(a.key,{lease});}finally{await database.releaseWriter(a.slot,lease);}await openPanel('archive');$('panel-message').textContent='탐험을 복원했습니다. 이어하기에서 열어 주세요. 자동 재개하지 않습니다.';});
    button(item,'이 보관 기록 JSON 백업',async()=>{const backup=await makeBackup({state:s,events:a.events.map(x=>x.event).sort((x,y)=>x.seq-y.seq)},{exportedAt:Date.now()});download(JSON.stringify(backup,null,2),'application/json',`moonpath-archive-${a.key}.json`);$('panel-message').textContent='보관 기록 JSON 백업을 만들었습니다.';});list.append(item);
   }
- }else if(kind==='new-settings'){
-  if(!setup?.sourcePack)throw new Error('규칙과 문제팩을 먼저 선택하세요.');
-  $('panel-title').textContent='새로운 탐험 · 탐험 설정';
-  body.append(node('p',`선택한 규칙: v4.1.1 기본 규칙 · 문제팩: ${setup.sourcePack.pack.title||setup.sourcePack.pack.id} · v${setup.sourcePack.pack.pack_version} · 60문항`));
-  button(body,'규칙·문제팩 다시 선택',()=>openPanel('new'));
-  button(body,slots.every(x=>x.state)?'슬롯이 모두 찼습니다 · 보관함 열기':'탐험 보관함 열기',()=>openPanel('archive'));
-  const nameLabel=node('label','탐험 이름 '),nameInput=node('input');nameInput.id='expedition-name';nameInput.maxLength=80;nameInput.value='새로운 탐험';nameLabel.append(nameInput);body.append(nameLabel);
-  const advanced=node('details');advanced.className='setup-advanced';advanced.append(node('summary','고급 설정'));
-  const timerLabel=node('label','문제 제한 시간 '),timerSelect=node('select');timerSelect.id='timer-seconds';
-  for(const n of [45,60,90,120,0]){const o=node('option',n===0?'끔':`${n}초`);o.value=n;o.selected=n===60;timerSelect.append(o);}timerLabel.append(timerSelect);advanced.append(timerLabel,node('p','기본 지역 문제 수는 모둠 수와 같습니다. 가로채기는 기본으로 켜져 있습니다.'));body.append(advanced);
-  const label=node('label','모둠 수 '),select=node('select');select.id='team-count';for(let n=2;n<=8;n++){const o=node('option',`${n}모둠`);o.value=n;o.selected=n===4;select.append(o);}label.append(select);controls.append(label);
-  button(controls,'새 탐험 시작',async()=>{
-   const slot=selected();if(slots[slot-1].state)throw new Error('기존 탐험이 있는 슬롯입니다. 빈 슬롯을 골라 주세요.');
-   const expeditionName=nameInput.value.trim();if(!expeditionName||expeditionName.length>80)throw new Error('탐험 이름을 1~80자로 입력하세요.');
-   const response=await fetch('../config/world.json');if(!response.ok)throw new Error('세계 설정을 읽지 못했습니다.');const world=await response.json();
-   const teacher=new TeacherEngineSession(database);
-   try{await teacher.create({slot,world,teamCount:Number(select.value),timerSeconds:Number(timerSelect.value),expeditionName,healthEnabled:true,sourcePack:setup.sourcePack});await teacher.dispatch('WORLD_VIEW_OPENED',{view:'BOOKSHELF'});}finally{await teacher.close();}
-   game(slot);
-  },'primary');body.append(node('p','새 탐험을 저장한 뒤 마법 책장에서 테마를 선택합니다. 갈림길에서 지역을 고르고 수업을 시작합니다.'));
  }else if(kind==='continue'){
   button(controls,'탐험 보관함 열기',()=>openPanel('archive'));
   button(controls,'선택한 탐험 이어하기',async()=>{const slot=selected();if(!slots[slot-1].state)throw new Error('저장된 탐험이 없는 슬롯입니다.');game(slot);},'primary');

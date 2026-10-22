@@ -1,3 +1,4 @@
+import {lessonBudget} from '../engine/preparation.js';
 /**
  * PHASE 2-9 — isolated functional TEST screen, not approved HOME or release UI.
  * No external requests or legacy storage keys. DO NOT register in classroom yet.
@@ -20,6 +21,7 @@ export function testDatabaseName(){return TEST_DB_NAME;}
 export async function bootOneRegionSmoke({pack,world}={}){
  let qe=createQuestionEngine(pack);
  let teacher=null,flow='MAIN',database=null;
+ addEventListener('pagehide',()=>{teacher?.close().catch(()=>{});});
  let statusMessage='신규 시제품은 원본 게임이 아닌 별도 시험 데이터베이스를 사용합니다.';
  const storageKind=()=>globalThis.__MP_FAKE_BROWSER_DB__?'브라우저 메모리 모의 DB':'시험 전용 IndexedDB';
  const notify=(message,type='info')=>{
@@ -53,6 +55,7 @@ export async function bootOneRegionSmoke({pack,world}={}){
     $('status-data').append(makeLine('모둠 수',s.teams.length),makeLine('별빛',s.rewards.starlight),
       makeLine('열쇠',s.rewards.keys),makeLine('보상 정산',s.rewards.settlementRequired?`필요 ${s.rewards.settlementDue}`:'정상'),
       makeLine('회수 대기',s.recovery.pending.filter(x=>x.status!=='INVALIDATED').length));
+    if(s.settings.preparation)$('status-data').append(makeLine('대표',active()?.teamAssignment?.representativeName??'출제 후 배정'),makeLine('Seed',s.settings.preparation.seed));
     const rid=selectedRegion(),info=regionInfo(rid),reg=s.world.regions[rid];
     const completed=reg.status==='COMPLETED';
     $('region-progress').textContent=`${info.name}: ${reg.status} / 기본 문제 목표 ${reg.baseQuota}건`;
@@ -65,13 +68,14 @@ export async function bootOneRegionSmoke({pack,world}={}){
     $('public-json').textContent=JSON.stringify(teacher.getStudentProjection(),null,2);
     $('turn-status').textContent=`문항 ${s.questions.draws.length}개 / ${s.interception.records.length} 가로채기 / 회수 완료 ${s.recovery.resolved.length}`;
     enabled('region-enter',!!s&&!completed&&reg.status==='AVAILABLE');
-    enabled('draw-question',!s.health?.returnRequired&&reg.status==='IN_PROGRESS'&&(!active()||active().timer.phase==='RESOLVED')&&
+    enabled('draw-question',!lessons[0]?.wrapRequested&&!s.health?.returnRequired&&reg.status==='IN_PROGRESS'&&(!active()||active().timer.phase==='RESOLVED')&&
        !interception()&&!recovery() && s.world.currentRegionId===rid&& s.sessions.some(x=>x.id===s.activeSessionId&&x.phase==='ACTIVE'));
     enabled('complete-region',!s.health?.returnRequired&&reg.status==='IN_PROGRESS'&&!interception()&&!recovery());
     enabled('next-region',journeyMode?completed:completed && s.world.regions['T1-R2'].status==='AVAILABLE'&&s.world.currentRegionId==='T1-R1');
     const recoveryRegion=journeyMode?rid:'T1-R2';
     enabled('recovery-call',!s.health?.returnRequired&&s.world.currentRegionId===recoveryRegion&&listRecoveryCandidates(s,{inRegionId:recoveryRegion}).length>0&&!recovery());
-    enabled('intercept-open',!!active()?.judgement?.decision&&active().judgement.decision==='INCORRECT'&&
+    if(s.settings.preparation)$('intercept-open').hidden=s.settings.interception===false;
+    enabled('intercept-open',s.settings.interception!==false&&!!active()?.judgement?.decision&&active().judgement.decision==='INCORRECT'&&
        !interception()&&!recovery()&&!s.interception.records.some(x=>x.sourceAttemptId===active().id));
     enabled('session-resume',lessons.length>0&&lessons[0].phase==='PAUSED');
    } else {
@@ -81,8 +85,8 @@ export async function bootOneRegionSmoke({pack,world}={}){
    }
    if(s){const teams=$('team-select');const old=teams.value;teams.replaceChildren(...s.teams.map(t=>{
       const opt=el('option',t.name);opt.value=t.id;return opt;
-    }));teams.value=s.teams.some(t=>t.id===old)?old:s.teams[0].id;}
-   showQuestion();
+    }));if(s.settings.preparation){const auto=el('option','자동 모둠 순환');auto.value='';teams.prepend(auto);}teams.value=s.teams.some(t=>t.id===old)?old:s.settings.preparation?'':s.teams[0].id;}
+   showQuestion();if($('lesson-budget'))budgetTick();
  };
  const clearResponses=()=>{$('response-form').replaceChildren();};
  const addChoice=(container,text,key,kind)=>{
@@ -190,7 +194,12 @@ export async function bootOneRegionSmoke({pack,world}={}){
    await teacher.dispatch('SESSION_STARTED',{sessionId:uniqueId()});
    await teacher.enterRegion('T1-R1');notify('새 시험 원정 생성·달빛 이끼길 방문이 저장됐습니다.');
   }else{
-   await teacher.open(slot);notify('저장된 시험 원정을 읽었습니다. 타이머/차시는 자동 재개되지 않습니다.');
+   let handoff=null;try{handoff=JSON.parse(sessionStorage.getItem('moonpath-quick-handoff')||'null');}catch{}sessionStorage.removeItem('moonpath-quick-handoff');
+   const saved=(await database.read(slot)).state;
+   const freshEntry=journeyMode&&handoff?.slot===slot&&handoff?.expeditionId===saved?.meta.expeditionId&&handoff?.revision===saved?.meta.revision&&Date.now()-handoff.at>=0&&Date.now()-handoff.at<5000&&!!saved?.settings.preparation;
+   await teacher.open(slot);
+   if(freshEntry){await teacher.dispatch('SESSION_RESUMED');if(saved.settings.preparation.confirmation==='QUICK'){qe=createQuestionEngine(teacher.getState().questions.sourcePack??pack);await teacher.drawQuestion(qe,{regionId:selectedRegion()});await teacher.dispatch('TIMER_STARTED');}}
+   notify('저장된 시험 원정을 읽었습니다. 타이머/차시는 자동 재개되지 않습니다.');
   }
   qe=createQuestionEngine(teacher.getState().questions.sourcePack??pack);
   flow='MAIN';$('response-form').dataset.renderKey='';draw();
@@ -209,7 +218,7 @@ export async function bootOneRegionSmoke({pack,world}={}){
  event('continue-expedition',()=>initialize('CONTINUE'));
  event('region-enter',async()=>{await teacher.enterRegion(selectedRegion());notify('지역 진입 완료');});
  event('draw-question',async()=>{
-  const result=await teacher.drawQuestion(qe,{regionId:selectedRegion(),teamId:$('team-select').value});
+  const result=await teacher.drawQuestion(qe,{regionId:selectedRegion(),teamId:$('team-select').value||undefined});
   flow='MAIN';$('response-form').dataset.renderKey='';notify(`문항 ${result.questionId}가 저장되었습니다. 교사가 타이머를 시작해야 합니다.`);
  });
  event('timer-start',async()=>{await dispatchTimer('STARTED');notify('타이머 시작 저장 완료');});
@@ -260,6 +269,19 @@ export async function bootOneRegionSmoke({pack,world}={}){
   qe=createQuestionEngine(teacher.getState().questions.sourcePack??pack);
   notify('빈 슬롯으로 JSON을 복원했습니다. 자동 재개되지 않습니다.');
  });
+ const budgetBox=el('section');budgetBox.id='lesson-budget';const budgetText=el('p');budgetText.id='lesson-budget-status';budgetText.setAttribute('role','status');budgetBox.append(budgetText);
+ const budgetButtons={};for(const [id,label,fn]of [
+  ['lesson-start','새 차시 시작',async()=>teacher.dispatch('SESSION_STARTED',{sessionId:uniqueId()})],
+  ['lesson-pause','수업 일시정지',async()=>teacher.dispatch('SESSION_PAUSED')],
+  ['lesson-wrap','이번 문항 후 수업 마무리',async()=>teacher.dispatch('SESSION_WRAP_REQUESTED',{teacherConfirmed:true})],
+  ['lesson-continue','마무리 취소 · 계속 진행',async()=>teacher.dispatch('SESSION_WRAP_CANCELLED',{teacherConfirmed:true})],
+  ['lesson-end','수업 마무리 확인',async()=>teacher.dispatch('SESSION_ENDED')]
+ ]){const b=el('button',label);b.id=id;b.type='button';b.addEventListener('click',withError(fn));budgetBox.append(b);budgetButtons[id]=b;}
+ $('toolbar').after(budgetBox);
+ function budgetTick(){const s=state();budgetBox.hidden=!s?.settings.preparation;if(budgetBox.hidden)return;const lesson=s.sessions.find(x=>x.id===s.activeSessionId),budget=lessonBudget(s,Date.now());budgetText.textContent=!budget?'수업 시작 대기':budget.wrapRequested?'현재 문항 판정 후 수업 마무리를 확인해 주세요.':budget.reached?'설정한 활동 시간이 되었습니다. 이번 문항 후 마무리를 선택할 수 있습니다.':'남은 활동 시간 '+Math.ceil(budget.remainingMs/60000)+'분 · '+(lesson.phase==='ACTIVE'?'진행 중':'일시정지');
+  budgetButtons['lesson-start'].hidden=!!lesson;budgetButtons['lesson-pause'].hidden=lesson?.phase!=='ACTIVE';budgetButtons['lesson-wrap'].hidden=!budget?.reached||budget?.wrapRequested;budgetButtons['lesson-continue'].hidden=!budget?.wrapRequested;budgetButtons['lesson-end'].hidden=!lesson;budgetButtons['lesson-end'].disabled=!!interception()||!!recovery()||!!active()&&active().timer.phase!=='RESOLVED';
+ }
+ const budgetInterval=setInterval(budgetTick,1000);addEventListener('pagehide',()=>clearInterval(budgetInterval),{once:true});budgetTick();
  draw();
  // HOME B opens only an explicitly selected existing test slot; never create from a URL.
  const homeEntry=new URLSearchParams(location.search);
@@ -267,7 +289,10 @@ export async function bootOneRegionSmoke({pack,world}={}){
   const slotText=homeEntry.get('slot');
   if(/^[123]$/.test(slotText??'')){
    $('slot-picker').value=slotText;
-   try{await initialize('CONTINUE');}catch(err){notify(`HOME 탐험 열기 실패 — ${err.code??err.name}: ${err.message}`,'error');}
+   try{await initialize('CONTINUE');}catch(err){
+    notify(`HOME 탐험 열기 실패 — ${err.code??err.name}: ${err.message}${err.code==='WRITER_BUSY'?' 다른 탐험 창을 닫아 주세요. 새로고침 직후라면 최대 30초 후 다시 열 수 있습니다.':''}`,'error');
+    if(err.code==='WRITER_BUSY'){const retry=el('button','저장된 탐험 다시 열기');retry.id='retry-expedition';retry.type='button';retry.addEventListener('click',withError(async()=>{await initialize('CONTINUE');retry.remove();}));$('toolbar').prepend(retry);}
+   }
   }
   const healthReturn=el('button','체력 소진 · 책장 복귀·회복 확인');healthReturn.id='health-return';healthReturn.type='button';healthReturn.hidden=true;healthReturn.addEventListener('click',withError(async()=>{await teacher.dispatch('HEALTH_RETURNED',{teacherConfirmed:true});const slot=state().meta.slot;await teacher.close();database.close();location.assign(`../journey/?slot=${slot}`);}));$('toolbar').prepend(healthReturn);
   const back=el('button','HOME으로');back.id='return-home';back.type='button';$('toolbar').prepend(back);

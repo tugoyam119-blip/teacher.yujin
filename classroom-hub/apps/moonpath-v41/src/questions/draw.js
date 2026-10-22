@@ -6,6 +6,8 @@
  */
 import {checkState,clone,insist,requireId,validTimestamp} from '../engine/model.js';
 
+import {seedRandomForDraw} from '../engine/preparation.js';
+
 const MODE_NEW = 'NEW';
 const MODE_REVIEW = 'REVIEW';
 export const DRAW_MODES = Object.freeze([MODE_NEW,MODE_REVIEW]);
@@ -128,8 +130,10 @@ function balancer(all,history,candidates,questionEngine,kind){
  * Numeric random injection makes QA reproducible; it is not saved as a reward.
  * Primary sorting is strict balance score; random breaks ties/nearly-equal scores.
  */
-export function planQuestionDraw(state,questionEngine,{regionId,teamId,attemptId,at,random=Math.random}={}){
+export function planQuestionDraw(state,questionEngine,{regionId,teamId,attemptId,at,random=null}={}){
+  random??=seedRandomForDraw(state,regionId,teamId);
   const pool=inspectDrawPool(state,questionEngine);
+  insist(!state.sessions.find(s=>s.id===state.activeSessionId)?.wrapRequested,'LESSON_WRAP_REQUESTED','수업 마무리가 예약되어 새 문항을 준비할 수 없습니다.');
   requireId(regionId,'지역');requireId(teamId,'모둠');requireId(attemptId,'문제 시도');validTimestamp(at);
   insist(state.world.regions[regionId],'REGION_INVALID','공식 30지역에 없는 지역입니다.');
   insist(state.world.currentRegionId===null||state.world.currentRegionId===regionId,'REGION_CHANGED','진행 중인 지역을 변경할 수 없습니다.');

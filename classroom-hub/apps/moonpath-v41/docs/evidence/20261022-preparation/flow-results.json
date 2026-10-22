@@ -1,0 +1,8 @@
+{
+  "browser": "Playwright WebKit; isolated local contexts",
+  "checks": [
+    "CAREFUL: settings, roster, entry confirmation, first question, refresh paused",
+    "STANDARD: settings, roster, entry confirmation, first question, refresh paused",
+    "QUICK: settings, roster, entry confirmation, first question, refresh paused"
+  ]
+}
