@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "method": "built-in image_gen",
+  "sourceBaseline": "ed6133d64593c188f9a67a1a11dc509c912a598a",
+  "userAuthorized": "HOME-matched pixel art for map, magic bookshelf crossroads, mage rear view on test branch",
+  "visualApproval": "PENDING_USER_REVIEW",
+  "byteTransformation": "NONE; full generated originals copied byte-identically",
+  "transport": "Verified Git binary path; no Railway/F5 mutation",
+  "assets": [
+    {
+      "id": "map",
+      "path": "assets/journey/pixel-v1/world-map.png",
+      "sourceFile": "exec-164d79ec-8970-4336-8061-74fbe6d9040b.png",
+      "width": 1916,
+      "height": 821,
+      "bytes": 3583000,
+      "sha256": "1eebe3f8c7131fd9f330415ca5f001876ec47d9aa470dad073ad5701a92295dd",
+      "pngColorType": 2,
+      "prompt": "Use case: stylized-concept. Production game background, landscape 1792x768. Create a NEW fantasy pixel-art OVERWORLD MAP matching the supplied HOME reference: lush detailed navy-indigo moonlit sky, lavender nebulae, gold lanterns, floating islands, waterfalls and intricate crisp pixel clusters, warm luminous highlights. High-end 16/32-bit JRPG pixel illustration, no vector look, no painted blur. Bird's-eye/isometric readable connected world, six distinct small island destinations on a winding stone trail in this exact sequence and rough coordinates: blue teal moonlit forest (14%,27%); red ember fortress (50%,27%); golden clockwork garden (86%,27%); purple star observatory (86%,76%); green memory sanctuary ruins (50%,76%); silver blue moon palace (14%,76%). Continuous stone paths/bridges connect those destinations in a serpent sequence across top left to right, down right, then bottom right to left. All six must be unmistakably visible. Ornate restrained gold corner ornaments, flowering violet vines on perimeter. Keep a quiet dark space immediately BELOW EACH destination for dynamic HTML captions. No words, letters, numbers, locks, UI buttons, panels, people or baked-in player markers. The reference is style only; do not modify or reproduce it as the output.",
+      "alpha": {
+        "mode": "opaque RGB"
+      }
+    },
+    {
+      "id": "fork",
+      "path": "assets/journey/pixel-v1/library-crossroads.png",
+      "sourceFile": "exec-a90302ab-275e-4297-aa56-649ee0d7bf96.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3658852,
+      "sha256": "e1d6d885407f33aa32e297d9c27b821ae48cda453683117c9a65c36dc6b54d79",
+      "pngColorType": 2,
+      "prompt": "Use case: stylized-concept. Production game background, landscape 1536x1024. A new moonlit MAGIC BOOKSHELF CROSSROADS environment matching supplied HOME fantasy pixel art: intricate crisp 16/32-bit JRPG pixel clusters, deep navy/indigo, lavender moonlight and gold lanterns, floating sanctuary rocks and waterfalls, dimensional foreground/background. Camera elevated, a real stone Y pathway leads from bottom center into a fork at center then left and right through two ornate magical library archways/bookshelves, and both paths curve back to join into a distant central gate. Rich bookshelves built into ancient stone, subtle gold and violet star ornamentation, parchment details, wisteria, flowers and fireflies. Center paths remain clear for separate selectable book layers. Left shelf glows cool blue, right shelf violet. No words, no letters, no UI panels, no buttons, no characters. This is a NEW scene derived from the reference style only.",
+      "alpha": {
+        "mode": "opaque RGB"
+      }
+    },
+    {
+      "id": "book",
+      "path": "assets/journey/pixel-v1/magic-book.png",
+      "sourceFile": "exec-a8616fc9-3305-4f71-9a56-496c3ed55976.png",
+      "width": 2060,
+      "height": 763,
+      "bytes": 2062803,
+      "sha256": "da2dcc115d6ac1c7c11328f5bdd864549293f4512300f2e5959e385a592f8684",
+      "pngColorType": 6,
+      "prompt": "Use case: stylized-concept. Transparent game UI asset: ONE large horizontally opened magical book, centered, full object visible with modest transparent margin. Matching supplied HOME button reference's intricate luminous gold filigree, violet star gems and crisp high-density fantasy pixel-art clusters, not smooth vector. Front-facing slightly elevated angle. Very broad blank warm ivory parchment page interiors for HTML text (central 70% width, middle 60% height must stay quiet, light and readable). Purple leather cover beneath pages, layered stepped pixel edges, gold corners, small violet star gems on OUTER corners only; central spine clear and subtle. Width to height about 2.7:1. No writing, no symbols on page interiors, no words or numbers, no text, no scene background, no checkerboard baked into image. Genuine alpha outside book. Create NEW art, retain the reference unmodified.",
+      "alpha": {
+        "transparentPixels": 339146,
+        "partialPixels": 1232370,
+        "opaquePixels": 264
+      }
+    },
+    {
+      "id": "mage",
+      "path": "assets/journey/pixel-v1/mage-back.png",
+      "sourceFile": "exec-ffe54383-5cca-4859-a7d6-2b31db07f261.png",
+      "width": 1182,
+      "height": 1330,
+      "bytes": 1347652,
+      "sha256": "96d048a69e795f921451343c8b1a07ec5d5fd707e49b9b8bbb795935549d0044",
+      "pngColorType": 6,
+      "prompt": "Use case: stylized-concept. New standalone game character sprite on genuine transparent background. Use the supplied HOME character as identity and costume reference. ONE small chibi sorceress seen STRICTLY FROM BEHIND, full body centered, large floppy deep navy witch hat with gold rim, violet ribbon bow and tiny gold star ornaments; very long wavy lavender-purple hair, midnight-purple cloak with delicate gold moon/star embroidery, short boots. Facing away/upwards toward an adventure path, no face visible, no profile, no front view. Match HOME detailed fantasy pixel-art palette and crisp stepped pixel clusters, designed to read when displayed around 80-112 pixels high. Strong compact silhouette, body not hidden by oversize surroundings. Hands relaxed, no staff, no extra character, no pet, no pedestal, no floor or opaque backdrop, no text. Modest transparent margin, full hat and boots visible. Generate new artwork preserving the identity, do not overwrite reference.",
+      "alpha": {
+        "transparentPixels": 842087,
+        "partialPixels": 729525,
+        "opaquePixels": 448
+      }
+    }
+  ]
+}

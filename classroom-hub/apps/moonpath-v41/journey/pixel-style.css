@@ -1,0 +1,37 @@
+/* Raster art is decorative. Actual destinations, locks and text stay in DOM. */
+html,body{height:auto;min-height:100%;overflow:auto;background:#0e0b24 url('../assets/home/assembly/background-original.png') center/cover fixed}
+#stage{position:relative;left:0;top:0;width:min(1200px,100%);height:auto;min-height:100dvh;margin:auto;padding:20px 28px;transform:none!important;background:linear-gradient(#100d2966,#100d29b8)}
+header{height:auto;min-height:80px;gap:16px}h1{font-size:24px;line-height:1.4}nav{flex-shrink:0}nav button,.map-info{border:0;border-radius:0;background:transparent url('../assets/home/popup-v2/secondary-normal.png') center/100% 100% no-repeat;min-height:44px;padding:8px 22px;text-shadow:0 1px 3px #09071d}
+#save-status{line-height:1.6}#scene{height:auto;min-height:340px;overflow:visible;padding:0}.map-guide{line-height:1.7;margin:8px 0 12px}
+.world-map{height:auto;aspect-ratio:1916/821;border:0;border-radius:0;background:none;overflow:visible;isolation:isolate}
+.map-illustration{position:absolute;inset:0}.world-map-art{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.world-map::before{display:none}.map-stop{width:238px;transform:translate(-50%,-25%);z-index:3}
+.map-destination{height:55px;min-height:55px;width:100%;padding:7px 15px;border:0;border-radius:0;background:transparent url('../assets/home/assembly/main-frame-original.png') center/100% 100% no-repeat;box-shadow:none!important;color:#fff5db;text-shadow:0 1px 3px #080519;font-size:14px;transition:filter .15s}
+.map-destination span{font-size:11px;margin-top:3px}.map-destination:not(:disabled):hover{filter:drop-shadow(0 0 6px #e7c46c)}.map-destination:disabled{opacity:.86;filter:saturate(.25)}
+.map-info{min-height:30px;padding:4px 17px;font-size:11px;margin-top:2px}
+.journey-mage{position:absolute;object-fit:contain;pointer-events:none;z-index:2;filter:drop-shadow(0 3px 4px #060419);image-rendering:auto}
+.map-mage{width:76px;height:86px;transform:translate(-50%,-50%)}.world-map+p{margin:16px 0;line-height:1.8}
+.book-fork{height:auto;aspect-ratio:1536/1024;background:none;position:relative;isolation:isolate;overflow:hidden;border-radius:6px;margin:10px 0}
+.crossroads-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:0}
+.book-fork::before,.book-fork>svg{display:none}.book-fork button.region{position:absolute;z-index:3;width:25%;height:auto;aspect-ratio:2060/763;min-height:0;max-width:none;padding:22px 16px 15px;color:#342039;text-shadow:0 1px #fff9e0;transform:translateX(-50%);border:0;background:none;box-shadow:none}
+.book-fork .book-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:-1;filter:drop-shadow(0 4px 5px #08051c);pointer-events:none}
+.book-fork .region small{position:absolute;top:14%;left:10%;width:80%;font-size:10px;color:#714656;font-weight:bold}
+.book-fork .region strong{font-size:14px;line-height:1.4;margin:7px 0 0;display:block}.book-fork .region span{font-size:11px;line-height:1.4;margin-top:3px}
+.book-fork .region:disabled{filter:saturate(.4) brightness(.76)}.book-fork .region:not(:disabled):hover{filter:drop-shadow(0 0 9px #ffde94)}
+.book-fork [data-position="0"]{left:50%;top:77%}.book-fork [data-position="1"]{left:20%;top:43%}.book-fork [data-position="2"]{left:80%;top:43%}.book-fork [data-position="3"]{left:50%;top:23%}.book-fork [data-position="4"]{left:50%;top:3%}
+.fork-mage{width:104px;height:118px;transform:translate(-50%,0)}.fork-mage[data-position="0"]{left:50%;top:61%}.fork-mage[data-position="1"]{left:31%;top:53%}.fork-mage[data-position="2"]{left:69%;top:53%}.fork-mage[data-position="3"]{left:50%;top:37%}.fork-mage[data-position="4"]{left:50%;top:15%}
+.notice{border:18px solid transparent;border-image:url('../assets/home/popup-v2/compact-rim.png') 40 fill stretch;border-radius:0;background:none;padding:8px 14px}.notice button{min-height:44px;background:transparent url('../assets/home/popup-v2/secondary-normal.png') center/100% 100% no-repeat;border:0;border-radius:0;margin-bottom:8px;padding:10px 24px}
+#message,footer{position:static;margin-top:14px}footer{font-size:11px;line-height:1.8}#message{padding:10px}
+@media(max-width:900px){#stage{padding:16px}header{flex-direction:column;align-items:flex-start;gap:8px;padding-bottom:12px}.map-stop{width:210px}.map-destination{font-size:12px}.map-destination span{font-size:10px}.map-info{min-height:44px}.world-map{margin-bottom:24px}.book-fork .region strong{font-size:12px}.book-fork .region span{font-size:10px}.book-fork .region small{font-size:9px}.book-fork button.region{padding:16px 11px 10px}}
+@media(max-width:600px){
+ h1{font-size:21px}nav{flex-wrap:wrap;gap:3px}nav button{padding:8px 17px}#save-status{font-size:11px}
+ .world-map{aspect-ratio:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 6px;background:#110d2877;padding-bottom:10px}
+ .map-illustration{position:relative;inset:auto;grid-column:1/-1;aspect-ratio:1916/821}.map-mage{width:30px;height:36px}
+ .map-stop{position:static;width:auto;margin:0;transform:none}.map-destination{height:68px;padding:8px 12px;font-size:12px}.map-destination span{font-size:10px;line-height:1.5}.map-info{font-size:11px;min-height:44px;width:95%;padding:6px 14px}
+ .book-fork{height:750px;aspect-ratio:auto;background:linear-gradient(#17102b00,#17102be0),url('../assets/journey/pixel-v1/library-crossroads.png') center/cover}
+ .crossroads-art{height:auto;aspect-ratio:1536/1024;object-fit:contain}
+ .book-fork button.region{width:48%;min-height:86px;padding:21px 11px 12px}.book-fork .book-art{object-fit:fill}.book-fork .region small{top:14px;font-size:9px}.book-fork .region strong{font-size:11px;line-height:1.4;margin-top:6px}.book-fork .region span{font-size:10px;line-height:1.4}
+ .book-fork [data-position="0"]{left:50%;top:630px}.book-fork [data-position="1"]{left:25%;top:455px}.book-fork [data-position="2"]{left:75%;top:455px}.book-fork [data-position="3"]{left:50%;top:315px}.book-fork [data-position="4"]{left:50%;top:200px}
+ .fork-mage{width:82px;height:92px}.fork-mage[data-position="0"]{left:50%;top:538px}.fork-mage[data-position="1"]{left:25%;top:540px}.fork-mage[data-position="2"]{left:75%;top:540px}.fork-mage[data-position="3"]{left:50%;top:405px}.fork-mage[data-position="4"]{left:50%;top:108px}
+ .notice{padding:4px;border-width:14px}.notice button{display:block;width:100%}
+}

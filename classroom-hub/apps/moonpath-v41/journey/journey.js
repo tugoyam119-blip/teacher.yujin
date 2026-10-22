@@ -1,4 +1,4 @@
-import {drawWorldMap,decorateFork,setupGuide} from './map-ui.js?v=20261022-map';
+import {drawWorldMap,decorateFork,setupGuide} from './map-ui.js?v=20261022-pixel';
 import {openEngineDatabase} from '../src/storage/indexeddb.js?v=2-archive';
 import {TeacherEngineSession} from '../src/engine/session.js';
 import {themeUnlocked,regionOptions,hasLiveMission,themeRouteGuide,extraResumeTarget} from '../src/world/navigation.js?v=20261021-route-guide';
@@ -79,9 +79,9 @@ function render(){
   const theme=world.themes.find(t=>t.id===savedTheme);$('title').textContent=`${theme.name} · 마법 책장 갈림길`;
   progressLine(scene,theme.id);const choice=s.world.mainRouteChoice[theme.id];const note=node('p',`① 진입 → ② 왼쪽 또는 ③ 오른쪽 → ④ 합류 → ⑤ 마지막${choice?` · 선택한 주경로: ${choice==='LEFT'?'왼쪽':'오른쪽'}`:' · 좌우 경로 미선택'}`);note.className='route-guide';scene.append(note);
   const routes=node('div');routes.className='routes';const options=regionOptions(s,savedTheme);
-  options.forEach((o,i)=>{if([1,3,4].includes(i)){const link=node('div',i===1?'↙ 왼쪽 / 오른쪽 ↘':i===3?'↘ 합류 ↙':'↓');link.className='route-link';link.setAttribute('aria-hidden','true');routes.append(link);}const r=theme.regions[i];const b=button(routes,'',()=>{preview=o.id;},{disabled:!o.allowed&&!o.canViewResult});b.className=`region ${r.role}`;b.title=o.reason;
+  options.forEach((o,i)=>{if([1,3,4].includes(i)){const link=node('div',i===1?'↙ 왼쪽 / 오른쪽 ↘':i===3?'↘ 합류 ↙':'↓');link.className='route-link';link.setAttribute('aria-hidden','true');routes.append(link);}const r=theme.regions[i];const b=button(routes,'',()=>{preview=o.id;},{disabled:!o.allowed&&!o.canViewResult});b.className=`region ${r.role}`;b.title=o.reason;b.dataset.regionId=o.id;
    b.append(node('strong',`${['① 진입','② 왼쪽','③ 오른쪽','④ 합류','⑤ 마지막'][i]} · ${r.name}`),node('span',`${o.canViewResult?'완료 · 결과 보기':o.allowed&&!o.visited?'미방문 · 진입 가능':statusLabel[o.status]}${o.continuing?' · 계속하기':o.mode==='EXTRA'?' · 추가 탐험':''}`));
-  });decorateFork(routes);scene.append(routes);
+  });decorateFork(routes,s);scene.append(routes);
   const locked=node('details');locked.append(node('summary','잠긴 길의 조건 보기'));for(const o of options.filter(o=>!o.allowed&&!o.canViewResult))locked.append(node('p',`${theme.regions.find(r=>r.id===o.id).name}: ${o.reason}`));if(locked.childElementCount>1)scene.append(locked);
   return;
  }

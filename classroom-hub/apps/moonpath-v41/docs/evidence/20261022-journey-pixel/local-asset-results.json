@@ -1,0 +1,30 @@
+[
+  {
+    "id": "map",
+    "bytes": 3583000,
+    "sha256": "1eebe3f8c7131fd9f330415ca5f001876ec47d9aa470dad073ad5701a92295dd",
+    "expectedBytes": 3583000,
+    "expectedSha256": "1eebe3f8c7131fd9f330415ca5f001876ec47d9aa470dad073ad5701a92295dd"
+  },
+  {
+    "id": "fork",
+    "bytes": 3658852,
+    "sha256": "e1d6d885407f33aa32e297d9c27b821ae48cda453683117c9a65c36dc6b54d79",
+    "expectedBytes": 3658852,
+    "expectedSha256": "e1d6d885407f33aa32e297d9c27b821ae48cda453683117c9a65c36dc6b54d79"
+  },
+  {
+    "id": "book",
+    "bytes": 2062803,
+    "sha256": "da2dcc115d6ac1c7c11328f5bdd864549293f4512300f2e5959e385a592f8684",
+    "expectedBytes": 2062803,
+    "expectedSha256": "da2dcc115d6ac1c7c11328f5bdd864549293f4512300f2e5959e385a592f8684"
+  },
+  {
+    "id": "mage",
+    "bytes": 1347652,
+    "sha256": "96d048a69e795f921451343c8b1a07ec5d5fd707e49b9b8bbb795935549d0044",
+    "expectedBytes": 1347652,
+    "expectedSha256": "96d048a69e795f921451343c8b1a07ec5d5fd707e49b9b8bbb795935549d0044"
+  }
+]

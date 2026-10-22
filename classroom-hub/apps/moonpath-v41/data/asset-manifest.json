@@ -1,5 +1,6 @@
 {
   "version": "4.1.1",
+  "journeyPixelArtRegistry": "data/journey-pixel-v1-assets.json",
   "newAssets": [],
   "approvedAssets": [],
   "phase3": "3-3",
