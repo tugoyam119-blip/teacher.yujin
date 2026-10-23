@@ -1,0 +1,159 @@
+{
+  "implementationCommit": "5c5113a54cbebbbb076e10ae3a379d95d9fa38fd",
+  "build": {
+    "id": "a00deafe-9abb-49ac-9dd9-90999ec83367",
+    "outcome": "success"
+  },
+  "deployment": "c387b962-0ae3-49d7-90fe-12d24d73505f",
+  "githubBytes": {
+    "base": "https://raw.githubusercontent.com/tugoyam119-blip/teacher.yujin/5c5113a54cbebbbb076e10ae3a379d95d9fa38fd/",
+    "results": [
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-resize/expanded-popup.png",
+        "bytes": 660239,
+        "sha256": "110c0fd2408f00572bd8e8a15bbdb9101494d07fbfb386e1b942694693a6a431"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-resize/local-results.json",
+        "bytes": 1777,
+        "sha256": "ea721b9d66f22b91babd130dc2fd27a80156b107c165608067d79a0e8c7f85b9"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/data/preparation-v4-assets.json",
+        "bytes": 4426,
+        "sha256": "4ce30a8b94204cb8a30e4cb040ec53425659d87bd7b1f0f30d566dc24ec313d3"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md",
+        "bytes": 18114,
+        "sha256": "47e0cb43faed8e45142d66c13e2d54de65d89c4c7201648c4e519499059f9dba"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/HOME_B_PREPARATION_V4_20261023.md",
+        "bytes": 6815,
+        "sha256": "ec0ef55d5a1e4f10a458ff3c148cb84ad3088dbb7304212f34bc8003c375155e"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/preparation-v4-art.js",
+        "bytes": 1747,
+        "sha256": "22d2b4d587a1708f0418c90ef1a5ae7774bc64d828f5408128ab6a4dcb20ab43"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/preparation-v4.css",
+        "bytes": 17405,
+        "sha256": "f874e6ba348729d6ce204526fea612d9625115b969bdbab31a1b57e70fb37ae2"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/tests/browser/preparation-v4.cjs",
+        "bytes": 11193,
+        "sha256": "ae18522b69b78fee49eedede06bf922dabdeb513a0724deb9e4677061a463f02"
+      }
+    ]
+  },
+  "liveBytes": {
+    "base": "https://moonpath-v411-test.kkyj119.workers.dev/",
+    "results": [
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-resize/expanded-popup.png",
+        "bytes": 660239,
+        "sha256": "110c0fd2408f00572bd8e8a15bbdb9101494d07fbfb386e1b942694693a6a431"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-resize/local-results.json",
+        "bytes": 1777,
+        "sha256": "ea721b9d66f22b91babd130dc2fd27a80156b107c165608067d79a0e8c7f85b9"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/data/preparation-v4-assets.json",
+        "bytes": 4426,
+        "sha256": "4ce30a8b94204cb8a30e4cb040ec53425659d87bd7b1f0f30d566dc24ec313d3"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md",
+        "bytes": 18114,
+        "sha256": "47e0cb43faed8e45142d66c13e2d54de65d89c4c7201648c4e519499059f9dba"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/HOME_B_PREPARATION_V4_20261023.md",
+        "bytes": 6815,
+        "sha256": "ec0ef55d5a1e4f10a458ff3c148cb84ad3088dbb7304212f34bc8003c375155e"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/preparation-v4-art.js",
+        "bytes": 1747,
+        "sha256": "22d2b4d587a1708f0418c90ef1a5ae7774bc64d828f5408128ab6a4dcb20ab43"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/preparation-v4.css",
+        "bytes": 17405,
+        "sha256": "f874e6ba348729d6ce204526fea612d9625115b969bdbab31a1b57e70fb37ae2"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/tests/browser/preparation-v4.cjs",
+        "bytes": 11193,
+        "sha256": "ae18522b69b78fee49eedede06bf922dabdeb513a0724deb9e4677061a463f02"
+      }
+    ]
+  },
+  "liveBrowser": {
+    "browser": "Playwright Chromium; isolated context; live HTTPS responses via TLS-verified Node bridge",
+    "base": "https://moonpath-v411-test.kkyj119.workers.dev/",
+    "checks": [
+      {
+        "geometry": {
+          "#panel-title": [
+            354,
+            48,
+            412,
+            32
+          ],
+          "#close-panel": [
+            1028,
+            33,
+            64,
+            64
+          ],
+          ".summary": [
+            722,
+            116,
+            350,
+            356
+          ],
+          "#panel-message": [
+            722,
+            480,
+            350,
+            48
+          ],
+          "#panel-actions": [
+            722,
+            536,
+            350,
+            96
+          ]
+        }
+      },
+      "All activity durations update summary",
+      "8 groups x 10 members = 80",
+      "All confirmation modes keep method controls and help visible",
+      "Cooperation and timer off update actual summary",
+      "Blank name blocks storage and error link focuses field",
+      "Last input is fully reachable without clipping",
+      "Malformed JSON blocked with focused inline error and no writes",
+      "2 MiB upload cap enforced",
+      "Valid 60-question pack and long title render as plain text",
+      "Actual creation persists selected configuration/pack and protects occupied slot",
+      "Close returns focus and preserves existing state",
+      "Back and Escape close without writes",
+      "Other six popups retain original presentation",
+      "HOME markup and assets unchanged",
+      "Live resizing across 1303/1920/1024/1280 widths preserves input, 65:35, centered title, close anchor and sharp backing",
+      "820x500, narrow portrait and short landscape retain reachable inputs and actions via scrolling",
+      "No JavaScript or HTTP resource errors"
+    ],
+    "errors": [],
+    "failed": [],
+    "limits": "No physical Safari/iPad or offline single-HTML test"
+  },
+  "limits": "Isolated Chromium via certificate-verified Node HTTPS bridge. First navigation attempt exceeded 30s in the bridge; retry with 120s navigation timeout completed all18 checks. No physical Safari/iPad, user profile or real saved data accessed."
+}
