@@ -51,7 +51,9 @@
       "relationship": "byte-identical original; display crop only",
       "approval": "USER_APPROVED_20261023",
       "transport": "GitHub Git blob API; local SHA-1 and remote/deployed full SHA-256 matched",
-      "f5JobId": null
+      "f5JobId": null,
+      "active": false,
+      "displayStatus": "Removed at user request 2026-10-23; original bytes preserved"
     },
     {
       "assetId": "close",
@@ -150,12 +152,7 @@
     ],
     "title": "centered at width/2; y48,h32",
     "closeHit": "x=width-92,y33,w64,h64",
-    "cornerDisplay": [
-      0,
-      16,
-      44,
-      72
-    ],
+    "cornerDisplay": null,
     "previousCornerDisplay": [
       0,
       88,
@@ -164,6 +161,12 @@
     ],
     "footer": "x=48+leftWidth+24,y=height-176,w=rightWidth,h152",
     "canvasBacking": "min(3,max(2,devicePixelRatio)); ResizeObserver redraw",
-    "smallViewport": "minimum internal layout preserved; outer scrolling when below minimum"
+    "smallViewport": "minimum internal layout preserved; outer scrolling when below minimum",
+    "removedCornerDisplay": [
+      0,
+      16,
+      44,
+      72
+    ]
   }
 }
