@@ -18,7 +18,7 @@
       "mode": "RGBA",
       "relationship": "byte-identical original; display crop only",
       "approval": "USER_APPROVED_20261023",
-      "transport": "Git binary; remote verification pending",
+      "transport": "GitHub Git blob API; local SHA-1 and remote/deployed full SHA-256 matched",
       "f5JobId": null
     },
     {
@@ -34,7 +34,7 @@
       "mode": "RGBA",
       "relationship": "byte-identical original; display crop only",
       "approval": "USER_APPROVED_20261023",
-      "transport": "Git binary; remote verification pending",
+      "transport": "GitHub Git blob API; local SHA-1 and remote/deployed full SHA-256 matched",
       "f5JobId": null
     },
     {
@@ -50,7 +50,7 @@
       "mode": "RGBA",
       "relationship": "byte-identical original; display crop only",
       "approval": "USER_APPROVED_20261023",
-      "transport": "Git binary; remote verification pending",
+      "transport": "GitHub Git blob API; local SHA-1 and remote/deployed full SHA-256 matched",
       "f5JobId": null
     },
     {
@@ -66,7 +66,7 @@
       "mode": "RGBA",
       "relationship": "byte-identical original; display crop only",
       "approval": "USER_APPROVED_20261023",
-      "transport": "Git binary; remote verification pending",
+      "transport": "GitHub Git blob API; local SHA-1 and remote/deployed full SHA-256 matched",
       "f5JobId": null
     }
   ],
@@ -121,5 +121,15 @@
     "bytes": 5343508,
     "sha256": "71d848983ff6081911b2a0a0a56c02063a04d47087eae4a0e75f8b4eecdd9b69",
     "relationship": "lossless WOFF container conversion"
+  },
+  "verification": {
+    "implementationCommit": "3a1082eeebb08ab6741cde97d08889ca703cd557",
+    "sourceRead": "PASS",
+    "userApproved": "2026-10-23 implementation instruction",
+    "githubFullBytes": "PASS",
+    "deployedFullBytes": "PASS",
+    "browser": "PASS; Chromium with TLS-verified HTTPS bridge; see deployment-results.json",
+    "F5": "NOT_USED",
+    "evidence": "docs/evidence/20261023-preparation-v4/deployment-results.json"
   }
 }

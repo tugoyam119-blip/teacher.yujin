@@ -25,3 +25,11 @@
 자산 전체 크기/SHA/원본 출처는 [자산 대장](../data/preparation-v4-assets.json)에 보관한다. 로컬 생성 원본이 확보되어 AGENTS의 검증된 Git 바이너리 경로를 사용한다. F5 큐와 Railway는 이번 작업에서 사용하지 않는다.
 
 이 기록 작성 시점에는 원격 전송 및 자동 시험 배포 후 검증이 대기 중이다. 후속 결과는 별도 기록으로 추가한다. 사용자 기존 브라우저 프로필·실사용 저장을 열지 않았다. 실기기 Safari/iPad, 6테마 완주, 오프라인 단일HTML 패키징은 미검증이다.
+
+## 시험 브랜치 반영·배포 후 확인
+
+구현 커밋 `3a1082eeebb08ab6741cde97d08889ca703cd557`, Cloudflare 빌드 `abf61fd4-80e3-40f9-a6a7-3da45a5196f0` success, 배포 `b4bfba5a-9ae5-4417-a0f6-28d2faca125b` 100%. 로컬 Git push에는 인증이 제공되지 않아 연결된 GitHub Git Blob→Tree→Commit API로 전송했다. 전송23개 blob의 로컬 Git SHA 일치 후 expected-head로 시험 브랜치만 갱신했다. 원격 GitHub 및 시험주소에서 전체23개를 각각 다시 받아 크기/SHA-256 일치를 확인했다.
+
+시험주소 실제 응답으로 Chromium UI17개 PASS. 브라우저 직접 네트워크는 EMPTY_RESPONSE, 프록시는 CA 오류였으므로 TLS 검증을 끄지 않고 Node의 인증서 검증 HTTPS 응답을 격리 Chromium에 연결했다. 실제 제공 파일/실행 검증이며 일반 사용자 브라우저의 네트워크 환경·실기기 검증으로 확대하지 않는다. 사용자 프로필을 열지 않고 합성 테스트 저장만 사용했다.
+
+[배포·바이트·브라우저 검증 기록](evidence/20261023-preparation-v4/deployment-results.json), [실제 응답 화면](evidence/20261023-preparation-v4/live-class.png). 후속 검증 문서 커밋은 게임 코드/자산 바이트를 바꾸지 않는다. main/Railway·실사용 저장에는 접근·쓰기하지 않았다.

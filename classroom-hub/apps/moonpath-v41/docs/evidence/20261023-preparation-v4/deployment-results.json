@@ -1,0 +1,321 @@
+{
+  "implementationCommit": "3a1082eeebb08ab6741cde97d08889ca703cd557",
+  "transport": "GitHub Git blobs/tree/commit API after local git push lacked credentials; all 23 blob SHA-1 values matched local git objects before branch update; expected-head non-force ref update",
+  "build": {
+    "id": "abf61fd4-80e3-40f9-a6a7-3da45a5196f0",
+    "outcome": "success"
+  },
+  "deployment": {
+    "id": "b4bfba5a-9ae5-4417-a0f6-28d2faca125b",
+    "version": "1e54935a-1ece-4aec-b44e-08bfe7f57266",
+    "percentage": 100
+  },
+  "githubBytes": {
+    "commit": "3a1082eeebb08ab6741cde97d08889ca703cd557",
+    "rootURL": "https://raw.githubusercontent.com/tugoyam119-blip/teacher.yujin/3a1082eeebb08ab6741cde97d08889ca703cd557/",
+    "verified": 23,
+    "results": [
+      {
+        "path": "classroom-hub/apps/moonpath-v41/assets/home/preparation-v4/NotoSansKR.woff",
+        "bytes": 5343508,
+        "sha256": "71d848983ff6081911b2a0a0a56c02063a04d47087eae4a0e75f8b4eecdd9b69"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/assets/home/preparation-v4/OFL.txt",
+        "bytes": 4388,
+        "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/assets/home/preparation-v4/close-original.png",
+        "bytes": 952027,
+        "sha256": "e06564e10eb01eb9aed3cdcaa0aafa355b5904d4e6d3f66dbc65a7ed374be87d"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/assets/home/preparation-v4/corner-original.png",
+        "bytes": 1118479,
+        "sha256": "47bbb0e739dd51abbaa55d7e365673e0c7ba34ad9c25ae7c98bbc86b37236d00"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/assets/home/preparation-v4/crest-original.png",
+        "bytes": 525378,
+        "sha256": "ffe1db42131e2cf03ee12d75824322a2bccb15a071bf9d4987c97f4a07a2edab"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/assets/home/preparation-v4/frame-original.png",
+        "bytes": 1730208,
+        "sha256": "30de629c4f972caf641c50fedd5ab85ba29c8197a6d946103841eed2bc3c2d57"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/data/asset-manifest.json",
+        "bytes": 4609,
+        "sha256": "6b6a18329f4967e05c4ce96d514736ea48412f6d6d937130e747caeb43b87d5c"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/data/preparation-v4-assets.json",
+        "bytes": 3110,
+        "sha256": "e202122f7cf7d37cf15f9240d683960efef713a84379a5a42c7df24d632ed8ff"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md",
+        "bytes": 17449,
+        "sha256": "b9d7980060b45d06a1ec509a297aa1e628d7f39d0aadb3a5cf463b664258af45"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/HOME_B_PREPARATION_V4_20261023.md",
+        "bytes": 3962,
+        "sha256": "7aa563c5996767352d4785ae286a9b4ec32653da2691727998045304192cfbd0"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-v4/class.png",
+        "bytes": 426163,
+        "sha256": "0d5411e876e54d414d403689639f7dbd4a1c10c9799fb752cbc7bef207c08038"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-v4/error.png",
+        "bytes": 417279,
+        "sha256": "9c4930a0fb4636325eadd709b84455a56e9315ac80b28e3933170682f35739a1"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-v4/flow-results.json",
+        "bytes": 380,
+        "sha256": "39dae8e0a1c3a982462505593882dcce893ce4ef58b13d63b9a2e53c7e610764"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-v4/method.png",
+        "bytes": 419584,
+        "sha256": "0fb0e8d7a246e87f7d24d3763aed097c903836124268e29769ca830eaf842ff8"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-v4/results.json",
+        "bytes": 1650,
+        "sha256": "0e44cd66a6ebe694b5b1bc72b5c2f9abb331528bcdef8385865e55a84a63827d"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/docs/evidence/20261023-preparation-v4/save.png",
+        "bytes": 425522,
+        "sha256": "513e2888c1f9f354c10efb8127dff3804b609b31d28ad87c7708d9017decff04"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/home-b.css",
+        "bytes": 11766,
+        "sha256": "b5f7ebd991d78c7648c63d590983401cad1ce4db931444f9afb4de10c191f437"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/home-b.js",
+        "bytes": 17633,
+        "sha256": "86ac2b0ce93343b7ffa0094cf937a8b92ad26b0bcfcf6d9ea1ca004aae832860"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/index.html",
+        "bytes": 2143,
+        "sha256": "a5c819f25b8c77ef496931cbede36fcbd9ad874f3694d7a422d63e9725ec28db"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/new-expedition.js",
+        "bytes": 12358,
+        "sha256": "c45a38b82ada30c3afd66e1ad5a3fffa70471e7810c23e3c61c1edfef95b1d3e"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/preparation-v4-art.js",
+        "bytes": 1422,
+        "sha256": "10d7ac568c7955598a5abcf532ea3cc3788c584ee8963d3d2c36250aeb35bf86"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/home-b/preparation-v4.css",
+        "bytes": 13706,
+        "sha256": "f334d40717c6909bb0c55cb70319bd6764fe856d64cb2474cae151653604f5a9"
+      },
+      {
+        "path": "classroom-hub/apps/moonpath-v41/tests/browser/preparation-v4.cjs",
+        "bytes": 9489,
+        "sha256": "366f82719de6b2e7e4db626b6a4355d365cb7664c4f6c688e3a7943baf06cfd0"
+      }
+    ]
+  },
+  "deployedBytes": {
+    "commit": "3a1082eeebb08ab6741cde97d08889ca703cd557",
+    "rootURL": "https://moonpath-v411-test.kkyj119.workers.dev/",
+    "verified": 23,
+    "results": [
+      {
+        "path": "assets/home/preparation-v4/NotoSansKR.woff",
+        "bytes": 5343508,
+        "sha256": "71d848983ff6081911b2a0a0a56c02063a04d47087eae4a0e75f8b4eecdd9b69"
+      },
+      {
+        "path": "assets/home/preparation-v4/OFL.txt",
+        "bytes": 4388,
+        "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+      },
+      {
+        "path": "assets/home/preparation-v4/close-original.png",
+        "bytes": 952027,
+        "sha256": "e06564e10eb01eb9aed3cdcaa0aafa355b5904d4e6d3f66dbc65a7ed374be87d"
+      },
+      {
+        "path": "assets/home/preparation-v4/corner-original.png",
+        "bytes": 1118479,
+        "sha256": "47bbb0e739dd51abbaa55d7e365673e0c7ba34ad9c25ae7c98bbc86b37236d00"
+      },
+      {
+        "path": "assets/home/preparation-v4/crest-original.png",
+        "bytes": 525378,
+        "sha256": "ffe1db42131e2cf03ee12d75824322a2bccb15a071bf9d4987c97f4a07a2edab"
+      },
+      {
+        "path": "assets/home/preparation-v4/frame-original.png",
+        "bytes": 1730208,
+        "sha256": "30de629c4f972caf641c50fedd5ab85ba29c8197a6d946103841eed2bc3c2d57"
+      },
+      {
+        "path": "data/asset-manifest.json",
+        "bytes": 4609,
+        "sha256": "6b6a18329f4967e05c4ce96d514736ea48412f6d6d937130e747caeb43b87d5c"
+      },
+      {
+        "path": "data/preparation-v4-assets.json",
+        "bytes": 3110,
+        "sha256": "e202122f7cf7d37cf15f9240d683960efef713a84379a5a42c7df24d632ed8ff"
+      },
+      {
+        "path": "docs/CURRENT_IMPLEMENTATION_AND_CHANGELOG_20261021.md",
+        "bytes": 17449,
+        "sha256": "b9d7980060b45d06a1ec509a297aa1e628d7f39d0aadb3a5cf463b664258af45"
+      },
+      {
+        "path": "docs/HOME_B_PREPARATION_V4_20261023.md",
+        "bytes": 3962,
+        "sha256": "7aa563c5996767352d4785ae286a9b4ec32653da2691727998045304192cfbd0"
+      },
+      {
+        "path": "docs/evidence/20261023-preparation-v4/class.png",
+        "bytes": 426163,
+        "sha256": "0d5411e876e54d414d403689639f7dbd4a1c10c9799fb752cbc7bef207c08038"
+      },
+      {
+        "path": "docs/evidence/20261023-preparation-v4/error.png",
+        "bytes": 417279,
+        "sha256": "9c4930a0fb4636325eadd709b84455a56e9315ac80b28e3933170682f35739a1"
+      },
+      {
+        "path": "docs/evidence/20261023-preparation-v4/flow-results.json",
+        "bytes": 380,
+        "sha256": "39dae8e0a1c3a982462505593882dcce893ce4ef58b13d63b9a2e53c7e610764"
+      },
+      {
+        "path": "docs/evidence/20261023-preparation-v4/method.png",
+        "bytes": 419584,
+        "sha256": "0fb0e8d7a246e87f7d24d3763aed097c903836124268e29769ca830eaf842ff8"
+      },
+      {
+        "path": "docs/evidence/20261023-preparation-v4/results.json",
+        "bytes": 1650,
+        "sha256": "0e44cd66a6ebe694b5b1bc72b5c2f9abb331528bcdef8385865e55a84a63827d"
+      },
+      {
+        "path": "docs/evidence/20261023-preparation-v4/save.png",
+        "bytes": 425522,
+        "sha256": "513e2888c1f9f354c10efb8127dff3804b609b31d28ad87c7708d9017decff04"
+      },
+      {
+        "path": "home-b/home-b.css",
+        "bytes": 11766,
+        "sha256": "b5f7ebd991d78c7648c63d590983401cad1ce4db931444f9afb4de10c191f437"
+      },
+      {
+        "path": "home-b/home-b.js",
+        "bytes": 17633,
+        "sha256": "86ac2b0ce93343b7ffa0094cf937a8b92ad26b0bcfcf6d9ea1ca004aae832860"
+      },
+      {
+        "path": "home-b/index.html",
+        "bytes": 2143,
+        "sha256": "a5c819f25b8c77ef496931cbede36fcbd9ad874f3694d7a422d63e9725ec28db"
+      },
+      {
+        "path": "home-b/new-expedition.js",
+        "bytes": 12358,
+        "sha256": "c45a38b82ada30c3afd66e1ad5a3fffa70471e7810c23e3c61c1edfef95b1d3e"
+      },
+      {
+        "path": "home-b/preparation-v4-art.js",
+        "bytes": 1422,
+        "sha256": "10d7ac568c7955598a5abcf532ea3cc3788c584ee8963d3d2c36250aeb35bf86"
+      },
+      {
+        "path": "home-b/preparation-v4.css",
+        "bytes": 13706,
+        "sha256": "f334d40717c6909bb0c55cb70319bd6764fe856d64cb2474cae151653604f5a9"
+      },
+      {
+        "path": "tests/browser/preparation-v4.cjs",
+        "bytes": 9489,
+        "sha256": "366f82719de6b2e7e4db626b6a4355d365cb7664c4f6c688e3a7943baf06cfd0"
+      }
+    ]
+  },
+  "liveUI": {
+    "browser": "Playwright Chromium; isolated context; actual live HTTPS responses via TLS-verified Node fetch bridge (native Chromium proxy CA unavailable)",
+    "base": "https://moonpath-v411-test.kkyj119.workers.dev/",
+    "checks": [
+      {
+        "geometry": {
+          "#panel-title": [
+            204,
+            48,
+            412,
+            32
+          ],
+          "#close-panel": [
+            728,
+            33,
+            64,
+            64
+          ],
+          ".summary": [
+            524,
+            116,
+            248,
+            200
+          ],
+          "#panel-message": [
+            524,
+            324,
+            248,
+            48
+          ],
+          "#panel-actions": [
+            524,
+            380,
+            248,
+            96
+          ]
+        }
+      },
+      "All activity durations update summary",
+      "8 groups x 10 members = 80",
+      "All confirmation modes keep method controls and help visible",
+      "Cooperation and timer off update actual summary",
+      "Blank name blocks storage and error link focuses field",
+      "Last input is fully reachable without clipping",
+      "Malformed JSON blocked with focused inline error and no writes",
+      "2 MiB upload cap enforced",
+      "Valid 60-question pack and long title render as plain text",
+      "Actual creation persists selected configuration/pack and protects occupied slot",
+      "Close returns focus and preserves existing state",
+      "Back and Escape close without writes",
+      "Other six popups retain original presentation",
+      "HOME markup and assets unchanged",
+      "820x500, narrow portrait and short landscape retain reachable inputs and actions via scrolling",
+      "No JavaScript or HTTP resource errors"
+    ],
+    "errors": [],
+    "failed": [],
+    "limits": "No physical Safari/iPad or offline single-HTML test"
+  },
+  "limits": [
+    "Native Chromium direct networking returned ERR_EMPTY_RESPONSE; explicit proxy returned ERR_CERT_AUTHORITY_INVALID. TLS checks were not disabled. Actual live responses were fetched with certificate-verified Node HTTPS and fulfilled to the isolated browser at the original origin.",
+    "No existing user browser profile or saved data accessed. Synthetic test records existed only in the isolated browser context.",
+    "No physical Safari/iPad, six-theme completion or offline single-HTML test."
+  ]
+}
