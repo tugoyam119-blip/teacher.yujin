@@ -1,40 +1,69 @@
-import {mountPreparationV3} from './preparation-v3-ui.js';
 import {validateQuestionPack} from '../src/questions/engine.js';
-const node=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
+import {paintPreparation} from './preparation-v4-art.js';
+const node=(tag,text,className)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(className)e.className=className;return e;};
+const confirmationText={CAREFUL:'수업 시작·지역 진입·문제 타이머 시작을 각각 확인합니다.',STANDARD:'지역 진입에 수업 시작을 포함하고, 문제 타이머는 따로 시작합니다.',QUICK:'교사의 지역·첫 문제 시작 확인으로 수업·지역·첫 출제·첫 타이머를 연결합니다.'};
+const confirmationLabel={CAREFUL:'꼼꼼 확인',STANDARD:'기본 확인',QUICK:'간편 진행'};
 export async function renderPreparation({body,slots,button,onStart,onArchive,isCurrent}){
- const grid=node('div'),left=node('section'),right=node('section');grid.className='preparation-grid';left.className='preparation-settings';right.className='preparation-summary';grid.append(left,right);body.append(grid);
- const heading=node('h2','새로운 탐험');heading.append(node('small','설정 더 보기 ↓'));left.append(heading);right.append(node('h2','이번 탐험'));
- const fields={};
- function select(parent,id,label,options,value){const row=node('label',label),e=node('select');e.id=id;for(const [v,t]of options){const o=node('option',t);o.value=v;o.selected=String(v)===String(value);e.append(o);}row.append(e);parent.append(row);fields[id]=e;return e;}
- function input(parent,id,label,value,type='text'){const row=node('label',label),e=node('input');e.id=id;e.type=type;e.value=value;row.append(e);parent.append(row);fields[id]=e;return e;}
- function choices(id,title,options,value){const field=node('fieldset');field.append(node('legend',title));const group=node('div');group.className='preparation-options';for(const [v,t]of options){const label=node('label'),radio=node('input');radio.type='radio';radio.name=id;radio.value=v;radio.checked=v===value;label.append(radio,node('span',t));group.append(label);}field.append(group);left.append(field);}
- const top=node('div');top.className='preparation-pair';
- const name=input(top,'expedition-name','탐험 이름','새로운 탐험');name.maxLength=80;
- const empty=slots.findIndex(x=>!x.state)+1;
- const slot=select(top,'setup-slot','빈 슬롯',slots.map((s,i)=>[i+1,`슬롯 ${['I','II','III'][i]} · ${s.state?'사용 중':'비어 있음'}`]),empty||1);[...slot.options].forEach((o,i)=>o.disabled=!!slots[i].state);
- if(!empty){left.append(node('p','슬롯이 모두 찼습니다. 보관함에서 기존 탐험을 보관해 주세요.'));button(left,'탐험 보관함 열기',onArchive);}
- const pack=select(left,'setup-pack','문제팩',[['builtin','통합사회2 · 인권 보장과 헌법'],['file','JSON 문제팩 불러오기']],'builtin');
- const file=input(left,'setup-pack-file','문제팩 JSON 파일','','file');file.accept='.json,application/json';file.parentElement.hidden=true;
- const status=node('p','문제팩 확인 중…');status.id='setup-pack-status';status.setAttribute('role','status');left.append(status);
- choices('lesson-minutes','탐험 시간',[['25','QUICK · 25분'],['45','STANDARD · 45분'],['60','LONG · 60분']],'45');
- choices('confirmation','진행 확인',[['CAREFUL','꼼꼼 확인'],['STANDARD','기본 확인'],['QUICK','간편 진행']],'STANDARD');
- choices('participation','학생 참여',[['ROTATION','순환 + 가로채기'],['COOPERATIVE','완전 협동']],'ROTATION');
- const people=node('div');people.className='preparation-pair';left.append(people);
- select(people,'team-count','모둠 수',Array.from({length:7},(_,i)=>[i+2,`${i+2}모둠`]),6);
- select(people,'members-per-team','모둠당 인원',Array.from({length:10},(_,i)=>[i+1,`${i+1}명`]),4);
- const seed=input(left,'expedition-seed','Seed','','text');seed.maxLength=64;seed.placeholder='비워두면 자동 생성';
- const more=node('details');more.append(node('summary','슬롯 · 탐험 이름 · 문제 시간'),top);left.append(more);
- select(more,'timer-seconds','문제 제한 시간',[45,60,90,120,0].map(n=>[n,n?`${n}초`:'끔']),60);
- more.append(node('p','활동 시간만 계산하며 일시정지 시간은 제외합니다. 시간이 되면 교사가 이번 문항 후 마무리를 선택합니다. 공동 체력 ♥8, 지역 최초 완료 열쇠 +1(비소모). 기존 탐험에는 새 규칙을 적용하지 않습니다.'));
- const explanation=node('p'),tiles=node('div'),repeat=node('p');tiles.className='preparation-tiles';tiles.id='preparation-summary';tiles.setAttribute('aria-live','polite');right.append(explanation,tiles,repeat);
- let chosen=null,token=0;
+ const panel=body.closest('dialog');
+ // Only this popup uses the new art; other popup presentation stays untouched.
+ paintPreparation(panel.querySelector('.preparation-art')).catch(()=>{if(isCurrent())panel.classList.add('preparation-art-failed');});
+ const grid=node('div',undefined,'preparation-grid'),left=node('section',undefined,'settings'),right=node('section',undefined,'summary');
+ right.id='preparation-summary';right.setAttribute('aria-live','polite');
+ const nav=node('nav',undefined,'group-nav');nav.setAttribute('aria-label','설정 위치 이동');
+ const scroll=node('div',undefined,'settings-scroll');scroll.tabIndex=0;scroll.setAttribute('aria-label','전체 설정, 아래로 스크롤');
+ const note=node('div',undefined,'scroll-note'),noteText=node('span'),arrow=node('span');note.append(noteText,arrow);left.append(nav,scroll,note);grid.append(left,right);body.append(grid);
+ const groups={},fields={};
+ for(const [key,title] of [['class','수업 구성'],['method','진행 방법'],['save','저장 정보']]){
+  const section=node('section',undefined,'group');section.id='group-'+key;section.append(node('h3',`${Object.keys(groups).length+1}`.padStart(2,'0')+' · '+title));const content=node('div',undefined,'fields');section.append(content);scroll.append(section);groups[key]={section,content};
+  const b=node('button',title+' ↓');b.type='button';b.dataset.jump=key;b.addEventListener('click',()=>jump(section));nav.append(b);
+ }
+ function jump(element){scroll.scrollTop+=element.getBoundingClientRect().top-scroll.getBoundingClientRect().top;scrollNote();}
+ function scrollNote(){const end=groups.save.section.getBoundingClientRect().bottom<=scroll.getBoundingClientRect().bottom+2;noteText.textContent=end?'설정 목록의 끝입니다':'아래로 이어지는 설정이 있습니다';arrow.textContent=end?'✓':'↓';let active='class';for(const key of Object.keys(groups))if(groups[key].section.getBoundingClientRect().top<=scroll.getBoundingClientRect().top+50)active=key;if(end)active='save';for(const b of nav.children)b.classList.toggle('active',b.dataset.jump===active);}
+ scroll.addEventListener('scroll',scrollNote);
+ function select(parent,id,title,options,value){const row=node('label',undefined,'field');row.append(node('span',title,'label'));const e=node('select');e.id=id;for(const [v,t] of options){const o=node('option',t);o.value=v;o.selected=String(v)===String(value);e.append(o);}row.append(e);parent.append(row);fields[id]=e;return e;}
+ function input(parent,id,title,value,wide=false){const row=node('label',undefined,'field'+(wide?' wide':''));row.append(node('span',title,'label'));const e=node('input');e.id=id;e.value=value;row.append(e);parent.append(row);fields[id]=e;return e;}
+ function choices(parent,id,title,options,value,helpId){const field=node('fieldset',undefined,'field wide');field.append(node('legend',title,'label'));const list=node('div',undefined,'options');for(const [v,t] of options){const label=node('label',undefined,'option'),radio=node('input');radio.type='radio';radio.name=id;radio.value=v;radio.checked=v===value;label.append(radio,node('span',t));list.append(label);}field.append(list);if(helpId){const help=node('p',undefined,'help');help.id=helpId;field.append(help);}parent.append(field);return field;}
+ const packField=node('div',undefined,'field wide'),packCard=node('div',undefined,'pack-card'),packCopy=node('div',undefined,'pack-copy');
+ // The native select also provides a way back to the built-in pack after a failed import.
+ const pack=select(packCopy,'setup-pack','문제팩',[['builtin','통합사회2 · 인권 보장과 헌법'],['file','가져온 JSON 문제팩']],'builtin');pack.setAttribute('aria-label','문제팩');
+ const packMeta=node('div','60문항','pack-meta');packCopy.append(packMeta);
+ const loadButton=node('button','파일 불러오기','load-pack');loadButton.type='button';
+ const file=node('input');file.type='file';file.id='setup-pack-file';file.accept='.json,application/json';file.hidden=true;file.setAttribute('aria-label','문제팩 JSON 파일');
+ loadButton.addEventListener('click',()=>file.click());
+ const packStatus=node('p','문제팩 확인 중…','pack-detail');packStatus.id='setup-pack-status';packStatus.tabIndex=-1;
+ packCard.append(packCopy,loadButton);packField.append(packCard,file,packStatus);groups.class.content.append(packField);
+ choices(groups.class.content,'lesson-minutes','탐험 활동 시간',[['25','25분'],['45','45분'],['60','60분']],'45').classList.add('duration-field');
+ const teams=select(groups.class.content,'team-count','모둠 수',Array.from({length:7},(_,i)=>[i+2,`${i+2}모둠`]),6);
+ const members=select(groups.class.content,'members-per-team','모둠당 인원',Array.from({length:10},(_,i)=>[i+1,`${i+1}명`]),4);
+ groups.class.section.append(node('p','활동 시간과 문제 타이머는 별개입니다.\n시간이 되어도 자동 종료·자동 채점하지 않습니다.','help'));
+ choices(groups.method.content,'confirmation','진행 확인',Object.entries(confirmationLabel),'STANDARD','confirm-help');
+ choices(groups.method.content,'participation','학생 참여',[['ROTATION','순환 + 가로채기'],['COOPERATIVE','완전 협동']],'ROTATION','participate-help');
+ const timer=select(groups.method.content,'timer-seconds','문제 타이머',[45,60,90,120,0].map(n=>[n,n?`${n}초`:'끔']),60);timer.parentElement.classList.add('timer-field');
+ groups.method.content.append(node('p','문제마다 적용 · 시간 만료가 자동 오답은 아닙니다.','help timer-help'));
+ const empty=slots.findIndex(s=>!s.state)+1;
+ const slot=select(groups.save.content,'setup-slot','저장 슬롯',slots.map((s,i)=>[i+1,`슬롯 ${['I','II','III'][i]} · ${s.state?'사용 중':'비어 있음'}`]),empty||1);
+ [...slot.options].forEach((o,i)=>{o.disabled=!!slots[i].state;});
+ const name=input(groups.save.content,'expedition-name','탐험 이름','새로운 탐험');name.maxLength=80;
+ const seed=input(groups.save.content,'expedition-seed','재현 코드(Seed) · 선택 입력','',true);seed.maxLength=64;seed.placeholder='비우면 자동 생성';
+ groups.save.section.append(node('p','사용 중인 슬롯에는 덮어쓰지 않습니다.\n재현 코드만으로 같은 결과가 보장되지는 않습니다.','help'));
+ if(!empty){groups.save.section.append(node('p','슬롯이 모두 찼습니다. 기존 탐험을 보관한 뒤 시작해 주세요.','help'));button(groups.save.section,'탐험 보관함 열기',onArchive);}
+ right.append(node('h2','이번 탐험'));const summaryContent=node('div',undefined,'summary-content'),summaryPack=node('p',undefined,'summary-pack'),stats=node('p',undefined,'summary-stats'),list=node('dl');summaryContent.append(summaryPack,stats,list,node('p','기본 규칙 · 공동 체력 ♥ 8','health'));right.append(summaryContent);
+ const status=document.getElementById('panel-message');status.replaceChildren();const statusText=node('span');statusText.id='status-text';const errorJump=node('button','확인 →');errorJump.id='error-jump';errorJump.type='button';status.append(statusText,errorJump);
  const value=id=>body.querySelector(`input[name="${id}"]:checked`).value;
- function update(){const minutes=value('lesson-minutes'),mode=value('participation');explanation.textContent={CAREFUL:'지역 진입·수업 시작·문제 타이머를 각각 확인합니다.',STANDARD:'지역 진입과 수업 시작을 함께 확인합니다. 문제 타이머는 따로 시작합니다.',QUICK:'교사의 지역·첫 문제 시작 한 번으로 수업과 첫 타이머를 함께 시작합니다.'}[value('confirmation')];tiles.replaceChildren();for(const [label,text]of [['탐험 시간',`${minutes}분`],['공동 체력','♥ 8'],['학생 참여',mode==='COOPERATIVE'?'완전 협동':'순환 + 가로채기'],['참여 인원',`${fields['team-count'].value}모둠 × ${fields['members-per-team'].value}명`]]){const tile=node('div');tile.append(node('small',label),node('strong',text));tiles.append(tile);}repeat.textContent=`${mode==='COOPERATIVE'?'가로채기 없이 대표를 순환하며 오답을 회수합니다.':'대표를 순환하며 가로채기와 오답 회수를 사용합니다.'} 같은 Seed·문제팩·규칙·선택이면 같은 문항 순서를 재현합니다.`;}
- grid.addEventListener('change',update);update();
- async function load(){const current=++token;chosen=null;file.parentElement.hidden=pack.value!=='file';try{let raw;if(pack.value==='builtin'){const r=await fetch('../data/YQBank_60_v1.0.0_source.json');if(!r.ok)throw new Error('기본 문제팩을 읽지 못했습니다.');raw=await r.json();}else{const f=file.files[0];if(!f){status.textContent='JSON 파일을 선택하세요.';return;}if(f.size>2*1024*1024)throw new Error('파일은 2MiB 이하여야 합니다.');raw=JSON.parse(await f.text());}const info=validateQuestionPack(raw);if(current!==token||!isCurrent())return;chosen=raw;status.textContent=`${raw.pack.title||info.packId} · v${info.packVersion} · ${info.count}문항 · 검증 완료`;}catch(e){if(current===token&&isCurrent())status.textContent=`문제팩 확인 실패: ${e.message}`;}}
- pack.addEventListener('change',load);file.addEventListener('change',load);
- const controls=node('div');button(controls,'돌아가기',()=>document.getElementById('panel').close(),'cancel');
- button(controls,'탐험 시작',async()=>{if(!empty||slots[Number(slot.value)-1].state)throw new Error('빈 슬롯을 선택하세요.');if(!chosen)throw new Error('검증된 문제팩을 선택하세요.');if(!name.value.trim())throw new Error('탐험 이름을 입력하세요.');await onStart({slot:Number(slot.value),expeditionName:name.value.trim(),teamCount:Number(fields['team-count'].value),timerSeconds:Number(fields['timer-seconds'].value),sourcePack:chosen,preparation:{version:1,lessonMinutes:Number(value('lesson-minutes')),confirmation:value('confirmation'),participation:value('participation'),membersPerTeam:Number(fields['members-per-team'].value),seed:seed.value}});},'primary');
- mountPreparationV3({grid,left,right,fields});
- await load();return controls;
+ let chosen=null,token=0,loading=true,packError='',packTitle='통합사회2 · 인권 보장과 헌법',target=null,start;
+ function validation(){if(loading)return {message:'문제팩 확인 중…'};if(!chosen)return {message:packError||'문제팩을 선택해 주세요.',element:packStatus};if(!empty||slots[Number(slot.value)-1]?.state)return {message:'빈 저장 슬롯을 선택해 주세요.',element:slot};if(!name.value.trim())return {message:'탐험 이름을 입력해 주세요.',element:name};return null;}
+ function update(){
+  body.querySelector('#confirm-help').textContent=confirmationText[value('confirmation')];body.querySelector('#participate-help').textContent=value('participation')==='COOPERATIVE'?'대표 순환·회수 유지 · 가로채기 없음':'모둠·대표 순환 · 가로채기·회수 사용';
+  summaryPack.textContent=packTitle;summaryPack.title=packTitle;stats.textContent=`${value('lesson-minutes')}분 · ${teams.value}모둠 · ${Number(teams.value)*Number(members.value)}명`;
+  list.replaceChildren();for(const [label,text] of [['진행 확인',confirmationLabel[value('confirmation')]],['학생 참여',value('participation')==='COOPERATIVE'?'완전 협동':'순환 + 가로채기'],['문제 타이머',Number(timer.value)?timer.value+'초':'끔'],['저장 위치',slot.selectedOptions[0].textContent.replace('슬롯 ','')]]){const row=node('div');row.append(node('dt',label),node('dd',text));list.append(row);}
+  const problem=validation();statusText.textContent=problem?.message||'탐험을 시작할 준비가 되었습니다.';target=problem?.element;errorJump.hidden=!target;status.classList.toggle('has-error',!!target);name.setAttribute('aria-invalid',String(!name.value.trim()));if(start)start.disabled=loading;scrollNote();
+ }
+ errorJump.addEventListener('click',()=>{if(!target)return;jump(target.closest('.group'));target.focus({preventScroll:true});});
+ grid.addEventListener('preparation-error',event=>{statusText.textContent=event.detail;errorJump.hidden=true;status.classList.add('has-error');});
+ grid.addEventListener('change',update);grid.addEventListener('input',update);
+ async function load(){const current=++token;chosen=null;loading=true;packError='';packStatus.textContent='문제팩 확인 중…';packStatus.classList.remove('has-error');update();try{let raw;if(pack.value==='builtin'){const r=await fetch('../data/YQBank_60_v1.0.0_source.json');if(!r.ok)throw Error('기본 문제팩을 읽지 못했습니다.');raw=await r.json();}else{const f=file.files[0];if(!f)throw Error('JSON 파일을 선택하세요.');if(f.size>2*1024*1024)throw Error('파일은 2MiB 이하여야 합니다.');raw=JSON.parse(await f.text());}const info=validateQuestionPack(raw);if(current!==token||!isCurrent())return;chosen=raw;packTitle=raw.pack.title||info.packId;pack.title=packTitle;pack.options[pack.selectedIndex].textContent=packTitle;packMeta.textContent=`${info.count}문항 · 검증 완료`;packStatus.textContent=`${packTitle} · v${info.packVersion} · ${info.count}문항 · 검증 완료`;packStatus.classList.add('valid');}catch(e){if(current!==token||!isCurrent())return;packError='문제팩을 확인해 주세요.';packTitle=pack.value==='file'?'JSON 문제팩 확인 필요':'기본 문제팩 확인 필요';packMeta.textContent='검증 필요';packStatus.textContent=`문제팩 확인 실패: ${e.message}`;packStatus.classList.remove('valid');packStatus.classList.add('has-error');}finally{if(current===token&&isCurrent()){loading=false;update();}}}
+ pack.addEventListener('change',load);file.addEventListener('change',()=>{if(file.files.length){pack.value='file';load();}});
+ const controls=node('div');button(controls,'돌아가기',()=>panel.close(),'cancel');
+ start=button(controls,'탐험 시작',async()=>{const problem=validation();if(problem){update();if(problem.element){jump(problem.element.closest('.group'));problem.element.focus({preventScroll:true});}return;}await onStart({slot:Number(slot.value),expeditionName:name.value.trim(),teamCount:Number(teams.value),timerSeconds:Number(timer.value),sourcePack:chosen,preparation:{version:1,lessonMinutes:Number(value('lesson-minutes')),confirmation:value('confirmation'),participation:value('participation'),membersPerTeam:Number(members.value),seed:seed.value}});},'primary');
+ update();await load();return controls;
 }

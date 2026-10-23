@@ -110,5 +110,6 @@
     "finalReleaseApproved": false,
     "historicalQaScope": "approvedDesignReferences.browserQA and homeLogoQa retain the original pre-runtime audit results; NOT_RUN there is historical, not current development runtime status",
     "approvalArraysScope": "newAssets and approvedAssets retain the final-release approval gate; development candidates are tracked in the separate registries"
-  }
+  },
+  "preparationPopupRegistry": "data/preparation-v4-assets.json"
 }

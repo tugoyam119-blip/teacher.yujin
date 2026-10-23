@@ -1,0 +1,59 @@
+{
+  "browser": "Playwright Chromium; isolated context",
+  "base": "http://127.0.0.1:38567/moonpath-v41/",
+  "checks": [
+    {
+      "geometry": {
+        "#panel-title": [
+          204,
+          48,
+          412,
+          32
+        ],
+        "#close-panel": [
+          728,
+          33,
+          64,
+          64
+        ],
+        ".summary": [
+          524,
+          116,
+          248,
+          200
+        ],
+        "#panel-message": [
+          524,
+          324,
+          248,
+          48
+        ],
+        "#panel-actions": [
+          524,
+          380,
+          248,
+          96
+        ]
+      }
+    },
+    "All activity durations update summary",
+    "8 groups x 10 members = 80",
+    "All confirmation modes keep method controls and help visible",
+    "Cooperation and timer off update actual summary",
+    "Blank name blocks storage and error link focuses field",
+    "Last input is fully reachable without clipping",
+    "Malformed JSON blocked with focused inline error and no writes",
+    "2 MiB upload cap enforced",
+    "Valid 60-question pack and long title render as plain text",
+    "Actual creation persists selected configuration/pack and protects occupied slot",
+    "Close returns focus and preserves existing state",
+    "Back and Escape close without writes",
+    "Other six popups retain original presentation",
+    "HOME markup and assets unchanged",
+    "820x500, narrow portrait and short landscape retain reachable inputs and actions via scrolling",
+    "No JavaScript or HTTP resource errors"
+  ],
+  "errors": [],
+  "failed": [],
+  "limits": "No physical Safari/iPad or offline single-HTML test"
+}

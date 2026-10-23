@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "logicalSize": [
+    820,
+    500
+  ],
+  "assets": [
+    {
+      "assetId": "frame",
+      "path": "assets/home/preparation-v4/frame-original.png",
+      "source": "exec-299daf2e-4932-4a08-8049-b630176d9e4f.png",
+      "bytes": 1730208,
+      "sha256": "30de629c4f972caf641c50fedd5ab85ba29c8197a6d946103841eed2bc3c2d57",
+      "pixels": [
+        1606,
+        979
+      ],
+      "mode": "RGBA",
+      "relationship": "byte-identical original; display crop only",
+      "approval": "USER_APPROVED_20261023",
+      "transport": "Git binary; remote verification pending",
+      "f5JobId": null
+    },
+    {
+      "assetId": "crest",
+      "path": "assets/home/preparation-v4/crest-original.png",
+      "source": "exec-51dc68af-9585-4a55-a10d-a24518df12cb.png",
+      "bytes": 525378,
+      "sha256": "ffe1db42131e2cf03ee12d75824322a2bccb15a071bf9d4987c97f4a07a2edab",
+      "pixels": [
+        2087,
+        753
+      ],
+      "mode": "RGBA",
+      "relationship": "byte-identical original; display crop only",
+      "approval": "USER_APPROVED_20261023",
+      "transport": "Git binary; remote verification pending",
+      "f5JobId": null
+    },
+    {
+      "assetId": "corner",
+      "path": "assets/home/preparation-v4/corner-original.png",
+      "source": "exec-a01301af-2770-4e57-ac3c-e0a82cf587dd.png",
+      "bytes": 1118479,
+      "sha256": "47bbb0e739dd51abbaa55d7e365673e0c7ba34ad9c25ae7c98bbc86b37236d00",
+      "pixels": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "relationship": "byte-identical original; display crop only",
+      "approval": "USER_APPROVED_20261023",
+      "transport": "Git binary; remote verification pending",
+      "f5JobId": null
+    },
+    {
+      "assetId": "close",
+      "path": "assets/home/preparation-v4/close-original.png",
+      "source": "exec-dfda6afd-182d-4332-8588-ef2799a44aa8.png",
+      "bytes": 952027,
+      "sha256": "e06564e10eb01eb9aed3cdcaa0aafa355b5904d4e6d3f66dbc65a7ed374be87d",
+      "pixels": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "relationship": "byte-identical original; display crop only",
+      "approval": "USER_APPROVED_20261023",
+      "transport": "Git binary; remote verification pending",
+      "f5JobId": null
+    }
+  ],
+  "safeAreas": {
+    "title": [
+      204,
+      48,
+      412,
+      32
+    ],
+    "closeHit": [
+      728,
+      33,
+      64,
+      64
+    ],
+    "settings": [
+      48,
+      116,
+      460,
+      360
+    ],
+    "summary": [
+      524,
+      116,
+      248,
+      200
+    ],
+    "status": [
+      524,
+      324,
+      248,
+      48
+    ],
+    "start": [
+      524,
+      380,
+      248,
+      44
+    ],
+    "back": [
+      524,
+      432,
+      248,
+      44
+    ]
+  },
+  "font": {
+    "path": "assets/home/preparation-v4/NotoSansKR.woff",
+    "source": "NotoSansKR.ttf used in approved preview; full glyph set retained",
+    "license": "assets/home/preparation-v4/OFL.txt",
+    "bytes": 5343508,
+    "sha256": "71d848983ff6081911b2a0a0a56c02063a04d47087eae4a0e75f8b4eecdd9b69",
+    "relationship": "lossless WOFF container conversion"
+  }
+}

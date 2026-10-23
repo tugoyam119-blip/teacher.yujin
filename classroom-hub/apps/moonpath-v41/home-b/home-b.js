@@ -43,7 +43,7 @@ for(const a of actions){
 }
 function resize(){const scale=Math.min(innerWidth/960,innerHeight/540);$('stage').style.transform=`translate(-50%,-50%) scale(${scale})`;document.documentElement.style.setProperty('--popup-scale',String(scale));}
 addEventListener('resize',resize);resize();
-function report(e){const text=`처리하지 못했습니다: ${e.code??''} ${e.message??e}`;const target=$('panel').open?$('panel-message'):$('message');target.textContent=text;}
+function report(e){const text=`처리하지 못했습니다: ${e.code??''} ${e.message??e}`;const target=$('panel').open?$('panel-message'):$('message');const preparation=$('panel').open&&$('panel').classList.contains('preparation')&&$('panel-body').querySelector('.preparation-grid');if(preparation)preparation.dispatchEvent(new CustomEvent('preparation-error',{detail:text}));else target.textContent=text;}
 async function refresh(){
  if(!database)database=await openEngineDatabase({open(_name,version){return indexedDB.open(TEST_DB,version);}});
  slots=await Promise.all([1,2,3].map(slot=>database.read(slot)));
@@ -85,7 +85,7 @@ async function openPanel(kind,setup=null,trigger=null){
  panel.classList.toggle('preparation',kind==='new');
  if(!panel.open)panel.showModal();
  if(kind==='new'){
-  $('panel-title').textContent='달빛 원정 준비';await refresh();if(request!==panelRequest||!panel.open)return;
+  $('panel-title').textContent='새로운 탐험';await refresh();if(request!==panelRequest||!panel.open)return;
   const controls=await renderPreparation({body,slots,button,isCurrent:()=>request===panelRequest&&panel.open,onArchive:()=>openPanel('archive'),onStart:async config=>{
    const r=await fetch('../config/world.json');if(!r.ok)throw new Error('세계 설정을 읽지 못했습니다.');
    const world=await r.json(),teacher=new TeacherEngineSession(database);

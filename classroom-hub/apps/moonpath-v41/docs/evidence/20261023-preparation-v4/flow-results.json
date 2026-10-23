@@ -1,0 +1,8 @@
+{
+  "browser": "Playwright Chromium 153 using webkit-named adapter; isolated local contexts (not WebKit)",
+  "checks": [
+    "CAREFUL: settings, roster, entry confirmation, first question, refresh paused",
+    "STANDARD: settings, roster, entry confirmation, first question, refresh paused",
+    "QUICK: settings, roster, entry confirmation, first question, refresh paused"
+  ]
+}
