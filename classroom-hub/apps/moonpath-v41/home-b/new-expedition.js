@@ -9,16 +9,14 @@ export async function renderPreparation({body,slots,button,onStart,onArchive,isC
  paintPreparation(panel.querySelector('.preparation-art')).catch(()=>{if(isCurrent())panel.classList.add('preparation-art-failed');});
  const grid=node('div',undefined,'preparation-grid'),left=node('section',undefined,'settings'),right=node('section',undefined,'summary');
  right.id='preparation-summary';right.setAttribute('aria-live','polite');
- const nav=node('nav',undefined,'group-nav');nav.setAttribute('aria-label','설정 위치 이동');
  const scroll=node('div',undefined,'settings-scroll');scroll.tabIndex=0;scroll.setAttribute('aria-label','전체 설정, 아래로 스크롤');
- const note=node('div',undefined,'scroll-note'),noteText=node('span'),arrow=node('span');note.append(noteText,arrow);left.append(nav,scroll,note);grid.append(left,right);body.append(grid);
+ const note=node('div',undefined,'scroll-note'),noteText=node('span'),arrow=node('span');note.append(noteText,arrow);left.append(scroll,note);grid.append(left,right);body.append(grid);
  const groups={},fields={};
  for(const [key,title] of [['class','수업 구성'],['method','진행 방법'],['save','저장 정보']]){
   const section=node('section',undefined,'group');section.id='group-'+key;section.append(node('h3',`${Object.keys(groups).length+1}`.padStart(2,'0')+' · '+title));const content=node('div',undefined,'fields');section.append(content);scroll.append(section);groups[key]={section,content};
-  const b=node('button',title+' ↓');b.type='button';b.dataset.jump=key;b.addEventListener('click',()=>jump(section));nav.append(b);
  }
  function jump(element){scroll.scrollTop+=element.getBoundingClientRect().top-scroll.getBoundingClientRect().top;scrollNote();}
- function scrollNote(){const end=groups.save.section.getBoundingClientRect().bottom<=scroll.getBoundingClientRect().bottom+2;noteText.textContent=end?'설정 목록의 끝입니다':'아래로 이어지는 설정이 있습니다';arrow.textContent=end?'✓':'↓';let active='class';for(const key of Object.keys(groups))if(groups[key].section.getBoundingClientRect().top<=scroll.getBoundingClientRect().top+50)active=key;if(end)active='save';for(const b of nav.children)b.classList.toggle('active',b.dataset.jump===active);}
+ function scrollNote(){const end=groups.save.section.getBoundingClientRect().bottom<=scroll.getBoundingClientRect().bottom+2;noteText.textContent=end?'설정 목록의 끝입니다':'아래로 이어지는 설정이 있습니다';arrow.textContent=end?'✓':'↓';}
  scroll.addEventListener('scroll',scrollNote);
  function select(parent,id,title,options,value){const row=node('label',undefined,'field');row.append(node('span',title,'label'));const e=node('select');e.id=id;for(const [v,t] of options){const o=node('option',t);o.value=v;o.selected=String(v)===String(value);e.append(o);}row.append(e);parent.append(row);fields[id]=e;return e;}
  function input(parent,id,title,value,wide=false){const row=node('label',undefined,'field'+(wide?' wide':''));row.append(node('span',title,'label'));const e=node('input');e.id=id;e.value=value;row.append(e);parent.append(row);fields[id]=e;return e;}
