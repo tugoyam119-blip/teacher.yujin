@@ -1,0 +1,62 @@
+{
+  "browser": "Playwright Chromium; isolated context",
+  "base": "https://moonpath-v411-test.kkyj119.workers.dev/",
+  "checks": [
+    {
+      "geometry": {
+        "#panel-title": [
+          354,
+          48,
+          412,
+          32
+        ],
+        "#close-panel": [
+          1028,
+          33,
+          64,
+          64
+        ],
+        ".summary": [
+          722,
+          116,
+          350,
+          356
+        ],
+        "#panel-message": [
+          722,
+          480,
+          350,
+          48
+        ],
+        "#panel-actions": [
+          722,
+          536,
+          350,
+          96
+        ]
+      }
+    },
+    "All activity durations update summary",
+    "8 groups x 10 members = 80",
+    "All confirmation modes keep method controls and help visible",
+    "Cooperation and timer off update actual summary",
+    "Blank name blocks storage and error link focuses field",
+    "Last input is fully reachable without clipping",
+    "Malformed JSON blocked with focused inline error and no writes",
+    "2 MiB upload cap enforced",
+    "Valid 60-question pack and long title render as plain text",
+    "Actual creation persists selected configuration/pack and protects occupied slot",
+    "Close returns focus and preserves existing state",
+    "Back and Escape close without writes",
+    "Other six popups retain original presentation",
+    "HOME markup and assets unchanged",
+    "Live resizing across 1303/1920/1024/1280 widths preserves input, 65:35, centered title, close anchor and sharp backing",
+    "820x500, narrow portrait and short landscape retain reachable inputs and actions via scrolling",
+    "No JavaScript or HTTP resource errors"
+  ],
+  "errors": [],
+  "failed": [],
+  "limits": "No physical Safari/iPad or offline single-HTML test",
+  "implementationCommit": "df1565f78ff59def45e8f3f8f10a38153b2db779",
+  "transport": "TLS-verified Node HTTPS response bridge to isolated Chromium; cache-busting query; no user profile access"
+}
