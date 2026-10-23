@@ -70,7 +70,25 @@
       "f5JobId": null
     }
   ],
-  "safeAreas": {
+  "font": {
+    "path": "assets/home/preparation-v4/NotoSansKR.woff",
+    "source": "NotoSansKR.ttf used in approved preview; full glyph set retained",
+    "license": "assets/home/preparation-v4/OFL.txt",
+    "bytes": 5343508,
+    "sha256": "71d848983ff6081911b2a0a0a56c02063a04d47087eae4a0e75f8b4eecdd9b69",
+    "relationship": "lossless WOFF container conversion"
+  },
+  "verification": {
+    "implementationCommit": "3a1082eeebb08ab6741cde97d08889ca703cd557",
+    "sourceRead": "PASS",
+    "userApproved": "2026-10-23 implementation instruction",
+    "githubFullBytes": "PASS",
+    "deployedFullBytes": "PASS",
+    "browser": "PASS; Chromium with TLS-verified HTTPS bridge; see deployment-results.json",
+    "F5": "NOT_USED",
+    "evidence": "docs/evidence/20261023-preparation-v4/deployment-results.json"
+  },
+  "previousFixedSafeAreas": {
     "title": [
       204,
       48,
@@ -114,22 +132,38 @@
       44
     ]
   },
-  "font": {
-    "path": "assets/home/preparation-v4/NotoSansKR.woff",
-    "source": "NotoSansKR.ttf used in approved preview; full glyph set retained",
-    "license": "assets/home/preparation-v4/OFL.txt",
-    "bytes": 5343508,
-    "sha256": "71d848983ff6081911b2a0a0a56c02063a04d47087eae4a0e75f8b4eecdd9b69",
-    "relationship": "lossless WOFF container conversion"
-  },
-  "verification": {
-    "implementationCommit": "3a1082eeebb08ab6741cde97d08889ca703cd557",
-    "sourceRead": "PASS",
-    "userApproved": "2026-10-23 implementation instruction",
-    "githubFullBytes": "PASS",
-    "deployedFullBytes": "PASS",
-    "browser": "PASS; Chromium with TLS-verified HTTPS bridge; see deployment-results.json",
-    "F5": "NOT_USED",
-    "evidence": "docs/evidence/20261023-preparation-v4/deployment-results.json"
+  "responsiveLayout": {
+    "referenceMinimum": [
+      820,
+      500
+    ],
+    "maximum": [
+      1120,
+      720
+    ],
+    "viewportMargin": 64,
+    "innerHorizontalMargin": 48,
+    "columnGap": 24,
+    "columns": [
+      0.65,
+      0.35
+    ],
+    "title": "centered at width/2; y48,h32",
+    "closeHit": "x=width-92,y33,w64,h64",
+    "cornerDisplay": [
+      0,
+      16,
+      44,
+      72
+    ],
+    "previousCornerDisplay": [
+      0,
+      88,
+      44,
+      72
+    ],
+    "footer": "x=48+leftWidth+24,y=height-176,w=rightWidth,h152",
+    "canvasBacking": "min(3,max(2,devicePixelRatio)); ResizeObserver redraw",
+    "smallViewport": "minimum internal layout preserved; outer scrolling when below minimum"
   }
 }

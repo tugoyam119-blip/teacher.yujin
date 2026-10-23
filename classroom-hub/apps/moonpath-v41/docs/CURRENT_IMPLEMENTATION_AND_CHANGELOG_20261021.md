@@ -124,3 +124,5 @@ Railway 성공 배포와 실제 확인 내용은 [저장소에 옮긴 당시 검
 [프레임·장식·실제 기능 연결](HOME_B_PREPARATION_V4_20261023.md): 제목판 제거·원형닫기·820×500 한화면65:35·3묶음 위치이동·실제 문제팩/빈슬롯/생성 연결. 자동572개, 격리 Chromium UI17개 및 진행3종 PASS. 기존 HOME/다른팝업/엔진/저장스키마/main/Railway 보존. 원격 배포 후 검증은 후속 기록과 구분한다.
 
 승인 팝업 구현 후속: 시험 `3a1082ee` 자동배포 success, GitHub/시험주소23개 파일 전체 SHA-256 일치, 실제 HTTPS 응답을 연결한 격리 Chromium UI17항목 PASS. [전송·배포 및 브라우저 네트워크 한계](evidence/20261023-preparation-v4/deployment-results.json). 원본/엔진/저장스키마/main/Railway 보존.
+
+2026-10-23 영상 후속: 새로운 탐험 팝업을 화면에 맞춰 최대1120×720까지 확장하고 내부 여백 확대. 왼쪽 장식을 중간 테두리에서 상단 모서리로 이동. 글자 크기/65:35/기능 유지. Chromium18항목 PASS. [변경 및 검증](HOME_B_PREPARATION_V4_20261023.md).
