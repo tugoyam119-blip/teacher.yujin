@@ -32,7 +32,10 @@ function apply(html){
 function install(root){
  const file=path.join(root,'apps','통합사회2-3단원-수업용-프로그램','index.html');
  if(!fs.existsSync(file))return false;
- const before=fs.readFileSync(file,'utf8'),after=apply(before);
+ const before=fs.readFileSync(file,'utf8');
+ // The v7.60 loader owns its reviewed curriculum revision; legacy edits target the monolithic player only.
+ if(before.includes('name="unit3-curriculum-version"'))return false;
+ const after=apply(before);
  if(after!==before)fs.writeFileSync(file,after,'utf8');
  return after!==before;
 }
