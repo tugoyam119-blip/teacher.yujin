@@ -13,7 +13,18 @@ test('submitted answers reopen only in active remaining regular time; preserve r
  try{
   await Promise.race([once(child.stdout,'data'),new Promise((_,reject)=>setTimeout(()=>reject(Error('startup timeout')),10000).unref())]);
   const post=(url,body={})=>fetch('http://127.0.0.1:3419'+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({student_id:'10101',name:'시험학생',...body})});
-  for(const change of [{class_no:2},{timer_running:false,phase:'paused'},{is_open:0,timer_running:false},{period_type:'makeup'}]){put('control.json',{...baseControl,...change});assert.equal((await post('/api/reopen-submission')).status,403);assert.equal(read('progress/10101.json').submitted,true)}
+  for(const change of [{class_no:2},{timer_running:false,phase:'paused'},{is_open:0,timer_running:false}]){put('control.json',{...baseControl,...change});assert.equal((await post('/api/reopen-submission')).status,403);assert.equal(read('progress/10101.json').submitted,true)}
+  // Makeup permits revision even after regular time is exhausted.
+  put('control.json',{...baseControl,period_type:'makeup',session_id:'makeup',auto_pause_limit_seconds:2700});
+  put('time/10101.json',{period1_used:2700,period2_used:2700});
+  let makeup=await post('/api/reopen-submission');assert.equal(makeup.status,200);
+  let makeupPayload=(await makeup.json()).payload;makeupPayload.answer1=text+' 보충 수정';
+  assert.equal((await post('/api/manual-save',{payload:makeupPayload})).status,200);
+  assert.equal((await post('/api/submit',{payload:makeupPayload})).status,200);
+  assert.equal(read('progress/10101.json').previous_submission.payload.answer1,text);
+  put('control.json',{...baseControl,period_type:'makeup',elapsed_seconds:2700});
+  assert.equal((await post('/api/reopen-submission')).status,403);
+  put('progress/10101.json',original);put('grades/10101.json',{ai_grade:{total:80},teacher_grade:{total:85}});
   put('control.json',baseControl);put('time/10101.json',{period1_used:2700,period2_used:0});assert.equal((await post('/api/reopen-submission')).status,403);
   put('control.json',{...baseControl,period_type:'2',session_id:'session2'});put('time/10101.json',{period1_used:2700,period2_used:2700});assert.equal((await post('/api/reopen-submission')).status,403);
   put('time/10101.json',{period1_used:2700,period2_used:30});
@@ -61,3 +72,4 @@ test('submitted answers reopen only in active remaining regular time; preserve r
   assert.equal(fs.readFileSync(path.join(dir,'time/10101.json'),'utf8'),timeBefore);
  }finally{const exited=once(child,'exit');child.kill();await exited;fs.rmSync(dir,{recursive:true,force:true})}
 });
+
