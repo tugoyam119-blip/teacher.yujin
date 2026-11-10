@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = __dirname;
-const APP_VERSION = 'v12.9.0';
+const APP_VERSION = 'v12.10.0';
 
 function patchFile(relPath, replacements) {
   const file = path.join(ROOT, relPath);

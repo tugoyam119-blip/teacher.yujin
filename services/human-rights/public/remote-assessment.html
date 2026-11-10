@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>인권도시 · 개별 기간 수행</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f2f6fb;color:#182c44;font:16px/1.6 "Malgun Gothic",sans-serif}
+main{max-width:980px;margin:auto;padding:24px 16px 70px}a{color:#165774}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}
+.card{background:white;border:1px solid #dce5ef;border-radius:16px;padding:22px;margin:16px 0}h1{font-size:26px}h2{font-size:20px;margin:0 0 12px}
+label{display:block;font-weight:700;margin:12px 0 6px}input,select,button{font:inherit;padding:11px;border:1px solid #bfccdb;border-radius:9px}
+input,select{width:100%;background:white}button{cursor:pointer;background:#1b6277;color:white;font-weight:700}button.secondary{background:white;color:#173c51}
+button:disabled{opacity:.5;cursor:wait}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.muted{color:#5d6d81}.notice{background:#edf7f7;border-left:4px solid #398d88;padding:14px}.error{color:#aa2929}.hidden{display:none}
+table{border-collapse:collapse;width:100%}th,td{padding:9px;text-align:left;border-bottom:1px solid #dde4ee}.time{font-size:23px;font-weight:800}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.card{padding:16px}.top{display:block}}
+</style></head><body><main>
+<header class="top"><h1>개별 기간 수행</h1><a href="/teacher">통합 교사센터로</a></header>
+<section id="auth" class="card"><h2>교사 로그인</h2><label for="pinInput">교사 PIN</label><input id="pinInput" type="password" autocomplete="current-password"><div class="actions"><button id="loginButton">열기</button></div></section>
+<section id="controls" class="hidden">
+<div class="notice">선택한 학생만 지정 기간에 수행할 수 있습니다. 반 전체 수업을 열지 않아도 됩니다. 시작·마감은 모두 한국시간입니다.</div>
+<section class="card"><h2>1. 대상 학생</h2><label for="search">학번 또는 이름 찾기</label><input id="search" type="search" placeholder="이름 또는 학번"><label for="studentSelect">학생 선택</label><select id="studentSelect"></select><button id="loadButton" class="secondary" style="margin-top:12px">선택한 학생 확인</button></section>
+<section id="settings" class="card hidden"><h2 id="studentTitle"></h2>
+<p class="muted">일정 변경은 기존 답안과 수행시간을 유지합니다. 새 기간을 저장하면 학생은 이어 하기 버튼으로 재개합니다.</p>
+<div class="grid"><div><label for="starts">시작 (한국시간)</label><input id="starts" type="datetime-local"></div><div><label for="ends">마감 (한국시간)</label><input id="ends" type="datetime-local"></div></div>
+<div class="actions"><button id="saveButton">개별 수행 기간 저장</button><button id="revokeButton" class="secondary">개별 수행 해제</button><button id="refreshButton" class="secondary">기록 새로고침</button></div>
+<p class="muted">마감 이후에는 새 답안을 저장하거나 제출할 수 없습니다. 학생에게 마감 전 임시저장·최종 제출을 안내해 주세요. 이미 제출한 답안의 자기평가서는 마감 뒤에도 작성할 수 있습니다.</p>
+</section>
+<section id="record" class="card hidden"><h2>2. 시간 기록과 평가 확인</h2><div id="summary"></div>
+<p class="muted">전체 누적은 기존 1·2차시와 보충 수행을 합친 값입니다. 기존 90분 및 초과시간 기준을 그대로 사용합니다. 휴식·미접속·자기평가서 시간은 새 개별 수행시간에 넣지 않습니다.</p>
+<table><thead><tr><th>단계</th><th>이번 개별 수행</th></tr></thead><tbody id="stepRows"></tbody></table>
+<p class="muted">시간은 화면 활동 신호로 추정한 기록입니다. 읽기·생각하기는 포함하지만, 5분 동안 입력·클릭·스크롤이 없으면 자동으로 쉽니다. 학생은 ‘계속 읽고 / 생각하고 있어요’로 확인할 수 있습니다. 갑자기 연결이 끊기면 마지막 몇 초가 누락될 수 있습니다.</p>
+<a href="/manage">답안·가채점·최종 채점 확인 →</a>
+</section></section>
+<p id="message" role="status"></p></main><script>
+'use strict';
+const $=id=>document.getElementById(id),fmt=s=>Math.floor(Number(s||0)/60)+'분 '+String(Math.floor(Number(s||0)%60)).padStart(2,'0')+'초';
+let pin=sessionStorage.getItem('HR102_TPIN')||sessionStorage.getItem('HR115_OP_PIN')||'',rows=[],selected=null,busy=false;
+async function request(url,body){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,pin})});const j=await r.json();if(!r.ok)throw Error(j.error||'요청 실패');return j}
+function message(text,error=false){$('message').textContent=text;$('message').className=error?'error':''}
+async function task(fn){if(busy)return;busy=true;document.querySelectorAll('button').forEach(b=>b.disabled=true);try{await fn()}catch(e){message(e.message,true)}finally{busy=false;document.querySelectorAll('button').forEach(b=>b.disabled=false)}}
+function options(){const q=$('search').value.trim(),previous=$('studentSelect').value;$('studentSelect').replaceChildren();const blank=new Option('학생을 선택해 주세요','');$('studentSelect').add(blank);rows.filter(r=>!q||(r.student_id+' '+r.name).includes(q)).forEach(r=>$('studentSelect').add(new Option(r.student_id+' · '+r.name,r.student_id)));if([...$('studentSelect').options].some(o=>o.value===previous))$('studentSelect').value=previous}
+async function signIn(){const r=await fetch('/api/teacher/dashboard?pin='+encodeURIComponent(pin),{cache:'no-store'});const j=await r.json();if(!r.ok)throw Error(j.error||'교사 PIN을 확인하세요.');rows=j.students;sessionStorage.setItem('HR102_TPIN',pin);$('auth').classList.add('hidden');$('controls').classList.remove('hidden');options();message('대상 학생을 선택해 기간을 설정하세요.')}
+const local=v=>v?new Date(Date.parse(v)+9*3600000).toISOString().slice(0,16):'';
+function renderRecord(x,fillDates){
+ const t=x.student.time,w=x.window;selected={student_id:x.student.student_id,name:x.student.name};
+ $('studentTitle').textContent=selected.student_id+' '+selected.name+' · 기간 설정';
+ $('settings').classList.remove('hidden');$('record').classList.remove('hidden');
+ if(fillDates){$('starts').value=w?local(w.starts_at):local(new Date().toISOString());$('ends').value=w?local(w.ends_at):''}
+ const status=!w||!w.enabled?'설정 안 됨':w.status==='scheduled'?'시작 전':w.status==='ended'?'기간 종료':w.paused?'개방 중 · 학생 쉬는 중':'개방 중 · 수행 가능';
+ $('summary').replaceChildren();
+ for(const [label,value]of [['상태',status],['전체 누적 수행',fmt(t.total_used_seconds)],['이번 개별 수행',fmt(w?.active_seconds)],['90분 초과 수행',fmt(t.extra_seconds)],['현재 시간 감점',t.time_penalty+'점'+(t.penalty_exempt?' (면제 적용)':'')],['답안 제출',x.student.submitted?'제출 완료':'미제출']]){
+  const p=document.createElement('p'),b=document.createElement('b');b.textContent=label+' · ';p.append(b,document.createTextNode(value));$('summary').append(p)
+ }
+ const names=['시장 브리핑','자료 탐색','정책 설계','정책 근거','정책 영향','새 정보','최종 정책','정책보고서'];
+ $('stepRows').replaceChildren();names.forEach((name,i)=>{const tr=document.createElement('tr');for(const value of ['STEP '+i+' · '+name,fmt(w?.step_seconds?.[i])]){const td=document.createElement('td');td.textContent=value;tr.append(td)}$('stepRows').append(tr)});
+}
+async function loadSelected(){const st=rows.find(r=>r.student_id===$('studentSelect').value);if(!st)throw Error('학생을 선택하세요.');renderRecord(await request('/api/teacher/remote-window',{action:'get',student_id:st.student_id,name:st.name}),true);message('학생의 현재 설정과 기록을 확인했습니다.')}
+$('loginButton').onclick=()=>task(async()=>{pin=$('pinInput').value.trim();await signIn()});
+$('pinInput').onkeydown=e=>{if(e.key==='Enter')$('loginButton').click()};
+$('search').oninput=options;
+$('loadButton').onclick=()=>task(loadSelected);
+$('studentSelect').onchange=()=>{selected=null;$('settings').classList.add('hidden');$('record').classList.add('hidden')};
+$('saveButton').onclick=()=>task(async()=>{
+ if(!selected)throw Error('학생을 먼저 확인하세요.');
+ const starts=$('starts').value,ends=$('ends').value;
+ if(!starts||!ends)throw Error('시작과 마감을 모두 입력하세요.');
+ const x=await request('/api/teacher/remote-window',{...selected,action:'set',starts_at:starts+':00+09:00',ends_at:ends+':00+09:00'});
+ renderRecord(x,true);message('기간을 저장했습니다. 학생은 기존 학생 입장 화면에서 로그인한 뒤 수행 시작 / 이어 하기를 누르면 됩니다.');
+});
+$('revokeButton').onclick=()=>task(async()=>{
+ if(!selected||!confirm(selected.name+' 학생의 개별 기간 수행을 해제할까요? 답안과 시간 기록은 유지됩니다.'))return;
+ renderRecord(await request('/api/teacher/remote-window',{...selected,action:'revoke'}),true);message('개별 수행을 해제했습니다. 기존 반별 운영 규칙이 적용됩니다.');
+});
+$('refreshButton').onclick=()=>task(async()=>{if(selected)renderRecord(await request('/api/teacher/remote-window',{...selected,action:'get'}),false);message('시간 기록을 갱신했습니다.')});
+if(pin)task(signIn);
+</script></body></html>

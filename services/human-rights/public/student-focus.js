@@ -2,6 +2,7 @@
 function monitoredStudent(){return !!student&&!observerMode&&!isTeacherTest()&&API_MODE}
 function remainingTimeText(){
  if(state.submitted)return '자기평가서 · 시간 제한 없음';
+ if(session.remote_configured)return '누적 수행 '+clockTime(session.total_used_seconds)+' · '+(session.is_open?'수행 중':session.remote_available?'쉬는 중':'수행 기간 안내');
  if(session.compensation_active)return '오류 보충 남은 시간 '+clockTime(session.compensation_remaining_seconds);
  if(session.personal_extra_active)return '추가 수행 남은 시간 '+clockTime(session.personal_extra_remaining_seconds);
  if(!session.is_open||!session.timer_running)return session.phase==='class-wait'?'우리 반 수행 시작 대기':'수행시간 일시정지';
